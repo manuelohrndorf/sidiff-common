@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Service Management
+Bundle-SymbolicName: org.sidiff.common.services
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.sidiff.common.services,
+ org.sidiff.common.services.debug,
+ org.sidiff.common.services.events
+Import-Package: org.eclipse.emf.common.notify,
+ org.eclipse.emf.ecore,
+ org.eclipse.emf.ecore.resource,
+ org.eclipse.osgi.framework.console;version="1.0.0",
+ org.osgi.framework;version="1.5.0"
+Bundle-Activator: org.sidiff.common.services.Activator
+Bundle-Vendor: www.sidiff.org
+Require-Bundle: org.sidiff.common;bundle-version="1.0.0"

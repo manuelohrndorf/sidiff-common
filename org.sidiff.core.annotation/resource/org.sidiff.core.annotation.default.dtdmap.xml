@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE Map SYSTEM "http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.io.map.dtd">
-<Map type="DTDMappings">
-	<MapEntry
-			key="http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.core.annotation.default.dtd"
-			value="org.sidiff.core.annotation.default.dtd"/>		
-</Map>
-		

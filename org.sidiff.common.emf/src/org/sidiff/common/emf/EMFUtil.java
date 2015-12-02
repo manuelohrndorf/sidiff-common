@@ -7,10 +7,7 @@ import java.util.*;
 
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.EPackage.Registry;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
-import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
-import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.*;

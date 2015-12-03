@@ -8,11 +8,11 @@ import java.util.*;
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.*;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.*;
 import org.eclipse.emf.ecore.xmi.XMIResource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
 import org.sidiff.common.emf.exceptions.UnknownAttributeException;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
@@ -522,5 +522,176 @@ public class EMFUtil {
 		if (eObject.eResource() instanceof XMIResource) {
 			((XMIResource) eObject.eResource()).setID(eObject, id);
 		}
+	}
+	
+	/**
+	 * This method loads a resource which contains so called <b>cross document references</b>
+	 * to other imported resources which are referenced by <b>platform:/resource/.. URIs</b>.
+	 * <br/>
+	 * Usually, imported resources are referenced by relative URI paths
+	 * (e.i, without leading plugin/platform/file schema prefix).
+	 * However, in some cases one has platform:/resource instead which will result in
+	 * unresolvable eProxyURIs when the main resource is loaded. In such cases this method can help.
+	 * Just make sure you initialize your meta model package beforehand with
+	 * <br/>MyMetaModelPackage.eINSTANCE.eClass();
+	 * <br/>Note: This method will <b>assume that the imported resource files lie in the same folder</b>
+	 * as the main resource. If you have differing folders then use a different method, see below
+	 *  
+	 * @param platformResourceURI
+	 * 				the platform:/resource URI of the resource to load
+	 * @param fileSchemaURI
+	 * 				the absolute file:/ URI of the resource to load
+	 * @return the resourceSet with the loaded main resource and it's referenced
+	 * 		   resources
+	 * @see #loadResourceWithCrossDocumentReferences(ResourceSet, URI, URI, EPackage, Set)
+	 */
+	public static ResourceSet loadResourceWithCrossDocumentReferences(
+			URI platformResourceURI,
+			URI fileSchemaURI) {
+				
+		// Register arbitrary file extensions in the resource factory.
+		// Extensions could also be defined separately (e.g.:
+		// asymmetric, symmetric, ecore, uml) It is however necessary
+		// for later resolution that one defines them all .
+		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+		Map<String, Object> m = reg.getExtensionToFactoryMap();
+		m.put("*", new XMIResourceFactoryImpl());
+
+		// Obtain a new resource set, its URIConverter and URIMap
+		ResourceSet resSet = new ResourceSetImpl();
+		URIConverter uriConverter = resSet.getURIConverter();
+		Map<URI,URI> uriMap = uriConverter.getURIMap();
+
+		// Map platform-URIs to absolute file:/-URIs
+		// Firstly, the main resource:
+		uriMap.put(platformResourceURI, fileSchemaURI);
+		
+		// Create the resource (to find out all eProxyURIs)
+		Resource resource = resSet.getResource(platformResourceURI, true);
+		
+		// Find all eProxyURIS therein and create
+		// URIMap entries to the respective absolute file:/ paths.
+		// Here: all resources are assumed to lie in the same folder.
+		String fileDirectoryPath = fileSchemaURI.trimSegments(1).toString() + System.getProperty("file.separator");
+		for(URI proxyURI : findAllEProxyURIWithoutFragments(resource)) {
+			if(proxyURI.isPlatformResource()) {		
+				String fileName = proxyURI.trimFragment().lastSegment();								
+				String filePath = fileDirectoryPath + fileName;
+				uriMap.put(proxyURI,URI.createURI(filePath));
+			}
+			
+		}
+
+		// Previously recognized resources must be cleared in order to
+		// load them again now with necessary URI mappings
+		resSet.getResources().clear();
+		resource = resSet.getResource(platformResourceURI, true);
+		
+		// manually demand resolution of all proxyURIs
+		EcoreUtil.resolveAll(resSet);
+		
+		return resSet;
+
+	}
+	
+	
+	/**
+	 * This method loads a resource which contains so called <b>cross document references</b>
+	 * to other imported resources which are referenced by <b>platform:/resource/.. URIs</b>.
+	 * <br/>
+	 * Usually, imported resources are referenced by relative URI paths
+	 * (e.i, without leading plugin/platform/file schema prefix).
+	 * However, in some cases one has platform:/resource instead which will result in
+	 * unresolvable eProxyURIs when the main resource is loaded. In such cases this method can help.
+	 * Just make sure you initialize your meta model package beforehand with
+	 * <br/>MyMetaModelPackage.eINSTANCE.eClass();
+	 * <br/>Note: This method will take in <b>absolute file:/ paths to the referenced resources</b>.
+	 * If all cross referenced resources lie in the same folder as the main resource you can
+	 * also use another method, see below.
+	 *  
+	 * @param platformResourceURI
+	 * 				the platform:/resource URI of the resource to load
+	 * @param fileSchemaURI
+	 * 				the absolute file:/ URI of the resource to load
+	 * @param crossReferencedFileURIs
+	 * 				the set of absolute file:/ URIs of the imported resources
+	 * @return the resourceSet with the loaded main resource and it's referenced
+	 * 		   resources
+	 * @see #loadResourceWithCrossDocumentReferences(URI, URI)
+	 */
+	public static ResourceSet loadResourceWithCrossDocumentReferences(
+			URI platformResourceURI,
+			URI fileSchemaURI,
+			Set<URI> crossReferencedFileURIs) {
+
+		// Register arbitrary file extensions in the resource factory.
+		// Extensions could also be defined separately (e.g. here:
+		// asymmetric, symmetric, ecore) It is however necessary
+		// for later resolution that one defines them all .
+		Resource.Factory.Registry reg = Resource.Factory.Registry.INSTANCE;
+		Map<String, Object> m = reg.getExtensionToFactoryMap();
+		m.put("*", new XMIResourceFactoryImpl());
+
+		// Obtain a new resource set, its URIConverter and URIMap
+		ResourceSet resSet = new ResourceSetImpl();
+		URIConverter uriConverter = resSet.getURIConverter();
+		Map<URI,URI> uriMap = uriConverter.getURIMap();
+
+		// Map platform-URIs to absolute file:/-URIs
+		// Firstly, the main resource:
+		uriMap.put(platformResourceURI,fileSchemaURI);
+
+		// Create the resource (to find out all eProxyURIs)
+		Resource resource = resSet.getResource(platformResourceURI, true);		
+		
+		// find all platform:/resource/.. URIs referenced inside the
+		// resource and map them onto the respective file:/ URIs
+		Set<URI> eProxieURIs = findAllEProxyURIWithoutFragments(resource);
+		for(URI proxyURI: eProxieURIs) {
+			if(proxyURI.isPlatformResource()) {
+				String representativeEProxyURISegments = proxyURI.toString().replaceFirst("platform:/resource","");
+				representativeEProxyURISegments = representativeEProxyURISegments.replaceAll("\\|/", System.getProperty("file.separator"));
+				for(URI crossReferencedFileURI: crossReferencedFileURIs) {
+					if(crossReferencedFileURI.path().toString().contains(representativeEProxyURISegments)) {
+						uriMap.put(proxyURI,crossReferencedFileURI);
+					}
+				}
+			}
+		}
+		
+
+		// Previously recognized resources must be cleared in order to
+		// load them again now with necessary URI mappings
+		resSet.getResources().clear();
+		resource = resSet.getResource(platformResourceURI, true);
+		
+		// manually demand resolution of all proxyURIs
+		EcoreUtil.resolveAll(resSet);
+
+		return resSet;
+
+	}
+
+	/**
+	 * This method finds all EProxy URIs inside a resource.
+	 * Fragments are ignored.
+	 * @param resource
+	 * @return set of eProxyURIs
+	 */
+	public static Set<URI> findAllEProxyURIWithoutFragments(Resource resource) {
+		
+		Set<URI> eProxies = new HashSet<URI>();
+
+		for(EObject eObject: getAllContentAsIterable(resource)) {
+
+			for(EObject crossReferencedEObject: eObject.eCrossReferences()) {
+				if(crossReferencedEObject.eIsProxy()) {
+					eProxies.add(((InternalEObject) crossReferencedEObject).eProxyURI().trimFragment());
+				}
+			}
+		}
+				
+		return eProxies;
+		
 	}
 }

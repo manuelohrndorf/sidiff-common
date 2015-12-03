@@ -32,12 +32,6 @@ public class EMFResourceUtil {
 	}
 
 	private static boolean contains(Resource resource, EObject eObject) {
-		for (Iterator<EObject> iterator = resource.getAllContents(); iterator.hasNext();) {
-			if (eObject == iterator.next()) {
-				return true;
-			}
-		}
-
-		return false;
+		return eObject.eResource().equals(resource);
 	}
 }

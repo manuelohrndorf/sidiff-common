@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: EclipseSidiffIntegrator
+Bundle-SymbolicName: org.sidiff.integration.eclipse;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.sidiff.integration.eclipse.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.core.resources
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ActivationPolicy: lazy
+Export-Package: org.sidiff.integration.eclipse,
+ org.sidiff.integration.eclipse.preferences
+Import-Package: org.sidiff.difference.rulebase.wrapper

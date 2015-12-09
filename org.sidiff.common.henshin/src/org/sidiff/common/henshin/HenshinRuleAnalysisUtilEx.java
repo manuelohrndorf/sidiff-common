@@ -2693,6 +2693,9 @@ public class HenshinRuleAnalysisUtilEx {
 	}
 	
 	/**
+	 * An attribute is embedded if its corresponding node is embedded and if one
+	 * of the mapped nodes contains the same attribute.
+	 * 
 	 * @param graph
 	 *            The Graph that contains the attributes.
 	 * @param embeddedNodes

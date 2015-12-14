@@ -32,6 +32,8 @@ public class EMFResourceUtil {
 	}
 
 	private static boolean contains(Resource resource, EObject eObject) {
+		if(eObject.eResource() == null)
+			return false;
 		return eObject.eResource().equals(resource);
 	}
 }

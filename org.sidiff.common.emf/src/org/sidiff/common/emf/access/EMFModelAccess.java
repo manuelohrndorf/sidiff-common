@@ -488,7 +488,7 @@ public class EMFModelAccess {
 	 */
 	public static String getCharacteristicDocumentType(Resource model) {
 		// empty model -> return null
-		if (model.getContents().isEmpty()) {
+		if ((model == null) || model.getContents().isEmpty()) {
 			return null;
 		}
 

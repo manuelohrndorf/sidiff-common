@@ -7,7 +7,7 @@ public abstract class AbstractSettings {
 	 * All listeners of this Setting-Object.
 	 */
 	private final ArrayList<ISettingsChangedListener> listeners = new ArrayList<ISettingsChangedListener>();
-	
+
 	/**
 	 * Adds a new listener to this Settings-Object.
 	 * 
@@ -19,7 +19,7 @@ public abstract class AbstractSettings {
 			this.listeners.add(listener);
 		}
 	}
-	
+
 	/**
 	 * Removes a new listener to this Settings-Object.
 	 * 
@@ -41,7 +41,11 @@ public abstract class AbstractSettings {
 	protected void notifyListeners(Enum<?> item) {
 		if (listeners != null) {
 			for (ISettingsChangedListener listener : listeners) {
-				listener.settingsChanged(item);
+				try {
+					listener.settingsChanged(item);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

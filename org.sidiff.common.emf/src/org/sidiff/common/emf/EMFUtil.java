@@ -1,5 +1,6 @@
 package org.sidiff.common.emf;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -545,11 +546,12 @@ public class EMFUtil {
 	 * 				the absolute file:/ URI of the resource to load
 	 * @return the resourceSet with the loaded main resource and it's referenced
 	 * 		   resources
+	 * @throws Exception 
 	 * @see #loadResourceWithCrossDocumentReferences(ResourceSet, URI, URI, EPackage, Set)
 	 */
 	public static ResourceSet loadResourceWithCrossDocumentReferences(
 			URI platformResourceOrPluginURI,
-			URI fileSchemaURI) {
+			URI fileSchemaURI) throws Exception {
 				
 		// Register arbitrary file extensions in the resource factory.
 		// Extensions could also be defined separately (e.g.:
@@ -579,12 +581,25 @@ public class EMFUtil {
 		while(inDepthEProxySearchFinished==false) {
 
 			for(URI proxyURI : findEProxyModelURIs(resource)) {
+				boolean resolvable = false;
 				if(proxyURI.isPlatformResource() || proxyURI.isPlatformPlugin()) {		
 					String fileName = proxyURI.trimFragment().lastSegment();								
 					String filePath = fileDirectoryPath + fileName;
-					uriMap.put(proxyURI,URI.createURI(filePath));
+					File f = new File(filePath.replace("file:/", ""));
+					if(f.exists()) {
+						uriMap.put(proxyURI,URI.createURI(filePath));
+						resolvable = true;
+					}
 				}
 
+				if(resolvable==false) {
+					throw new Exception("Unresovable URI: " + proxyURI +
+						  "\nOne cross referenced document platform:/ URI "
+						+ "can't be mapped and resolved onto an absolute file:/ path."
+						+ "Either add the document to the same directory as the main resource"
+						+ "or activate the containing plugin during runtime.");
+				}
+				
 			}
 
 			// Previously recognized resources must be cleared in order to

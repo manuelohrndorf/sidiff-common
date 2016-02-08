@@ -49,5 +49,7 @@ public abstract class AbstractSettings {
 			}
 		}
 	}
+	
+	public abstract boolean validateSettings();
 
 }

@@ -53,7 +53,7 @@ public class BaseSettings extends AbstractSettings {
 	public void setScope(Scope scope) {
 		if (this.scope == null || !this.scope.equals(scope)) {
 			this.scope = scope;
-			this.notifyListeners(SiDiffSettingsItem.SCOPE);
+			this.notifyListeners(BaseSettingsItem.SCOPE);
 		}
 	}
 }

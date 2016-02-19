@@ -8,14 +8,19 @@ public class BaseSettings extends AbstractSettings {
 	 */
 	private Scope scope = Scope.RESOURCE;
 
+	/**
+	 * Validation of the input models. (Default: False)
+	 */
+	private boolean validate = false;
 	
 	public BaseSettings() {
 		super();
 	}
 
 
-	public BaseSettings(Scope scope) {
-		this.scope=scope;
+	public BaseSettings(Scope scope, boolean validate) {
+		this.scope = scope;
+		this.validate = validate;
 	}
 	
 	@Override
@@ -31,6 +36,7 @@ public class BaseSettings extends AbstractSettings {
 	public String toString() {
 		StringBuffer result = new StringBuffer();
 		result.append(getScope() != null ? "Scope: " + getScope() + "\n" : "");
+		result.append("Validate input models: " + isValidate());
 		
 		return result.toString();
 	}
@@ -54,6 +60,30 @@ public class BaseSettings extends AbstractSettings {
 		if (this.scope == null || !this.scope.equals(scope)) {
 			this.scope = scope;
 			this.notifyListeners(BaseSettingsItem.SCOPE);
+		}
+	}
+	
+	/**
+	 * Get the validation of the input models. (Default: False)
+	 * 
+	 * @return <code>true</code> if the input models will be validated;
+	 *         <code>false</code> otherwise.
+	 */
+	public boolean isValidate() {
+		return validate;
+	}
+	
+	/**
+	 * Set the validation of the input models. (Default: False)
+	 * 
+	 * @param validate
+	 *            <code>true</code> if the input models should be validated;
+	 *            <code>false</code> otherwise.
+	 */
+	public void setValidate(boolean validate) {
+		if (this.validate != validate) {
+			this.validate = validate;
+			this.notifyListeners(BaseSettingsItem.VALIDATE);
 		}
 	}
 }

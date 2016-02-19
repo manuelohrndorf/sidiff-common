@@ -19,7 +19,6 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.Bundle;
-import org.sidiff.difference.rulebase.wrapper.RuleBaseWrapper;
 import org.sidiff.integration.eclipse.Activator;
 import org.sidiff.integration.eclipse.BundleHandler;
 

@@ -1,4 +1,4 @@
-package org.sidiff.common.settings.settings;
+package org.sidiff.common.settings;
 
 import java.util.ArrayList;
 

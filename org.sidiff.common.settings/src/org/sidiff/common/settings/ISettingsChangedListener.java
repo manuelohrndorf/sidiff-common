@@ -1,4 +1,4 @@
-package org.sidiff.common.settings.settings;
+package org.sidiff.common.settings;
 
 /**
  * Implement this interface to listen to changes in the settings object.

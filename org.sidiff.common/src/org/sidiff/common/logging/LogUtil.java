@@ -47,6 +47,8 @@ public class LogUtil {
 	private static ILogChannel channel = null;
 	private static SimpleDateFormat sdf = null;
 	
+	private static Set<ILogChannel> channels = null;
+	
 	private static EnumSet<LogEvent> logevents = null; // null means do not log any event
 	private static Set<String> logmodules = null;
 
@@ -81,6 +83,8 @@ public class LogUtil {
 				LogUtil.setLogChannel(DEFAULT_OUTPUT_CHANNEL);
 			}
 		}
+		
+		channels = getAvailableLogChannels();
 		
 		if(!IS_RELEASE){
 			String intro = 	"----------------------------------------------------------\n" +
@@ -219,6 +223,7 @@ public class LogUtil {
 	
 	private static void printInternal(String fqCallerClassName, LogEvent event, Object... message) {
 
+		for(ILogChannel channel : channels){
 			
 			String callerNSTokens[] = fqCallerClassName.split("\\.");		
 			if(doLogModule(getModuleName(callerNSTokens))){
@@ -267,6 +272,7 @@ public class LogUtil {
 				logentry.append(messageStr);
 				channel.log(logentry.toString(), event);
 			}
+		}
 	}
 	
 	/**

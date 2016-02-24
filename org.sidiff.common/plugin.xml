@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="org.sidiff.common.logchannel" name="Log Channel" schema="schema/org.sidiff.common.logchannel.exsd"/>
+   <extension
+         point="org.sidiff.common.logchannel">
+      <logchannel
+            class="org.sidiff.common.logging.internal.ConsoleLogChannel">
+      </logchannel>
+   </extension>
+
+</plugin>

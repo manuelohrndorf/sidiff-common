@@ -6,13 +6,13 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 import org.sidiff.common.Activator;
-import org.sidiff.common.logging.LogChannel;
+import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
 
 /**
  * LogChannels that forwards the log messages to the log service of the OSGi framework.
  */
-public class OSGILogChannel implements LogChannel {
+public class OSGILogChannel implements ILogChannel {
 
 	private BundleContext context = null;
 	private ServiceReference logServiceRef = null;
@@ -99,5 +99,8 @@ public class OSGILogChannel implements LogChannel {
 		return false;
 	}
 
-
+	@Override
+	public String getKey() {
+		return getClass().getSimpleName();
+	}
 }

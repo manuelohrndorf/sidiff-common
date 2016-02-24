@@ -3,13 +3,13 @@ package org.sidiff.common.logging.internal;
 import java.io.*;
 import java.text.SimpleDateFormat;
 
-import org.sidiff.common.logging.LogChannel;
+import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
 
 /**
  * LogChannel that writes the log messages into a file.
  */
-public class FileLogChannel implements LogChannel {
+public class FileLogChannel implements ILogChannel {
 
 	private static final String PROPERTY_NAME_LOGFILE = "LOGFILE";
 
@@ -58,5 +58,9 @@ public class FileLogChannel implements LogChannel {
 	public boolean includeTimeStamp() {
 		return true;
 	}
-
+	
+	@Override
+	public String getKey() {
+		return getClass().getSimpleName();
+	}
 }

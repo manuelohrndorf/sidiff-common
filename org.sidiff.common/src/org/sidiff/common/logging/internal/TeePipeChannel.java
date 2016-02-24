@@ -3,13 +3,13 @@ package org.sidiff.common.logging.internal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.sidiff.common.logging.LogChannel;
+import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
 
 /**
  * LogChannel that forwards log messages to multiple other log channels at a time.
  */
-public class TeePipeChannel implements LogChannel {
+public class TeePipeChannel implements ILogChannel {
 	
 	private static final String PROPERTY_NAME_LOGCHANNELS = "TEEPIPECHANNELS";
 	private static final String CHANNEL_PREFIX = "org.sidiff.common.logging.internal.";
@@ -17,7 +17,7 @@ public class TeePipeChannel implements LogChannel {
 	private static final String EVENT_DECLARATOR = ":";
 	private static final String EVENT_SEPARATOR = ",";
 	
-	private HashMap<LogChannel, Set<LogEvent>> channelEvents = null;
+	private HashMap<ILogChannel, Set<LogEvent>> channelEvents = null;
 		
 	boolean doIndentationFlag = false;
 	boolean includeLogEventFlag = false;
@@ -26,7 +26,7 @@ public class TeePipeChannel implements LogChannel {
 	
 	public TeePipeChannel() {
 		
-		this.channelEvents = new HashMap<LogChannel, Set<LogEvent>>();
+		this.channelEvents = new HashMap<ILogChannel, Set<LogEvent>>();
 		
 		String logChannelsString = System.getProperty(PROPERTY_NAME_LOGCHANNELS);
 		
@@ -40,7 +40,7 @@ public class TeePipeChannel implements LogChannel {
 			
 			String nameEvents[] = channelToken.split(EVENT_DECLARATOR);	
 			
-			LogChannel outputChannel = 	getOutputChannel(nameEvents[0]);
+			ILogChannel outputChannel = 	getOutputChannel(nameEvents[0]);
 			
 			Set<LogEvent> events = new TreeSet<LogEvent>();
 			if(nameEvents.length>2){
@@ -69,7 +69,7 @@ public class TeePipeChannel implements LogChannel {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private LogChannel getOutputChannel(String channelName) {
+	private ILogChannel getOutputChannel(String channelName) {
 		
 		if (channelName.indexOf(".")==-1)
 			channelName = CHANNEL_PREFIX + channelName;
@@ -77,7 +77,7 @@ public class TeePipeChannel implements LogChannel {
 		try {
 			
 			Class channelClass = Class.forName(channelName);
-			return (LogChannel)channelClass.getConstructor().newInstance();
+			return (ILogChannel)channelClass.getConstructor().newInstance();
 			
 		} catch (Exception e) {
 			
@@ -92,7 +92,7 @@ public class TeePipeChannel implements LogChannel {
 	private void setFormatting() {
 
 		doIndentationFlag = false;
-		for (LogChannel channel : channelEvents.keySet()) {
+		for (ILogChannel channel : channelEvents.keySet()) {
 
 			if (channel.doIndentation()) {
 				doIndentationFlag = true;
@@ -101,7 +101,7 @@ public class TeePipeChannel implements LogChannel {
 		}
 
 		includeLogEventFlag = false;
-		for (LogChannel channel : channelEvents.keySet()) {
+		for (ILogChannel channel : channelEvents.keySet()) {
 
 			if (channel.includeLogEvent()) {
 				includeLogEventFlag = true;
@@ -110,7 +110,7 @@ public class TeePipeChannel implements LogChannel {
 		}
 
 		includeTimeStampFlag = false;
-		for (LogChannel channel : channelEvents.keySet()) {
+		for (ILogChannel channel : channelEvents.keySet()) {
 
 			if (channel.includeTimeStamp()) {
 				includeTimeStampFlag = true;
@@ -146,11 +146,15 @@ public class TeePipeChannel implements LogChannel {
 	@Override
 	public void log(String message, LogEvent event) {
 		
-		for (LogChannel channel : channelEvents.keySet()) {
+		for (ILogChannel channel : channelEvents.keySet()) {
 			Set<LogEvent> events = channelEvents.get(channel);
 			if (events.contains(event)) 
 				channel.log(message, event);		
 		}
 	}
 	
+	@Override
+	public String getKey() {
+		return getClass().getSimpleName();
+	}
 }

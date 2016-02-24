@@ -3,14 +3,14 @@ package org.sidiff.common.logging.internal;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 
-import org.sidiff.common.logging.LogChannel;
+import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
 
 
 /**
  * A LogChannel that writes the log messages to the console.
  */
-public class ConsoleLogChannel implements LogChannel {
+public class ConsoleLogChannel implements ILogChannel {
 
 	private PrintWriter log = null;
 	
@@ -42,6 +42,11 @@ public class ConsoleLogChannel implements LogChannel {
 	@Override
 	public boolean includeTimeStamp() {
 		return true;
+	}
+
+	@Override
+	public String getKey() {
+		return getClass().getSimpleName();
 	}
 
 }

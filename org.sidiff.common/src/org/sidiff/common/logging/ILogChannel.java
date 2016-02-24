@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 /**
  * Interface for classes that can write log messages to a particular channel.
  */
-public interface LogChannel {
+public interface ILogChannel {
 	
 	/**
 	 * Prints the log message.
@@ -38,5 +38,7 @@ public interface LogChannel {
 	 * @return
 	 */
 	public boolean doIndentation();
+	
+	public String getKey();
 	
 }

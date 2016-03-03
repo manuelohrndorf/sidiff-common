@@ -1,5 +1,8 @@
 package org.sidiff.common.stringresolver.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.sidiff.common.stringresolver.GenericStringResolver;
@@ -13,6 +16,11 @@ import org.sidiff.common.stringresolver.IStringResolver;
 public class StringResolverUtil {
 
 	/**
+	 * Resolver index:
+	 */
+	private static Map<String, IStringResolver> resolver;
+	
+	/**
 	 * Returns an available string resolver for the given document type. If no
 	 * convenient resolver is found, <code>null</code> will be returned.
 	 * 
@@ -22,17 +30,20 @@ public class StringResolverUtil {
 	 */
 	public static IStringResolver getAvailableStringResolver(String documentType){
 		
-		IStringResolver stringResolver = null;
-		for (IConfigurationElement configurationElement : Platform.getExtensionRegistry().getConfigurationElementsFor(IStringResolver.extensionPointID)) {
-			try {
-				IStringResolver stringResolverExtension = (IStringResolver) configurationElement.createExecutableExtension("string_resolver");
-				if (documentType.equals(stringResolverExtension.getDocType())) {
-					stringResolver = stringResolverExtension;
+		if (resolver == null) {
+			resolver = new HashMap<String, IStringResolver>();
+					
+			for (IConfigurationElement configurationElement : Platform.getExtensionRegistry().getConfigurationElementsFor(IStringResolver.extensionPointID)) {
+				try {
+					IStringResolver stringResolverExtension = (IStringResolver) configurationElement.createExecutableExtension("string_resolver");
+					resolver.put(stringResolverExtension.getDocType(), stringResolverExtension);
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
+
+		IStringResolver stringResolver = resolver.get(documentType);
 		
 		if(stringResolver == null){
 			stringResolver = new GenericStringResolver();

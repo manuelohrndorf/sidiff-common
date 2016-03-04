@@ -1,10 +1,9 @@
-package org.sidiff.common.emf;
+package org.sidiff.common.stringresolver.util;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.access.EMFModelAccess;
 import org.sidiff.common.stringresolver.IStringResolver;
-import org.sidiff.common.stringresolver.util.StringResolverUtil;
 
 public class LabelPrinter {
 

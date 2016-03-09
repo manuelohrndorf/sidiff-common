@@ -21,11 +21,4 @@
             class="org.sidiff.integration.eclipse.preferences.PreferenceInitializer">
       </initializer>
    </extension>
-   <extension
-         point="org.sidiff.common.logchannel">
-      <logchannel
-            class="org.sidiff.integration.eclipse.logging.EclipseConsoleLogChannel">
-      </logchannel>
-   </extension>
-
 </plugin>

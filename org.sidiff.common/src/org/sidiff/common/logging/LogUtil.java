@@ -3,8 +3,6 @@ package org.sidiff.common.logging;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.sidiff.common.Activator;
 import org.sidiff.common.util.ReflectionUtil;
 import org.sidiff.common.util.StringUtil;
@@ -47,8 +45,6 @@ public class LogUtil {
 	private static ILogChannel channel = null;
 	private static SimpleDateFormat sdf = null;
 	
-	private static Set<ILogChannel> channels = null;
-	
 	private static EnumSet<LogEvent> logevents = null; // null means do not log any event
 	private static Set<String> logmodules = null;
 
@@ -83,8 +79,6 @@ public class LogUtil {
 				LogUtil.setLogChannel(DEFAULT_OUTPUT_CHANNEL);
 			}
 		}
-		
-		channels = getAvailableLogChannels();
 		
 		if(!IS_RELEASE){
 			String intro = 	"----------------------------------------------------------\n" +
@@ -160,22 +154,14 @@ public class LogUtil {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static void setLogChannel(String channelName) {
 
-		ILogChannel currentChannel = channel;
 		try {
-
-			for(ILogChannel lc : getAvailableLogChannels()){
-				if(lc.getKey().equals(channelName)){
-					LogUtil.channel = lc;
-				}
-			}
-			if(channel == null || channel == currentChannel){
-				if (channelName.indexOf(".")==-1)
-					channelName = CHANNEL_PREFIX + channelName;
-				Class<?> channelClass = ReflectionUtil.loadClass(channelName);
-				LogUtil.channel = (ILogChannel)channelClass.getConstructor().newInstance();
-			}
+			if (channelName.indexOf(".")==-1)
+				channelName = CHANNEL_PREFIX + channelName;
+			Class channelClass = ReflectionUtil.loadClass(channelName);
+			LogUtil.channel = (ILogChannel)channelClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			System.out.println("Cannot get output Channel:" + channelName);
 			e.printStackTrace();
@@ -223,7 +209,6 @@ public class LogUtil {
 	
 	private static void printInternal(String fqCallerClassName, LogEvent event, Object... message) {
 
-		for(ILogChannel channel : channels){
 			
 			String callerNSTokens[] = fqCallerClassName.split("\\.");		
 			if(doLogModule(getModuleName(callerNSTokens))){
@@ -272,7 +257,6 @@ public class LogUtil {
 				logentry.append(messageStr);
 				channel.log(logentry.toString(), event);
 			}
-		}
 	}
 	
 	/**
@@ -300,18 +284,6 @@ public class LogUtil {
 		return true;
 	}
 
-	private static Set<ILogChannel> getAvailableLogChannels(){
-		Set<ILogChannel> logChannels = new HashSet<ILogChannel>();
-		for (IConfigurationElement configurationElement : Platform.getExtensionRegistry().getConfigurationElementsFor(
-				"org.sidiff.common.logchannel")) {
-			try {
-				ILogChannel lc = (ILogChannel) configurationElement.createExecutableExtension("class");
-				logChannels.add(lc);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return logChannels;
-	}
+	
 
 }

@@ -20,7 +20,7 @@ public class OSGILogChannel implements ILogChannel {
 	
 	@Override
 	public SimpleDateFormat createDateFormat() {
-		return null;
+		return new SimpleDateFormat("EE dd.MM.yy hh:mm:ss ");
 	}
 
 	@Override

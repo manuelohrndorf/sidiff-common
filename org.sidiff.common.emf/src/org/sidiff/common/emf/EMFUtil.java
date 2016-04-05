@@ -14,8 +14,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.*;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
-import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
-import org.sidiff.common.emf.exceptions.UnknownAttributeException;
+import org.sidiff.common.emf.exceptions.*;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.logging.LogEvent;
@@ -546,7 +545,7 @@ public class EMFUtil {
 	 * 				the absolute file:/ URI of the resource to load
 	 * @return the resourceSet with the loaded main resource and it's referenced
 	 * 		   resources
-	 * @throws Exception 
+	 * @throws CrossDocumentReferenceUnresolvableException 
 	 * @see #loadResourceWithCrossDocumentReferences(ResourceSet, URI, URI, EPackage, Set)
 	 */
 	public static ResourceSet loadResourceWithCrossDocumentReferences(
@@ -580,7 +579,8 @@ public class EMFUtil {
 		boolean inDepthEProxySearchFinished = false;
 		while(inDepthEProxySearchFinished==false) {
 
-			for(URI proxyURI : findEProxyModelURIs(resource)) {
+			Set<URI> eProxieURIs = findEProxyModelURIs(resource);
+			for(URI proxyURI : eProxieURIs) {
 				boolean resolvable = false;
 				if(proxyURI.isPlatformResource() || proxyURI.isPlatformPlugin()) {		
 					String fileName = proxyURI.trimFragment().lastSegment();								
@@ -593,11 +593,7 @@ public class EMFUtil {
 				}
 
 				if(resolvable==false) {
-					throw new Exception("Unresovable URI: " + proxyURI +
-						  "\nOne cross referenced document platform:/ URI "
-						+ "can't be mapped and resolved onto an absolute file:/ path."
-						+ "Either add the document to the same directory as the main resource"
-						+ "or activate the containing plugin during runtime.");
+					throw new CrossDocumentReferenceUnresolvableException(proxyURI, uriMap);
 				}
 				
 			}
@@ -607,11 +603,21 @@ public class EMFUtil {
 			resSet.getResources().clear();
 			resource = resSet.getResource(platformResourceOrPluginURI, true);
 
-			// manually demand resolution of all proxyURIs
-			EcoreUtil.resolveAll(resSet);
-
-			if(findEProxyModelURIs(resource).isEmpty()) {
-				inDepthEProxySearchFinished = true;
+			// manually demand resolution of all proxyURIs mapped so far
+			EcoreUtil.resolveAll(resSet);	
+			
+			// check if the remaining eProxy URIs are the same as the ones which should
+			// have been resolvable according to previous steps in this method but
+			// actually can't be resolved due to different issues:
+			Set<URI> remainingUnresolvableEProxies = findEProxyModelURIs(resource);
+			if(eProxieURIs.equals(remainingUnresolvableEProxies)) {
+				throw new CrossDocumentReferenceUnresolvableException(remainingUnresolvableEProxies, uriMap);
+			}
+			
+			// check if after the recent resolution there are still old or new eProxies left
+			// (inside encapsulated resources of the main resource)
+			if(remainingUnresolvableEProxies.isEmpty()) {
+				inDepthEProxySearchFinished = true;			
 			}
 			
 		}
@@ -644,7 +650,7 @@ public class EMFUtil {
 	 * 				the set of absolute file:/ URIs of the imported resources
 	 * @return the resourceSet with the loaded main resource and it's referenced
 	 * 		   resources
-	 * @throws Exception 
+	 * @throws CrossDocumentReferenceUnresolvableException 
 	 * @see #loadResourceWithCrossDocumentReferences(URI, URI)
 	 */
 	public static ResourceSet loadResourceWithCrossDocumentReferences(
@@ -670,7 +676,7 @@ public class EMFUtil {
 		uriMap.put(platformResourceOrPluginURI,fileSchemaURI);
 
 		// Create the resource (to find out all eProxyURIs)
-		Resource resource = resSet.getResource(platformResourceOrPluginURI, true);		
+		Resource resource = resSet.getResource(platformResourceOrPluginURI, true);
 
 		// find all platform resource/plugin URIs referenced inside the
 		// resource and map them onto the respective file:/ URIs
@@ -701,23 +707,30 @@ public class EMFUtil {
 					}
 				}
 				if(resolvable==false) {
-					throw new Exception("Unresovable URI: " + proxyURI +
-						  "\nThe list of input cross referenced document file URIs "
-						+ "requires an existing absolute file:/ path onto which this proxy URI can be resolved.");
+					throw new CrossDocumentReferenceUnresolvableException(proxyURI, uriMap);
 				}
 			}
 		
 		// Previously recognized resources must be cleared in order to
 		// load them again now with necessary URI mappings
 		resSet.getResources().clear();
+		
 		resource = resSet.getResource(platformResourceOrPluginURI, true);
 
 		// manually demand resolution of all proxyURIs mapped so far
 		EcoreUtil.resolveAll(resSet);	
 		
+		// check if the remaining eProxy URIs are the same as the ones which should
+		// have been resolvable according to previous steps in this method but
+		// actually can't be resolved due to different issues:
+		Set<URI> remainingUnresolvableEProxies = findEProxyModelURIs(resource);
+		if(eProxieURIs.equals(remainingUnresolvableEProxies)) {
+			throw new CrossDocumentReferenceUnresolvableException(remainingUnresolvableEProxies, uriMap);
+		}
+		
 		// check if after the recent resolution there are still old or new eProxies left
 		// (inside encapsulated resources of the main resource)
-		if(findEProxyModelURIs(resource).isEmpty()) {
+		if(remainingUnresolvableEProxies.isEmpty()) {
 			inDepthEProxySearchFinished = true;			
 		}		
 

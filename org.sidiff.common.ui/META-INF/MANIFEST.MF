@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SiLift - Common UI
+Bundle-Name: SiDiff Common UI Components
 Bundle-SymbolicName: org.sidiff.common.ui
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.0
 Bundle-Activator: org.sidiff.common.ui.Activator
-Bundle-Vendor: University of Siegen -  Software Engineering Group
+Bundle-Vendor: Software Engineering Group, University of Siegen
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.core.resources,

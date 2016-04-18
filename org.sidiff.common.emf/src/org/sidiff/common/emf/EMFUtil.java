@@ -551,7 +551,7 @@ public class EMFUtil {
 	 */
 	public static ResourceSet loadResourceWithCrossDocumentReferences(
 			URI platformResourceOrPluginURI,
-			URI fileSchemaURI) throws Exception {
+			URI fileSchemaURI) throws CrossDocumentReferenceUnresolvableException {
 				
 		// Register arbitrary file extensions in the resource factory.
 		// Extensions could also be defined separately (e.g.:
@@ -662,7 +662,7 @@ public class EMFUtil {
 	public static ResourceSet loadResourceWithCrossDocumentReferences(
 			URI platformResourceOrPluginURI,
 			URI fileSchemaURI,
-			Set<URI> crossReferencedFileURIs) throws Exception {
+			Set<URI> crossReferencedFileURIs) throws CrossDocumentReferenceUnresolvableException {
 
 		// Register arbitrary file extensions in the resource factory.
 		// Extensions could also be defined separately (e.g. here:

@@ -541,7 +541,7 @@ public class EMFMetaAccess {
 	 * @return <code>true</code> if A is assignable to B; <code>false</code> otherwise.
 	 */
 	public static boolean isAssignableTo(EClass a, EClass b) {
-		return a.getEAllSuperTypes().contains(b) || a.equals(b);
+		return a.getEAllSuperTypes().contains(b) || a.equals(b) || b.equals(EcorePackage.eINSTANCE.getEObject());
 	}
 	
 	

@@ -367,6 +367,32 @@ public class EMFUtil {
 		return eobj.eGet(sf);
 	}
 
+	
+	/**
+	 * This method returns all EObjects in a Resource (optionally filtered by EClass type).
+	 * Set type to null if no filtering is required.
+	 * 
+	 * @param 
+	 * 		type (optional EClass Type)
+	 * @param 
+	 * 		resource
+	 * @return
+	 * 		list of EObjects
+	 */
+	public static List<EObject> getAllEObjectsByType(EClass type, Resource resource) {
+		List<EObject> list = new ArrayList<EObject>();
+		
+		for(EObject eObject: getAllContentAsIterable(resource))  {		
+			if(type==null || eObject.eClass().equals(type)) {
+				list.add(eObject);
+			}			
+		}		
+		return list;
+	}
+	
+	
+	
+	
 	/**
 	 * Computes a hash value for the given resource.
 	 * 

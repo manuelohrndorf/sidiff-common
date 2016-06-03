@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
@@ -58,14 +55,18 @@ public class EMFStorage {
 	}
 	
 	/**
-	 * Deresolve as platform resource URI.
+	 * Deresolve as file URI to platform resource URI.
 	 */
-	private static class PlatformResourceDeresolve extends URIHandlerImpl {
+	private static class FileToPlatformResourceDeresolve extends URIHandlerImpl {
+		
 		@Override
 		public URI deresolve(URI uri) {
-			if (!uri.isPlatformResource() && uri.isFile()) {
+			
+			if (uri.isFile()) {
+				// FIXME: Very slow for a high count of URIs!
 				return uriToPlatformUri(uri).appendFragment(uri.fragment());
 			}
+			
 			return uri;
 		}
 	}	
@@ -83,7 +84,7 @@ public class EMFStorage {
 
 		Map<String, Object> options = new HashMap<String, Object>();
 		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		options.put(XMIResource.OPTION_URI_HANDLER, new PlatformResourceDeresolve());
+		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
 
 		try {
 			resource.save(options);
@@ -107,7 +108,7 @@ public class EMFStorage {
 
 		Map<String, Object> options = new HashMap<String, Object>();
 		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		options.put(XMIResource.OPTION_URI_HANDLER, new PlatformResourceDeresolve());
+		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
 
 		try {
 			resource.save(options);

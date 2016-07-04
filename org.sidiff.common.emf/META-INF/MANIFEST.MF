@@ -1,20 +1,14 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Model Management and Access Utilities
-Bundle-SymbolicName: org.sidiff.common.emf
-Bundle-Version: 1.0.0
-Import-Package: org.eclipse.core.runtime;version="3.4.0",
- org.eclipse.osgi.framework.console;version="1.0.0",
- org.osgi.framework;version="1.5.0"
+Bundle-Name: SiDiff Common - Model Management and Access Utilities
+Bundle-SymbolicName: org.sidiff.common.emf;singleton:=true
+Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.sidiff.common;bundle-version="0.0.1",
- org.eclipse.emf.ecore;bundle-version="2.4.0";visibility:=reexport,
- org.eclipse.emf.ecore.xmi;bundle-version="2.4.0";visibility:=reexport,
- org.eclipse.ocl;bundle-version="1.3.0";visibility:=reexport,
- org.eclipse.ocl.ecore;bundle-version="1.3.0";visibility:=reexport,
- org.eclipse.emf.query;bundle-version="1.2.100";visibility:=reexport,
- org.eclipse.emf.query.ocl;bundle-version="1.2.0";visibility:=reexport,
- org.eclipse.core.resources
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ocl.ecore;visibility:=reexport,
+ org.eclipse.emf.query.ocl;visibility:=reexport,
+ org.sidiff.common
 Export-Package: org.sidiff.common.emf,
  org.sidiff.common.emf.access,
  org.sidiff.common.emf.access.path,
@@ -32,3 +26,4 @@ Export-Package: org.sidiff.common.emf,
 Bundle-Activator: org.sidiff.common.emf.internal.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy

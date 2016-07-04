@@ -1,18 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: SiDiff Common UI Components
-Bundle-SymbolicName: org.sidiff.common.ui
-Bundle-Version: 1.0.0
+Bundle-Name: SiDiff Common - UI Components
+Bundle-SymbolicName: org.sidiff.common.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.sidiff.common.ui.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
- org.eclipse.ui.workbench,
- org.eclipse.ui.ide,
- org.eclipse.core.expressions;bundle-version="3.4.600",
- org.eclipse.emf.ecore,
  org.eclipse.emf.ecore.editor
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

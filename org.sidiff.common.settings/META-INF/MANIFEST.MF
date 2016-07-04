@@ -1,12 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Configuration Settings
-Bundle-SymbolicName: org.sidiff.common.settings
-Bundle-Version: 1.0.0
+Bundle-SymbolicName: org.sidiff.common.settings;singleton:=true
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.sidiff.common.settings.Activator
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.sidiff.common.emf
+Require-Bundle: org.eclipse.core.runtime,
+ org.sidiff.common.emf;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Export-Package: org.sidiff.common.settings

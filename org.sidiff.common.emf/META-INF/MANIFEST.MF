@@ -21,6 +21,7 @@ Export-Package: org.sidiff.common.emf,
  org.sidiff.common.emf.ecore,
  org.sidiff.common.emf.exceptions,
  org.sidiff.common.emf.internal,
+ org.sidiff.common.emf.metamodel.analysis,
  org.sidiff.common.emf.modelstorage,
  org.sidiff.common.emf.ocl
 Bundle-Activator: org.sidiff.common.emf.internal.Activator

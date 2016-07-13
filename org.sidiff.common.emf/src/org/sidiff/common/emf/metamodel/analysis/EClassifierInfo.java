@@ -30,73 +30,73 @@ public class EClassifierInfo {
 	 * The direct mandatory children and the respective containment EReference
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> mandatoryChildren = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> mandatoryChildren = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct mandatory neighbours and the respective non-containment EReference
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> mandatoryNeighbours = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> mandatoryNeighbours = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct mandatory parent contexts and the respective containment EReference
 	 * (from mandatory parent context to child)
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> mandatoryParentContext = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> mandatoryParentContext = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct mandatory neighbour contexts and the respective non-containment EReference
 	 * (from mandatory neighbour context to neighbour)
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> mandatoryNeighbourContext = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> mandatoryNeighbourContext = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct optional children and the respective containment EReference
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> optionalChildren = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> optionalChildren = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct optional neighbours and the respective non-containment EReference
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> optionalNeighbours = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> optionalNeighbours = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct optional parent contexts and the respective containment EReference
 	 * (from optional parent context to child)
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> optionalParentContext = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> optionalParentContext = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The direct optional neighbour contexts and the respective non-containment EReference
 	 * (from optional neighbour context to neighbour)
 	 * (direct = No super types considered here)
 	 */
-	private HashMap<EReference, List<EClassifier>> optionalNeighbourContext = new HashMap<>();
+	private HashMap<EReference, List<EClassifier>> optionalNeighbourContext = new HashMap<EReference, List<EClassifier>>();
 	
 	/**
 	 * The list of steretypes attachable to this EClassifier
 	 */
-	private ArrayList<EClassifier> stereotypes = new ArrayList<>();
+	private ArrayList<EClassifier> stereotypes = new ArrayList<EClassifier>();
 	
 	/**
 	 * The list of meta-classes this EClassifier extends
 	 */
-	private ArrayList<EClassifier> extendedMetaClasses = new ArrayList<>();
+	private ArrayList<EClassifier> extendedMetaClasses = new ArrayList<EClassifier>();
 	
 	/**
 	 * The set of discovered containment cycles
 	 */
-	private Set<ContainmentCycle> containmentCycles = new HashSet<>();
+	private Set<ContainmentCycle> containmentCycles = new HashSet<ContainmentCycle>();
 	
 	/**
 	 * The set of Masks {@link Mask}
 	 */
-	private List<Mask> masks = new ArrayList<>(); 
+	private List<Mask> masks = new ArrayList<Mask>(); 
 	
 	/**
 	 * All relationships.
@@ -193,7 +193,7 @@ public class EClassifierInfo {
 	 */
 	public HashMap<EReference, List<EClassifier>> getAllDirectChildren(EClassifier childEClassifier)  {
 		
-		HashMap<EReference, List<EClassifier>> allDirectChildren = new HashMap<>();
+		HashMap<EReference, List<EClassifier>> allDirectChildren = new HashMap<EReference, List<EClassifier>>();
 		
 		// get all direct children (mandatory and optional)
 		allDirectChildren.putAll(getMandatoryChildren());
@@ -214,7 +214,7 @@ public class EClassifierInfo {
 	 */
 	public HashSet<EClassifier> getClassifiersOfAttributesForEClassifier(EClassifier eClassifier)
 	{
-		HashSet<EClassifier> attributeClassifiers = new HashSet<>();
+		HashSet<EClassifier> attributeClassifiers = new HashSet<EClassifier>();
 		
 		for (EAttribute eAttribute : eClassifier.eClass().getEAllAttributes())
 			attributeClassifiers.add(eAttribute.getEType());
@@ -231,7 +231,7 @@ public class EClassifierInfo {
 	 */
 	public HashSet<EClassifier> getAllMandatoryClassifiers()
 	{
-		HashSet<EClassifier> mandatoryClassifiers = new HashSet<>();
+		HashSet<EClassifier> mandatoryClassifiers = new HashSet<EClassifier>();
 		
 		//Identify all mandatory children classifiers
 		for (EReference ref : getMandatoryChildren().keySet())
@@ -337,7 +337,7 @@ public class EClassifierInfo {
 	 */
 	public HashMap<EReference, List<EClassifier>> getMandatoryContexts() {
 		
-		HashMap<EReference, List<EClassifier>> mandatoryContexts = new  HashMap<>();
+		HashMap<EReference, List<EClassifier>> mandatoryContexts = new  HashMap<EReference, List<EClassifier>>();
 		
 		mandatoryContexts.putAll(getMandatoryParentContext());
 		mandatoryContexts.putAll(getMandatoryNeighbourContext());

@@ -29,23 +29,23 @@ public class EClassifierInfoManagement {
 	/**
 	 * The global storage of EClassifierInfos which are mapped onto the respective EClassifiers
 	 */
-	private HashMap<EClassifier,EClassifierInfo> eClassifierInfoMap = new HashMap<>();
+	private HashMap<EClassifier,EClassifierInfo> eClassifierInfoMap = new HashMap<EClassifier, EClassifierInfo>();
 	
 	/**
 	 * The global storage of concrete EClassifiers which are mapped onto their abstract EClassifiers
 	 */
-	private HashMap<EClassifier,Set<EClassifier>> abstractToConcreteEClassifierMap = new HashMap<>();
+	private HashMap<EClassifier,Set<EClassifier>> abstractToConcreteEClassifierMap = new HashMap<EClassifier, Set<EClassifier>>();
 	
 	/**
 	 * The global storage of sub type EClassifiers which are mapped onto their super type EClassifiers
 	 */
-	private HashMap<EClassifier,List<EClassifier>> subTypeMap =  new HashMap<>();
+	private HashMap<EClassifier,List<EClassifier>> subTypeMap =  new HashMap<EClassifier, List<EClassifier>>();
 	
 	
 	/**
 	 * The global set of stereotype EClassifiers
 	 */
-	private Set<EClassifier> profileStereotypesSet = new HashSet<>();
+	private Set<EClassifier> profileStereotypesSet = new HashSet<EClassifier>();
 	
 	/**
 	 * The global set of meta class ("stereotyped") EClassifiers

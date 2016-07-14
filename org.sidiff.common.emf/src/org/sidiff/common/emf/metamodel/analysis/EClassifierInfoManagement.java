@@ -50,7 +50,7 @@ public class EClassifierInfoManagement {
 	/**
 	 * The global set of meta class ("stereotyped") EClassifiers
 	 */
-	private Set<EClassifier> profileMetaclassSet = new HashSet<>();
+	private Set<EClassifier> profileMetaclassSet = new HashSet<EClassifier>();
 	
 	/**
 	 * The global EClassifierInfoManagement Instance
@@ -109,7 +109,7 @@ public class EClassifierInfoManagement {
 			for(EClassifier eClassifier: ePackage.getEClassifiers()) {
 				if(eClassifier instanceof EClass) {
 					EClass eClass = (EClass) eClassifier;
-					List<EClassifier> subtypes = new ArrayList<>();
+					List<EClassifier> subtypes = new ArrayList<EClassifier>();
 					// find all sub classes in all ePackages
 					subtypes.addAll(EMFMetaAccess.getAllSubclasses(eClass, ePackages));
 					// and map supertype with subtypes
@@ -132,7 +132,7 @@ public class EClassifierInfoManagement {
 				if (eClassifier instanceof EClass) {
 					EClass eClass = (EClass) eClassifier;
 					if (eClass.isAbstract()) {				
-						Set<EClassifier> concreteEClasses = new HashSet<>();
+						Set<EClassifier> concreteEClasses = new HashSet<EClassifier>();
 						abstractToConcreteEClassifierMap.put(eClassifier, concreteEClasses);
 					}
 				}
@@ -316,7 +316,7 @@ public class EClassifierInfoManagement {
 	 */
 	private Set<EClassifier> addSubtypes(Set<EClassifier> existingSet) {
 		if(existingSet==null) return null;
-		Set<EClassifier> newSet = new HashSet<>();
+		Set<EClassifier> newSet = new HashSet<EClassifier>();
 		
 		for(EClassifier exCl: existingSet) {
 			List<EClassifier> subtypes = subTypeMap.get(exCl);
@@ -352,7 +352,7 @@ public class EClassifierInfoManagement {
 	 * 		ArrayList of EClassifiers
 	 */
 	public ArrayList<EClassifier> getAllConcreteEClassifiersForAbstract(EClassifier eClassifier) {
-		ArrayList<EClassifier> concreteEClasses = new ArrayList<>();
+		ArrayList<EClassifier> concreteEClasses = new ArrayList<EClassifier>();
 		for(EClassifier abstractEClassifier: abstractToConcreteEClassifierMap.keySet()) {
 			if(abstractEClassifier.equals(eClassifier)) {
 				for(EClassifier replacement :abstractToConcreteEClassifierMap.get(abstractEClassifier)) {
@@ -385,7 +385,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllOptionalParentContext(EClassifier eClassifier, Boolean preferSuperTypes) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		
 		// add direct optional parent contexts
 		map.putAll(getEClassifierInfo(eClassifier).getOptionalParentContext());
@@ -430,7 +430,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllMandatoryParentContext(EClassifier eClassifier, Boolean preferSuperTypes) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		
 		// add direct mandatory parent contexts
 		map.putAll(getEClassifierInfo(eClassifier).getMandatoryParentContext());
@@ -499,7 +499,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllOptionalNeighbourContext(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		// add direct optional neighbour contexts
 		map.putAll(getEClassifierInfo(eClassifier).getOptionalNeighbourContext());
 		
@@ -530,7 +530,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllMandatoryNeighbourContext(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		// add direct mandatory neighbour contexts
 		map.putAll(getEClassifierInfo(eClassifier).getMandatoryNeighbourContext());
 		
@@ -563,7 +563,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllNeighbourContexts(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		
 		map.putAll(getAllOptionalNeighbourContext(eClassifier));
 		map.putAll(getAllMandatoryNeighbourContext(eClassifier));
@@ -588,7 +588,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllParentContexts(EClassifier eClassifier, Boolean preferSuperTypes ) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		
 		map.putAll(getAllOptionalParentContext(eClassifier, preferSuperTypes));
 		map.putAll(getAllMandatoryParentContext(eClassifier, preferSuperTypes));
@@ -608,7 +608,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllChildren(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		// add direct children
 		map.putAll(eClassInfo.getOptionalChildren());
@@ -642,7 +642,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllMandatoryChildren(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		// add direct children
 		map.putAll(eClassInfo.getMandatoryChildren());
@@ -675,7 +675,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllOptionalChildren(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		// add direct children
 		map.putAll(eClassInfo.getOptionalChildren());
@@ -707,7 +707,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllNeighbours(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		
 		// add direct neighbours
@@ -741,7 +741,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllMandatoryNeighbours(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		
 		// add direct neighbours
@@ -773,7 +773,7 @@ public class EClassifierInfoManagement {
 	 */
 	public HashMap<EReference,List<EClassifier>> getAllOptionalNeighbours(EClassifier eClassifier) {
 		
-		HashMap<EReference,List<EClassifier>> map = new HashMap<>();
+		HashMap<EReference,List<EClassifier>> map = new HashMap<EReference,List<EClassifier>>();
 		EClassifierInfo eClassInfo = getEClassifierInfo(eClassifier);
 		
 		// add direct neighbours
@@ -804,7 +804,7 @@ public class EClassifierInfoManagement {
 	 * 		A Set of EClassifierInfos
 	 */
 	public Set<EClassifierInfo> getAllSubTypes(EClassifierInfo eInfo) {
-		Set<EClassifierInfo> set = new HashSet<>();
+		Set<EClassifierInfo> set = new HashSet<EClassifierInfo>();
 		
 		for(EClassifier subType: subTypeMap.get(eInfo.getTheEClassifier())) {
 			EClassifierInfo subEInfo = getEClassifierInfo(subType);
@@ -823,7 +823,7 @@ public class EClassifierInfoManagement {
 	 * 		A Set of EClassifiers
 	 */
 	public Set<EClassifier> getSubTypes(EClassifier eClassifier){
-		return new HashSet<>(subTypeMap.get(eClassifier));
+		return new HashSet<EClassifier>(subTypeMap.get(eClassifier));
 	}
 
 	/**
@@ -835,7 +835,7 @@ public class EClassifierInfoManagement {
 	 * 		A Set of EClassifiers
 	 */
 	public Set<EClassifier> getAllSubTypes(EClassifier eClassifier) {
-		Set<EClassifier> set = new HashSet<>();
+		Set<EClassifier> set = new HashSet<EClassifier>();
 		
 		for(EClassifier subType: subTypeMap.get(eClassifier)) {
 			set.add(subType);
@@ -855,7 +855,7 @@ public class EClassifierInfoManagement {
 	 * 		A Set of EClassifiers
 	 */
 	public Set<EClassifier> getAllConcreteSubTypes(EClassifier eClassifier) {
-		Set<EClassifier> set = new HashSet<>();
+		Set<EClassifier> set = new HashSet<EClassifier>();
 		
 		for(EClassifier subType: subTypeMap.get(eClassifier)) {
 			if(subType instanceof EClassifier && !((EClass)subType).isAbstract()) {
@@ -878,7 +878,7 @@ public class EClassifierInfoManagement {
 	 */
 	public Set<EClassifier> getAllStereotypes(EClassifier eClassifier) {
 		
-		Set<EClassifier> connectedStereotypes = new HashSet<>();
+		Set<EClassifier> connectedStereotypes = new HashSet<EClassifier>();
 		EClassifierInfo eInfo = getEClassifierInfo(eClassifier);
 		
 		// all directly connected stereotypes via 'extensions'
@@ -984,7 +984,7 @@ public class EClassifierInfoManagement {
 	private static Set<EClassifier> findMandatoryChild(EReference eRef) {
 		if (eRef.isContainment() && eRef.getLowerBound() > 0) {
 			EClassifier mC = eRef.getEType();
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(mC);
 			return hs;
 		}
@@ -1004,7 +1004,7 @@ public class EClassifierInfoManagement {
 	 */
 	private static Set<EClassifier> findOptionalChild(EReference eRef) {
 		if (eRef.isContainment() && (eRef.getUpperBound() - eRef.getLowerBound() > 0 || eRef.getUpperBound() == -1)) {
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(eRef.getEType());
 			return hs;
 		}
@@ -1025,7 +1025,7 @@ public class EClassifierInfoManagement {
 	private Set<EClassifier> findMandatoryNeighbour(EReference eRef) {
 
 		if (!eRef.isContainment() && eRef.getLowerBound() > 0) {
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(eRef.getEType());
 			return hs;
 			
@@ -1057,7 +1057,7 @@ public class EClassifierInfoManagement {
 				if(oN instanceof EClass && ((EClass)oN).isAbstract()) {
 					return abstractToConcreteEClassifierMap.get(oN);
 				}
-				HashSet<EClassifier> hs = new HashSet<>();
+				HashSet<EClassifier> hs = new HashSet<EClassifier>();
 				hs.add(oN);
 				return hs;
 			}
@@ -1068,7 +1068,7 @@ public class EClassifierInfoManagement {
 			if(oN instanceof EClass && ((EClass)oN).isAbstract()) {
 				return abstractToConcreteEClassifierMap.get(oN);
 			}
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(oN);
 			return hs;
 		}
@@ -1099,7 +1099,7 @@ public class EClassifierInfoManagement {
 			if(mPC instanceof EClass && ((EClass)mPC).isAbstract()) {
 				return abstractToConcreteEClassifierMap.get(mPC);
 			}
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(mPC);
 			return hs;
 		}
@@ -1130,7 +1130,7 @@ public class EClassifierInfoManagement {
 			if(oPC instanceof EClass && ((EClass)oPC).isAbstract()) {
 				return abstractToConcreteEClassifierMap.get(oPC);
 			}
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(oPC);
 			return hs;
 		}
@@ -1164,7 +1164,7 @@ public class EClassifierInfoManagement {
 			if (oNC instanceof EClass && ((EClass)oNC).isAbstract()) {
 				return abstractToConcreteEClassifierMap.get(oNC);
 			}
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(oNC);
 			return hs;
 		}	
@@ -1193,7 +1193,7 @@ public class EClassifierInfoManagement {
 			if(mNC instanceof EClass && ((EClass)mNC).isAbstract()) {
 				return abstractToConcreteEClassifierMap.get(mNC);
 			}
-			HashSet<EClassifier> hs = new HashSet<>();
+			HashSet<EClassifier> hs = new HashSet<EClassifier>();
 			hs.add(mNC);
 			return hs;
 		}
@@ -1214,7 +1214,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo eClassInfo = getEClassifierInfo(child);
 
 		if(eClassInfo.getMandatoryParentContext().get(parentRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(parent);
 			eClassInfo.getMandatoryParentContext().put(parentRef, list);
 		}
@@ -1239,7 +1239,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo eClassInfo = getEClassifierInfo(child);
 		
 		if(eClassInfo.getOptionalParentContext().get(parentRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(parent);
 			eClassInfo.getOptionalParentContext().put(parentRef,list);
 		}
@@ -1264,7 +1264,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo parentInfo = getEClassifierInfo(parent);
 
 		if(parentInfo.getOptionalChildren().get(eRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(child);	
 			parentInfo.getOptionalChildren().put(eRef,list);
 
@@ -1290,7 +1290,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo parentInfo = getEClassifierInfo(parent);
 
 		if(parentInfo.getMandatoryChildren().get(eRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(child);	
 			parentInfo.getMandatoryChildren().put(eRef,list);
 
@@ -1316,7 +1316,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo fromNeighbourInfo = getEClassifierInfo(fromNeighbourContext);
 
 		if(fromNeighbourInfo.getOptionalNeighbours().get(directedRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(toOptionalNeighbour);	
 			fromNeighbourInfo.getOptionalNeighbours().put(directedRef,list);
 
@@ -1342,7 +1342,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo fromNeighbourInfo = getEClassifierInfo(fromNeighbourContext);
 
 		if(fromNeighbourInfo.getMandatoryNeighbours().get(directedRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(toMandatoryNeighbour);	
 			fromNeighbourInfo.getMandatoryNeighbours().put(directedRef,list);
 
@@ -1368,7 +1368,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo eClassInfo = getEClassifierInfo(toNeighbour);
 		
 		if(eClassInfo.getMandatoryNeighbourContext().get(directedRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(fromNeighbour);
 			eClassInfo.getMandatoryNeighbourContext().put(directedRef,list);	
 		}else{
@@ -1393,7 +1393,7 @@ public class EClassifierInfoManagement {
 		EClassifierInfo eClassInfo = getEClassifierInfo(toNeighbour);
 		
 		if(eClassInfo.getOptionalNeighbourContext().get(directedRef)==null) {
-			ArrayList<EClassifier> list = new ArrayList<>();
+			ArrayList<EClassifier> list = new ArrayList<EClassifier>();
 			list.add(fromNeighbour);
 			eClassInfo.getOptionalNeighbourContext().put(directedRef,list);	
 		}else{

@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.sidiff.common.stringresolver.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.sidiff.common.emf
-Bundle-ActivationPolicy: lazy
 Export-Package: org.sidiff.common.stringresolver,
  org.sidiff.common.stringresolver.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -7,6 +7,5 @@ Bundle-Activator: org.sidiff.common.settings.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.sidiff.common.emf;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ActivationPolicy: lazy
 Export-Package: org.sidiff.common.settings
 Bundle-Vendor: Software Engineering Group, University of Siegen

@@ -1,17 +1,31 @@
 package org.sidiff.common.emf.access;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.sidiff.common.emf.access.impl.*;
-import org.sidiff.common.emf.access.path.*;
+import org.sidiff.common.emf.access.impl.EMFIndexedAccessorImpl;
+import org.sidiff.common.emf.access.impl.EMFModelAccessor;
+import org.sidiff.common.emf.access.impl.EMFModelAccessorImpl;
+import org.sidiff.common.emf.access.path.EMFPath;
+import org.sidiff.common.emf.access.path.EMFPathAccessor;
+import org.sidiff.common.emf.access.path.PathEvaluationStrategy;
+import org.sidiff.common.emf.access.path.TargetEvaluationStrategy;
 import org.sidiff.common.emf.access.path.impl.EMFPathAccessorImpl;
 import org.sidiff.common.emf.access.tree.TreeVisitor;
 import org.sidiff.common.emf.access.value.RemoteAttribute;
@@ -98,6 +112,21 @@ public class EMFModelAccess {
 		return modelAccessor.getDocumentType(model);
 	}
 
+	
+	/** Returns all document types between input models. This is
+	 * the union of all resource document types.
+	 * @return
+	 */
+	public static Set<String> getDocumentTypes(List<Resource> resources){
+
+		Set<String> documentTypes = new HashSet<String>();
+		for(Resource r : resources){
+			documentTypes.addAll(EMFModelAccess.getDocumentTypes(r, Scope.RESOURCE_SET));
+		}	
+		return documentTypes;
+	}
+	
+	
 	/**
 	 * Method returns a list of all children connected by a specific {@link EReference} type.
 	 * 
@@ -430,7 +459,7 @@ public class EMFModelAccess {
 
 		// Remove irrelevant docTypes
 		for (Iterator<String> iterator = documentTypes.iterator(); iterator.hasNext();) {
-			String docType = (String) iterator.next();
+			String docType = iterator.next();
 			if (docType.contains("UML") || docType.contains("Henshin/Trace")) {
 				iterator.remove();
 			}
@@ -525,8 +554,8 @@ public class EMFModelAccess {
 	}
 
 	private static boolean containsDocType(Collection<String> documentTypes, String docTypeFragment) {
-		for (Iterator<String> iterator = documentTypes.iterator(); iterator.hasNext();) {
-			String docType = (String) iterator.next();
+		for (String string : documentTypes) {
+			String docType = string;
 			if (docType.contains(docTypeFragment)) {
 				return true;
 			}
@@ -537,7 +566,7 @@ public class EMFModelAccess {
 
 	private static void removeDocType(List<String> documentTypes, String docTypeFragment) {
 		for (Iterator<String> iterator = documentTypes.iterator(); iterator.hasNext();) {
-			String docType = (String) iterator.next();
+			String docType = iterator.next();
 			if (docType.contains(docTypeFragment)) {
 				iterator.remove();
 			}

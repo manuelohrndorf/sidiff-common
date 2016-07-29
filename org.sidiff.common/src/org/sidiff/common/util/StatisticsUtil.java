@@ -1,26 +1,39 @@
 package org.sidiff.common.util;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
+
+import org.sidiff.common.util.StatisticsUtil.StatisticType;
 
 /**
  * Utility class for counting things or measuring times.
+ * 
  * @author wenzel / reuling
  */
-public class StatisticsUtil implements Serializable {	
-	
+public class StatisticsUtil implements Serializable {
+
+	/**
+	 * Column separator.
+	 */
+	private static final String COL = ";";
+
+	/**
+	 * Row separator.
+	 */
+	private static final String ROW = System.getProperty("line.separator");
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6455875097937890547L;
-	
+
 	private static final String LINE_SEPERATOR = System.getProperty("line.separator");
 
 	public enum StatisticType {
-		Time,Size,Count,Other;
+		Time, Size, Count, Other;
 	}
 
-	private static final String STAT_KEY_STARTTIME = "@@STARTOF@@";	
+	private static final String STAT_KEY_STARTTIME = "@@STARTOF@@";
 
 	private HashMap<String, Object> timeStatistic;
 	private HashMap<String, Object> sizeStatistic;
@@ -29,50 +42,49 @@ public class StatisticsUtil implements Serializable {
 
 	private static StatisticsUtil instance;
 	private static boolean enabled = true;
-	
+
 	private StatisticsUtil() {
 		this.timeStatistic = new HashMap<String, Object>();
 		this.sizeStatistic = new HashMap<String, Object>();
 		this.countStatistic = new HashMap<String, Object>();
 		this.otherStatistic = new HashMap<String, Object>();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private StatisticsUtil(HashMap<String, Object> timeStatistic, HashMap<String, Object>sizeStatistic, HashMap<String, Object> countStatistic, 
-			HashMap<String, Object> otherStatistic) {
+	private StatisticsUtil(HashMap<String, Object> timeStatistic, HashMap<String, Object> sizeStatistic, HashMap<String, Object> countStatistic, HashMap<String, Object> otherStatistic) {
 		this.timeStatistic = (HashMap<String, Object>) timeStatistic.clone();
 		this.sizeStatistic = (HashMap<String, Object>) sizeStatistic.clone();
 		this.countStatistic = (HashMap<String, Object>) countStatistic.clone();
 		this.otherStatistic = (HashMap<String, Object>) otherStatistic.clone();
 	}
-	
+
 	public static StatisticsUtil getInstance() {
 		if (instance == null)
 			instance = new StatisticsUtil();
 		return instance;
 	}
-	
+
 	/**
 	 * Copy constructor, using a static method.
 	 */
 	public static StatisticsUtil copiedInstance(StatisticsUtil statisticsUtil) {
 		return new StatisticsUtil(statisticsUtil.getTimeStatistic(), statisticsUtil.getSizeStatistic(), statisticsUtil.getCountStatistic(), statisticsUtil.getOtherStatistic());
 	}
-	
+
 	/**
 	 * Disables the StatisticsUtil, used for performance reason
 	 */
-	public static void disable(){
+	public static void disable() {
 		enabled = false;
 	}
 
 	/**
 	 * Reenables the StatisticsUtil
 	 */
-	public static void reenable(){
+	public static void reenable() {
 		enabled = true;
 	}
-	
+
 	public HashMap<String, Object> getTimeStatistic() {
 		return timeStatistic;
 	}
@@ -93,16 +105,17 @@ public class StatisticsUtil implements Serializable {
 	 * Resets the StatisticsUtil. All data will be removed.
 	 */
 	public void reset() {
-		if(enabled){
-		this.timeStatistic.clear();
-		this.sizeStatistic.clear();
-		this.countStatistic.clear();
-		this.otherStatistic.clear();
+		if (enabled) {
+			this.timeStatistic.clear();
+			this.sizeStatistic.clear();
+			this.countStatistic.clear();
+			this.otherStatistic.clear();
 		}
 	}
-	
+
 	/**
-	 * Resets all counters whose keys start with the given prefix. 
+	 * Resets all counters whose keys start with the given prefix.
+	 * 
 	 * @param keyPrefix
 	 */
 	public void resetCounters(String keyPrefix) {
@@ -110,9 +123,10 @@ public class StatisticsUtil implements Serializable {
 			reset(keyPrefix, countStatistic);
 		}
 	}
-	
+
 	/**
-	 * Resets all sizes (integer values) whose keys start with the given prefix. 
+	 * Resets all sizes (integer values) whose keys start with the given prefix.
+	 * 
 	 * @param keyPrefix
 	 */
 	public void resetSizes(String keyPrefix) {
@@ -120,9 +134,10 @@ public class StatisticsUtil implements Serializable {
 			reset(keyPrefix, sizeStatistic);
 		}
 	}
-	
+
 	/**
-	 * Resets all times whose keys start with the given prefix. 
+	 * Resets all times whose keys start with the given prefix.
+	 * 
 	 * @param keyPrefix
 	 */
 	public void resetTimes(String keyPrefix) {
@@ -130,9 +145,10 @@ public class StatisticsUtil implements Serializable {
 			reset(keyPrefix, timeStatistic);
 		}
 	}
-	
+
 	/**
-	 * Resets other statistics whose keys start with the given prefix. 
+	 * Resets other statistics whose keys start with the given prefix.
+	 * 
 	 * @param keyPrefix
 	 */
 	public void resetOthers(String keyPrefix) {
@@ -140,9 +156,10 @@ public class StatisticsUtil implements Serializable {
 			reset(keyPrefix, otherStatistic);
 		}
 	}
-	
+
 	/**
-	 * Resets all stored values whose keys start with the given prefix. 
+	 * Resets all stored values whose keys start with the given prefix.
+	 * 
 	 * @param keyPrefix
 	 */
 	public void reset(String keyPrefix) {
@@ -151,11 +168,11 @@ public class StatisticsUtil implements Serializable {
 			resetSizes(keyPrefix);
 			resetTime(keyPrefix);
 			resetOthers(keyPrefix);
-		}		
+		}
 	}
-	
+
 	/**
-	 * Resets all statistics whose keys start with the given prefix. 
+	 * Resets all statistics whose keys start with the given prefix.
 	 * 
 	 * @param keyPrefix
 	 * @param statistic
@@ -163,13 +180,13 @@ public class StatisticsUtil implements Serializable {
 	private void reset(String keyPrefix, Map<String, Object> statistic) {
 		if (enabled) {
 			Set<String> keys = new HashSet<String>();
-			
+
 			for (String key : statistic.keySet()) {
 				if (key.startsWith(keyPrefix)) {
 					keys.add(key);
 				}
 			}
-			
+
 			for (String key : keys) {
 				statistic.remove(key);
 			}
@@ -178,6 +195,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Starts the measurement of time for a given key.
+	 * 
 	 * @param key
 	 */
 	public void start(String key) {
@@ -190,8 +208,8 @@ public class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * Stop the measurement of time for a given key. The time difference between the 
-	 * start time and the stop time will be stored.
+	 * Stop the measurement of time for a given key. The time difference between the start time and the stop time will be stored.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -209,17 +227,19 @@ public class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * Removes the measurement of time for a given key. 
+	 * Removes the measurement of time for a given key.
+	 * 
 	 * @param key
 	 */
 	public void resetTime(Object key) {
-		if(enabled){
-		timeStatistic.remove(STAT_KEY_STARTTIME + key);
+		if (enabled) {
+			timeStatistic.remove(STAT_KEY_STARTTIME + key);
 		}
 	}
-	
+
 	/**
 	 * Returns the time that has been measured for the given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -236,6 +256,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Returns the data that is stored for the given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -248,6 +269,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Returns the string data that is stored for the given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -260,6 +282,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Returns the integer data that is stored for the given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -273,6 +296,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Stores an arbitrary data value for the given key.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -284,6 +308,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Stores an integer value for the given key.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -295,6 +320,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Stores a size (integer value) of a given key.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -306,18 +332,20 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Returns the size (integer value) of a given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
 	public int getSize(Object key) {
-		if(enabled){
-		return (Integer) sizeStatistic.get(key);
+		if (enabled) {
+			return (Integer) sizeStatistic.get(key);
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Returns the counter of the given key.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -327,9 +355,10 @@ public class StatisticsUtil implements Serializable {
 		}
 		return 0;
 	}
-	
+
 	/**
 	 * Resets the counter of the given key.
+	 * 
 	 * @param key
 	 */
 	public void resetCounter(Object key) {
@@ -340,6 +369,7 @@ public class StatisticsUtil implements Serializable {
 
 	/**
 	 * Increases the counter for the given key.
+	 * 
 	 * @param key
 	 */
 	public void count(Object key) {
@@ -347,10 +377,193 @@ public class StatisticsUtil implements Serializable {
 			int i = (Integer) countStatistic.get(key);
 			countStatistic.put((String) key, ++i);
 		}
-	}	
-	
+	}
+
+	/**
+	 * Fügt data.value(data.key) an pos in map.value(data.key) ein.
+	 * Fehlende Elemente in der Liste werden mit null aufgefüllt
+	 * @param map
+	 * @param data
+	 * @param pos
+	 */
+	private void addToMap(Map<String, List<Object>> map, Map<String, Object> data, int pos) {
+		for (Map.Entry<String, Object> e : data.entrySet()) {
+			List<Object> d = map.get(e.getKey());
+			if (d == null) {
+				d = new ArrayList<Object>();
+				map.put(e.getKey(), d);
+			}
+			while (d.size() <= pos) {
+				d.add(null);
+			}
+			d.set(pos, e.getValue());
+		}
+	}
+
+	/**
+	 * Füllt alle map.value mit null auf, bis size erreicht ist
+	 * @param map
+	 * @param size
+	 */
+	private void fillMap(Map<String, List<Object>> map, int size) {
+		for (List<Object> d : map.values()) {
+			while (d.size() < size) {
+				d.add(null);
+			}
+		}
+	}
+
+	/**
+	 * Setzt alle null-Werte in allen map.value an pos mit einem Default-Wert
+	 * @param map
+	 * @param value Default-Wert
+	 * @param pos
+	 */
+	private void setDefaultToMap(Map<String, List<Object>> map, Object value, int pos) {
+		for (List<Object> d : map.values()) {
+			Object v = d.get(pos);
+			if (v == null) {
+				d.set(pos, value);
+			}
+		}
+	}
+
+	/**
+	 * Schreibt alles in eine CSV.
+	 * Jeder Key wird eine Zeile. Time, Size, Count und Other wird je eine Spalte.
+	 * Sind keine Daten vorhanden bleibt eine Zelle leer (Zum Ändern: setDefaultToMap-Aufrufe anpassen)
+	 * @param file
+	 * @throws IOException
+	 */
+	public void writeToCsv(String file) throws IOException {
+		File csvFile = new File(file);
+		BufferedWriter writer = null;
+		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		addToMap(map, timeStatistic, 0);
+		addToMap(map, sizeStatistic, 1);
+		addToMap(map, countStatistic, 2);
+		addToMap(map, otherStatistic, 3);
+		fillMap(map, 4);
+		setDefaultToMap(map, "", 0);
+		setDefaultToMap(map, "", 1);
+		setDefaultToMap(map, "", 2);
+		setDefaultToMap(map, "", 3);
+		try {
+			writer = new BufferedWriter(new FileWriter(csvFile, true));
+			StringBuffer sb = new StringBuffer();
+			sb.append("Name" + COL + "Time" + COL + "Size" + COL + "Count" + COL + "Other" + ROW);
+			sb.append("String" + COL + "Decimal" + COL + "Integer" + COL + "Integer" + COL + "String" + ROW);
+			for (Map.Entry<String, List<Object>> e : map.entrySet()) {
+				sb.append(e.getKey());
+				for (Object o : e.getValue()) {
+					sb.append(COL + o.toString());
+				}
+				sb.append(ROW);
+			}
+			writer.write(sb.toString());
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Fügt die verschiedenen *Statistic-Maps in einer Map zusammen.
+	 * Die Keys werden mit " :: Name", wobei Name der Name der Statistik ist, erweitert.
+	 * @return
+	 */
+	public Map<String, Object> getUnifiedStatistics() {
+		List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+		maps.add(timeStatistic);
+		maps.add(sizeStatistic);
+		maps.add(countStatistic);
+		maps.add(otherStatistic);
+		List<String> extras = Arrays.asList(new String[] { "Time", "Size", "Count", "String" });
+		Map<String, Object> result = new HashMap<String, Object>();
+		for (int i = 0; i < maps.size(); i++) {
+			Map<String, Object> map = maps.get(i);
+			String extra = extras.get(i);
+			for (Map.Entry<String, Object> e : map.entrySet()) {
+				result.put(e.getKey() + " :: " + extra, e.getValue());
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Erstellt den String, der in die von writeCSV2 erstellte Datei gespeichert wird
+	 * @param maps
+	 * @param extras
+	 * @return
+	 */
+	private String getCsv2Data(List<Map<String, Object>> maps, List<String> extras) {
+		StringBuilder sb1 = new StringBuilder();
+		StringBuilder sb2 = new StringBuilder();
+		StringBuilder sb3 = new StringBuilder();
+		for (int i = 0; i < maps.size(); i++) {
+			Map<String, Object> map = maps.get(i);
+			String extra = extras.get(i);
+			for (Map.Entry<String, Object> e : map.entrySet()) {
+				sb1.append(e.getKey() + (extra != null ? " :: " + extra : "") + COL);
+				String name = e.getValue().getClass().getSimpleName();
+				if ("Long".equals(name) || "Integer".equals(name)) {
+					name = "Integer";
+				} else if ("Float".equals(name) || "Double".equals(name)) {
+					name = "Decimal";
+				} else if ("Boolean".equals(name)) {
+					name = "Boolean";
+				} else {
+					name = "String";
+				}
+				sb2.append(name + COL);
+				sb3.append(e.getValue().toString() + COL);
+			}
+		}
+		return sb1.substring(0, sb1.length() - 1) + LINE_SEPERATOR + sb2.substring(0, sb2.length() - 1) + LINE_SEPERATOR + sb3.substring(0, sb3.length() - 1);
+	}
+
+	/**
+	 * Schreibt die Statistik in eine CSV-Datei.
+	 * Jeder Key wird eine Spalte. Die Maps werden zusammengefasst, die Keys erhalten eine Erweiterung um zu unterscheiden,
+	 * aus welcher *Statistics-Map sie stammen.
+	 * @param file
+	 * @throws IOException
+	 */
+	public void writeToCsv2(String file) throws IOException {
+		File csvFile = new File(file);
+		BufferedWriter writer = null;
+		try {
+			writer = new BufferedWriter(new FileWriter(csvFile, true));
+			List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+			maps.add(timeStatistic);
+			maps.add(sizeStatistic);
+			maps.add(countStatistic);
+			maps.add(otherStatistic);
+			List<String> extras = Arrays.asList(new String[] { "Time", "Size", "Count", "String" });
+			writer.write(getCsv2Data(maps, extras));
+		} catch (IOException e) {
+			throw e;
+		} finally {
+			if (writer != null) {
+				try {
+					writer.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	/**
 	 * Returns a textual dump of the stored information.
+	 * 
 	 * @return
 	 */
 	public String dump() {
@@ -383,5 +596,5 @@ public class StatisticsUtil implements Serializable {
 		}
 		return "";
 	}
-	
+
 }

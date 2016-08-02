@@ -12,3 +12,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.sidiff.integration.eclipse,
  org.sidiff.integration.eclipse.preferences
 Bundle-Vendor: Software Engineering Group, University of Siegen
+Bundle-ActivationPolicy: lazy

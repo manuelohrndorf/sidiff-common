@@ -13,3 +13,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.sidiff.common.ui.pages,
  org.sidiff.common.ui.util,
  org.sidiff.common.ui.widgets
+Bundle-ActivationPolicy: lazy

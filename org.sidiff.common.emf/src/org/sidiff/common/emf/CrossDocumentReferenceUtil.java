@@ -1,12 +1,19 @@
 package org.sidiff.common.emf;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.*;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentsEList.FeatureIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -78,9 +85,11 @@ public class CrossDocumentReferenceUtil {
 					}
 				}
 
-				// Previously recognized resources must be cleared in order to
+				// Previously recognized resources must be cleared and unloaded in order to
 				// load them again now with necessary URI mappings
+				// (resolveAll does not overwrite existing, out dated references)
 				resSet.getResources().clear();
+				resource.unload();
 				resource = resSet.getResource(fileSchemaURI, true);
 
 				// manually demand resolution of all proxyURIs mapped so far
@@ -267,9 +276,11 @@ public class CrossDocumentReferenceUtil {
 					
 				}
 	
-				// Previously recognized resources must be cleared in order to
+				// Previously recognized resources must be cleared and unloaded in order to
 				// load them again now with necessary URI mappings
+				// (resolveAll does not overwrite existing, out dated references)
 				resSet.getResources().clear();
+				resource.unload();
 				resource = resSet.getResource(platformResourceOrPluginURI, true);
 	
 				// manually demand resolution of all proxyURIs mapped so far

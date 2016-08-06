@@ -485,13 +485,13 @@ public class StatisticsUtil implements Serializable {
 		maps.add(sizeStatistic);
 		maps.add(countStatistic);
 		maps.add(otherStatistic);
-		List<String> extras = Arrays.asList(new String[] { "Time", "Size", "Count", "String" });
+		List<String> extras = Arrays.asList(new String[] { "(ms)", "", "", "" });
 		Map<String, Object> result = new HashMap<String, Object>();
 		for (int i = 0; i < maps.size(); i++) {
 			Map<String, Object> map = maps.get(i);
 			String extra = extras.get(i);
 			for (Map.Entry<String, Object> e : map.entrySet()) {
-				result.put(e.getKey() + " :: " + extra, e.getValue());
+				result.put(e.getKey() + " " + extra , e.getValue());
 			}
 		}
 		return result;

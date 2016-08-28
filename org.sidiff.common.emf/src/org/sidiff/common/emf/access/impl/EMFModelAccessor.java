@@ -58,5 +58,7 @@ public interface EMFModelAccessor {
 	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic);
 
 	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic, EClass... types);
+	
+	public List<EObject> getMandatoryNodeNeighbors(EObject object);
 
 }

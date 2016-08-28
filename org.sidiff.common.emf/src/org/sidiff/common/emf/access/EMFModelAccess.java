@@ -325,6 +325,15 @@ public class EMFModelAccess {
 	public static List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic, EClass... types) {
 		return modelAccessor.getNodeNeighbors(object, semantic, types);
 	}
+	
+	/**
+	 * 
+	 * @param object
+	 * @return
+	 */
+	public static List<EObject> getMandatoryNodeNeighbors(EObject object) {
+		return modelAccessor.getMandatoryNodeNeighbors(object);
+	}
 
 	/**
 	 * Returns those elements which are addresses by the given path and the default strategy.

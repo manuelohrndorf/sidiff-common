@@ -66,6 +66,18 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		}
 		return Collections.unmodifiableList(result);
 	}
+	
+	@Override
+	public List<EObject> getMandatoryNodeNeighbors(EObject object) {
+		List<EObject> result = new ArrayList<EObject>();
+		EList<EReference> references = object.eClass().getEAllReferences();
+		for (EReference reference : references) {
+			if(reference.getLowerBound() > 0){
+				EMFUtil.fillObjectListFromReference(result, object, reference);
+			}
+		}
+		return Collections.unmodifiableList(result);
+	}
 
 	@Override
 	public List<EObject> getChildren(EObject object, EReference type) {

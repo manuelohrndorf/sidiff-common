@@ -181,7 +181,7 @@ public class EMFUtil {
 		if (object.eGet(reference) == null) {
 			return Collections.emptyList();
 		} else if (reference.isMany()) {
-			result = (EList) object.eGet(reference);
+			result = (EList<EObject>) object.eGet(reference);
 		} else {
 			result = Collections.singletonList((EObject) object.eGet(reference));
 		}
@@ -200,7 +200,7 @@ public class EMFUtil {
 	public static List<EObject> fillObjectListFromReference(List<EObject> result, EObject object, EReference reference) {
 
 		if (reference.isMany()) {
-			result.addAll((List) object.eGet(reference));
+			result.addAll((List<EObject>) object.eGet(reference));
 		} else {
 			EObject ref = (EObject) object.eGet(reference);
 			if (ref != null)

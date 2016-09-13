@@ -28,12 +28,12 @@ public class ValueMap<V, O> implements Serializable {
 	private Map<O, V> objects2value = null;
 
 	/**
-	 * Default Konstruktor; Geht davon aus, dass V und O das 
-	 * Comparable Interface Implementieren! 
+	 * Default Konstruktor; Beide Maps werden als Hashmaps ausgefuehrt,
+	 *  ein Komparator wird nicht benoetigt und verwendet.
 	 */
 	public ValueMap() {
-		this.objects2value = new TreeMap<O, V>();
-		this.value2objects = new TreeMap<V, Collection<O>>();
+		this.objects2value = new HashMap<O, V>();
+		this.value2objects = new HashMap<V, Collection<O>>();
 	}
 
 	
@@ -45,20 +45,22 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param objectComperator Comperator fuer Objects des Typs O
 	 */
 	public ValueMap(Comparator<V> valueComparator,Comparator<O> objectComperator) {
-		
-		if (objectComperator!=null){ 
-			this.objects2value = new TreeMap<O, V>(objectComperator);
-		} else {
-			this.objects2value = new TreeMap<O, V>();
-		}
-		
-		if (valueComparator!=null) {
-			this.value2objects = new TreeMap<V, Collection<O>>(valueComparator);
-		} else {
-			this.value2objects = new TreeMap<V, Collection<O>>();
-		}
-	}
+		this.objects2value = new TreeMap<O, V>(objectComperator);
+		this.value2objects = new TreeMap<V, Collection<O>>(valueComparator);
+	}	
 
+	/**
+	 * Konstruktor mit der Moeglichkeit einen Komparator {@link Comparator} fuer Object zu uebergeben.
+	 * Values werden auf Basis Ihrer natuerlichen Ordnung geordnet.
+	 * 
+	 * @param objectComperator Comperator fuer Objects des Typs O
+	 */
+	public ValueMap(Comparator<O> objectComperator) {
+		
+			this.objects2value = new TreeMap<O, V>(objectComperator);
+			this.value2objects = new TreeMap<V, Collection<O>>();
+	}
+	
 	/**
 	 * Bestimmt die Menge aller aktuellen Werte der ValueMap.
 	 * 
@@ -123,6 +125,8 @@ public class ValueMap<V, O> implements Serializable {
 
 		Collection<O> objects = value2objects.get(value);
 		if (objects == null) {
+			if(value.equals("Customer")) 
+				System.out.println();
 			objects = new LinkedList<O>();
 			value2objects.put(value, objects);
 		}

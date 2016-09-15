@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.core.resources.*;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
@@ -173,12 +177,28 @@ public class EMFStorage {
 	/**
 	 * Load EMF resource.
 	 * 
-	 * @param path
+	 * @param eObjectUri
 	 *            the EMF-file path.
 	 * @return the loaded EMF-object.
 	 */
 	public static EObject eLoad(URI eObjectUri) {
 		Resource eObjectResource = new ResourceSetImpl().getResource(eObjectUri, true);
+		EObject eObject = eObjectResource.getContents().get(0);
+
+		return eObject;
+	}
+	
+	/**
+	 * Load EMF resource.
+	 * 
+	 * @param eObjectUri
+	 *            the EMF-file path.
+	 * @param rss
+	 *            The resource set that should be used.
+	 * @return the loaded EMF-object.
+	 */
+	public static EObject eLoad(URI eObjectUri, ResourceSet rss) {
+		Resource eObjectResource = rss.getResource(eObjectUri, true);
 		EObject eObject = eObjectResource.getContents().get(0);
 
 		return eObject;
@@ -295,13 +315,16 @@ public class EMFStorage {
 		
 		//We can assume that this URI is used in the platform context
 		if (uri.isPlatform()) {
-			// Get the project the URI is corresponding to,
+			// NOTE: Get the project the URI is corresponding to,
 			// so we can resolve linked resources in this way.
 			// This perhaps can be done in a cleaner way.
+			
+			// NOTE: A project name might differ from its folder name.
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(uri.segment(1));
 			String projectLoc = project.getLocation().toString();
-			String realWSLoc = projectLoc.substring(0,projectLoc.indexOf(project.getName())-1);
-			return pathToFile(realWSLoc + uri.toPlatformString(true)).getAbsolutePath();
+			String platformPath = uri.toPlatformString(true);
+			String projectPath = platformPath.substring(project.getName().length() + 1, platformPath.length());
+			return pathToFile(projectLoc + projectPath).getAbsolutePath();
 		}
 
 		return pathToFile(uri.devicePath()).getAbsolutePath();

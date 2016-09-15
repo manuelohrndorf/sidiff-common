@@ -46,10 +46,22 @@ public class StatisticsUtil implements Serializable {
 		this.otherStatistic = (HashMap<String, Object>) otherStatistic.clone();
 	}
 	
+	/**
+	 * @return {@link StatisticsUtil} singleton.
+	 */
 	public static StatisticsUtil getInstance() {
 		if (instance == null)
 			instance = new StatisticsUtil();
 		return instance;
+	}
+	
+	/**
+	 * {@link StatisticsUtil} factory.
+	 * 
+	 * @return A new {@link StatisticsUtil}.
+	 */
+	public static StatisticsUtil createStatisticsUtil() {
+		return new StatisticsUtil();
 	}
 	
 	/**

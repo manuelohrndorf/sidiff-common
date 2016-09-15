@@ -1,10 +1,6 @@
 package org.sidiff.common.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.channels.FileChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
@@ -161,5 +157,60 @@ public class FileOperations {
 	      catch (IOException e) {
 	        System.out.println("Fehler: "+e.toString());
 	      }
+	}
+	
+	/**
+	 * reads the content of a file located at the given path
+	 * 
+	 * @param path
+	 *            absolute path to the file to be loaded
+	 * @return the content of the file as a {@link String}
+	 */
+	public static String readFile(String path){
+		FileReader reader = null;
+		String result = "";
+		try {
+			reader = new FileReader(path);
+			for(int c; (c = reader.read()) != -1;){
+				result += (char)c;
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			try {
+				reader.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	
+	/**
+	 * creates a file at the location given by the path with the given {@link String} as content
+	 * 
+	 * @param path
+	 *            the absolute path of the file the content should be written in
+	 * @param s
+	 *            the content of the file to be written
+	 */
+	public static void writeFile(String path, String s){
+		FileWriter writer = null;
+		try {
+			writer = new FileWriter(path);
+			writer.append(s);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			try {
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

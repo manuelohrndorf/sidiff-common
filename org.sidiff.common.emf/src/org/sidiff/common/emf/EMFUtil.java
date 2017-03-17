@@ -450,6 +450,32 @@ public class EMFUtil {
 			return copyEObject;
 		}
 	}
+	
+	public static Collection<EObject> copySubModel(Set<EObject> eObjects) {
+		Map<EObject,EObject> copies = new HashMap<EObject, EObject>();
+		for(EObject eObject : eObjects){
+			copies.put(eObject, copyWithoutReferences(eObject));
+		}
+		for(EObject eObject : eObjects){
+			for(EReference eReference : eObject.eClass().getEAllReferences()){
+				if(eObject.eGet(eReference) != null && !eReference.isDerived() && eReference.isChangeable()){
+					if(eReference.isMany()){
+						for(EObject tgt : (Collection<EObject>) eObject.eGet(eReference)){
+							if(copies.containsKey(tgt)){
+								((Collection<EObject>) copies.get(eObject).eGet(eReference)).add(copies.get(tgt));
+							}
+						}
+					}else{
+						EObject tgt = (EObject) eObject.eGet(eReference);
+						if(copies.containsKey(tgt)){
+							copies.get(eObject).eSet(eReference, tgt);
+						}
+					}
+				}
+			}
+		}
+		return new HashSet<EObject>(copies.values());
+	}
 
 	/**
 	 * Called to handle the copying of an attribute; this adds a list of values or sets a single value as appropriate for the multiplicity.

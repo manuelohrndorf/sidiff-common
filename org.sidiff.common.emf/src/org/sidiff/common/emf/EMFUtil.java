@@ -320,6 +320,23 @@ public class EMFUtil {
 			return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 		}
 	}
+	/**
+	 * Get the value of the "name" feature iff present, otherwise null.
+	 * @param eobj
+	 * @return name of given object otherwise null is returned
+	 */
+	public static String getEObjectName(EObject eobj){
+		EStructuralFeature nameFeature = eobj.eClass().getEStructuralFeature("name");
+		
+		if (nameFeature != null) {
+			Object nameValue = eobj.eGet(nameFeature);
+			
+			if ((nameValue != null) && (nameValue instanceof String)) {
+				return (String) nameValue;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Get the URI of a specific instance of {@link EObject}.

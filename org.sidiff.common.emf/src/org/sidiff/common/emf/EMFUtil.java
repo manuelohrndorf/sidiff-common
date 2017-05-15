@@ -3,37 +3,15 @@ package org.sidiff.common.emf;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.TreeIterator;
-import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EFactory;
-import org.eclipse.emf.ecore.EModelElement;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.common.util.*;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.FeatureMap;
-import org.eclipse.emf.ecore.util.FeatureMapUtil;
+import org.eclipse.emf.ecore.util.*;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
 import org.sidiff.common.emf.exceptions.UnknownAttributeException;
@@ -342,6 +320,23 @@ public class EMFUtil {
 			return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 		}
 	}
+	/**
+	 * Get the value of the "name" feature iff present, otherwise null.
+	 * @param eobj
+	 * @return name of given object otherwise null is returned
+	 */
+	public static String getEObjectName(EObject eobj){
+		EStructuralFeature nameFeature = eobj.eClass().getEStructuralFeature("name");
+		
+		if (nameFeature != null) {
+			Object nameValue = eobj.eGet(nameFeature);
+			
+			if ((nameValue != null) && (nameValue instanceof String)) {
+				return (String) nameValue;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Get the URI of a specific instance of {@link EObject}.
@@ -457,10 +452,6 @@ public class EMFUtil {
 			return null;
 		} else {
 			EObject copyEObject = EcoreUtil.create(eObject.eClass());
-			String id = EcoreUtil.getID(eObject);
-			if(id != null){
-				EMFUtil.setXmiId(copyEObject, id);
-			}
 			EClass eClass = eObject.eClass();
 			for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i) {
 				EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(i);

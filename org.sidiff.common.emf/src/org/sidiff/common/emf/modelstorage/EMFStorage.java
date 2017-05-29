@@ -2,6 +2,7 @@ package org.sidiff.common.emf.modelstorage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -109,6 +110,30 @@ public class EMFStorage {
 
 		Resource resource = new XMIIDResourceImpl(uri);
 		resource.getContents().add(root);
+
+		Map<String, Object> options = new HashMap<String, Object>();
+		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
+
+		try {
+			resource.save(options);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Save EMF resource to given URI path. References will be saved as platform resource URIs.
+	 * 
+	 * @param path
+	 *            the save path.
+	 * @param root
+	 *            the root objects that will be saved.
+	 */
+	public static void eSaveAs(URI uri, Collection<EObject> content) {
+
+		Resource resource = new XMIIDResourceImpl(uri);
+		resource.getContents().addAll(content);
 
 		Map<String, Object> options = new HashMap<String, Object>();
 		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);

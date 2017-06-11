@@ -469,7 +469,7 @@ public class EMFUtil {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static Collection<EObject> copySubModel(Set<EObject> eObjects) {
+	public static Map<EObject, EObject> copySubModel(Set<EObject> eObjects) {
 		Map<EObject,EObject> copies = new HashMap<EObject, EObject>();
 		Set<EObject> remaining = eObjects;
 		while(!remaining.isEmpty()){
@@ -505,10 +505,10 @@ public class EMFUtil {
 				}
 			}
 		}
-		HashSet<EObject> submodel = new HashSet<EObject>();
-		for(EObject eObject : copies.values()){
-			if(eObject.eContainer() == null){
-				submodel.add(eObject);
+		Map<EObject,EObject> submodel = new HashMap<EObject,EObject>();
+		for(EObject eObject : copies.keySet()){
+			if(copies.get(eObject).eContainer() == null){
+				submodel.put(eObject, copies.get(eObject));
 			}
 		}
 		return submodel;

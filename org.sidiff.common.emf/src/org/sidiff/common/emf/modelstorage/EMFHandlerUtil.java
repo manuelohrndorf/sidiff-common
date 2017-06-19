@@ -46,6 +46,20 @@ public class EMFHandlerUtil {
 		return null;
 	}
 	
+	public static URI getSelectionURI(ExecutionEvent event) {
+		ISelection selection = HandlerUtil.getCurrentSelection(event);
+
+		if (selection instanceof IStructuredSelection) {
+			Object selected = ((IStructuredSelection) selection).getFirstElement();
+			
+			if ((selected != null) && (selected instanceof IResource)) {
+				return getURI((IResource) selected);
+			}
+		}
+		
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <E extends EObject> E getSelection(ExecutionEvent event, Class<E> type, ResourceSet rss, int selectionIndex) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);

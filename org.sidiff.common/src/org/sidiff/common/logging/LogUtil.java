@@ -22,6 +22,8 @@ import org.sidiff.common.util.StringUtil;
 public class LogUtil {
 
 	private static boolean IS_RELEASE = true;
+	
+	private static boolean LOGGING_ENABLED = true;
 
 	// ***** External Constants *****
 	private static final String PROPERTY_NAME_LOGCHANNEL= "LOGCHANNEL";
@@ -268,7 +270,7 @@ public class LogUtil {
 	 */
 	@SuppressWarnings("all")
 	public static boolean log(LogEvent event, Object... message) {
-		if(doLogEvent(event)){
+		if(LOGGING_ENABLED && doLogEvent(event)){
 			StackTraceElement source = Thread.currentThread().getStackTrace()[2];
 			if(IS_RELEASE){
 				printInternal(source.getClassName(), event, message);
@@ -284,6 +286,14 @@ public class LogUtil {
 		return true;
 	}
 
-	
+	public static void toggleLogging() {
+		LOGGING_ENABLED = !LOGGING_ENABLED;
+	}
 
+	public static void disableLogging() {
+		LOGGING_ENABLED = false;
+	}
+	public static void enableLogging() {
+		LOGGING_ENABLED = true;
+	}
 }

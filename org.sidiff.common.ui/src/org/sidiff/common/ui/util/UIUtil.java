@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.IInputValidator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -25,7 +27,7 @@ import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class UIUtil {
-
+	
 	/**
 	 * Execute Eclipse command programmatically.
 	 *
@@ -97,5 +99,36 @@ public class UIUtil {
 		} else {
 			throw new FileNotFoundException();
 		}
+	}
+	
+	public static void showMessage(String message) {
+		MessageDialog.openInformation(
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+				message);
+	}
+	
+	public static void showError(String message) {
+		MessageDialog.openError(
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+				message);
+	}
+	
+	
+	/**
+	 * This class validates a String.
+	 */
+	public static class NotEmptyValidator implements IInputValidator {
+
+	  public String isValid(String newText) {
+	    int len = newText.length();
+
+	    // Determine if input is empty
+	    if (len < 1) return "Empty inputs are not allowed!";
+
+	    // Input must be OK
+	    return null;
+	  }
 	}
 }

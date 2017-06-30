@@ -12,6 +12,7 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.*;
+import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
 import org.sidiff.common.emf.exceptions.UnknownAttributeException;
@@ -466,6 +467,15 @@ public class EMFUtil {
 
 			return copyEObject;
 		}
+	}
+	
+	public static Map<EObject, EObject> copyAll(Collection<? extends EObject> eObjects){
+		Copier copier = new Copier();
+		copier.copyAll(eObjects);
+		copier.copyReferences();
+		
+	
+		return copier;
 	}
 	
 	@SuppressWarnings("unchecked")

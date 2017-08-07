@@ -60,7 +60,6 @@ public class EMFHandlerUtil {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <E extends EObject> E getSelection(ExecutionEvent event, Class<E> type, ResourceSet rss, int selectionIndex) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
@@ -69,14 +68,7 @@ public class EMFHandlerUtil {
 				Object selected = ((IStructuredSelection) selection).toArray()[selectionIndex];
 
 				if ((selected != null) && (selected instanceof IResource)) {
-					URI uri = getURI((IResource) selected);
-					Resource resource = rss.getResource(uri, true);
-
-					if ((resource != null) && !resource.getContents().isEmpty() 
-							&& (type.isInstance(resource.getContents().get(0)))) {
-
-						return (E) resource.getContents().get(0);
-					}
+					return loadResource((IResource) selected, type, rss);
 				}
 			}
 		}
@@ -84,7 +76,6 @@ public class EMFHandlerUtil {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <E extends EObject> E getSelection(ExecutionEvent event, Class<E> type) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
@@ -92,16 +83,22 @@ public class EMFHandlerUtil {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			
 			if ((selected != null) && (selected instanceof IResource)) {
-				ResourceSet rss = new ResourceSetImpl();
-				URI uri = getURI((IResource) selected);
-				Resource resource = rss.getResource(uri, true);
-				
-				if ((resource != null) && !resource.getContents().isEmpty() 
-						&& (type.isInstance(resource.getContents().get(0)))) {
-					
-					return (E) resource.getContents().get(0);
-				}
+				return loadResource((IResource) selected, type, new ResourceSetImpl());
 			}
+		}
+		
+		return null;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <E extends EObject> E loadResource(IResource resource, Class<E> type, ResourceSet rss) {
+		URI uri = getURI(resource);
+		Resource eResource = rss.getResource(uri, true);
+		
+		if ((eResource != null) && !eResource.getContents().isEmpty() 
+				&& (type.isInstance(eResource.getContents().get(0)))) {
+			
+			return (E) eResource.getContents().get(0);
 		}
 		
 		return null;

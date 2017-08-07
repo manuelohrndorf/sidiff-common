@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -101,18 +102,28 @@ public class UIUtil {
 		}
 	}
 	
-	public static void showMessage(String message) {
-		MessageDialog.openInformation(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
-				message);
+	public static void showMessage(final String message) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+				MessageDialog.openInformation(
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+						message);
+		    }
+		});
 	}
 	
-	public static void showError(String message) {
-		MessageDialog.openError(
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
-				message);
+	public static void showError(final String message) {
+		Display.getDefault().asyncExec(new Runnable() {
+		    @Override
+		    public void run() {
+				MessageDialog.openError(
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+						message);
+		    }
+		});
 	}
 	
 	

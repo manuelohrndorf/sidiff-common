@@ -27,7 +27,8 @@ Export-Package: org.sidiff.common.emf,
  org.sidiff.common.emf.internal,
  org.sidiff.common.emf.metamodel.analysis,
  org.sidiff.common.emf.modelstorage,
- org.sidiff.common.emf.ocl
+ org.sidiff.common.emf.ocl,
+ org.sidiff.common.emf.provider
 Bundle-Activator: org.sidiff.common.emf.internal.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-ClassPath: .

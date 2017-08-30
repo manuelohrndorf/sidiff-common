@@ -65,6 +65,10 @@ public class StatisticsUtil implements Serializable {
 		return instance;
 	}
 	
+	public static void setInstance(StatisticsUtil util) {
+		instance = util;
+	}
+	
 	/**
 	 * {@link StatisticsUtil} factory.
 	 * 
@@ -116,12 +120,10 @@ public class StatisticsUtil implements Serializable {
 	 * Resets the StatisticsUtil. All data will be removed.
 	 */
 	public void reset() {
-		if (enabled) {
 			this.timeStatistic.clear();
 			this.sizeStatistic.clear();
 			this.countStatistic.clear();
 			this.otherStatistic.clear();
-		}
 	}
 
 	/**
@@ -211,7 +213,12 @@ public class StatisticsUtil implements Serializable {
 	 */
 	public void start(String key) {
 		if (enabled) {
-			Long time = (Long) timeStatistic.get(key);
+			Object o = timeStatistic.get(key);
+			Long time = null;
+			if(o instanceof Long)
+			time = (Long) o;
+			else if (o instanceof Float)
+				time = ((Float)o).longValue();
 			if (time == null)
 				time = 0l;
 			timeStatistic.put(STAT_KEY_STARTTIME + key, new Long(System.currentTimeMillis() - time));
@@ -254,15 +261,15 @@ public class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public float getTime(Object key) {
+	public Long getTime(Object key) {
 		if (enabled) {
 			try {
-				return ((Long) timeStatistic.get(key)) / 1000f;
+				return (long) (((Long) timeStatistic.get(key)) / 1000l);
 			} catch (Exception e) {
-				return -1f;
+				return 0l;
 			}
 		}
-		return -1f;
+		return 0l;
 	}
 
 	/**
@@ -314,6 +321,18 @@ public class StatisticsUtil implements Serializable {
 	public void put(String key, Object value) {
 		if (enabled) {
 			otherStatistic.put(key, value);
+		}
+	}
+	
+	/**
+	 * Stores an time  value for the given key.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void putTime(String key, float value) {
+		if (enabled) {
+			timeStatistic.put(key, value);
 		}
 	}
 

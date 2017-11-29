@@ -62,6 +62,12 @@ public class UUIDResource extends XMIIDResourceImpl {
 		
 	}
 	
+	public static UUIDResource createUUIDResource(URI uri, ResourceSet resourceSet) {
+		UUIDResource resource = new UUIDResource(uri);
+		resourceSet.getResources().add(resource);
+		return resource;
+	}
+	
 	@Override
 	protected boolean useIDs() {
 		return true;

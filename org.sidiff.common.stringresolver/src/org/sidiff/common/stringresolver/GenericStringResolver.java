@@ -1,6 +1,7 @@
 package org.sidiff.common.stringresolver;
 
 import org.eclipse.emf.ecore.EObject;
+import org.sidiff.common.emf.EMFUtil;
 
 public class GenericStringResolver implements IStringResolver {
 
@@ -8,7 +9,8 @@ public class GenericStringResolver implements IStringResolver {
 	public String resolve(EObject eObject) {
 		try{
 			Object object = eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
-			return object.toString();
+			String uuid = EMFUtil.getXmiId(eObject);
+			return object.toString() + (uuid != null ? " [" + uuid + "]" : "");
 		}catch (NullPointerException e){
 			return eObject.toString();
 		}

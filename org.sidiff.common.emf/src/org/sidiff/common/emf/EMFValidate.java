@@ -15,11 +15,7 @@ import org.sidiff.common.logging.LogUtil;
 
 public class EMFValidate {
 	
-	public enum ValidationSeverity {
-	    WARNING, ERROR
-	}
-	
-	static ValidationSeverity minimumSeverity = ValidationSeverity.WARNING;
+	static int minimumSeverity = Diagnostic.WARNING;
 	
 	public static void validateObject(EObject... eObjects) throws InvalidModelException
 	  {
@@ -43,7 +39,7 @@ public class EMFValidate {
 			LogUtil.log(LogEvent.NOTICE, "Validating: " + eObject);
 			Diagnostic diagnostic = Diagnostician.INSTANCE.validate(eObject);
 			if (diagnostic.getSeverity() == Diagnostic.ERROR || 
-					(diagnostic.getSeverity() == Diagnostic.WARNING && minimumSeverity == ValidationSeverity.WARNING )){
+					(diagnostic.getSeverity() == Diagnostic.WARNING && minimumSeverity == Diagnostic.WARNING )){
 				if(message == null)
 					message = name + ": ;";
 				else
@@ -60,7 +56,7 @@ public class EMFValidate {
 							errors.add(childDiagnostic.getMessage());
 							break;
 						case Diagnostic.WARNING:
-							if(minimumSeverity == ValidationSeverity.WARNING) {
+							if(minimumSeverity == Diagnostic.WARNING) {
 								LogUtil.log(LogEvent.WARNING, "\t" + childDiagnostic.getMessage());
 								warnings.add(childDiagnostic.getMessage());
 							}
@@ -113,11 +109,11 @@ public class EMFValidate {
 	}
 	/**
 	 * Sets the minimum severity which is needed for throwing an @{InvalidModelException}. If not set,
-	 * defaults to @{ValidationSeverity.Warning} and thus includes warnings as well as errors
+	 * defaults to @{Diagnostic.Warning} and thus includes warnings as well as errors
 	 * according to EMF Diagnostic.
 	 * @param severity
 	 */
-	public static void setMinimumValidationSeverity(ValidationSeverity severity) {
+	public static void setMinimumValidationSeverity(int severity) {
 		EMFValidate.minimumSeverity = severity;
 	}
 	

@@ -36,7 +36,7 @@ public class EMFValidate {
 			EStructuralFeature nameFeature = eObject.eClass().getEStructuralFeature("name");
 			String name = eObject.toString();
 					
-			if (nameFeature != null) {
+			if (nameFeature != null && eObject.eGet(nameFeature)!=null) {
 				name = eObject.eGet(nameFeature).toString();
 			}
 			

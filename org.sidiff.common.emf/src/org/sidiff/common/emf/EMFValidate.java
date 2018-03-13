@@ -15,7 +15,11 @@ import org.sidiff.common.logging.LogUtil;
 
 public class EMFValidate {
 	
+	public enum ValidationSeverity {
+	    WARNING, ERROR
+	}
 	
+	static ValidationSeverity minimumSeverity = ValidationSeverity.WARNING;
 	
 	public static void validateObject(EObject... eObjects) throws InvalidModelException
 	  {
@@ -39,7 +43,7 @@ public class EMFValidate {
 			LogUtil.log(LogEvent.NOTICE, "Validating: " + eObject);
 			Diagnostic diagnostic = Diagnostician.INSTANCE.validate(eObject);
 			if (diagnostic.getSeverity() == Diagnostic.ERROR || 
-					diagnostic.getSeverity() == Diagnostic.WARNING){
+					(diagnostic.getSeverity() == Diagnostic.WARNING && minimumSeverity == ValidationSeverity.WARNING )){
 				if(message == null)
 					message = name + ": ;";
 				else
@@ -56,8 +60,10 @@ public class EMFValidate {
 							errors.add(childDiagnostic.getMessage());
 							break;
 						case Diagnostic.WARNING:
-							LogUtil.log(LogEvent.WARNING, "\t" + childDiagnostic.getMessage());
-							warnings.add(childDiagnostic.getMessage());
+							if(minimumSeverity == ValidationSeverity.WARNING) {
+								LogUtil.log(LogEvent.WARNING, "\t" + childDiagnostic.getMessage());
+								warnings.add(childDiagnostic.getMessage());
+							}
 							break;
 					}
 				}
@@ -77,7 +83,7 @@ public class EMFValidate {
 	    	throw new InvalidModelException(message);
 	    }
 	    else{
-	    	LogUtil.log(LogEvent.NOTICE, "Validation successfull.");
+	    	LogUtil.log(LogEvent.NOTICE, "Validation successfull. Minimum Severity: " + minimumSeverity);
 	    }
 	  }
 	
@@ -104,6 +110,15 @@ public class EMFValidate {
 			validateModel(root);
 		}
 		
+	}
+	/**
+	 * Sets the minimum severity which is needed for throwing an @{InvalidModelException}. If not set,
+	 * defaults to @{ValidationSeverity.Warning} and thus includes warnings as well as errors
+	 * according to EMF Diagnostic.
+	 * @param severity
+	 */
+	public static void setMinimumValidationSeverity(ValidationSeverity severity) {
+		EMFValidate.minimumSeverity = severity;
 	}
 	
 	

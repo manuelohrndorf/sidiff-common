@@ -23,7 +23,7 @@ public class EMFDocumentTypeUtil {
 		
 		// try to resolve document types via registered IDocumentTypeResolvers
 		//
-		for(IDocumentTypeResolver resolver : getAvailableDeltaModuleOperations()) {
+		for(IDocumentTypeResolver resolver : getAvailableDocumentTypeResolvers()) {
 			docTypes.addAll(resolver.resolve(resource));
 			if(!docTypes.isEmpty()) break;
 		}
@@ -50,7 +50,7 @@ public class EMFDocumentTypeUtil {
 	 * 
 	 * @return
 	 */
-	private static List<IDocumentTypeResolver> getAvailableDeltaModuleOperations(){
+	private static List<IDocumentTypeResolver> getAvailableDocumentTypeResolvers(){
 		List<IDocumentTypeResolver> resolver = new ArrayList<IDocumentTypeResolver>();
 
 		for (IConfigurationElement configurationElement : Platform.getExtensionRegistry().getConfigurationElementsFor(

@@ -2,6 +2,7 @@ package org.sidiff.common.file;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -90,6 +91,10 @@ public class FileOperations {
 	 */
 	public static void copyFile(String in, String out) throws IOException{
 		FileInputStream inFile = new FileInputStream(new File(in));
+		File dir = new File(out.substring(0, out.lastIndexOf(File.separator)));
+		if(!dir.exists()) {
+			dir.mkdirs();
+		}
 		FileOutputStream outFile = new FileOutputStream(new File(out));
 		
 		FileChannel inChannel = inFile.getChannel();

@@ -15,7 +15,7 @@ import org.sidiff.common.logging.LogUtil;
 
 public class EMFValidate {
 	
-	
+	static int minimumSeverity = Diagnostic.WARNING;
 	
 	public static void validateObject(EObject... eObjects) throws InvalidModelException
 	  {
@@ -32,14 +32,14 @@ public class EMFValidate {
 			EStructuralFeature nameFeature = eObject.eClass().getEStructuralFeature("name");
 			String name = eObject.toString();
 					
-			if (nameFeature != null) {
+			if (nameFeature != null && eObject.eGet(nameFeature)!=null) {
 				name = eObject.eGet(nameFeature).toString();
 			}
 			
 			LogUtil.log(LogEvent.NOTICE, "Validating: " + eObject);
 			Diagnostic diagnostic = Diagnostician.INSTANCE.validate(eObject);
 			if (diagnostic.getSeverity() == Diagnostic.ERROR || 
-					diagnostic.getSeverity() == Diagnostic.WARNING){
+					(diagnostic.getSeverity() == Diagnostic.WARNING && minimumSeverity == Diagnostic.WARNING )){
 				if(message == null)
 					message = name + ": ;";
 				else
@@ -56,8 +56,10 @@ public class EMFValidate {
 							errors.add(childDiagnostic.getMessage());
 							break;
 						case Diagnostic.WARNING:
-							LogUtil.log(LogEvent.WARNING, "\t" + childDiagnostic.getMessage());
-							warnings.add(childDiagnostic.getMessage());
+							if(minimumSeverity == Diagnostic.WARNING) {
+								LogUtil.log(LogEvent.WARNING, "\t" + childDiagnostic.getMessage());
+								warnings.add(childDiagnostic.getMessage());
+							}
 							break;
 					}
 				}
@@ -77,7 +79,7 @@ public class EMFValidate {
 	    	throw new InvalidModelException(message);
 	    }
 	    else{
-	    	LogUtil.log(LogEvent.NOTICE, "Validation successfull.");
+	    	LogUtil.log(LogEvent.NOTICE, "Validation successfull. Minimum Severity: " + minimumSeverity);
 	    }
 	  }
 	
@@ -104,6 +106,15 @@ public class EMFValidate {
 			validateModel(root);
 		}
 		
+	}
+	/**
+	 * Sets the minimum severity which is needed for throwing an @{InvalidModelException}. If not set,
+	 * defaults to @{Diagnostic.Warning} and thus includes warnings as well as errors
+	 * according to EMF Diagnostic.
+	 * @param severity
+	 */
+	public static void setMinimumValidationSeverity(int severity) {
+		EMFValidate.minimumSeverity = severity;
 	}
 	
 	

@@ -24,7 +24,7 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * @author cpietsch
  *
  */
-public class SelectResourceWidget<R extends IResource>  implements IWidget, IWidgetSelection, IWidgetValidation {
+public abstract class SelectResourceWidget<R extends IResource>  implements IWidget, IWidgetSelection, IWidgetValidation {
 	
 	/**
 	 * 
@@ -79,8 +79,13 @@ public class SelectResourceWidget<R extends IResource>  implements IWidget, IWid
 	
 	@Override
 	public Composite createControl(Composite parent) {
-		container = parent;
+		container = new Composite(parent, SWT.NONE);
 		
+		GridLayout gl_container = new GridLayout(1, false);
+		gl_container.marginWidth = 0;
+		gl_container.marginHeight = 0;
+		container.setLayout(gl_container);
+	
 		modelChooseGroup = new Group(container, SWT.NONE);
 		
 		GridLayout gl_group = new GridLayout(2, false);
@@ -112,7 +117,6 @@ public class SelectResourceWidget<R extends IResource>  implements IWidget, IWid
 		resourceChooseButton.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			public void widgetSelected(SelectionEvent event) {
-//				ResourcesPlugin.getWorkspace().getRoot()
 				ContainerSelectionDialog containerSelectionDialog = new ContainerSelectionDialog(container.getShell(), iContainer, false, "select a " + resourceType);; 
 				int i = containerSelectionDialog.open();
 				if(i == ContainerSelectionDialog.OK){
@@ -122,7 +126,6 @@ public class SelectResourceWidget<R extends IResource>  implements IWidget, IWid
 						resource = (R) ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 						resourcePathText.setText(path.toOSString());
 						selectionHook();
-						
 					}
 				}
 			}
@@ -131,9 +134,7 @@ public class SelectResourceWidget<R extends IResource>  implements IWidget, IWid
 		return container;
 	}
 	
-	public void selectionHook() {
-		
-	}
+	public abstract void selectionHook();
 	
 	@Override
 	public Composite getWidget() {
@@ -179,7 +180,6 @@ public class SelectResourceWidget<R extends IResource>  implements IWidget, IWid
 		return validationMessage;
 	}
 	
-
 	
 	// ---------- Getter- and Setter-Methods ---------- 
 	

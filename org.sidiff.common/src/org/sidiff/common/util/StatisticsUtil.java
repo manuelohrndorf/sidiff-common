@@ -381,7 +381,8 @@ public class StatisticsUtil implements Serializable {
 	 */
 	public int getCounter(Object key) {
 		if (enabled) {
-			return (Integer) countStatistic.get(key);
+			if(countStatistic.get(key) != null)
+				return (Integer) countStatistic.get(key);
 		}
 		return 0;
 	}
@@ -404,7 +405,9 @@ public class StatisticsUtil implements Serializable {
 	 */
 	public void count(Object key) {
 		if (enabled) {
-			int i = (Integer) countStatistic.get(key);
+			int i = 0;
+			if(countStatistic.get(key) != null)
+				i = (Integer) countStatistic.get(key);
 			countStatistic.put((String) key, ++i);
 		}
 	}

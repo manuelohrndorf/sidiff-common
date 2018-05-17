@@ -17,6 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.sidiff.common.ui.widgets.IWidget;
+import org.sidiff.common.ui.widgets.IWidgetDependence;
 import org.sidiff.common.ui.widgets.IWidgetSelection;
 import org.sidiff.common.ui.widgets.IWidgetValidation;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
@@ -153,6 +154,12 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		if (widget instanceof IWidgetSelection) {
 			((IWidgetSelection) widget)
 					.addSelectionListener(validationListener);
+		}
+
+		// Update the enabled state of the widget now that the control has been created:
+		if (widget instanceof IWidgetDependence) {
+			final IWidgetDependence widgetDependence = (IWidgetDependence) widget;
+			widgetDependence.setEnabled(widgetDependence.isEnabled());
 		}
 	}
 

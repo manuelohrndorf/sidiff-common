@@ -43,6 +43,11 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	protected Composite container;
 
 	/**
+	 * The {@link ScrolledComposite} containing the {@link #container}
+	 */
+	private ScrolledComposite scrolledComposite;
+
+	/**
 	 * A list of {@link IWidget} which are contained by {@link #container}
 	 */
 	protected List<IWidget> widgets;
@@ -60,6 +65,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				validate();
+
+				// FIXME/TEMPORARY: update scrolled composite size to react to shown/hidden widgets
+				scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
 			}
 		};
 	}
@@ -75,44 +83,34 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	public void createControl(Composite parent) {
 		// Add scrolling to this page
 		Composite wrapper = new Composite(parent, SWT.NONE);
+		{
+			GridLayout gl_wrapper = new GridLayout(1, false);
+			gl_wrapper.marginWidth = 0;
+			gl_wrapper.marginHeight = 0;
+			wrapper.setLayout(gl_wrapper);
+		}
 
-		GridLayout gl_wrapper = new GridLayout(1, false);
-		gl_wrapper.marginWidth = 0;
-		gl_wrapper.marginHeight = 0;
+		scrolledComposite = new ScrolledComposite(wrapper, SWT.V_SCROLL);
+		scrolledComposite.setExpandHorizontal(true);
+		scrolledComposite.setExpandVertical(true);
+		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		wrapper.setLayout(gl_wrapper);
+		container = new Composite(scrolledComposite, SWT.NONE);
+		{
+			GridLayout gl_container = new GridLayout(1, false);
+			gl_container.marginWidth = 10;
+			gl_container.marginHeight = 10;
+			container.setLayout(gl_container);
+		}
+		scrolledComposite.setContent(container);
 
-		GridData gd_common = new GridData(SWT.FILL, SWT.FILL, true, true);
-
-		
-		ScrolledComposite sc = new ScrolledComposite(wrapper, SWT.V_SCROLL);
-
-		sc.setExpandHorizontal(true);
-		sc.setExpandVertical(true);
-		sc.setLayoutData(gd_common);
-		
-		
-		container = new Composite(sc, SWT.NULL);
-
-		GridLayout gl_container = new GridLayout(1, false);
-		gl_container.marginWidth = 10;
-		gl_container.marginHeight = 10;
-
-		container.setLayout(gl_container);
-
-		container.setLayoutData(gd_common);
-		
-		sc.setContent(container);
-		
 		// Create widgets for this page:
 		createWidgets();
-		
-		Point point = container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true);
-		sc.setMinSize(point);
-		gd_common.heightHint = point.y;		
+
+		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
 
 		setControl(wrapper);
-		
+
 		validate();
 	}
 
@@ -143,9 +141,15 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 */
 	protected void addWidget(Composite parent, IWidget widget) {
 		// Create controls:
-		GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
 		widget.createControl(parent);
-		widget.setLayoutData(data);
+		{
+			// Set layout data and minimum size
+			GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+			widget.setLayoutData(gridData);
+			Point widgetSize = widget.getWidget().computeSize(SWT.DEFAULT, SWT.DEFAULT);
+			gridData.minimumWidth = widgetSize.x;
+			gridData.minimumHeight = widgetSize.y;
+		}
 
 		// Add widget:
 		widgets.add(widget);
@@ -170,7 +174,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 */
 	protected void validate() {
 		setErrorMessage(null);
-		setMessage(getDefaultMessage());;
+		setMessage(getDefaultMessage());
 		setPageComplete(true);
 		for (int i = widgets.size()-1; i >= 0 ; i--) {
 			if (widgets.get(i) instanceof IWidgetValidation) {

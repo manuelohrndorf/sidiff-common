@@ -12,9 +12,19 @@ public interface IWidgetDependence {
 
 	/**
 	 * Adds the given widget to the list of widgets that depend on this widget.
+	 * Updates the enabled state of the given widget.
+	 * The inverse operation is {@link #setDependency(IWidgetDependence)}.
 	 * @param dependent the widget that depends on this
 	 */
 	void addDependent(IWidgetDependence dependent);
+
+	/**
+	 * Sets the given widget as a dependency of this widget.
+	 * Updates the enabled-state of this widget.
+	 * The inverse operation is {@link #addDependent(IWidgetDependence)}.
+	 * @param dependency the widget that this widget depends on
+	 */
+	void setDependency(IWidgetDependence dependency);
 
 	/**
 	 * Enables/disables this widget and propagates the state to all dependent widgets.

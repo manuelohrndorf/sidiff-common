@@ -17,6 +17,7 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence {
 
 	private boolean enabled;
 
+	private IWidgetDependence dependency;
 	private List<IWidgetDependence> dependents;
 
 	private ControlEnableState enableState;
@@ -45,7 +46,19 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence {
 
 	@Override
 	public void addDependent(IWidgetDependence dependent) {
-		dependents.add(dependent);
+		if(!dependents.contains(dependent)) {
+			dependents.add(dependent);
+			dependent.setDependency(this);
+		}
+	}
+
+	@Override
+	public void setDependency(IWidgetDependence dependency) {
+		if(this.dependency != dependency) {
+			this.dependency = dependency;
+			dependency.addDependent(this);
+			setEnabled(dependency.areDependentsEnabled());
+		}
 	}
 
 	/**
@@ -59,13 +72,16 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence {
 	 */
 	@Override
 	public void setEnabled(boolean enabled) {
+		boolean old = this.enabled;
 		this.enabled = enabled;
 
 		// enable/disable this widgets control
 		updateWidgetEnabledState(enabled);
 
 		// propagate the state to all dependent widgets
-		propagateEnabledState();
+		if(old != enabled) {
+			propagateEnabledState();
+		}
 	}
 
 	@Override

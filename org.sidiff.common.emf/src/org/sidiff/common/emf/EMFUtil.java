@@ -536,7 +536,7 @@ public class EMFUtil {
 	 */
 	public static void copyAttribute(EAttribute eAttribute, EObject eObject, EObject copyEObject) {
 		// Standard value changed?
-		if (eObject.eIsSet(eAttribute)) {
+		if (eObject.eIsSet(eAttribute) && eAttribute.isChangeable() && !eAttribute.isDerived() && !eAttribute.isTransient()) {
 			if (FeatureMapUtil.isFeatureMap(eAttribute)) {
 				FeatureMap featureMap = (FeatureMap) eObject.eGet(eAttribute);
 				for (int i = 0, size = featureMap.size(); i < size; ++i) {

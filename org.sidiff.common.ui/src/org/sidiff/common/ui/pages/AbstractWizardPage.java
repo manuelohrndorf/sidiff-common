@@ -3,7 +3,6 @@ package org.sidiff.common.ui.pages;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -17,9 +16,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.sidiff.common.ui.widgets.IWidget;
+import org.sidiff.common.ui.widgets.IWidgetCallback;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
 import org.sidiff.common.ui.widgets.IWidgetSelection;
 import org.sidiff.common.ui.widgets.IWidgetValidation;
+import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
 /**
@@ -28,7 +29,12 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  *
  */
 public abstract class AbstractWizardPage extends WizardPage implements
-		IPageChangedListener {
+		IPageChangedListener, IWidgetCallback.Callback {
+
+	/**
+	 * The current {@link ValidationMessage} being shown, may be <code>null</code>.
+	 */
+	private ValidationMessage validationMessage;
 
 	/**
 	 * The {@link SelectionAdapter} in order to listen to widget selections
@@ -64,10 +70,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		this.validationListener = new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				validate();
-
-				// FIXME/TEMPORARY: update scrolled composite size to react to shown/hidden widgets
-				scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+				requestValidation();
 			}
 		};
 	}
@@ -107,18 +110,18 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		// Create widgets for this page:
 		createWidgets();
 
-		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+		requestLayout();
 
 		setControl(wrapper);
 
-		validate();
+		requestValidation();
 	}
 
 	// ---------- IPageChangedListener ----------
 
 	@Override
 	public void pageChanged(PageChangedEvent event) {
-		validate();
+		requestValidation();
 	}
 
 	// ---------- Private/Protected Methods ----------
@@ -140,6 +143,11 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 *            the {@link IWidget} that is added
 	 */
 	protected void addWidget(Composite parent, IWidget widget) {
+		// Set callbacks:
+		if (widget instanceof IWidgetCallback) {
+			((IWidgetCallback) widget).setWidgetCallback(this);
+		}
+
 		// Create controls:
 		widget.createControl(parent);
 		{
@@ -156,8 +164,11 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 		// Add validation:
 		if (widget instanceof IWidgetSelection) {
-			((IWidgetSelection) widget)
-					.addSelectionListener(validationListener);
+			// If the widget uses the widget callback, a selection listener to validate the
+			// widget is not required, as the widget will request the validation when needed
+			if(!(widget instanceof IWidgetCallback)) {
+				((IWidgetSelection) widget).addSelectionListener(validationListener);
+			}
 		}
 
 		// Update the enabled state of the widget now that the control has been created:
@@ -176,6 +187,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		setErrorMessage(null);
 		setMessage(getDefaultMessage());
 		setPageComplete(true);
+		validationMessage = null;
 		for (int i = widgets.size()-1; i >= 0 ; i--) {
 			if (widgets.get(i) instanceof IWidgetValidation) {
 				validateWidget((IWidgetValidation) widgets.get(i));
@@ -186,24 +198,38 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	/**
 	 * This method validates a widget and sets the respective page message.
 	 * 
-	 * @param widget
-	 * @return
+	 * @param widget the widget
 	 */
-	protected boolean validateWidget(IWidgetValidation widget) {
-		boolean isValid = widget.validate();
-		if (!isValid) {
-			if (widget.getValidationMessage().getType()
-					.equals(ValidationType.ERROR)) {
-				setErrorMessage(widget.getValidationMessage().getMessage());
-				setPageComplete(false);
-			} else if (widget.getValidationMessage().getType()
-					.equals((ValidationType.WARNING))) {
-				setMessage(widget.getValidationMessage().getMessage(),
-						IMessageProvider.WARNING);
-			}
+	protected void validateWidget(IWidgetValidation widget) {
+		if(!widget.validate()) {
+			setPageComplete(false);
 		}
-		return isValid;
+		setValidationMessage(widget.getValidationMessage());
 	}
-	
+
+	protected void setValidationMessage(ValidationMessage message) {
+		if(message.getType() == ValidationType.OK
+				|| (validationMessage != null && validationMessage.getType().ordinal() > message.getType().ordinal())) {
+			// we have a more important message to show
+			return;
+		}
+		setMessage(message.getMessage(), message.getType().getCode());
+		this.validationMessage = message;
+	}
+
+	/**
+	 * Returns the default message that is shown below the title when no other validation message overrides it.
+	 * @return default message
+	 */
 	protected abstract String getDefaultMessage();
+
+	@Override
+	public void requestValidation() {
+		validate();
+	}
+
+	@Override
+	public void requestLayout() {
+		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
+	}
 }

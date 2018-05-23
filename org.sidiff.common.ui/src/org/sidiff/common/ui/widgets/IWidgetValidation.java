@@ -1,7 +1,6 @@
 package org.sidiff.common.ui.widgets;
 
-
-
+import org.eclipse.jface.dialogs.IMessageProvider;
 
 public interface IWidgetValidation {
 
@@ -17,28 +16,47 @@ public interface IWidgetValidation {
 	 * @return An warning or error message about the actual state of the widget.
 	 */
 	public ValidationMessage getValidationMessage();
-		
-	
 
-	public class ValidationMessage{
+
+	public class ValidationMessage {
+
+		/**
+		 * Empty OK message instance to reuse
+		 */
+		public static final ValidationMessage OK = new ValidationMessage(ValidationType.OK, "");
+
 		private String message;
 		private ValidationType type;
-	
-		public ValidationMessage(ValidationType type, String message){
+
+		public ValidationMessage(ValidationType type, String message) {
 			this.message = message;
 			this.type = type;
 		}
-	
-		public ValidationType getType(){
+
+		public ValidationType getType() {
 			return type;
 		}
-		
-		public String getMessage(){
+
+		public String getMessage() {
 			return message;
 		}
-	
-		public enum ValidationType{
-			OK, ERROR, WARNING
+
+		public enum ValidationType {
+			// these constants are ordered according to their importance
+			OK(IMessageProvider.NONE),
+			INFORMATION(IMessageProvider.INFORMATION),
+			WARNING(IMessageProvider.WARNING),
+			ERROR(IMessageProvider.ERROR);
+
+			private int code;
+
+			ValidationType(int code) {
+				this.code = code;
+			}
+
+			public int getCode() {
+				return code;
+			}
 		}
 	}
 }

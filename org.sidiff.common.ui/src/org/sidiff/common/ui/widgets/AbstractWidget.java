@@ -8,12 +8,12 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * <p>Abstract widget class with common widget functionality.<p>
- * <p>Implements {@link IWidget} and {@link IWidgetDependence} and provides
- * default implementations for widgets dependency management.</p>
+ * <p>Implements {@link IWidget}, {@link IWidgetDependence} and {@link IWidgetCallback}
+ * and provides default implementations for widgets dependency management and widget callbacks.</p>
  * @author Robert Müller
  *
  */
-public abstract class AbstractWidget implements IWidget, IWidgetDependence {
+public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWidgetCallback {
 
 	private boolean enabled;
 
@@ -21,6 +21,8 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence {
 	private List<IWidgetDependence> dependents;
 
 	private ControlEnableState enableState;
+
+	private IWidgetCallback.Callback callback;
 
 	public AbstractWidget() {
 		this.enabled = true;
@@ -130,5 +132,25 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence {
 		for(IWidgetDependence client : dependents) {
 			client.setEnabled(enabled);
 		}
+	}
+
+	@Override
+	public void setWidgetCallback(IWidgetCallback.Callback callback) {
+		this.callback = callback;
+	}
+
+	/**
+	 * Returns this widget's {@link Callback}.
+	 * If no callback was set, this method does <u>not</u> return <code>null</code>,
+	 * but a {@link IWidgetCallback.Callback#NO_OP null-implementation}.
+	 * @return the callback
+	 */
+	protected IWidgetCallback.Callback getWidgetCallback() {
+		// if the callback is null, return an implementation that does nothing
+		// for backwards compatibility with wizards that are not setting the callback
+		if(callback == null) {
+			return IWidgetCallback.Callback.NO_OP;
+		}
+		return callback;
 	}
 }

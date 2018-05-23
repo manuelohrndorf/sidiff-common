@@ -10,11 +10,13 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
@@ -266,7 +268,23 @@ public class EMFStorage {
 			return rootEObject.eResource().getURI();
 		}
 	}
-	
+
+	/**
+	 * Returns the normalized URI of the given {@link Resource}.
+	 * If the resource is contained in a {@link ResourceSet} the
+	 * set's {@link URIConverter} is used to normalize the resource's URI.
+	 * Otherwise, the resource's URI is returned without normalization.
+	 * @param resource the resource
+	 * @return normalized URI of this resource
+	 */
+	public static URI getNormalizedURI(Resource resource) {
+		URI uri = resource.getURI();
+		if(resource.getResourceSet() != null) {
+			uri = resource.getResourceSet().getURIConverter().normalize(uri);
+		}
+		return uri;
+	}
+
 	/**
 	 * Converts a (e.g. platform) URI to a file URI.
 	 * 
@@ -356,7 +374,7 @@ public class EMFStorage {
 	}
 
 	/**
-	 * Convers a URI to a <code>File</code>.
+	 * Converts a URI to a <code>File</code>.
 	 * 
 	 * @param uri
 	 *            The URI to convert.
@@ -364,6 +382,19 @@ public class EMFStorage {
 	 */
 	public static File uriToFile(URI uri) {
 		return new File(uriToPath(uri));
+	}
+
+	/**
+	 * Converts a {@link URI#isPlatformResource platform resource} {@link URI}
+	 * (a platform resource with the first segment being "resource") to an {@link IFile}.
+	 * @param uri the URI
+	 * @return IFile for the given URI, <code>null</code> if the URI is not a platform resource URI
+	 */
+	public static IFile uriToIFile(URI uri) {
+		if(uri.isPlatformResource() && uri.segmentCount() > 2) {
+			return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toPlatformString(true)));
+		}
+		return null;
 	}
 
 	/**

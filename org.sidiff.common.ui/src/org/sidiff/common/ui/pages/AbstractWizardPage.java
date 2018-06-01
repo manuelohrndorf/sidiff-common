@@ -11,13 +11,13 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.sidiff.common.ui.widgets.IWidget;
 import org.sidiff.common.ui.widgets.IWidgetCallback;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
+import org.sidiff.common.ui.widgets.IWidgetDisposable;
 import org.sidiff.common.ui.widgets.IWidgetSelection;
 import org.sidiff.common.ui.widgets.IWidgetValidation;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage;
@@ -93,7 +93,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 			wrapper.setLayout(gl_wrapper);
 		}
 
-		scrolledComposite = new ScrolledComposite(wrapper, SWT.V_SCROLL);
+		scrolledComposite = new ScrolledComposite(wrapper, SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
 		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -117,11 +117,36 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		requestValidation();
 	}
 
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		// dispose of all disposable widgets
+		for(IWidget widget : widgets) {
+			if(widget instanceof IWidgetDisposable) {
+				((IWidgetDisposable)widget).dispose();
+			}
+		}
+		widgets.clear();
+	}
+
 	// ---------- IPageChangedListener ----------
 
 	@Override
 	public void pageChanged(PageChangedEvent event) {
 		requestValidation();
+	}
+
+	// ---------- IWidgetCallback.Callback ----------
+
+	@Override
+	public void requestValidation() {
+		validate();
+	}
+
+	@Override
+	public void requestLayout() {
+		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
 	}
 
 	// ---------- Private/Protected Methods ----------
@@ -152,11 +177,10 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		widget.createControl(parent);
 		{
 			// Set layout data and minimum size
-			GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, true);
+			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+			gridData.minimumWidth = SWT.DEFAULT;
+			gridData.minimumHeight = SWT.DEFAULT;
 			widget.setLayoutData(gridData);
-			Point widgetSize = widget.getWidget().computeSize(SWT.DEFAULT, SWT.DEFAULT);
-			gridData.minimumWidth = widgetSize.x;
-			gridData.minimumHeight = widgetSize.y;
 		}
 
 		// Add widget:
@@ -222,14 +246,4 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 * @return default message
 	 */
 	protected abstract String getDefaultMessage();
-
-	@Override
-	public void requestValidation() {
-		validate();
-	}
-
-	@Override
-	public void requestLayout() {
-		scrolledComposite.setMinSize(container.computeSize(SWT.DEFAULT, SWT.DEFAULT, true));
-	}
 }

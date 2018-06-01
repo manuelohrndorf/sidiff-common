@@ -46,6 +46,7 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.sidiff.common.ui.Activator;
 
 /**
  * @generated NOT
@@ -334,13 +335,11 @@ public class EcoreSelectionDialogUtil {
 			if (selection.length > 0) {
 				final Object obj = selection[0];
 				if (obj instanceof EPackage) {
-					//FIXME plugin id
-					return new Status(IStatus.OK, null, "EPackage selected");
+					return new Status(IStatus.OK, Activator.PLUGIN_ID, "EPackage selected");
 				}
 			}
-			//FIXME plugin id
 
-			return new Status(IStatus.ERROR, null, "No valid EPackage selected");
+			return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No valid EPackage selected");
 		}
 	};
 	

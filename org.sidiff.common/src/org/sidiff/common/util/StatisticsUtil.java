@@ -33,10 +33,10 @@ public class StatisticsUtil implements Serializable {
 
 	private static final String STAT_KEY_STARTTIME = "@@STARTOF@@";
 
-	private HashMap<String, Object> timeStatistic;
-	private HashMap<String, Object> sizeStatistic;
-	private HashMap<String, Object> countStatistic;
-	private HashMap<String, Object> otherStatistic;
+	private Map<String, Object> timeStatistic;
+	private Map<String, Object> sizeStatistic;
+	private Map<String, Object> countStatistic;
+	private Map<String, Object> otherStatistic;
 
 	private static StatisticsUtil instance;
 	private static boolean enabled = true;
@@ -48,12 +48,12 @@ public class StatisticsUtil implements Serializable {
 		this.otherStatistic = new HashMap<String, Object>();
 	}
 
-	@SuppressWarnings("unchecked")
-	private StatisticsUtil(HashMap<String, Object> timeStatistic, HashMap<String, Object> sizeStatistic, HashMap<String, Object> countStatistic, HashMap<String, Object> otherStatistic) {
-		this.timeStatistic = (HashMap<String, Object>) timeStatistic.clone();
-		this.sizeStatistic = (HashMap<String, Object>) sizeStatistic.clone();
-		this.countStatistic = (HashMap<String, Object>) countStatistic.clone();
-		this.otherStatistic = (HashMap<String, Object>) otherStatistic.clone();
+	private StatisticsUtil(Map<String, Object> timeStatistic, Map<String, Object> sizeStatistic,
+			Map<String, Object> countStatistic, Map<String, Object> otherStatistic) {
+		this.timeStatistic = new HashMap<String, Object>(timeStatistic);
+		this.sizeStatistic = new HashMap<String, Object>(sizeStatistic);
+		this.countStatistic = new HashMap<String, Object>(countStatistic);
+		this.otherStatistic = new HashMap<String, Object>(otherStatistic);
 	}
 
 	/**
@@ -83,7 +83,8 @@ public class StatisticsUtil implements Serializable {
 	 * Copy constructor, using a static method.
 	 */
 	public static StatisticsUtil copiedInstance(StatisticsUtil statisticsUtil) {
-		return new StatisticsUtil(statisticsUtil.getTimeStatistic(), statisticsUtil.getSizeStatistic(), statisticsUtil.getCountStatistic(), statisticsUtil.getOtherStatistic());
+		return new StatisticsUtil(statisticsUtil.getTimeStatistic(), statisticsUtil.getSizeStatistic(),
+				statisticsUtil.getCountStatistic(), statisticsUtil.getOtherStatistic());
 	}
 
 	/**
@@ -100,20 +101,30 @@ public class StatisticsUtil implements Serializable {
 		enabled = true;
 	}
 
-	public HashMap<String, Object> getTimeStatistic() {
+	public Map<String, Object> getTimeStatistic() {
 		return timeStatistic;
 	}
 
-	public HashMap<String, Object> getSizeStatistic() {
+	public Map<String, Object> getSizeStatistic() {
 		return sizeStatistic;
 	}
 
-	public HashMap<String, Object> getCountStatistic() {
+	public Map<String, Object> getCountStatistic() {
 		return countStatistic;
 	}
 
-	public HashMap<String, Object> getOtherStatistic() {
+	public Map<String, Object> getOtherStatistic() {
 		return otherStatistic;
+	}
+
+	public Map<String, Object> getStatistic(StatisticType type) {
+		switch(type) {
+			case Time: return timeStatistic;
+			case Size: return sizeStatistic;
+			case Count: return countStatistic;
+			case Other: return otherStatistic;
+			default: return null;			
+		}
 	}
 
 	/**
@@ -249,7 +260,7 @@ public class StatisticsUtil implements Serializable {
 	 * 
 	 * @param key
 	 */
-	public void resetTime(Object key) {
+	public void resetTime(String key) {
 		if (enabled) {
 			timeStatistic.remove(STAT_KEY_STARTTIME + key);
 		}
@@ -261,7 +272,7 @@ public class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public Long getTime(Object key) {
+	public Long getTime(String key) {
 		if (enabled) {
 			try {
 				return (long) (((Long) timeStatistic.get(key)) / 1000l);
@@ -354,9 +365,9 @@ public class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @param value
 	 */
-	public void putSize(Object key, int value) {
+	public void putSize(String key, int value) {
 		if (enabled) {
-			sizeStatistic.put((String) key, value);
+			sizeStatistic.put(key, value);
 		}
 	}
 
@@ -366,7 +377,7 @@ public class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public int getSize(Object key) {
+	public int getSize(String key) {
 		if (enabled) {
 			return (Integer) sizeStatistic.get(key);
 		}
@@ -379,7 +390,7 @@ public class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @return
 	 */
-	public int getCounter(Object key) {
+	public int getCounter(String key) {
 		if (enabled) {
 			if(countStatistic.get(key) != null)
 				return (Integer) countStatistic.get(key);
@@ -392,9 +403,9 @@ public class StatisticsUtil implements Serializable {
 	 * 
 	 * @param key
 	 */
-	public void resetCounter(Object key) {
+	public void resetCounter(String key) {
 		if (enabled) {
-			countStatistic.put((String) key, new Integer(0));
+			countStatistic.put(key, new Integer(0));
 		}
 	}
 
@@ -403,12 +414,12 @@ public class StatisticsUtil implements Serializable {
 	 * 
 	 * @param key
 	 */
-	public void count(Object key) {
+	public void count(String key) {
 		if (enabled) {
 			int i = 0;
 			if(countStatistic.get(key) != null)
 				i = (Integer) countStatistic.get(key);
-			countStatistic.put((String) key, ++i);
+			countStatistic.put(key, ++i);
 		}
 	}
 
@@ -602,7 +613,7 @@ public class StatisticsUtil implements Serializable {
 	public String dump() {
 		if (enabled) {
 			String string = new String("*********************" + "Statistics" + "*********************" + LINE_SEPERATOR);
-			string += "Time Statistics(in ms):" + LINE_SEPERATOR;
+			string += "Time statistics (in ms):" + LINE_SEPERATOR;
 			ArrayList<String> keys = new ArrayList<String>(timeStatistic.keySet());
 			Collections.sort(keys);
 			for (String key : keys)

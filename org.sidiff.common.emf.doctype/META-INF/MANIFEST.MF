@@ -2,10 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common - EMF Document Type Resolver
 Bundle-SymbolicName: org.sidiff.common.emf.doctype;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.13.0",
  org.eclipse.emf.ecore,
  org.sidiff.common.emf
 Export-Package: org.sidiff.common.emf.doctype,
  org.sidiff.common.emf.doctype.util
+Automatic-Module-Name: org.sidiff.common.emf.doctype

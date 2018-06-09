@@ -494,6 +494,7 @@ public class EMFUtil {
 				}
 				iterator.remove();
 			}
+			dependencies.removeAll(copies.keySet());
 			remaining.addAll(dependencies);
 		}
 

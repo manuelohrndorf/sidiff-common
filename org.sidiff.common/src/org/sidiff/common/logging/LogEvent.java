@@ -33,8 +33,18 @@ public enum LogEvent {
 	/**
 	 * Debug Output. Diese Ausgaben sollten in Asserts gekapselt werden.
 	 */
-	DEBUG  ("DEBUG  "); 
-
+	DEBUG  ("DEBUG  "), 
+	
+	/**
+	 * Configuration output.
+	 */
+	CONFIG	("CONFIG  "),
+	
+	/**
+	 * Information output.
+	 */
+	INFO	("INFO  ");
+	
 	private String eventstring = null;
 
 	private LogEvent(String eventstring) {

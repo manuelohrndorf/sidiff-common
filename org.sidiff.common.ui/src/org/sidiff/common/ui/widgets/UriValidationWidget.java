@@ -7,6 +7,7 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -91,6 +92,7 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 			@Override
 			public void modifyText(ModifyEvent e) {
 				modifyTextHook();
+				uri_text.notifyListeners(SWT.Selection, new Event());
 			}
 		});
 		
@@ -128,7 +130,8 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 	
 	@Override
 	public boolean validate() {
-		return uri_text.getText().isEmpty();
+		
+		return !uri_text.getText().isEmpty() && isValidURI(uri_text.getText());
 	}
 
 	@Override
@@ -139,6 +142,12 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 			validationMessage = new ValidationMessage(ValidationType.ERROR, "Please select an URL for " + label_group);
 		}
 		return validationMessage;
+	}
+	
+	private final String URI_PATTERN = "(http)(s?)://([a-zA-z0-9])+(([_\\-\\./])([a-zA-z0-9])+)*";
+	
+	private boolean isValidURI(String s) {
+		return s.matches(URI_PATTERN);
 	}
 	// ---------- Hooks ----------
 

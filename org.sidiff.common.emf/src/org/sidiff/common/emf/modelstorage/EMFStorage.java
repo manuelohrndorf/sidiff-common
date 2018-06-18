@@ -9,6 +9,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
@@ -442,25 +443,38 @@ public class EMFStorage {
 	}
 	
 	/**
-	 * Converts a <code>IFile</code> to a platform resource URI.
+	 * Converts a <code>IResource</code> to a platform resource URI.
 	 * 
 	 * @param file
-	 *            The <code>File</code> to convert.
-	 * @return The given file as file URI.
+	 *            The <code>IResource</code> to convert.
+	 * @return The given resource as file URI.
 	 */
-	public static URI iFileToURI(IFile iFile) {
-		return URI.createPlatformResourceURI(iFile.getFullPath().toString(), true);
+	public static URI iResourceToURI(IResource iResource) {
+		return URI.createPlatformResourceURI(iResource.getFullPath().toString(), true);
 	}
 	
 	/**
 	 * Converts a <code>IFile</code> to a platform resource URI.
 	 * 
 	 * @param file
-	 *            The <code>File</code> to convert.
+	 *            The <code>IFile</code> to convert.
 	 * @return The given file as file URI.
+	 * @deprecated Use {@link #iResourceToURI(IResource)} instead.
+	 */
+	public static URI iFileToURI(IFile iFile) {
+		return iResourceToURI(iFile);
+	}
+	
+	/**
+	 * Converts a <code>IFile</code> to a platform resource URI.
+	 * 
+	 * @param file
+	 *            The <code>IFolder</code> to convert.
+	 * @return The given folder as file URI.
+	 * @deprecated Use {@link #iResourceToURI(IResource)} instead.
 	 */
 	public static URI iFolderToURI(IFolder iFolder) {
-		return URI.createPlatformResourceURI(iFolder.getFullPath().toString(), true);
+		return iResourceToURI(iFolder);
 	}
 
 	/**

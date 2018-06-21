@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Stack;
@@ -14,6 +15,7 @@ import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.sidiff.common.emf.access.EMFMetaAccess;
+import org.sidiff.common.emf.exceptions.NoRootElementFoundException;
 
 /**
  * This class is responsible for the meta-model analysis. It offers methods to
@@ -1440,5 +1442,39 @@ public class EClassifierInfoManagement {
 		}		
 	}
 
-	
+	/**
+	 * This method tries to find the element type which
+	 * is supposed to be the root of an instance of the metamodel.
+	 * If there is no root element an exception is thrown.
+	 * @return root EClassifier
+	 * @throws NoRootElementFoundException
+	 * 
+	 */
+	public EClassifier findRoot() throws NoRootElementFoundException{
+		
+		EClassifier root;
+		String nsUri;
+		
+		Set<EClassifier> allElements = new HashSet<EClassifier>(eClassifierInfoMap.keySet());
+		nsUri = allElements.iterator().next().eResource().getURI().toString();
+		
+		for(Entry<EClassifier, EClassifierInfo> entry: eClassifierInfoMap.entrySet()) {
+			EClassifierInfo eInfo = entry.getValue();
+			
+			Map<EReference, List<EClassifier>> mandatoryParents = eInfo.getMandatoryParentContext();
+			Map<EReference, List<EClassifier>> optionalParents = eInfo.getOptionalParentContext();
+			
+			if(!mandatoryParents.isEmpty() && !optionalParents.isEmpty()) {
+				allElements.remove(entry.getKey());
+			}
+		}
+		
+		if(allElements.size()!=1) {
+			throw new NoRootElementFoundException(nsUri);
+		}else {
+			root = allElements.iterator().next();
+		}
+		
+		return root;	
+	}
 }

@@ -43,7 +43,6 @@ public class EMFDocumentTypeUtil {
 		Set<String> docTypes = new HashSet<String>();
 		Map<String, IDocumentTypeResolver> resolvers = getAvailableDocumentTypeResolvers();
 
-		resourceLoop:
 		for(Resource resource : resources) {
 			if(resource == null || resource.getContents().isEmpty()) {
 				continue;
@@ -59,14 +58,11 @@ public class EMFDocumentTypeUtil {
 					List<String> resolvedTypes = resolver.resolve(resource);
 					if(resolvedTypes != null) {
 						docTypes.addAll(resolvedTypes);
-						continue resourceLoop; // continue with next resource
 					}
+				}else {
+					docTypes.add(docType);
 				}
 			}
-
-			// if no document types are resolved, use the document types of the resource
-			//
-			docTypes.addAll(modelDocTypes);
 		}
 
 		// create and sort list of document types

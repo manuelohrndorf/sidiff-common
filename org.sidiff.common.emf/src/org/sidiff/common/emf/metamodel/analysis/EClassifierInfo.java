@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EReference;
 
@@ -184,8 +185,12 @@ public class EClassifierInfo {
 	/** Convenience methods ***************************************************************/
 	
 	/**
-	 * Returns all direct optional and mandatory children of the given EClassifier
-	 * 
+	 * Returns all direct, global optional and mandatory children of the given EClassifier
+	 * (i.e., inclusive all inherited children resulting from the supertype of the specified classifier
+	 * but not the sub types of the children of this specified classifier.
+	 * direct = only the children, not further descending children
+	 * global = the own children and also inherited children from the supertype of this classifier).
+	 * Compare also {@link #getAllDirectLocalChildren(EClassifier)}.
 	 * @param childEClassifier
 	 * 
 	 * @return
@@ -200,6 +205,40 @@ public class EClassifierInfo {
 		allDirectChildren.putAll(getOptionalChildren());
 
 		return allDirectChildren;
+		
+	}
+	
+	/**
+	 * Returns all direct, local mandatory children of the given EClassifier
+	 * (i.e., exclusive all inherited children resulting from the supertype of the specified classifier
+	 * and also exclusive the sub types of the children of this specified classifier.
+	 * direct = only the children, not further descending children
+	 * local = only the own children, not children inherited from the supertype of this classifier
+	 * mandatory = only children, where the containment reference has a lowerbound > 0).
+	 * See also {@link #getAllDirectChildren(EClassifier)}.
+	 * @param childEClassifier
+	 * 
+	 * @return
+	 * 		A List of EClassifiers and their respective containment EReferences
+	 */
+	public HashMap<EReference, List<EClassifier>> getAllDirectLocalChildren(EClassifier childEClassifier) {
+		
+		HashMap<EReference, List<EClassifier>> allLocalDirectMandatoryChildren = new HashMap<EReference, List<EClassifier>>();
+		
+		List<EReference> localReferences = ((EClass)childEClassifier).getEReferences();
+		
+		for(EReference ref: localReferences) {
+			
+			if(ref.isContainment() && EReferenceInfo.isRequired(ref)) {
+				List<EClassifier> targets = new ArrayList<EClassifier>();
+				targets.add(ref.getEType());
+				allLocalDirectMandatoryChildren.put(ref, targets);
+
+				
+			}			
+		}
+		
+		return allLocalDirectMandatoryChildren;
 		
 	}
 	

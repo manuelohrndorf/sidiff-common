@@ -152,6 +152,20 @@ public class IOUtil {
 	}
 
 	/**
+	 * Reads the whole input stream and writes it to the output stream.
+	 * @param in the input stream
+	 * @param out the output stream
+	 * @throws IOException if an I/O error occurred
+	 */
+	public static void transfer(InputStream in, OutputStream out) throws IOException {
+		byte[] buffer = new byte[10*1024];
+		int length;
+        while((length = in.read(buffer)) > 0) {
+        	out.write(buffer, 0, length);
+        }
+	}
+
+	/**
 	 * OutputStream implementation for Strings
 	 */
 	private static class StringOutputStream extends OutputStream {

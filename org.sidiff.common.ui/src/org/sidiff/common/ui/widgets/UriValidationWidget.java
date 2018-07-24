@@ -74,7 +74,7 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 		
 		uri_group = new Group(container, SWT.NONE);
 		
-		GridLayout gl_group = new GridLayout(2, false);
+		GridLayout gl_group = new GridLayout(3, false);
 		gl_group.marginWidth = 10;
 		gl_group.marginHeight = 10;
 		uri_group.setLayout(gl_group);
@@ -82,11 +82,14 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 		uri_group.setLayoutData(new GridData(GridData.FILL_BOTH));
 		uri_group.setText(label_group);
 		
+		GridData gd_uri_group_input = new GridData(GridData.FILL_HORIZONTAL);
+		gd_uri_group_input.horizontalSpan = 2;
+		
 		uri_label = new Label(uri_group, SWT.NONE);
 		uri_label.setText("URL:");
 		
 		uri_text = new Text(uri_group, SWT.BORDER);
-		uri_text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		uri_text.setLayoutData(gd_uri_group_input);
 		uri_text.addModifyListener(new ModifyListener() {
 			
 			@Override

@@ -1,15 +1,19 @@
 package org.sidiff.common.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A <code>StringListSerializer</code> serializes a list of strings
+ * <p>A <code>StringListSerializer</code> serializes a list of strings
  * using a delimiter and an escape string, and unserializes previously
- * serialized strings.
- * The same delimiter and escape strings must be used for serialization and deserialization.
+ * serialized strings.</p>
+ * <p>The same delimiter and escape strings must be used for
+ * serialization and deserialization.</p>
+ * <p>Occurrences of the delimiter and escape string in the items are
+ * automatically escaped/unescaped upon serialization/deserialization.
+ * Leading and trailing whitespace is removed from all items.</p>
+ * <p>Instances of this class are immutable.</p>
  * @author Robert Müller
  *
  */
@@ -69,28 +73,45 @@ public class StringListSerializer {
 	/**
 	 * Serializes a list of strings using a delimiter and escape string
 	 * for subsequent deserialization with {@link #deserialize(String)}.
+	 * If the list is empty, the result is the empty string. Empty list
+	 * items are omitted from the result.
 	 * @param list the list
 	 * @return serialized list
 	 */
 	public String serialize(List<String> list) {
+		if(list.isEmpty()) {
+			return "";
+		}
 		StringBuilder builder = new StringBuilder();
 		for(String item : list) {
-			if(builder.length() > 0)
-				builder.append(DELIMITER);
-			builder.append(escapeDelimiter(escapeEscape(item)));
+			final String escapedItem = escapeDelimiter(escapeEscape(item.trim()));
+			if(!escapedItem.isEmpty()) {
+				if(builder.length() > 0) {
+					builder.append(DELIMITER);
+				}
+				builder.append(escapedItem);
+			}
 		}
 		return builder.toString();
 	}
 
 	/**
-	 * Deserializes a string previously serialized with {@link #serialize(List)}.
+	 * Deserializes a string previously returned by {@link #serialize(List)}.
+	 * If the input string is empty, an empty list is returned. Empty list
+	 * items are omitted from the result.
 	 * @param string the string
 	 * @return list of deserialized strings
 	 */
 	public List<String> deserialize(String string) {
+		if(string.isEmpty()) {
+			return Collections.emptyList();
+		}
 		List<String> items = new ArrayList<String>();
 		for(String item : DESERIALIZE_PATTERN.split(string)) {
-			items.add(unescapeEscape(unescapeDelimiter(item)));
+			final String unescapedItem = unescapeEscape(unescapeDelimiter(item.trim()));
+			if(!unescapedItem.isEmpty()) {
+				items.add(unescapedItem);
+			}
 		}
 		return items;
 	}

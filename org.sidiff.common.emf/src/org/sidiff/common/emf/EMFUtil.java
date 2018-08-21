@@ -477,53 +477,6 @@ public class EMFUtil {
 	
 		return copier;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public static Map<EObject, EObject> copySubModel(Set<EObject> eObjects) {
-		Map<EObject,EObject> copies = new HashMap<EObject, EObject>();
-		Set<EObject> remaining = eObjects;
-		while(!remaining.isEmpty()){
-			Set<EObject> dependencies = new HashSet<EObject>();
-			for (Iterator<EObject> iterator = remaining.iterator(); iterator.hasNext();) {
-				EObject eObject = iterator.next();
-				copies.put(eObject, copyWithoutReferences(eObject));
-				for(EReference eReference : eObject.eClass().getEAllReferences()){
-					if(!eReference.isDerived() && eReference.getLowerBound() > 0){
-						dependencies.addAll(getObjectListFromReference(eObject, eReference));
-					}
-				}
-				iterator.remove();
-			}
-			dependencies.removeAll(copies.keySet());
-			remaining.addAll(dependencies);
-		}
-
-		for(EObject eObject : copies.keySet()){
-			for(EReference eReference : eObject.eClass().getEAllReferences()){
-				if(eObject.eGet(eReference) != null && !eReference.isDerived() && eReference.isChangeable()){
-					if(eReference.isMany()){
-						for(EObject tgt : (Collection<EObject>) eObject.eGet(eReference)){
-							if(copies.containsKey(tgt)){
-								((Collection<EObject>) copies.get(eObject).eGet(eReference)).add(copies.get(tgt));
-							}
-						}
-					}else{
-						EObject tgt = (EObject) eObject.eGet(eReference);
-						if(copies.containsKey(tgt)){
-							copies.get(eObject).eSet(eReference, copies.get(tgt));
-						}
-					}
-				}
-			}
-		}
-		Map<EObject,EObject> submodel = new HashMap<EObject,EObject>();
-		for(EObject eObject : copies.keySet()){
-			if(copies.get(eObject).eContainer() == null){
-				submodel.put(eObject, copies.get(eObject));
-			}
-		}
-		return submodel;
-	}
 
 	/**
 	 * Called to handle the copying of an attribute; this adds a list of values or sets a single value as appropriate for the multiplicity.

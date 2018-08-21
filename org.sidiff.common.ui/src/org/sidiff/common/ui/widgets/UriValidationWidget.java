@@ -147,6 +147,7 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 		return validationMessage;
 	}
 	
+	//FIXME the URI_PATTERN depends on the supported protocols
 	private final String URI_PATTERN = "(http)(s?)://([a-zA-z0-9])+(([_\\-\\./])([a-zA-z0-9])+)*";
 	
 	private boolean isValidURI(String s) {

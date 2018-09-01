@@ -13,7 +13,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.codegen.ecore,
  org.eclipse.emf.edit,
  org.eclipse.ocl.ecore;visibility:=reexport,
- org.sidiff.common;visibility:=reexport
+ org.sidiff.common;visibility:=reexport,
+ org.sidiff.common.xml;bundle-version="1.0.0"
 Export-Package: org.sidiff.common.emf,
  org.sidiff.common.emf.access,
  org.sidiff.common.emf.access.path,

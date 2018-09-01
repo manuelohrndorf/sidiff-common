@@ -2,14 +2,24 @@ package org.sidiff.common.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
 
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
-import org.w3c.dom.*;
-import org.xml.sax.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXNotRecognizedException;
+import org.xml.sax.SAXNotSupportedException;
+import org.xml.sax.SAXParseException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
@@ -24,9 +34,6 @@ public class XMLParser {
 
 	private XMLParser() {
 	}
-
-//	private static List<XMLReader> saxParserPool = Collections.synchronizedList(new LinkedList<XMLReader>());
-//	private static List<DOMParser> domParserPool = Collections.synchronizedList(new LinkedList<DOMParser>());
 
 	private static ErrorHandler errorHandler = new XMLErrorHander();
 

@@ -102,7 +102,6 @@ public class MapWithDefault<K, V> implements Map<K, V> {
 		return this.decoratedMap.put(key, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void putAll(Map<? extends K, ? extends V> map) {
 		this.decoratedMap.putAll(map);

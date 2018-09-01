@@ -6,7 +6,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.impl.EPackageRegistryImpl;
 import org.sidiff.common.io.IOUtil;
-import org.sidiff.common.io.MapLoader;
+import org.sidiff.common.xml.internal.MapLoader;
 
 
 

@@ -13,10 +13,8 @@ Export-Package: org.sidiff.common,
  org.sidiff.common.io,
  org.sidiff.common.lcs,
  org.sidiff.common.logging,
- org.sidiff.common.util,
- org.sidiff.common.xml
-Require-Bundle: org.eclipse.core.runtime,
- org.apache.xerces;visibility:=reexport
+ org.sidiff.common.util
+Require-Bundle: org.eclipse.core.runtime
 Bundle-Activator: org.sidiff.common.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-ActivationPolicy: lazy

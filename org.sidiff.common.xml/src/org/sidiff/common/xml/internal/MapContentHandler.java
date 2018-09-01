@@ -1,4 +1,4 @@
-package org.sidiff.common.io.internal;
+package org.sidiff.common.xml.internal;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +7,10 @@ import org.sidiff.common.collections.MapWithDefault;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.Locator;
+import org.xml.sax.SAXException;
 
 /**
  * ContentHandler to load a map of key-value-pairs.
@@ -69,7 +72,6 @@ public class MapContentHandler implements ContentHandler {
 	 * @param atts
 	 *            Attributes of a map entry.
 	 */
-	@SuppressWarnings("unchecked")
 	private void processMapEntry(Attributes atts) {
 
 		if (DEFAULT_VALUE_KEY.equals(atts.getValue(ATT_MAPENTRY_KEY))) {

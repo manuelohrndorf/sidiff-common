@@ -11,6 +11,7 @@ import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.io.*;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
+import org.sidiff.common.xml.internal.MapLoader;
 import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 

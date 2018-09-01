@@ -1,4 +1,4 @@
-package org.sidiff.common.util;
+package org.sidiff.common.xml;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;

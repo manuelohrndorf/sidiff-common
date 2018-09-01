@@ -1,6 +1,9 @@
 package org.sidiff.common.stringresolver;
 
 import org.eclipse.emf.ecore.EObject;
+import org.sidiff.common.extension.INamedExtension;
+import org.sidiff.common.extension.ITypedExtension;
+import org.sidiff.common.extension.TypedExtensionManager;
 
 /**
  * A StringResolver is responsible for calculating an appropriate textual
@@ -9,60 +12,33 @@ import org.eclipse.emf.ecore.EObject;
  * @author cpietsch
  * 
  */
-public interface IStringResolver {
+public interface IStringResolver extends INamedExtension, ITypedExtension {
+
+	Description<IStringResolver> DESCRIPTION = Description.of(IStringResolver.class,
+			"org.sidiff.common.stringresolver.string_resolver_extension", "string_resolver", "string_resolver");
 
 	/**
-	 * The shared extension point id.
+	 * Manager for all registered string resolvers.
 	 */
-	public static final String extensionPointID = "org.sidiff.common.stringresolver.string_resolver_extension";
+	TypedExtensionManager<IStringResolver> MANAGER = new TypedExtensionManager<IStringResolver>(DESCRIPTION);
 
 	/**
 	 * Resolves the textual representation of the given object
 	 * 
 	 * @param eObject
 	 *            an object of which the textual representation shall be
-	 *            resolved
+	 *            resolved, not <code>null</code>
 	 * @return a string representation of the object
 	 */
-	public String resolve(EObject eObject);
+	String resolve(EObject eObject);
 
 	/**
 	 * Resolves a qualified textual representation of the given object
 	 * 
 	 * @param eObject
 	 *            an object of which the qualified textual representation shall
-	 *            be resolved
+	 *            be resolved, not <code>null</code>
 	 * @return a qualified string representation of the object
 	 */
-	public String resolveQualified(EObject eObject);
-	/**
-	 * checks if the given document type can be handled by the resolver
-	 * 
-	 * @param docType
-	 *            the nsURI of the document type
-	 * @return <code>true</code> if the given document type can be handled by
-	 *         the resolver, <code>false</code> otherwise.
-	 */
-	public boolean canHandleDocType(String docType);
-
-	/**
-	 * Returns the document type which is supported by the resolver.
-	 * 
-	 * @return the nsURI of the supported document type
-	 */
-	public String getDocType();
-
-	/**
-	 * Returns the short name (used as a key) of the string resolver.
-	 * 
-	 * @return the resolver short name (used as key)
-	 */
-	public String getKey();
-
-	/**
-	 * Returns the name of the string resolver.
-	 * 
-	 * @return the resolver name
-	 */
-	public String getName();
+	String resolveQualified(EObject eObject);
 }

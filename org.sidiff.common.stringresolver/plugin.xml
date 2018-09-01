@@ -2,4 +2,10 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="string_resolver_extension" name="String Resolver" schema="schema/string_resolver_extension.exsd"/>
+   <extension
+         point="org.sidiff.common.stringresolver.string_resolver_extension">
+      <string_resolver
+            string_resolver="org.sidiff.common.stringresolver.GenericStringResolver">
+      </string_resolver>
+   </extension>
 </plugin>

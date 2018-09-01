@@ -1,38 +1,39 @@
 package org.sidiff.common.stringresolver;
 
-import org.eclipse.emf.ecore.EObject;
-import org.sidiff.common.emf.EMFUtil;
+import java.util.Collections;
+import java.util.Set;
 
-public class GenericStringResolver implements IStringResolver {
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.sidiff.common.emf.EMFUtil;
+import org.sidiff.common.extension.ITypedExtension;
+
+public class GenericStringResolver extends AbstractStringResolver {
 
 	@Override
 	public String resolve(EObject eObject) {
-		try{
-			Object object = eObject.eGet(eObject.eClass().getEStructuralFeature("name"));
-			String uuid = EMFUtil.getXmiId(eObject);
-			return object.toString() + (uuid != null ? " [" + uuid + "]" : "");
-		}catch (NullPointerException e){
-			return eObject.toString();
+		String name = null;
+		final EStructuralFeature nameFeature = eObject.eClass().getEStructuralFeature("name");
+		if(nameFeature != null) {
+			final Object value = eObject.eGet(nameFeature);
+			if(value != null) {
+				name = value.toString();
+			}
 		}
-		
+		if(name == null) {
+			name = eObject.toString();
+		}
+
+		String uuid = EMFUtil.getXmiId(eObject);
+		if(uuid != null) {
+			return name + " [" + uuid + "]";
+		}
+		return name;
 	}
 
 	@Override
-	public String resolveQualified(EObject eObject) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean canHandleDocType(String docType) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getDocType() {
-		// TODO Auto-generated method stub
-		return null;
+	public Set<String> getDocumentTypes() {
+		return Collections.singleton(ITypedExtension.GENERIC_TYPE);
 	}
 
 	@Override
@@ -44,5 +45,4 @@ public class GenericStringResolver implements IStringResolver {
 	public String getName() {
 		return "Generic String Resolver";
 	}
-
 }

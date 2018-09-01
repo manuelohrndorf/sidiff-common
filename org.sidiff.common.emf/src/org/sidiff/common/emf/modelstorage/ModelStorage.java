@@ -128,13 +128,10 @@ public class ModelStorage {
 					URI valueURI = URI.createURI(mappings.get(key));
 					if (URIConverter.URI_MAP.containsKey(keyURI)){
 						if(!URIConverter.URI_MAP.get(keyURI).equals(valueURI)){
-							throw new IllegalArgumentException("Conflicting Mapping:"+key+"->"+URIConverter.URI_MAP.get(key)+"|"+mappings.get(key));
+							throw new IllegalArgumentException("Conflicting Mapping:"+key+"->"+URIConverter.URI_MAP.get(keyURI)+"|"+mappings.get(key));
 						} // Else same Mapping
 					} else {
 						URIConverter.URI_MAP.put(keyURI, valueURI);
-					}
-					if (URIConverter.URI_MAP.containsKey(URI.createURI(key))) {
-						System.out.println();
 					}
 				}
 			}

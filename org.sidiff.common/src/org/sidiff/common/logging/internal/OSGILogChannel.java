@@ -15,7 +15,7 @@ import org.sidiff.common.logging.LogEvent;
 public class OSGILogChannel implements ILogChannel {
 
 	private BundleContext context = null;
-	private ServiceReference logServiceRef = null;
+	private ServiceReference<?> logServiceRef = null;
 	private boolean hasPrintedError = false;
 	
 	@Override
@@ -44,7 +44,7 @@ public class OSGILogChannel implements ILogChannel {
 		}
 		
 		if(logServiceRef==null){
-			 ServiceReference serviceRef = context.getServiceReference(LogService.class.getName());
+			 ServiceReference<?> serviceRef = context.getServiceReference(LogService.class.getName());
 			 if(serviceRef!=null){
 				 this.logServiceRef = serviceRef;
 			 } else if (!hasPrintedError) {

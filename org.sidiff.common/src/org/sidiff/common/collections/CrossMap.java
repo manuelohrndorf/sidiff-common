@@ -28,7 +28,7 @@ public class CrossMap<K, V> implements Map<K, V>{
 	 * 
 	 * @param implClass Eine Map implementierende Klasse.
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public CrossMap(Class<? extends Map> implClass) {
 		map = ReflectionUtil.createInstance(implClass);
 		rMap = ReflectionUtil.createInstance(implClass);

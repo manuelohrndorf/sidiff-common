@@ -77,13 +77,14 @@ public class LCSUtil {
 	 * @return The sequences' similarity if similarity detected; Otherwise -1.
 	 */
 	@SuppressWarnings("unchecked")
-	public static float compareSequenceBySimilarSubsequence(Object sequenceA, Object sequenceB, LCSSequenceAccessorSimilarSubsequence accessor, float threshold) {
+	public static <T,X> float compareSequenceBySimilarSubsequence(T sequenceA, T sequenceB,
+			LCSSequenceAccessorSimilarSubsequence<T,X> accessor, float threshold) {
 		int n = accessor.size(sequenceA);
 		int m = accessor.size(sequenceB);
 		int max = m + n;
-		ArrayList<Object>[] commonSubSeq = new ArrayList[2 * max + 1];
+		List<X>[] commonSubSeq = new ArrayList[2 * max + 1];
 		for (int i = 0; i < commonSubSeq.length; i++) {
-			commonSubSeq[i] = new ArrayList<Object>();
+			commonSubSeq[i] = new ArrayList<X>();
 		}
 		// enthält den jeweiligen am weitesten reichenden Endpunkt für die Diagonale
 		// und wird dynamisch berechnet
@@ -109,7 +110,7 @@ public class LCSUtil {
 				// y lässt sich aus x und k berechnen
 				y = x - k;
 				// Die Diagonale wir weitmöglichst durchlaufen (wird auch Snake genannt)
-				ArrayList<Object> snake = new ArrayList<Object>();
+				ArrayList<X> snake = new ArrayList<X>();
 				while (x < n && y < m && accessor.getSimilarity(accessor.get(sequenceA, x), accessor.get(sequenceB, y)) >= threshold) {
 					snake.add(accessor.get(sequenceA, x));
 					snake.add(accessor.get(sequenceB, y));
@@ -129,7 +130,7 @@ public class LCSUtil {
 				if (x >= n && y >= m) {
 
 					float lcs = 0;
-					Object[] objSequence = commonSubSeq[k + max].toArray();
+					X[] objSequence = (X[])commonSubSeq[k + max].toArray();
 					for (int i = 0; i < objSequence.length; i += 2) {
 						lcs += accessor.getSimilarity(objSequence[i], objSequence[i + 1]);
 					}

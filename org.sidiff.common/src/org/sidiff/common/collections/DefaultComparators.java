@@ -5,7 +5,6 @@ import java.util.*;
 /**
  * This class can be used to create some default comparators.
  */
-@SuppressWarnings("unchecked")
 public class DefaultComparators {
 
 	private DefaultComparators() {
@@ -17,9 +16,9 @@ public class DefaultComparators {
 	 * @return Comparator
 	 */
 	public static <T> Comparator<T> getHashComparator(Class<T> type) {
-		return ((Comparator<T>) new Comparator() {
+		return new Comparator<T>() {
 
-			Map<Object, Long> identities = null;
+			Map<Object, Long> identities = new HashMap<Object, Long>();
 			long nextID = 1;
 
 			private Long getIdentity(Object o) {
@@ -35,12 +34,10 @@ public class DefaultComparators {
 			}
 
 			@Override
-			public int compare(Object o1, Object o2) {
+			public int compare(T o1, T o2) {
 				int i = o1.hashCode() - o2.hashCode();
 				if (i == 0 && o1 != o2) {
-					
-					if (identities == null) identities = new HashMap<Object, Long>();
-					
+										
 					Long identityO1 = getIdentity(o1);
 					Long identityO2 = getIdentity(o2);
 					
@@ -49,6 +46,6 @@ public class DefaultComparators {
 				}
 				return i;
 			}
-		});
+		};
 	}
 }

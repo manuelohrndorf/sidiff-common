@@ -20,7 +20,7 @@ public class ReflectionUtil {
 	 * @param constuctorParams
 	 * @return
 	 */
-	public static <T extends Object> T createInstance(Class<T> clientClass, Object... constuctorParams) {
+	public static <T> T createInstance(Class<T> clientClass, Object... constuctorParams) {
 		Constructor<T> constructor = getConstructor(clientClass, constuctorParams);
 		if (constructor == null) {
 			throw new IllegalArgumentException("ReflectionUtil::createInstance - No suitable constructor [" + StringUtil.resolve(constuctorParams) + "] at Class " + clientClass.getName());
@@ -47,7 +47,7 @@ public class ReflectionUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Object> T createInstance(String className, Class<T> resulttype, Object... constuctorParams) {
+	public static <T> T createInstance(String className, Class<T> resulttype, Object... constuctorParams) {
 		// Try to get Client Class
 		Class<?> clientClass = null;
 		try {
@@ -75,7 +75,7 @@ public class ReflectionUtil {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Object> Constructor<T> getConstructor(Class<T> clientClass, Object... constuctorParams) {
+	public static <T> Constructor<T> getConstructor(Class<T> clientClass, Object... constuctorParams) {
 		// Get Matching Constuctor
 		Constructor<T> constructor = null;
 		for (Constructor<?> c : clientClass.getConstructors()) {
@@ -123,13 +123,12 @@ public class ReflectionUtil {
 	 * @param methodParams
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T invokeStaticMethod(Class<T> resultType, Class clientClass, String methodName, Object... methodParams) {
+	public static <T> T invokeStaticMethod(Class<T> resultType, Class<?> clientClass, String methodName, Object... methodParams) {
 
 		// Get Matching Method
 		Method method = null;
 		for (Method m : clientClass.getMethods()) {
-			Class[] params = m.getParameterTypes();
+			Class<?>[] params = m.getParameterTypes();
 			if (m.getName().equals(methodName) && params.length == methodParams.length) {
 
 				// Check return Value
@@ -140,9 +139,9 @@ public class ReflectionUtil {
 					for (int i = 0; i < params.length; i++) {
 						if (params[i].isPrimitive()) {
 							// Assignment Comartible to Wrapper
-							Class primitiveMethodParam = null;
+							Class<?> primitiveMethodParam = null;
 							try {
-								primitiveMethodParam = (Class) (methodParams[i].getClass().getField("TYPE").get(methodParams[i]));
+								primitiveMethodParam = (Class<?>) methodParams[i].getClass().getField("TYPE").get(methodParams[i]);
 							} catch (Exception e) {
 								/** Not a Wrapper */
 							}

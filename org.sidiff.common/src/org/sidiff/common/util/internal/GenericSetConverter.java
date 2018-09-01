@@ -37,7 +37,7 @@ public class GenericSetConverter implements ObjectConverter {
 		
 		String[] type_date = string.split(INSTANCE_TYPE_SEPERATOR,2);
 		if(type_date.length==2){
-			List result = ReflectionUtil.createInstance(type_date[0], List.class);
+			List<Object> result = ReflectionUtil.createInstance(type_date[0], List.class);
 			for(String entry_data : type_date[1].split(SET_ENTRY_SEPERATOR)){
 				result.add(ObjectUtil.unmarshal(Object.class, entry_data));
 			}

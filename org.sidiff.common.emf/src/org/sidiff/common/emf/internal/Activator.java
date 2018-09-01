@@ -7,7 +7,6 @@ import org.sidiff.common.emf.adapters.ElementByIDAdapterFactory;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
 import org.sidiff.common.emf.annotation.AnnotationManager;
 import org.sidiff.common.emf.annotation.AnnotationsAdapterFactory;
-import org.sidiff.common.emf.annotation.internal.AnnotationDebugger;
 import org.sidiff.common.io.IOUtil;
 import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.util.StringResolver;

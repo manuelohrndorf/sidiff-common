@@ -13,8 +13,8 @@ import org.eclipse.emf.query.statements.FROM;
 import org.eclipse.emf.query.statements.IQueryResult;
 import org.eclipse.emf.query.statements.SELECT;
 import org.eclipse.emf.query.statements.WHERE;
-import org.eclipse.ocl.OCL;
 import org.eclipse.ocl.ParserException;
+import org.eclipse.ocl.ecore.OCL;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 
@@ -44,13 +44,11 @@ public class OCLUtil {
 	 * @param contextClassifier Optional. Defines the context class of the OCL expression.
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static Collection<EObject> selectFrom(Collection<EObject> elements, String expression, EClassifier contextClassifier) {
-		OCL ocl = org.eclipse.ocl.ecore.OCL.newInstance();
 		EObjectCondition condition;
 		try {
 			condition = new BooleanOCLCondition<EClassifier, EClass, EObject>(
-			    ocl.getEnvironment(),
+					OCL.newInstance().getEnvironment(),
 			    expression,
 			    contextClassifier);
 		} catch (ParserException e) {
@@ -73,13 +71,11 @@ public class OCLUtil {
 	 * @param contextClassifier Optional. Defines the context class of the OCL expression.
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static OCLCondition createCondition(String expression, EClassifier contextClassifier) {
-		OCL ocl = org.eclipse.ocl.ecore.OCL.newInstance();
 		EObjectCondition condition;
 		try {
 			condition = new BooleanOCLCondition<EClassifier, EClass, EObject>(
-			    ocl.getEnvironment(),
+				OCL.newInstance().getEnvironment(),
 			    expression,
 			    contextClassifier);
 		} catch (ParserException e) {

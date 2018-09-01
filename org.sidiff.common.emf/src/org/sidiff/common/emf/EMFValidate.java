@@ -1,7 +1,6 @@
 package org.sidiff.common.emf;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.ecore.EObject;
@@ -46,9 +45,8 @@ public class EMFValidate {
 					message += " ;" + name + ": ;";
 				
 				LogUtil.log(LogEvent.MESSAGE, diagnostic.getMessage());
-				for (Iterator i=diagnostic.getChildren().iterator(); i.hasNext();)
+				for (Diagnostic childDiagnostic : diagnostic.getChildren())
 				{
-					Diagnostic childDiagnostic = (Diagnostic)i.next();
 					switch (childDiagnostic.getSeverity())
 					{
 						case Diagnostic.ERROR:

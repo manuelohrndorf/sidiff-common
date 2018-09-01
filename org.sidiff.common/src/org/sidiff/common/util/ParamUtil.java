@@ -225,7 +225,7 @@ public class ParamUtil {
 				String[] values = value.split(VALUE_LIST_SEPARATOR);
 				for (int i = 0; i < values.length; i++) {
 					try {
-						((Collection)this.value).add(String.class.getConstructor(String.class).newInstance(values[i]));
+						((Collection<? super String>)this.value).add(values[i]);
 					} catch (Exception e) {
 						throw new IllegalArgumentException("Cannot create '" + type.getName() + "' with '" + value + "'");
 					}

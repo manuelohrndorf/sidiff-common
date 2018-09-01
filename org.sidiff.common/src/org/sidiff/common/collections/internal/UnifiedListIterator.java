@@ -21,7 +21,7 @@ class UnifiedListIterator<E> extends UnifiedCollectionIterator<E> implements Lis
 		super(collections);
 		this.baseList = base;
 		superIndex = i;
-		for (int j = 0; i < superIndex; j++)
+		for (int j = 0; j < superIndex; j++)
 			super.next();
 		thisIndex = i;
 	}

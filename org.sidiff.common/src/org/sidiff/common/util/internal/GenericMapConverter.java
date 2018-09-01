@@ -42,7 +42,7 @@ public class GenericMapConverter implements ObjectConverter {
 		
 		String[] type_data = string.split(INSTANCE_TYPE_SEPERATOR,2);
 		if(type_data.length==2){
-			Map result = ReflectionUtil.createInstance(type_data[0], Map.class);
+			Map<Object,Object> result = ReflectionUtil.createInstance(type_data[0], Map.class);
 			for(String entry_data : type_data[1].split(LIST_ENTRY_SEPERATOR)){
 				String[] key_data = entry_data.split(MAP_ASSIGN,2);
 				result.put(ObjectUtil.unmarshal(Object.class, key_data[0]), ObjectUtil.unmarshal(Object.class, key_data[1]));

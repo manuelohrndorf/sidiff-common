@@ -132,7 +132,11 @@ public final class CollectionView {
 	 * {@link UnsupportedOperationException} in the returned Collection.
 	 * <p>
 	 * None of the above methods is thread safe (nor would there be an easy way of making them).
+	 * @deprecated This function is unsafe. Use streams instead:
+	 * <pre>Stream.concat(listOne.stream(), listTwo.stream())
+     *      .collect(Collectors.toList());</pre>
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> Collection<T> combine(final Collection<? extends T>... items) {
 		return new JoinedCollectionView<T>(items);
 	}

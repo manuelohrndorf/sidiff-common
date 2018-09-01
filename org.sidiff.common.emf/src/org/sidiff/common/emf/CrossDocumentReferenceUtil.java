@@ -146,9 +146,9 @@ public class CrossDocumentReferenceUtil {
 				for(EObject eObject: EMFUtil.getAllContentAsIterable(res)) {
 
 					// try to resolve and replace EObjects or keep the proxyURI for further investigation
-					FeatureIterator featureIt = (FeatureIterator) eObject.eCrossReferences().iterator();
+					FeatureIterator<EObject> featureIt = (FeatureIterator<EObject>) eObject.eCrossReferences().iterator();
 					while(featureIt.hasNext()) {
-						EObject targetedEObject = (EObject) featureIt.next();
+						EObject targetedEObject = featureIt.next();
 
 						if(targetedEObject.eIsProxy()) {
 							//try again to resolve it
@@ -171,7 +171,7 @@ public class CrossDocumentReferenceUtil {
 				EObject eObject = (EObject) object;
 
 				// try to resolve and replace EObjects or keep the proxyURI for further investigation
-				FeatureIterator featureIt = (FeatureIterator) eObject.eCrossReferences().iterator();
+				FeatureIterator<EObject> featureIt = (FeatureIterator<EObject>) eObject.eCrossReferences().iterator();
 				while(featureIt.hasNext()) {
 					EObject targetedEObject = (EObject) featureIt.next();
 

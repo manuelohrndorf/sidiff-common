@@ -73,9 +73,8 @@ public abstract class XSLTImporter implements Loader {
 	 * The default parser implementation is not namespace-aware.
 	 * @return a map with options or an empty map
 	 */
-	@SuppressWarnings("unchecked")
-	public Map getLoadOptions() {
-		return new HashMap();
+	public Map<?,?> getLoadOptions() {
+		return new HashMap<>();
 	}
 
 }

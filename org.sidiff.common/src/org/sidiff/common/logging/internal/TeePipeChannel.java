@@ -68,7 +68,6 @@ public class TeePipeChannel implements ILogChannel {
 		
 	}
 	
-	@SuppressWarnings("unchecked")
 	private ILogChannel getOutputChannel(String channelName) {
 		
 		if (channelName.indexOf(".")==-1)
@@ -76,7 +75,7 @@ public class TeePipeChannel implements ILogChannel {
 		
 		try {
 			
-			Class channelClass = Class.forName(channelName);
+			Class<?> channelClass = Class.forName(channelName);
 			return (ILogChannel)channelClass.getConstructor().newInstance();
 			
 		} catch (Exception e) {

@@ -156,13 +156,12 @@ public class LogUtil {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static void setLogChannel(String channelName) {
 
 		try {
 			if (channelName.indexOf(".")==-1)
 				channelName = CHANNEL_PREFIX + channelName;
-			Class channelClass = ReflectionUtil.loadClass(channelName);
+			Class<?> channelClass = ReflectionUtil.loadClass(channelName);
 			LogUtil.channel = (ILogChannel)channelClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			System.out.println("Cannot get output Channel:" + channelName);

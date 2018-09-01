@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SiDiff Common - Extension Management
+Bundle-SymbolicName: org.sidiff.common.extension;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Require-Bundle: org.eclipse.core.runtime
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.sidiff.common.extension
+Export-Package: org.sidiff.common.extension
+Bundle-Vendor: Software Engineering Group, University of Siegen
+Bundle-Activator: org.sidiff.common.extension.internal.ExtensionsPlugin
+Bundle-ActivationPolicy: lazy

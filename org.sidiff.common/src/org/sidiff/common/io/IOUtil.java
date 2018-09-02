@@ -1,8 +1,16 @@
 package org.sidiff.common.io;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 
+import org.eclipse.core.runtime.Assert;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
@@ -16,6 +24,7 @@ public class IOUtil {
 	 * Creates an input stream from a file.
 	 * @param filename
 	 * @return
+	 * @deprecated Use <code>new FileInputStream(filename)</code> instead
 	 */
 	public static InputStream getInputStreamFromFile(String filename) {
 		File file = new File(filename);
@@ -32,6 +41,7 @@ public class IOUtil {
 	 * Creates an input stream from a string.
 	 * @param data
 	 * @return
+	 * @deprecated Use <code>new ByteArrayInputStream(data.getBytes())</code> instead
 	 */
 	public static InputStream getInputStreamFromString(String data) {
 		return new StringInputStream(data);
@@ -81,10 +91,12 @@ public class IOUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * Creates an output stream that writes into the given file.
 	 * @param filename
 	 * @return
+	 * @deprecated Use <code>new FileOutputStream(filename)</code> instead
 	 */
 	public static OutputStream getOutputStreamIntoFile(String filename) {
 		File file = new File(filename);
@@ -101,6 +113,9 @@ public class IOUtil {
 	 * Creates an output stream that writes into the given string buffer.
 	 * @param buffer
 	 * @return
+	 * @deprecated Use <code>ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	 * baos.toString(charsetName); // e.g. "UTF-8"</code>
+	 * 
 	 */
 	public static OutputStream getOutputStreamIntoString(StringBuffer buffer) {
 		return new StringOutputStream(buffer);
@@ -111,21 +126,13 @@ public class IOUtil {
 	 * @param stream
 	 * @return
 	 */
-	public static String readFromStream(InputStream stream) {
-		StringBuffer sbuffer = new StringBuffer();
-		InputStreamReader istreamReader = new InputStreamReader(stream);
-		BufferedReader breader = new BufferedReader(istreamReader);
-		try {
-			String line = breader.readLine();
-			while (line != null) {
-				sbuffer.append(line + "\n");
-				line = breader.readLine();
-			}
-			stream.close();
+	public static String readFromStream(InputStream inStream) {
+		try (ByteArrayOutputStream outStream = new ByteArrayOutputStream();) {
+			transfer(inStream, outStream);
+			return outStream.toString();
 		} catch (IOException e) {
 			throw new SiDiffRuntimeException(IOUtil.class, "Error while Reading from stream ", e);
 		}
-		return sbuffer.toString();
 	}
 	
 	/**
@@ -134,21 +141,8 @@ public class IOUtil {
 	 * @param charCount
 	 * @return
 	 */
-	public static String readFromStream(InputStream stream,int charCount) {
-
-		StringBuffer sbuffer = new StringBuffer(); 
-		if (stream != null) {
-			InputStreamReader istreamReader = new InputStreamReader(stream);
-			try {
-				for (int i = 0; i < charCount && istreamReader.ready(); i++) {
-					sbuffer.append((char) istreamReader.read());
-				}
-				stream.close();
-			} catch (IOException e) {
-				throw new SiDiffRuntimeException(IOUtil.class, "Error while Reading from stream ", e);
-			}
-		}
-		return sbuffer.toString();
+	public static String readFromStream(InputStream stream, int charCount) {
+		return readFromStream(new BoundedInputStream(stream, charCount));
 	}
 
 	/**
@@ -166,8 +160,84 @@ public class IOUtil {
 	}
 
 	/**
+	 * An input streams which read a maximum number of bytes.
+	 *
+	 */
+	private static class BoundedInputStream extends InputStream {
+
+		private final InputStream inStream;
+		private long remainingBytes;
+
+		public BoundedInputStream(InputStream inStream, long maxBytes) {
+			Assert.isLegal(maxBytes > 0, "maxBytes must be greater than 0");
+			this.inStream = inStream;
+			this.remainingBytes = maxBytes;
+		}
+
+		@Override
+		public int read() throws IOException {
+			if (remainingBytes > 0) {
+	            int c = inStream.read();
+	            if (c >= 0) {
+	            	remainingBytes -= 1;
+	            }
+	            return c;
+	        }
+			return -1;
+		}
+
+		@Override
+		public int read(byte[] b) throws IOException {
+			return this.read(b, 0, b.length);
+		}
+
+		@Override
+		public int read(byte[] b, int off, int len) throws IOException {
+			if (remainingBytes > 0) {
+	            int readBytes = inStream.read(b, off, (int)Math.min(len, remainingBytes));
+	            remainingBytes -= readBytes;
+	            return readBytes;
+	        }
+			return -1;
+		}
+
+		@Override
+		public int available() throws IOException {
+			return (int)Math.min(inStream.available(), remainingBytes);
+		}
+
+		@Override
+		public long skip(long n) throws IOException {
+			long skipped = inStream.skip(Math.min(n, remainingBytes));
+			remainingBytes -= skipped;
+	        return skipped;
+		}
+
+		@Override
+		public void close() throws IOException {
+			super.close();
+		}
+
+		@Override
+		public synchronized void mark(int readlimit) {
+			// does nothing
+		}
+
+		@Override
+		public boolean markSupported() {
+			return false;
+		}
+
+		@Override
+		public synchronized void reset() throws IOException {
+			throw new UnsupportedOperationException();
+		}
+	}
+	
+	/**
 	 * OutputStream implementation for Strings
 	 */
+	@Deprecated
 	private static class StringOutputStream extends OutputStream {
 		
 		private StringBuffer buffer = null;
@@ -184,7 +254,7 @@ public class IOUtil {
 	/**
 	 * InputStream implementation for Strings
 	 */
-	//FIXME respecting encoding!
+	@Deprecated
 	private static class StringInputStream extends InputStream {
 		
 		private int position = 0;

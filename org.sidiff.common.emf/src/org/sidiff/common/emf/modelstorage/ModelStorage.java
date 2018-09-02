@@ -1,13 +1,24 @@
 package org.sidiff.common.emf.modelstorage;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.resource.*;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
@@ -609,8 +620,7 @@ public class ModelStorage {
 		if(fileName!=null){
 			if (loader != null){
 				if (ignoreSuffix || fileName.endsWith(loader.getSuffix())){
-					InputStream istream = IOUtil.getInputStreamFromFile(fileName);
-					if (istream != null) {
+					try (InputStream istream = new FileInputStream(fileName)) {
 						result = createManagedResource(fileName + NATIVE_MODEL_SUFFIX, id,true);
 						try {
 							LogUtil.log(LogEvent.NOTICE, "Importing ", fileName, " using ", loader.getLoaderDescription());
@@ -628,7 +638,7 @@ public class ModelStorage {
 						} catch (Exception e) {
 							LogUtil.log(LogEvent.ERROR, "Error while importing Model '" + fileName + "'\n", e);
 						}
-					} else {
+					} catch(IOException e) {
 						LogUtil.log(LogEvent.ERROR, "No datastream (File not found:" + fileName);
 					}
 				} else {
@@ -650,10 +660,14 @@ public class ModelStorage {
 
 	private Loader getUsableLoader(String fileName){
 		
-
 		String suffix = (fileName.lastIndexOf(EXTENSION_SEPERATOR)>0)? fileName.substring(fileName.lastIndexOf(EXTENSION_SEPERATOR)+1) : fileName;
-		String data = IOUtil.readFromStream(IOUtil.getInputStreamFromFile(fileName), LOADERCHECK_READ_AHEAD);
-		data = data.replaceAll("\n", "").replace("\r", "");
+		String data;
+		try {
+			data = IOUtil.readFromStream(new FileInputStream(fileName), LOADERCHECK_READ_AHEAD);
+		} catch (FileNotFoundException e) {
+			return null;
+		}
+		data = data.replaceAll("\n", "").replaceAll("\r", "");
 		Loader usableLoader = null;
 		Set<Loader> loaderSet = null;
 		
@@ -671,7 +685,7 @@ public class ModelStorage {
 			for (Loader loader : loaderSet) {
 				usableLoader = loader;
 				for (String magigKey : loader.getMagicKeys()) {
-					if (data == null || !data.matches(magigKey)) {
+					if (!data.matches(magigKey)) {
 						usableLoader = null;
 						break;
 					}

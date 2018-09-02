@@ -1,18 +1,29 @@
 package org.sidiff.common.xml;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Hashtable;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
-import javax.xml.transform.*;
+import javax.xml.transform.Source;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
 
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
-import org.sidiff.common.io.*;
+import org.sidiff.common.io.IOUtil;
+import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
 import org.sidiff.common.xml.internal.MapLoader;
-import org.xml.sax.*;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
@@ -24,13 +35,13 @@ public class XMLResolver implements EntityResolver, URIResolver {
 	private final static String BOOTSTRAP_FILENAME = "org.sidiff.common.xml.EntityResolver.xml";
 
 	private static XMLResolver instance = null;
-	private Hashtable<String, String> mappings = null;
+	private Map<String, String> mappings = null;
 
-	private ArrayList<String> loadedMappingDatas = null;
+	private Set<String> loadedMappingDatas = null;
 
 	private XMLResolver() {
-		mappings = new Hashtable<String, String>();
-		loadedMappingDatas = new ArrayList<String>();
+		mappings = new HashMap<String, String>();
+		loadedMappingDatas = new HashSet<String>();
 		// bootstrap
 		mappings.put("http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.io.map.dtd", "org.sidiff.common.io.map.dtd");
 	}
@@ -90,7 +101,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 		String string = IOUtil.readFromStream(mappingData);
 		if (loadedMappingDatas.contains(string))
 			return;
-		MapLoader.parseMapFromStream(DTDMAPPING_MAPTYPE, this.mappings, IOUtil.getInputStreamFromString(string));
+		MapLoader.parseMapFromStream(DTDMAPPING_MAPTYPE, this.mappings, new ByteArrayInputStream(string.getBytes()));
 		loadedMappingDatas.add(string);
 
 	}

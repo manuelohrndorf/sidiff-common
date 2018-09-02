@@ -1,19 +1,27 @@
 package org.sidiff.common.emf.annotation;
 
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.EMFUtil;
-import org.sidiff.common.io.IOUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
 import org.sidiff.common.util.ObjectUtil;
 import org.sidiff.common.util.ReflectionUtil;
 import org.sidiff.common.xml.XMLParser;
 import org.sidiff.common.xml.XMLWriter;
-import org.xml.sax.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class AnnotationManager extends ObjectUtil {
@@ -32,23 +40,25 @@ public class AnnotationManager extends ObjectUtil {
 	private static final String ATTR_TYP = "typ";
 	
 	public static void serialize(Resource resource, String file){
-		
-		XMLWriter writer = new XMLWriter(IOUtil.getOutputStreamIntoFile(file));
-				
-		writer.initDocument(DOC_TYPE, null, ROOT, Collections.singletonMap(ATTR_RESOURCE, resource.getURI().toString()));
-
-		AnnotateableElement element = EMFAdapter.INSTANCE.adapt(resource, AnnotateableElement.class);
-		if(!element.getAnnotations().isEmpty()){
-			writeAnnotations(writer, element, null);
-		}
-		
-		for(EObject eObject : EMFUtil.getAllContentAsIterable(resource)){
-			element = EMFAdapter.INSTANCE.adapt(eObject, AnnotateableElement.class);
+		try (OutputStream outStream = new FileOutputStream(file)) {
+			XMLWriter writer = new XMLWriter(outStream);
+			writer.initDocument(DOC_TYPE, null, ROOT, Collections.singletonMap(ATTR_RESOURCE, resource.getURI().toString()));
+	
+			AnnotateableElement element = EMFAdapter.INSTANCE.adapt(resource, AnnotateableElement.class);
 			if(!element.getAnnotations().isEmpty()){
-				writeAnnotations(writer, element, EMFUtil.getEObjectID(eObject));
+				writeAnnotations(writer, element, null);
 			}
+			
+			for(EObject eObject : EMFUtil.getAllContentAsIterable(resource)){
+				element = EMFAdapter.INSTANCE.adapt(eObject, AnnotateableElement.class);
+				if(!element.getAnnotations().isEmpty()){
+					writeAnnotations(writer, element, EMFUtil.getEObjectID(eObject));
+				}
+			}
+			writer.finishDocument();
+		} catch(IOException e) {
+			e.printStackTrace();
 		}
-		writer.finishDocument();
 	}
 	
 	private static void writeAnnotations(XMLWriter writer, AnnotateableElement element, String id){
@@ -75,24 +85,27 @@ public class AnnotationManager extends ObjectUtil {
 	}
 	
 	public static void deserialize(final Resource resource, String file){
-		
-		XMLParser.parseXML(new InputSource(IOUtil.getInputStreamFromFile(file)),
-				new DefaultHandler(){
-			
-				AnnotateableElement element = null;
-				@Override
-				public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-					
-					if(localName.equals(OBJECT)){
-						String id = attributes.getValue(uri, ATTR_ID);
-						element = EMFAdapter.INSTANCE.adapt((id==null)?
-								resource : resource.getEObject(id), AnnotateableElement.class);
-					} else if(localName.equals(ANNOTATION)){
-						assert(element!=null) : "Missing Element to perform annotation! "+attributes;
-						handleAnnotation(element, attributes);
-					}
-				}	
-			});		
+		try {
+			XMLParser.parseXML(new InputSource(new FileInputStream(file)),
+					new DefaultHandler(){
+				
+					AnnotateableElement element = null;
+					@Override
+					public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+						
+						if(localName.equals(OBJECT)){
+							String id = attributes.getValue(uri, ATTR_ID);
+							element = EMFAdapter.INSTANCE.adapt((id==null)?
+									resource : resource.getEObject(id), AnnotateableElement.class);
+						} else if(localName.equals(ANNOTATION)){
+							assert(element!=null) : "Missing Element to perform annotation! "+attributes;
+							handleAnnotation(element, attributes);
+						}
+					}	
+				});
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 

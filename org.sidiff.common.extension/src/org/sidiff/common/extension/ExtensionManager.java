@@ -73,7 +73,10 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public void addExtension(final T extension) {
 		Assert.isNotNull(extension);
-		extensions.put(getInternalExtensionId(extension), extension);
+		final String id = getInternalExtensionId(extension);
+		synchronized (extensions) {
+			extensions.put(id, extension);
+		}
 	}
 
 	/**
@@ -81,7 +84,9 @@ public class ExtensionManager<T extends IExtension> {
 	 * @return collection of all extensions of this manager
 	 */
 	public Collection<T> getExtensions() {
-		return new ArrayList<>(extensions.values());
+		synchronized (extensions) {
+			return new ArrayList<>(extensions.values());
+		}
 	}
 
 	/**
@@ -105,11 +110,13 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public Optional<T> getExtension(final String id) {
 		Assert.isNotNull(id);
-		final T extension = extensions.get(id);
-		if(extension == null) {
-			return Optional.empty();
+		synchronized (extensions) {
+			final T extension = extensions.get(id);
+			if(extension == null) {
+				return Optional.empty();
+			}
+			return Optional.of(extension);
 		}
-		return Optional.of(extension);
 	}
 
 	/**

@@ -60,32 +60,32 @@ public class StringUtil {
 	 * @return
 	 */
 	public static String resolve(Object object) {
-		String result ="null";
-		if (object != null) {
-			Class<?> objectClass = object.getClass();
-			if (resolvers.containsKey(objectClass)) {
-				result = resolvers.get(objectClass).resolve(object);
-			} else {
-				// Get best resolver applicale
-				StringResolver bestMatch = null;
-				int bestInheritanceDistance = Integer.MAX_VALUE;
-				for(StringResolver resolver : resolvers.values()){
-					if(resolver.dedicatedClass().isAssignableFrom(objectClass)){
-						int currentInheritanceDistance = ReflectionUtil.computeInheritanceDistance(resolver.dedicatedClass(), objectClass);
-						if(currentInheritanceDistance<bestInheritanceDistance){
-							bestInheritanceDistance=currentInheritanceDistance;
-							bestMatch=resolver;
-						}
+		if(object == null) {
+			return "null";
+		}
+		
+		Class<?> objectClass = object.getClass();
+		if (resolvers.containsKey(objectClass)) {
+			return resolvers.get(objectClass).resolve(object);
+		} else {
+			// Get best resolver applicable
+			StringResolver bestMatch = null;
+			int bestInheritanceDistance = Integer.MAX_VALUE;
+			for(StringResolver resolver : resolvers.values()){
+				if(resolver.dedicatedClass().isAssignableFrom(objectClass)){
+					int currentInheritanceDistance = ReflectionUtil.computeInheritanceDistance(resolver.dedicatedClass(), objectClass);
+					if(currentInheritanceDistance<bestInheritanceDistance){
+						bestInheritanceDistance=currentInheritanceDistance;
+						bestMatch=resolver;
 					}
 				}
-				if(bestMatch!=null){
-					result = bestMatch.resolve(object);
-				} else {
-					result = object.toString();
-				}
 			}
-		} 
-		return result;
+			if(bestMatch!=null){
+				return bestMatch.resolve(object);
+			} else {
+				return object.toString();
+			}
+		}
 	}
 
 	
@@ -98,8 +98,7 @@ public class StringUtil {
 	 * @return the concatted string representation of the object.
 	 */
 	public static String resolve(Object... objects) {
-		
-		StringBuffer completeMessage = new StringBuffer();
+		StringBuilder completeMessage = new StringBuilder();
 		for (Object object : objects) {
 			completeMessage.append(resolve(object));
 			completeMessage.append(" ");

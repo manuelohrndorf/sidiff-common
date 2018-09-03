@@ -1,5 +1,6 @@
 package org.sidiff.common.ui;
 
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -47,4 +48,22 @@ public class Activator extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	// logging utility functions
+	//
+
+	public static void log(int severity, String message, Throwable throwable) {
+		getDefault().getLog().log(new Status(severity, Activator.PLUGIN_ID, message, throwable));
+	}
+
+	public static void logError(String message, Throwable throwable) {
+		log(Status.ERROR, message, throwable);
+	}
+	
+	public static void logWarning(String message, Throwable throwable) {
+		log(Status.WARNING, message, throwable);
+	}
+	
+	public static void logWarning(String message) {
+		logWarning(message, null);
+	}
 }

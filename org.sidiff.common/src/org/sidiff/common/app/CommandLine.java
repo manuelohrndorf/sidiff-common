@@ -268,7 +268,7 @@ public class CommandLine {
 		 */
 		public T getValue() throws UnparsedCommandLineException {
 			if(!hasBeenParsed)
-				throw new UnparsedCommandLineException("Command line has not been parsed yet.");
+				throw new UnparsedCommandLineException();
 			return value;
 		}
 
@@ -278,8 +278,8 @@ public class CommandLine {
 
 		private static final long serialVersionUID = -4894142120552595070L;
 
-		public UnparsedCommandLineException(Object... message) {
-			super(message);
+		public UnparsedCommandLineException() {
+			super("Command line has not been parsed yet.");
 		}
 		
 	}

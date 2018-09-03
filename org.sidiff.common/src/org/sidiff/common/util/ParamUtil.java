@@ -250,7 +250,7 @@ public class ParamUtil {
 		 */
 		public T getValue() throws UnparsedParameterStringException {
 			if(!hasBeenParsed)
-				throw new UnparsedParameterStringException("Command line has not been parsed yet.");
+				throw new UnparsedParameterStringException();
 			return value;
 		}
 
@@ -260,8 +260,8 @@ public class ParamUtil {
 
 		private static final long serialVersionUID = -4894142120552595070L;
 
-		public UnparsedParameterStringException(Object... message) {
-			super(message);
+		public UnparsedParameterStringException() {
+			super("Command line has not been parsed yet.");
 		}
 		
 	}

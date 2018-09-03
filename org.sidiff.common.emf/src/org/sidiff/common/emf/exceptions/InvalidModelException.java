@@ -1,14 +1,16 @@
 package org.sidiff.common.emf.exceptions;
 
-public class InvalidModelException extends Exception{
+import org.sidiff.common.exceptions.SiDiffException;
+
+public class InvalidModelException extends SiDiffException {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 878132164942287950L;
 
 	public InvalidModelException(String message) {
-		super(message);
+		super(message, "Model is invalid");
 	}
 
 }

@@ -519,8 +519,6 @@ public class EMFUtil {
 		Copier copier = new Copier();
 		copier.copyAll(eObjects);
 		copier.copyReferences();
-		
-	
 		return copier;
 	}
 

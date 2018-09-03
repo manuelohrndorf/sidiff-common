@@ -8,21 +8,20 @@ import org.sidiff.common.util.StringUtil;
 public class SiDiffRuntimeException extends RuntimeException {
 
 	private static final long serialVersionUID = -7081327426269876189L;
-	private Object[] message;
-	private Exception originalException;
 
-	public SiDiffRuntimeException(Object... message) {
-		this.message = message;
-		this.originalException = SiDiffException.getOriginalException(message);
+	private String shortMessage;
+
+	public SiDiffRuntimeException(Object... extra) {
+		super(StringUtil.resolve(extra), SiDiffException.getOriginalException(extra));
+		this.shortMessage = "A runtime error occurred";
 	}
 
-	@Override
-	public String getMessage() {
-		return StringUtil.resolve(message);
+	public SiDiffRuntimeException(String message, String shortMessage, Object... extra) {
+		super(message, SiDiffException.getOriginalException(extra));
+		this.shortMessage = shortMessage;
 	}
 
-	public Exception getOriginalException() {
-		return originalException;
+	public String getShortMessage() {
+		return shortMessage;
 	}
-
 }

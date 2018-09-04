@@ -1,14 +1,28 @@
-package org.sidiff.common.util;
+package org.sidiff.common.statistics;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Utility class for counting things or measuring times.
  * 
- * @author wenzel / reuling
+ * @author wenzel / reuling / Robert Müller
  */
-public class StatisticsUtil implements Serializable {
+public final class StatisticsUtil implements Serializable {
 
 	/**
 	 * Column separator.
@@ -33,42 +47,46 @@ public class StatisticsUtil implements Serializable {
 
 	private static final String STAT_KEY_STARTTIME = "@@STARTOF@@";
 
-	private Map<String, Object> timeStatistic;
-	private Map<String, Object> sizeStatistic;
-	private Map<String, Object> countStatistic;
-	private Map<String, Object> otherStatistic;
+	private SortedMap<String, Object> timeStatistic;
+	private SortedMap<String, Object> sizeStatistic;
+	private SortedMap<String, Object> countStatistic;
+	private SortedMap<String, Object> otherStatistic;
+	private transient boolean enabled = true;
 
 	private static StatisticsUtil instance;
-	private static boolean enabled = true;
 
 	private StatisticsUtil() {
-		this.timeStatistic = new HashMap<String, Object>();
-		this.sizeStatistic = new HashMap<String, Object>();
-		this.countStatistic = new HashMap<String, Object>();
-		this.otherStatistic = new HashMap<String, Object>();
+		this.timeStatistic = new TreeMap<String, Object>();
+		this.sizeStatistic = new TreeMap<String, Object>();
+		this.countStatistic = new TreeMap<String, Object>();
+		this.otherStatistic = new TreeMap<String, Object>();
 	}
 
 	private StatisticsUtil(Map<String, Object> timeStatistic, Map<String, Object> sizeStatistic,
 			Map<String, Object> countStatistic, Map<String, Object> otherStatistic) {
-		this.timeStatistic = new HashMap<String, Object>(timeStatistic);
-		this.sizeStatistic = new HashMap<String, Object>(sizeStatistic);
-		this.countStatistic = new HashMap<String, Object>(countStatistic);
-		this.otherStatistic = new HashMap<String, Object>(otherStatistic);
+		this.timeStatistic = new TreeMap<String, Object>(timeStatistic);
+		this.sizeStatistic = new TreeMap<String, Object>(sizeStatistic);
+		this.countStatistic = new TreeMap<String, Object>(countStatistic);
+		this.otherStatistic = new TreeMap<String, Object>(otherStatistic);
 	}
 
 	/**
-	 * @return {@link StatisticsUtil} singleton.
+	 * @return {@link StatisticsUtil} the singleton instance.
 	 */
 	public static StatisticsUtil getInstance() {
 		if (instance == null)
 			instance = new StatisticsUtil();
 		return instance;
 	}
-	
-	public static void setInstance(StatisticsUtil util) {
-		instance = util;
+
+	/**
+	 * Sets the singleton instance.
+	 * @param instance new instance
+	 */
+	public static void setInstance(StatisticsUtil instance) {
+		StatisticsUtil.instance = Objects.requireNonNull(instance);
 	}
-	
+
 	/**
 	 * {@link StatisticsUtil} factory.
 	 * 
@@ -77,7 +95,6 @@ public class StatisticsUtil implements Serializable {
 	public static StatisticsUtil createStatisticsUtil() {
 		return new StatisticsUtil();
 	}
-	
 
 	/**
 	 * Copy constructor, using a static method.
@@ -88,17 +105,21 @@ public class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * Disables the StatisticsUtil, used for performance reason
+	 * Disables the singleton StatisticsUtil, used for performance reason.
+	 * @deprecated Use <code>getInstance().setEnabled(false)</code>
+	 * to disable the singleton StatisticsUtil object instead.
 	 */
 	public static void disable() {
-		enabled = false;
+		getInstance().setEnabled(false);
 	}
 
 	/**
-	 * Reenables the StatisticsUtil
+	 * Reenables the singleton StatisticsUtil
+	 * @deprecated Use <code>getInstance().setEnabled(true)</code>
+	 * to reenable the singleton StatisticsUtil object instead.
 	 */
 	public static void reenable() {
-		enabled = true;
+		getInstance().setEnabled(true);
 	}
 
 	public Map<String, Object> getTimeStatistic() {
@@ -127,14 +148,22 @@ public class StatisticsUtil implements Serializable {
 		}
 	}
 
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
+	public boolean isEnabled() {
+		return enabled;
+	}
+
 	/**
 	 * Resets the StatisticsUtil. All data will be removed.
 	 */
 	public void reset() {
-			this.timeStatistic.clear();
-			this.sizeStatistic.clear();
-			this.countStatistic.clear();
-			this.otherStatistic.clear();
+		this.timeStatistic.clear();
+		this.sizeStatistic.clear();
+		this.countStatistic.clear();
+		this.otherStatistic.clear();
 	}
 
 	/**
@@ -227,7 +256,7 @@ public class StatisticsUtil implements Serializable {
 			Object o = timeStatistic.get(key);
 			Long time = null;
 			if(o instanceof Long)
-			time = (Long) o;
+				time = (Long) o;
 			else if (o instanceof Float)
 				time = ((Float)o).longValue();
 			if (time == null)
@@ -424,8 +453,8 @@ public class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * FÃ¼gt data.value(data.key) an pos in map.value(data.key) ein.
-	 * Fehlende Elemente in der Liste werden mit null aufgefÃ¼llt
+	 * Fügt data.value(data.key) an pos in map.value(data.key) ein.
+	 * Fehlende Elemente in der Liste werden mit null aufgefüllt
 	 * @param map
 	 * @param data
 	 * @param pos
@@ -475,13 +504,11 @@ public class StatisticsUtil implements Serializable {
 	/**
 	 * Schreibt alles in eine CSV.
 	 * Jeder Key wird eine Zeile. Time, Size, Count und Other wird je eine Spalte.
-	 * Sind keine Daten vorhanden bleibt eine Zelle leer (Zum Ã„ndern: setDefaultToMap-Aufrufe anpassen)
+	 * Sind keine Daten vorhanden bleibt eine Zelle leer (Zum Ändern: setDefaultToMap-Aufrufe anpassen)
 	 * @param file
 	 * @throws IOException
 	 */
 	public void writeToCsv(String file) throws IOException {
-		File csvFile = new File(file);
-		BufferedWriter writer = null;
 		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
 		addToMap(map, timeStatistic, 0);
 		addToMap(map, sizeStatistic, 1);
@@ -492,34 +519,24 @@ public class StatisticsUtil implements Serializable {
 		setDefaultToMap(map, "", 1);
 		setDefaultToMap(map, "", 2);
 		setDefaultToMap(map, "", 3);
-		try {
-			writer = new BufferedWriter(new FileWriter(csvFile, true));
-			StringBuffer sb = new StringBuffer();
-			sb.append("Name" + COL + "Time" + COL + "Size" + COL + "Count" + COL + "Other" + ROW);
-			sb.append("String" + COL + "Decimal" + COL + "Integer" + COL + "Integer" + COL + "String" + ROW);
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(file), true))) {
+			writer.append("Name").append(COL).append("Time").append(COL).append("Size").append(COL)
+				.append("Count").append(COL).append("Other").append(ROW);
+			writer.append("String").append(COL).append("Decimal").append(COL).append("Integer")
+				.append(COL).append("Integer").append(COL).append("String").append(ROW);
 			for (Map.Entry<String, List<Object>> e : map.entrySet()) {
-				sb.append(e.getKey());
+				writer.append(e.getKey());
 				for (Object o : e.getValue()) {
-					sb.append(COL + o.toString());
+					writer.append(COL).append(o.toString());
 				}
-				sb.append(ROW);
+				writer.append(ROW);
 			}
-			writer.write(sb.toString());
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+			writer.flush();
 		}
 	}
 
 	/**
-	 * FÃ¼gt die verschiedenen *Statistic-Maps in einer Map zusammen.
+	 * Fügt die verschiedenen *Statistic-Maps in einer Map zusammen.
 	 * Die Keys werden mit " :: Name", wobei Name der Name der Statistik ist, erweitert.
 	 * @return
 	 */
@@ -581,27 +598,32 @@ public class StatisticsUtil implements Serializable {
 	 * @throws IOException
 	 */
 	public void writeToCsv2(String file) throws IOException {
-		File csvFile = new File(file);
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(csvFile, true));
+		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(file), true))) {
 			List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
 			maps.add(timeStatistic);
 			maps.add(sizeStatistic);
 			maps.add(countStatistic);
 			maps.add(otherStatistic);
-			List<String> extras = Arrays.asList(new String[] { "Time", "Size", "Count", "String" });
+			List<String> extras = Arrays.asList("Time", "Size", "Count", "String");
 			writer.write(getCsv2Data(maps, extras));
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		}
+	}
+
+	/**
+	 * Appends a textual dump of the stored information to the given string builder.
+	 * @param sb the string builder
+	 */
+	public void dump(StringBuilder sb) {
+		if (enabled) {
+			sb.append("*********************Statistics*********************").append(LINE_SEPERATOR);
+			dumpStatisticsSection(sb, "Time statistics (in ms):", timeStatistic);
+			sb.append(LINE_SEPERATOR);
+			dumpStatisticsSection(sb, "Count statistics:", countStatistic);
+			sb.append(LINE_SEPERATOR);
+			dumpStatisticsSection(sb, "Size statistics:", sizeStatistic);
+			sb.append(LINE_SEPERATOR);
+			dumpStatisticsSection(sb, "Other statistics:", otherStatistic);
+			sb.append("**************************************************************");
 		}
 	}
 
@@ -611,34 +633,31 @@ public class StatisticsUtil implements Serializable {
 	 * @return
 	 */
 	public String dump() {
-		if (enabled) {
-			String string = new String("*********************" + "Statistics" + "*********************" + LINE_SEPERATOR);
-			string += "Time statistics (in ms):" + LINE_SEPERATOR;
-			ArrayList<String> keys = new ArrayList<String>(timeStatistic.keySet());
-			Collections.sort(keys);
-			for (String key : keys)
-				string += key + " = " + timeStatistic.get(key) + LINE_SEPERATOR;
-			string += LINE_SEPERATOR;
-			string += "Count statistics:" + LINE_SEPERATOR;
-			ArrayList<String> keys2 = new ArrayList<String>(countStatistic.keySet());
-			Collections.sort(keys2);
-			for (String key : keys2)
-				string += key + " = " + countStatistic.get(key) + LINE_SEPERATOR;
-			string += LINE_SEPERATOR;
-			string += "Size statistics:" + LINE_SEPERATOR;
-			ArrayList<String> keys3 = new ArrayList<String>(sizeStatistic.keySet());
-			Collections.sort(keys3);
-			for (String key : keys3)
-				string += key + " = " + sizeStatistic.get(key) + LINE_SEPERATOR;
-			string += LINE_SEPERATOR;
-			string += "Other statistics:" + LINE_SEPERATOR;
-			ArrayList<String> keys4 = new ArrayList<String>(otherStatistic.keySet());
-			Collections.sort(keys4);
-			for (String key : keys4)
-				string += key + " = " + otherStatistic.get(key) + LINE_SEPERATOR;
-			return string + "**************************************************************";
-		}
-		return "";
+		StringBuilder sb = new StringBuilder();
+		dump(sb);
+		return sb.toString();
 	}
 
+	private void dumpStatisticsSection(StringBuilder sb, String title, Map<String,Object> statistics) {
+		sb.append(title).append(LINE_SEPERATOR);
+		for (Map.Entry<String, Object> entry : statistics.entrySet()) {
+			sb.append(entry.getKey()).append(" = ").append(entry.getValue()).append(LINE_SEPERATOR);
+		}
+	}
+
+	/**
+	 * Reads a serialized StatisticsUtil from the object input stream.
+	 * Used for compatibility with older revisions of this class.
+	 * @param in object input stream
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	@SuppressWarnings("unchecked")
+	private void readObject(ObjectInputStream in) throws IOException,ClassNotFoundException {
+		timeStatistic = new TreeMap<>((Map<String,Object>)in.readObject());
+		sizeStatistic = new TreeMap<>((Map<String,Object>)in.readObject());
+		countStatistic = new TreeMap<>((Map<String,Object>)in.readObject());
+		otherStatistic = new TreeMap<>((Map<String,Object>)in.readObject());
+		enabled = true;
+	}
 }

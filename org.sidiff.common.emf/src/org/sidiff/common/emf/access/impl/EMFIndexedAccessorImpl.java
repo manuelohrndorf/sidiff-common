@@ -1,6 +1,11 @@
 package org.sidiff.common.emf.access.impl;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.common.util.TreeIterator;
@@ -11,7 +16,6 @@ import org.sidiff.common.collections.DefaultComparators;
 import org.sidiff.common.emf.access.EMFReverseAccessor;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.sidiff.common.util.StatisticsUtil;
 
 /**
  * This is an implementation of a reverse accessor that internally
@@ -57,7 +61,7 @@ public class EMFIndexedAccessorImpl implements EMFReverseAccessor{
 	private void createIndex(Resource resource) {
 		
 		assert(!this.index.containsKey(resource)) : "Index already exists! "+resource.getURI();
-		StatisticsUtil.getInstance().start(this+":"+resource);
+		final long start = System.nanoTime();
 
 		// ******************* Compute Index **************************************************
 		Map<EObject, Map<EReference,Collection<EObject>>> newMap = new TreeMap<EObject, Map<EReference,Collection<EObject>>>(DefaultComparators.getHashComparator(EObject.class));
@@ -83,8 +87,8 @@ public class EMFIndexedAccessorImpl implements EMFReverseAccessor{
 			}
 		}
 		
-		StatisticsUtil.getInstance().stop(this+":"+resource);
-		LogUtil.log(LogEvent.NOTICE, "Index created in "+StatisticsUtil.getInstance().getTime(this+":"+resource)+" ("+resource.getURI()+")");
+		final long duration = (System.nanoTime() - start) / 1000000; // [ms]
+		LogUtil.log(LogEvent.NOTICE, "Index created in "+duration+" ms ("+resource.getURI()+")");
 	}
 	
 	private void addIndexEntry(EObject source,EReference reference,EObject target,

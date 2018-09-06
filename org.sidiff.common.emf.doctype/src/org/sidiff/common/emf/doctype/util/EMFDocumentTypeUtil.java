@@ -4,14 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.access.EMFModelAccess;
 import org.sidiff.common.emf.access.Scope;
@@ -41,8 +37,6 @@ public class EMFDocumentTypeUtil {
 	 */
 	public static List<String> resolve(Collection<Resource> resources) {
 		Set<String> docTypes = new HashSet<String>();
-		Map<String, IDocumentTypeResolver> resolvers = getAvailableDocumentTypeResolvers();
-
 		for(Resource resource : resources) {
 			if(resource == null || resource.getContents().isEmpty()) {
 				continue;
@@ -53,13 +47,21 @@ public class EMFDocumentTypeUtil {
 			// try to resolve document types via registered IDocumentTypeResolvers
 			//
 			for(String docType : modelDocTypes) {
-				IDocumentTypeResolver resolver = resolvers.get(docType);
-				if(resolver != null) {
-					List<String> resolvedTypes = resolver.resolve(resource);
-					if(resolvedTypes != null) {
-						docTypes.addAll(resolvedTypes);
+				Collection<IDocumentTypeResolver> resolvers =
+						IDocumentTypeResolver.MANAGER.getExtensions(Collections.singleton(docType), false);
+				if(resolvers.size() > 0) {
+					for(IDocumentTypeResolver resolver : resolvers) {
+						List<String> resolvedTypes = resolver.resolve(resource);
+						if(resolvedTypes != null) {
+							// the document type is resolved with the first resolver that
+							// returns a result, i.e. not null
+							docTypes.addAll(resolvedTypes);
+							break; // other resolvers for this document type are ignored
+						}
 					}
-				}else {
+				} else {
+					// if no resolver for this document type was found,
+					// it is added to the result as is
 					docTypes.add(docType);
 				}
 			}
@@ -67,33 +69,7 @@ public class EMFDocumentTypeUtil {
 
 		// create and sort list of document types
 		List<String> docTypesList = new ArrayList<>(docTypes);
-		docTypesList.sort(new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareTo(o2);
-			}
-		});
+		docTypesList.sort(Comparator.naturalOrder());
 		return docTypesList;
-	}
-
-	/**
-	 * Returns all available document type resolvers, as a map of document type -> resolver.
-	 * @return all available document type resolvers
-	 */
-	protected static Map<String, IDocumentTypeResolver> getAvailableDocumentTypeResolvers() {
-		Map<String, IDocumentTypeResolver> resolvers = new HashMap<>();
-
-		for (IConfigurationElement configurationElement : Platform.getExtensionRegistry().getConfigurationElementsFor(
-				IDocumentTypeResolver.extensionPointID)) {
-			try {
-				IDocumentTypeResolver resolverExtension = (IDocumentTypeResolver) configurationElement.createExecutableExtension(
-						IDocumentTypeResolver.attribute_class);
-				resolvers.put(resolverExtension.getDocumentType(), resolverExtension);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-
-		return resolvers;
 	}
 }

@@ -3,6 +3,8 @@ package org.sidiff.common.emf.doctype;
 import java.util.List;
 
 import org.eclipse.emf.ecore.resource.Resource;
+import org.sidiff.common.extension.ITypedExtension;
+import org.sidiff.common.extension.TypedExtensionManager;
 
 /**
  * An <code>IDocumentTypeResolver</code> resolves the document types
@@ -10,10 +12,12 @@ import org.eclipse.emf.ecore.resource.Resource;
  * @author cpietsch, Robert Müller
  *
  */
-public interface IDocumentTypeResolver {
+public interface IDocumentTypeResolver extends ITypedExtension {
 
-	public static final String extensionPointID = "org.sidiff.common.emf.doctype.document_type_resolver";
-	public static final String attribute_class = "class";
+	Description<IDocumentTypeResolver> DESCRIPTION = Description.of(IDocumentTypeResolver.class,
+			"org.sidiff.common.emf.doctype.document_type_resolver", "document_type_resolver", "class");
+
+	TypedExtensionManager<IDocumentTypeResolver> MANAGER = new TypedExtensionManager<>(DESCRIPTION);
 
 	/**
 	 * Resolve the document types of the given resource. May return
@@ -22,10 +26,4 @@ public interface IDocumentTypeResolver {
 	 * @return list of document types
 	 */
 	public List<String> resolve(Resource resource);
-
-	/**
-	 * Returns the type of documents that this resolver can handle.
-	 * @return document type
-	 */
-	public String getDocumentType();
 }

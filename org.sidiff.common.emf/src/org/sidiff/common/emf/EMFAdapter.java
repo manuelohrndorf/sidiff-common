@@ -15,9 +15,11 @@ import org.sidiff.common.emf.modelstorage.ModelStorage;
  * We implemented our own EMFAdapter registry for comfortabily and speedup reasons.
  */
 public class EMFAdapter {
-	
+
+	public static final EMFAdapter INSTANCE = new EMFAdapter();
+
 	private List<AdapterFactory> factories=null;
-	
+
 	public EMFAdapter() {
 		this.factories = new ArrayList<AdapterFactory>();
 	}
@@ -32,20 +34,15 @@ public class EMFAdapter {
 		return factories.remove(o);
 	}
 
-	@SuppressWarnings("unchecked")
 	public <T> T adapt(Notifier target, Class<T> type) {
-		
 		AdapterFactory factory = EcoreUtil.getAdapterFactory(factories, type);
 		if (factory != null) {
-			return (T) factory.adapt(target, type);
-		} 
-		if (target instanceof EObject)
-			return (T)EcoreUtil.getRegisteredAdapter((EObject)target, type);
-		else if (target instanceof Resource)
-			return (T)EcoreUtil.getRegisteredAdapter((Resource)target, type);
-		else
-			throw new UnsupportedOperationException("EMFAdapter cannot adapt "+target.getClass().getName());
+			return type.cast(factory.adapt(target, type));
+		} else if (target instanceof EObject) {
+			return type.cast(EcoreUtil.getRegisteredAdapter((EObject)target, type));
+		} else if (target instanceof Resource) {
+			return type.cast(EcoreUtil.getRegisteredAdapter((Resource)target, type));
+		}
+		throw new UnsupportedOperationException("EMFAdapter cannot adapt "+target.getClass().getName());
 	}
-
-	public static EMFAdapter INSTANCE = new EMFAdapter();
 }

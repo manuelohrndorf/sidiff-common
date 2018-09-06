@@ -72,16 +72,15 @@ public class OCLUtil {
 	 * @return
 	 */
 	public static OCLCondition createCondition(String expression, EClassifier contextClassifier) {
-		EObjectCondition condition;
 		try {
-			condition = new BooleanOCLCondition<EClassifier, EClass, EObject>(
+			EObjectCondition condition = new BooleanOCLCondition<EClassifier, EClass, EObject>(
 				OCL.newInstance().getEnvironment(),
 			    expression,
 			    contextClassifier);
+			return new OCLCondition(expression, condition);
 		} catch (ParserException e) {
 			throw new SiDiffRuntimeException("Unable to create OCL condition '"+expression+"'",e);
 		}
-		return new OCLCondition(expression, condition);
 	}
 
 	/**

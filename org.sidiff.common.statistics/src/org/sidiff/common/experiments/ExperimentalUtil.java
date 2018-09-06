@@ -1,15 +1,17 @@
 package org.sidiff.common.experiments;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +39,10 @@ public final class ExperimentalUtil implements Serializable {
 	 */
 	public static final String FILE_EXTENSION = "ser";
 
+	private static final long serialVersionUID = 4920634384535018404L;
+
+	private static final String LINESEP = System.getProperty("line.separator");
+
 	/**
 	 * Column separator.
 	 */
@@ -45,11 +51,9 @@ public final class ExperimentalUtil implements Serializable {
 	/**
 	 * Row separator.
 	 */
-	private static final String ROW = System.getProperty("line.separator");
-	
-	private static final long serialVersionUID = 4920634384535018404L;
+	private static final String ROW = LINESEP;
 
-	private static final String LINE_SEPERATOR = System.getProperty("line.separator");
+	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
 	/**
 	 * Global singleton
@@ -89,21 +93,28 @@ public final class ExperimentalUtil implements Serializable {
 	 * @return today's date as formatted String
 	 */
 	private String getTodayDateFormatted() {
-		Date date = new Date();
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
-		return formatter.format(date);
+		return DATE_FORMAT.format(new Date());
 	}
 
 	/**
-	 * Instance method for global instantiated ExperimentalUtil
-	 * 
-	 * @param experimentName
-	 *            Name of the experiment
+	 * Returns the singleton ExperimentalUtil instance.
+	 * The instance must be initialized with {@link #newInstance(String)} before calling this method.
 	 * @return global instance of this util
+	 * @throws IllegalStateException if no singleton instance was created yet
 	 */
-	public static ExperimentalUtil getInstance(String experimentName) {
-		if (instance == null)
-			instance = new ExperimentalUtil(experimentName);
+	public static ExperimentalUtil getInstance() {
+		if(instance == null)
+			throw new IllegalStateException("No singleton instance was created with newInstance");
+		return instance;
+	}
+
+	/**
+	 * Creates and sets a new global instance of this class.
+	 * @param experimentName Name of the experiment
+	 * @return new global instance of this util
+	 */
+	public static ExperimentalUtil newInstance(String experimentName) {
+		instance = new ExperimentalUtil(experimentName);
 		return instance;
 	}
 
@@ -117,10 +128,17 @@ public final class ExperimentalUtil implements Serializable {
 	}
 
 	/**
-	 * Clears the current ExperimentalUtil by re-creating an instance of this class.
+	 * Clears the global ExperimentalUtil instance.
 	 */
-	public void clear(){
-		instance = new ExperimentalUtil(experimentName);
+	public static void clearInstance() {
+		instance = null;
+	}
+
+	/**
+	 * Re-creates the global ExperimentalUtil instance using the current experiment's name.
+	 */
+	public void recreateInstance() {
+		newInstance(experimentName);
 	}
 
 	/**
@@ -556,16 +574,14 @@ public final class ExperimentalUtil implements Serializable {
 		List<String> colList = new ArrayList<String>(cols);
 		Collections.sort(colList);
 		/* In Datei schreiben */
-		File csvFile=new File(filename);
-		Files.deleteIfExists(csvFile.toPath());
-		BufferedWriter writer = null;
-		try {
-			writer = new BufferedWriter(new FileWriter(csvFile, true));
-			StringBuilder sb = new StringBuilder();
+		Path csvPath = Paths.get(filename);
+		Files.deleteIfExists(csvPath);
+		try (BufferedWriter writer = Files.newBufferedWriter(csvPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
+			
 			/* Namen-Zeile schreiben */
-			sb.append("Run");
+			writer.append("Run");
 			for (String col : colList){
-				sb.append(COL+col);
+				writer.append(COL+col);
 			}
 			
 			/* Datentypen-Zeile schreiben */
@@ -576,23 +592,12 @@ public final class ExperimentalUtil implements Serializable {
 			}*/
 			/* Experiemnt-Zeile schreiben */
 			for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()){
-				sb.append(ROW);
-				sb.append(run.getKey());
+				writer.append(ROW);
+				writer.append(run.getKey());
 				Map<String, Object> stats = run.getValue().getUnifiedStatistics();
 				for (String col : colList){
 					Object value=stats.get(col);
-					sb.append(COL+(value != null ? value.toString() : ""));
-				}
-			}
-			writer.write(sb.toString());
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (writer != null) {
-				try {
-					writer.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+					writer.append(COL+(value != null ? value.toString() : ""));
 				}
 			}
 		}
@@ -606,13 +611,13 @@ public final class ExperimentalUtil implements Serializable {
 	public String dump() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("*********************").append(this.experimentName).append(" Statistics")
-			.append("*********************").append(LINE_SEPERATOR).append(LINE_SEPERATOR);
+			.append("*********************").append(LINESEP).append(LINESEP);
 		for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()) {
-			sb.append("---------- ").append(run.getKey()).append(" ----------").append(LINE_SEPERATOR);
+			sb.append("---------- ").append(run.getKey()).append(" ----------").append(LINESEP);
 			run.getValue().dump(sb);
-			sb.append(LINE_SEPERATOR);
+			sb.append(LINESEP);
 		}
-		sb.append(LINE_SEPERATOR).append(LINE_SEPERATOR);
+		sb.append(LINESEP).append(LINESEP);
 		sb.append("******************************************");
 		return sb.toString();
 	}

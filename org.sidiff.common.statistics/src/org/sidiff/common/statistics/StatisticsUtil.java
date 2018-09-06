@@ -108,6 +108,7 @@ public final class StatisticsUtil implements Serializable {
 	 * Disables the singleton StatisticsUtil, used for performance reason.
 	 * @deprecated Use <code>getInstance().setEnabled(false)</code>
 	 * to disable the singleton StatisticsUtil object instead.
+	 * The enabled-state is no longer global for all instances.
 	 */
 	public static void disable() {
 		getInstance().setEnabled(false);
@@ -117,6 +118,7 @@ public final class StatisticsUtil implements Serializable {
 	 * Reenables the singleton StatisticsUtil
 	 * @deprecated Use <code>getInstance().setEnabled(true)</code>
 	 * to reenable the singleton StatisticsUtil object instead.
+	 * The enabled-state is no longer global for all instances.
 	 */
 	public static void reenable() {
 		getInstance().setEnabled(true);

@@ -37,7 +37,7 @@ public class NoBackstep extends EMFCondition {
 	}
 
 	@Override
-	public boolean select(EObject item) {
+	public boolean test(EObject item) {
 		
 		if(lastStep!=null){
 			return !lastStep.result().contains(item);

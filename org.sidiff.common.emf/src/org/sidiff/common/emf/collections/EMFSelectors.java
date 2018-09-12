@@ -1,14 +1,20 @@
 package org.sidiff.common.emf.collections;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.sidiff.common.collections.Selector;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.access.EMFMetaAccess;
 
 /**
- * Different selectors to be used by the FilterUtil and the ViewUtil.
+ * Different selectors/predicates to be used with {@link Stream#filter(Predicate)} / {@link CollectionUtil}.
  * @author wenzel
  *
  */
@@ -19,13 +25,8 @@ public class EMFSelectors {
 	 * @param eClass
 	 * @return
 	 */
-	public static Selector<EObject> byClass(final EClass eClass) {
-		return new Selector<EObject>(){
-			public boolean select(EObject item) {
-				//return eClass == item.eClass();
-				return eClass.isSuperTypeOf(item.eClass());
-			}
-		};
+	public static final Predicate<EObject> byClass(final EClass eClass) {
+		return item -> eClass.isSuperTypeOf(item.eClass());
 	}
 	
 	/**
@@ -33,12 +34,8 @@ public class EMFSelectors {
 	 * @param eClass
 	 * @return
 	 */
-	public static Selector<EObject> byInstance(final EClass eClass) {
-		return new Selector<EObject>(){
-			public boolean select(EObject item) {
-				return eClass.isInstance(item);
-			}
-		};
+	public static final Predicate<EObject> byInstance(final EClass eClass) {
+		return item -> eClass.isInstance(item);
 	}
 
 	/**
@@ -46,12 +43,8 @@ public class EMFSelectors {
 	 * @param resource
 	 * @return
 	 */
-	public static Selector<EObject> byResource(final Resource resource) {
-		return new Selector<EObject>(){
-			public boolean select(EObject item) {
-				return item.eResource()==resource;
-			}
-		};
+	public static final Predicate<EObject> byResource(final Resource resource) {
+		return item -> Objects.equals(item.eResource(), resource);
 	}
 	
 	/**
@@ -59,13 +52,8 @@ public class EMFSelectors {
 	 * @param metamodelPackage
 	 * @return
 	 */
-	public static Selector<EObject> byMetaModel(EPackage metamodelPackage) {
+	public static final Predicate<EObject> byMetaModel(EPackage metamodelPackage) {
 		final List<EClassifier> classes = EMFMetaAccess.getAllMetaClassesForPackage(metamodelPackage);
-		return new Selector<EObject>(){
-			public boolean select(EObject item) {
-				return classes.contains(item.eClass());
-			}
-		};
+		return item -> classes.contains(item.eClass());
 	}
-
 }

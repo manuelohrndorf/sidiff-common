@@ -1,11 +1,22 @@
 package org.sidiff.common.emf.access.impl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.sidiff.common.collections.FilterUtil;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.emf.access.EMFMetaAccess;
 import org.sidiff.common.emf.access.EdgeSemantic;
@@ -89,7 +100,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 
 	@Override
 	public List<EObject> getChildren(EObject object, EClass type) {
-		return Collections.unmodifiableList(FilterUtil.filter(object.eContents(), true, EMFSelectors.byClass(type)));
+		return CollectionUtil.filterList(object.eContents(), EMFSelectors.byClass(type));
 	}
 
 	@Override

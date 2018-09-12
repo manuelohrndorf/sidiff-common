@@ -16,7 +16,7 @@ public class EMFComparators {
 	/**
 	 * Compares EAttributes by their names. 
 	 */
-	public static Comparator<EAttribute> ATTRIBUTE_BY_NAME = new Comparator<EAttribute>(){
+	public static final Comparator<EAttribute> ATTRIBUTE_BY_NAME = new Comparator<EAttribute>(){
 		@Override
 		public int compare(EAttribute eAttribute0, EAttribute eAttribute1) {
 			return eAttribute1.getName().compareTo(eAttribute0.getName());
@@ -26,7 +26,7 @@ public class EMFComparators {
 	/**
 	 * Compares EReferences by their names. 
 	 */
-	public static Comparator<EReference> REFERENCE_BY_NAME = new Comparator<EReference>(){
+	public static final Comparator<EReference> REFERENCE_BY_NAME = new Comparator<EReference>(){
 		@Override
 		public int compare(EReference eReference0, EReference eReference1) {
 			return eReference1.getName().compareTo(eReference0.getName());
@@ -38,7 +38,7 @@ public class EMFComparators {
 	 * @param annotationKey
 	 * @return
 	 */
-	public static Comparator<EObject> createObjectByAnnotationComparator(final String annotationKey) {
+	public static final Comparator<EObject> createObjectByAnnotationComparator(final String annotationKey) {
 		return new Comparator<EObject>() {
 			@Override
 			public int compare(EObject obj1, EObject obj2) {
@@ -60,7 +60,7 @@ public class EMFComparators {
 	/**
 	 * Compares EObjects by their types. 
 	 */
-	public static Comparator<EObject> EOBJECT_BY_TYPE = new Comparator<EObject>(){
+	public static final Comparator<EObject> EOBJECT_BY_TYPE = new Comparator<EObject>(){
 		@Override
 		public int compare(EObject obj1, EObject obj2) {
 			return obj2.eClass().getName().compareTo(obj1.eClass().getName());

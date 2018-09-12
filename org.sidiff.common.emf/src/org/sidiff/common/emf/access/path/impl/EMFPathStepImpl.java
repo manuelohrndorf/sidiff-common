@@ -70,7 +70,7 @@ public class EMFPathStepImpl {
 		if(nodePropertyCondition!=null){
 			Iterator<EObject> iterator = this.lastResult.iterator();
 			while(iterator.hasNext()){
-				if(!nodePropertyCondition.select(iterator.next())){
+				if(!nodePropertyCondition.test(iterator.next())){
 					iterator.remove();
 				}
 			}

@@ -21,8 +21,9 @@ import java.util.*;
  * @param <V> Typ der Werte
  * @param <O> Typ der Objekte
  */
-@SuppressWarnings("serial")
 public class ValueMap<V, O> implements Serializable {
+
+	private static final long serialVersionUID = 9218742371689724674L;
 
 	private Map<V, Collection<O>> value2objects = null;
 	private Map<O, V> objects2value = null;

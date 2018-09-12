@@ -25,7 +25,7 @@ public class OCL extends EMFCondition {
 	}
 
 	@Override
-	public boolean select(EObject item) {
+	public boolean test(EObject item) {
 		return oclCondition.check(item);
 	}
 }

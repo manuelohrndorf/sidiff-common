@@ -1,7 +1,8 @@
 package org.sidiff.common.emf.access.path.conditions;
 
+import java.util.function.Predicate;
+
 import org.eclipse.emf.ecore.EObject;
-import org.sidiff.common.collections.Selector;
 import org.sidiff.common.emf.access.path.impl.EMFPathStepImpl;
 
 /**
@@ -10,7 +11,7 @@ import org.sidiff.common.emf.access.path.impl.EMFPathStepImpl;
  * @author wenzel
  *
  */
-public abstract class EMFCondition implements Selector<EObject> {
+public abstract class EMFCondition implements Predicate<EObject> {
 
 	protected String argumentString = null;
 	
@@ -20,6 +21,6 @@ public abstract class EMFCondition implements Selector<EObject> {
 	
 	public abstract void initCondition(EMFPathStepImpl step);
 	
-	public abstract boolean select(EObject item);
+	public abstract boolean test(EObject item);
 
 }

@@ -48,7 +48,7 @@ public class NoCycle extends EMFCondition {
 	}
 
 	@Override
-	public boolean select(EObject item) {
+	public boolean test(EObject item) {
 		
 		for(EMFPathStepImpl step : this.possibleCyclesOnPath){
 			if(step.result().contains(item)) return false;

@@ -1,21 +1,18 @@
 package org.sidiff.common.emf.collections;
 
+import java.util.function.Function;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.sidiff.common.collections.Classifier;
+import org.sidiff.common.collections.CollectionUtil;
 
 /**
- * Classifiers to be used with the ClassificationUtil.
+ * Classifiers to be used with {@link CollectionUtil}.
  */
 public class EMFClassifiers {
 
 	/**
 	 * Classifies EObjects by their EClass
 	 */
-	public final static Classifier<EClass, EObject> ELEMENT_BY_CLASS = new Classifier<EClass, EObject>() {
-		@Override
-		public EClass classify(EObject item) {
-			return item.eClass();
-		}
-	};
+	public final static Function<EObject, EClass> ELEMENT_BY_CLASS = item -> item.eClass();
 }

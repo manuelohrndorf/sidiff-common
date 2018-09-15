@@ -3,39 +3,23 @@ package org.sidiff.common.collections;
 import java.util.Objects;
 
 /**
- * An immutable pair of two objects of generic types.
+ * <p>An ordered, immutable pair of two objects of generic types.</p>
+ *  <p>An ordered pair is not equal to its inverse pair:<br>
+ * <code>&lt;first, second&gt; != &lt;second, first&gt;</code>.</p>
  * @author Robert Müller
  *
  * @param <T> the type of the first object
  * @param <S> the type of the second object
  */
-public final class Pair<T,S> {
-
-	private final T first;
-	private final S second;
+public final class Pair<T,S> extends AbstractPair<T,S> {
 
 	private Pair(T first, S second) {
-		this.first = first;
-		this.second = second;
-	}
-
-	/**
-	 * @return the first object
-	 */
-	public T getFirst() {
-		return first;
-	}
-
-	/**
-	 * @return the second object
-	 */
-	public S getSecond() {
-		return second;
+		super(first, second);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(first, second);
+		return Objects.hash(getFirst(), getSecond());
 	}
 
 	@Override
@@ -47,8 +31,8 @@ public final class Pair<T,S> {
 			return false;
 		}
 		Pair<?,?> other = (Pair<?,?>) obj;
-		return Objects.equals(first, other.first)
-				&& Objects.equals(second, other.second);
+		return Objects.equals(getFirst(), other.getFirst())
+				&& Objects.equals(getSecond(), other.getSecond());
 	}
 
 	/**

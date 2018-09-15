@@ -2,6 +2,8 @@ package org.sidiff.common.collections;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -11,6 +13,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * <p>Contains various utility functions to work with collections.</p>
@@ -161,5 +164,70 @@ public class CollectionUtil {
 	 */
 	public static <K,V> SortedMap<K, Set<V>> groupSet(Collection<V> collection, Function<V,K> grouping, Comparator<K> comparator) {
 		return collection.stream().collect(Collectors.groupingBy(grouping, () -> new TreeMap<>(comparator), Collectors.toSet()));
+	}
+
+	/**
+	 * Returns an {@link Iterable} using the given {@link Iterator},
+	 * allowing it to be the target of a For-each loop.
+	 * @param iterator the iterator
+	 * @return iterable with the given iterator
+	 */
+	public static <T> Iterable<T> asIterable(Iterator<T> iterator) {
+		return (Iterable<T>)(() -> iterator);
+	}
+
+	/**
+	 * Returns an {@link Iterable} using the given {@link Enumeration}.
+	 * @param enumeration the enumeration
+	 * @return iterable with an iterator for the given enumeration
+	 */
+	public static <T> Iterable<T> asIterable(Enumeration<T> enumeration) {
+		return asIterable(new EnumerationIterable<T>(enumeration));
+	}
+
+	/**
+	 * <p>Returns a {@link Stream} that uses the given {@link Iterable}.</p>
+	 * <p>Note that when the Iterable is a {@link Collection},
+	 * the method {@link Collection#stream()} should be used instead,
+	 * as this method is just for support of generic Iterables.</p>
+	 * @param iterable the iterable
+	 * @return a sequential stream using the iterable
+	 */
+	public static <T> Stream<T> asStream(Iterable<T> iterable) {
+		return StreamSupport.stream(iterable.spliterator(), false);
+	}
+
+	/**
+	 * <p>Returns a {@link Stream} that uses the given {@link Iterator}.</p>
+	 * <p>This is equivalent to <code>asStream(asIterable(iterator))</code>.</p>
+	 * @param iterator the iterator
+	 * @return a sequential stream using the iterator
+	 */
+	public static <T> Stream<T> asStream(Iterator<T> iterator) {
+		return asStream(asIterable(iterator));
+	}
+
+
+	private static final class EnumerationIterable<T> implements Iterator<T> {
+		private final Enumeration<T> enumeration;
+
+		private EnumerationIterable(Enumeration<T> enumeration) {
+			this.enumeration = enumeration;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return enumeration.hasMoreElements();
+		}
+
+		@Override
+		public T next() {
+			return enumeration.nextElement();
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
 }

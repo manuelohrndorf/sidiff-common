@@ -7,28 +7,28 @@ import org.sidiff.common.util.StringUtil;
 import org.sidiff.common.util.internal.*;
 
 /**
- * Dieser Aktivator wird genutzt, falls die Bibliothek in einem OSGI
- * Kontext genutzt wird. Er ermoeglicht den spaetern Zugriff auf den
- * Bundelcontext und initialisiert diverse Bibliotheksteile!
- * Daher solle ein zugriff auf diese Klasse in jedem Fall
- * vor der Benutzung der Bibliothek erfolgen. 
+ * The Common-Plugin bundle activator, which initializes
+ * and deinitializes this plugin.
  * 
- * @author Maik Schmidt
- *
+ * @author Maik Schmidt, Robert Müller
  */
-public class Activator implements BundleActivator {
+public class CommonPlugin implements BundleActivator {
+
+	/**
+	 * The bundle ID
+	 */
+	public static final String ID = "org.sidiff.common";
 
 	/**
 	 * Stores the context in which the bundle is running, if given.
 	 */
 	private static BundleContext context = null;
-	
+
 	@Override
 	public void start(BundleContext context) throws Exception {
-		assert(context!=null):"Context of an activated bundle must not be null!";
-		Activator.context= context;
-		
-		//register all provided StringResolvers
+		CommonPlugin.context = context;
+
+		// register all provided StringResolvers
 		StringUtil.addStringResolver(new ArrayStringResolver());
 		StringUtil.addStringResolver(new CollectionStringResolver());
 		StringUtil.addStringResolver(new ExceptionStringResolver());
@@ -37,8 +37,8 @@ public class Activator implements BundleActivator {
 		StringUtil.addStringResolver(new MapStringResolver());
 		StringUtil.addStringResolver(new ThreadStringResolver());
 		StringUtil.addStringResolver(new StackTraceStringResolver());
-		
-		//register all ObjectConverter
+
+		// register all ObjectConverter
 		ObjectUtil.registerConverter(new StringConverter());
 		ObjectUtil.registerConverter(new IntegerConverter());
 		ObjectUtil.registerConverter(new GenericListConverter());
@@ -49,11 +49,7 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		assert(context!=null):"Context of a deactivated bundle must not be null!";
-		assert(Activator.context==context):"Given context is not the same as given during activation!";
-		Activator.context=null;
-		
-		//unregister all provided StringResolvers
+		// unregister all provided StringResolvers
 		StringUtil.removeStringResolver(ArrayStringResolver.class);
 		StringUtil.removeStringResolver(CollectionStringResolver.class);
 		StringUtil.removeStringResolver(ExceptionStringResolver.class);
@@ -62,17 +58,25 @@ public class Activator implements BundleActivator {
 		StringUtil.removeStringResolver(MapStringResolver.class);
 		StringUtil.removeStringResolver(ThreadStringResolver.class);
 		StringUtil.removeStringResolver(StackTraceStringResolver.class);
+
+		CommonPlugin.context = null;
 	}
-	
-	// DOKU
-	public static BundleContext getBundleContext(){
-		assert(isActivated()):"Bundle is not activated yet!";
-		return Activator.context;
+
+	/**
+	 * Returns the Common-Plugin's execution context.
+	 * @return the bundle context of this plugin
+	 */
+	public static BundleContext getBundleContext() {
+		if(context == null)
+			throw new IllegalStateException("plugin is not activated");
+		return context;
 	}
-	
-	// DOKU
-	public static boolean isActivated(){
-		return Activator.context!=null;
+
+	/**
+	 * Returns whether the Common-Plugin is activated.
+	 * @return <code>true</code> if activated, <code>false</code> otherwise
+	 */
+	public static boolean isActivated() {
+		return context != null;
 	}
-	
 }

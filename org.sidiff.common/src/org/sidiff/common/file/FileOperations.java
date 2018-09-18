@@ -1,225 +1,96 @@
 package org.sidiff.common.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
-import org.sidiff.common.exceptions.FileAlreadyExistsException;
-import org.sidiff.common.exceptions.FileNotCreatedException;
-
+/**
+ * <p>Provides utility functions to work with files.</p>
+ * <p>It is recommended to use {@link Path} instead of strings when
+ * working with absolute file and directory paths.</p>
+ * <p><b>Most utility functions are no longer required</b>, since the
+ * Java Platform already provides many with {@link Files}.</p>
+ * <p>See the table below for some usage examples.</p>
+ * <table>
+ * <caption>Examples</caption>
+ * <tr>
+ *   <td>Get a {@link Path} from string</td>
+ *   <td><code>Path path = Paths.get("C:/foo/bar.txt");</code></td>
+ * </tr>
+ * <tr>
+ *   <td>Get a Path from file</td>
+ *   <td><code>File file = new File("...");<br><code>Path path = file.toPath();</code></td>
+ * <tr>
+ *   <td>Copy a file</td>
+ *   <td><code>Files.copy(sourcePath, targetPath);</code></td>
+ * </tr>
+ * <tr>
+ *   <td>Move a file</td>
+ *   <td><code>Files.copy(sourcePath, targetPath, StandardCopyOption.ATOMIC_MOVE);</code></td>
+ * </tr>
+ * <tr>
+ *   <td>Read all lines of a text file</td>
+ *   <td><code>for(String line : Files.readAllLines(path)) { ... }</code></td>
+ * </tr>
+ * <tr>
+ *   <td>List all regular files in a directory</td>
+ *   <td><code>Files.walk(directoryPath).filter(Files::isRegularFile).forEach(System.out::println);</code></td>
+ * </tr>
+ * </table>
+ * @author Robert Müller
+ * @see <a href="https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html">Path Operations - Tutorial</a>
+ */
 public class FileOperations {
-	
-	/**
-	 * Creates a new directory
-	 * 
-	 * @param path absolute path of the directory that will be created
-	 * @param overwrite if the directory already exists and the flag is false, an FileAlreadyExistsException will be thrown
-	 * @throws FileNotCreatedException
-	 * @throws FileAlreadyExistsException
-	 */
-	public static void createFolder(String path, boolean overwrite) throws FileNotCreatedException, FileAlreadyExistsException{
-		File dir = new File(path);
-		if(dir.exists() && !overwrite){
-			throw new FileAlreadyExistsException("folder already exists");
-		}else if(!dir.exists()){
-			if(!dir.mkdir()) throw new FileNotCreatedException("could not create folder!");
-		}else if(overwrite){
-			removeFolder(path);
-			if(!dir.mkdir()) throw new FileNotCreatedException("could not create folder!");
-		}
-	}
-	
-	/**
-	 * 
-	 * @param path absolute path of the folder which should be deleted
-	 */
-	public static void removeFolder(String path){
-		File dir = new File(path);
-		for(File file : dir.listFiles()){
-			if(file.isDirectory())
-				removeFolder(file.getPath());
-			file.delete();
-		}
-		dir.delete();
-	}
-	
-	
-	/**
-	 * 
-	 * @param path absolute path of the root directory
-	 * @param directory to be searched
-	 * @return 
-	 */
-	public static boolean existsFolder(String path, String dirName){
 
-		File dir = new File(path);
-		if(dir.getName().equals(dirName)) return true;
-		for(File file : dir.listFiles()){
-			if(file.isDirectory() && !file.getName().startsWith("."))
-				if(existsFolder(file.getPath(), dirName)) return true;
-		}
-		return false;
+	private FileOperations() {
+		throw new AssertionError();
 	}
-	
+
 	/**
-	 * 
-	 * @param dir absolute path of a directory
-	 * @return List of all files contained in the directory
+	 * Deletes all files and folders in the given directory recursively.
+	 * Does not follow symbolic links.
+	 * @param directoryPath path of the folder which should be deleted
+	 * @throws IOException is some I/O exception occurred during the deletion
 	 */
-	public static List<File> getFilesFromDir(String dir){
-		ArrayList<File> result = new ArrayList<File>();
-		File file = new File(dir);
-		for(File f : file.listFiles()){
-			if(f.isFile())
-				result.add(f);
-			else
-				result.addAll(getFilesFromDir(f.getPath()));
-		}
-		return result;
+	public static void removeFolder(Path directoryPath) throws IOException {
+		Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() {
+		   @Override
+		   public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+		       Files.delete(file);
+		       return FileVisitResult.CONTINUE;
+		   }
+
+		   @Override
+		   public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+		       Files.delete(dir);
+		       return FileVisitResult.CONTINUE;
+		   }
+		});
 	}
-	
+
 	/**
-	 * 
-	 * @param in
-	 * @param out
-	 * @throws IOException
+	 * Returns whether a directory with the given name exists
+	 * anywhere in the given directory. Does not follow symbolic links.
+	 * @param directoryPath path of the root directory to search
+	 * @param dirName the directory name to search
+	 * @return <code>true</code> if the folder exists, <code>false</code> otherwise
+	 * @throws IOException if some I/O exception occurred during the search
 	 */
-	public static void copyFile(String in, String out) throws IOException{
-		FileInputStream inFile = new FileInputStream(new File(in));
-		File dir = new File(out.substring(0, out.lastIndexOf(File.separator)));
-		if(!dir.exists()) {
-			dir.mkdirs();
-		}
-		FileOutputStream outFile = new FileOutputStream(new File(out));
-		
-		FileChannel inChannel = inFile.getChannel();
-		FileChannel outChannel = outFile.getChannel();
-		
-		try{
-			inChannel.transferTo(0, inChannel.size(), outChannel);
-		}catch(IOException e){
-			throw e;
-		}finally{
-			if (inChannel != null)
-				inChannel.close();
-			if (inFile != null)
-				inFile.close();
-			if (outFile != null)
-				outFile.close();
-			if (outChannel != null)
-				outChannel.close();
-		}
-	}
-	
-	/**
-	 * Calculate the MD5 hash value of the given file.
-	 * 
-	 * @param file
-	 *            The file path.
-	 * @return The MD5 hash as byte array.
-	 * @throws IOException
-	 */
-	public static byte[] readMD5FileHash(String file) throws IOException {
-		DigestInputStream digestInputStream = null;
-		
-		try {
-			MessageDigest digest = MessageDigest.getInstance("MD5");
-		    FileInputStream fileInputStream = new FileInputStream(file);
-		    digestInputStream = new DigestInputStream(fileInputStream, digest);
-			
-		    byte[] buffer = new byte[8192];
-		    while(digestInputStream.read(buffer) != -1);
-		    
-		    return digest.digest();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} finally {
-			if (digestInputStream != null) {
-				digestInputStream.close();	
+	public static boolean existsFolder(Path directoryPath, Path dirName) throws IOException {
+		boolean folderExists[] = new boolean [] { false }; 
+		Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+				if(dir.getFileName().equals(dirName)) {
+					folderExists[0] = true;
+					return FileVisitResult.TERMINATE;
+				}
+				return FileVisitResult.CONTINUE;
 			}
-		}
-		
-		return null;
-	}
-	
-	
-	//TODO remove...
-	public static void createInfoFile(String path, String info){
-		if (!(path.endsWith("/") || path.endsWith("\\"))) {
-			path = path + System.getProperty("file.separator");
-		}
-		
-		try {
-			FileWriter file = new FileWriter (path+"patch.info");
-			file.write(info);
-			file.close();
-	      }
-	      catch (IOException e) {
-	        System.out.println("Fehler: "+e.toString());
-	      }
-	}
-	
-	/**
-	 * reads the content of a file located at the given path
-	 * 
-	 * @param path
-	 *            absolute path to the file to be loaded
-	 * @return the content of the file as a {@link String}
-	 */
-	public static String readFile(String path){
-		FileReader reader = null;
-		String result = "";
-		try {
-			reader = new FileReader(path);
-			for(int c; (c = reader.read()) != -1;){
-				result += (char)c;
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			try {
-				reader.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-	
-	/**
-	 * creates a file at the location given by the path with the given {@link String} as content
-	 * 
-	 * @param path
-	 *            the absolute path of the file the content should be written in
-	 * @param s
-	 *            the content of the file to be written
-	 */
-	public static void writeFile(String path, String s){
-		FileWriter writer = null;
-		try {
-			writer = new FileWriter(path);
-			writer.append(s);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally{
-			try {
-				writer.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		});
+		return folderExists[0];
 	}
 }

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
-import org.sidiff.common.Activator;
+import org.sidiff.common.CommonPlugin;
 import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
 
@@ -36,8 +36,8 @@ public class OSGILogChannel implements ILogChannel {
 	private LogService getLogService() {
 		
 		if(context==null){
-			if(Activator.isActivated()){
-				this.context = Activator.getBundleContext();
+			if(CommonPlugin.isActivated()){
+				this.context = CommonPlugin.getBundleContext();
 			} else {
 				System.err.println("ERROR - OSGI LogChannel cannot get OSGI Context!");
 			}

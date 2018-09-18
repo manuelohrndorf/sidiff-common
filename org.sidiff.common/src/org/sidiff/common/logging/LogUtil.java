@@ -3,7 +3,7 @@ package org.sidiff.common.logging;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import org.sidiff.common.Activator;
+import org.sidiff.common.CommonPlugin;
 import org.sidiff.common.util.ReflectionUtil;
 import org.sidiff.common.util.StringUtil;
 
@@ -75,7 +75,7 @@ public class LogUtil {
 			LogUtil.setLogChannel(logchannelstr);
 		} else {
 			// Default output Channel
-			if(Activator.isActivated()){
+			if(CommonPlugin.isActivated()){
 				LogUtil.setLogChannel(DEFAULT_OUTPUT_CHANNEL_OSGI);
 			} else {
 				LogUtil.setLogChannel(DEFAULT_OUTPUT_CHANNEL);

@@ -2,7 +2,9 @@ package org.sidiff.common.io;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.logging.LogEvent;

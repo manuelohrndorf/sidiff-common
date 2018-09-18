@@ -2,9 +2,11 @@ package org.sidiff.common.emf.modelstorage;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,10 +27,10 @@ import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
+import org.sidiff.common.io.BoundedInputStream;
 import org.sidiff.common.io.IOUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.sidiff.common.util.StringUtil;
 
 /**
  * @author Maik Schmidt
@@ -323,14 +325,14 @@ public class ModelStorage {
 			if(checkSuffix(fileOrResourceName, this.nativeSuffixes)){
 				result=createManagedResource(fileOrResourceName, id,true);// filename!=null! id?
 				if (!result.isLoaded()) {
-					try {
-						result.load(IOUtil.getInputStream(fileOrResourceName), LOAD_OPTIONS);
+					try (InputStream inStream = Files.newInputStream(Paths.get(fileOrResourceName))) {
+						result.load(inStream, LOAD_OPTIONS);
 					} catch (IOException e) {
 						LogUtil.log(LogEvent.ERROR, "Error while loading EMF-Model:\n", e);
 					}
 				}
 			} else {
-				LogUtil.log(LogEvent.ERROR, "Invalid EMF-Model Filename: '"+fileOrResourceName+"' (one of "+StringUtil.resolve(this.nativeSuffixes)+" Expected!)");
+				LogUtil.log(LogEvent.ERROR, "Invalid EMF-Model Filename: '"+fileOrResourceName+"' (one of " + nativeSuffixes + " expected!)");
 			}
 		} else {
 			LogUtil.log(LogEvent.ERROR, "Missing EMF-Model Filename!");
@@ -663,8 +665,8 @@ public class ModelStorage {
 		String suffix = (fileName.lastIndexOf(EXTENSION_SEPERATOR)>0)? fileName.substring(fileName.lastIndexOf(EXTENSION_SEPERATOR)+1) : fileName;
 		String data;
 		try {
-			data = IOUtil.readFromStream(new FileInputStream(fileName), LOADERCHECK_READ_AHEAD);
-		} catch (FileNotFoundException e) {
+			data = IOUtil.toString(new BoundedInputStream(new FileInputStream(fileName), LOADERCHECK_READ_AHEAD), StandardCharsets.UTF_8);
+		} catch (IOException e) {
 			return null;
 		}
 		data = data.replaceAll("\n", "").replaceAll("\r", "");

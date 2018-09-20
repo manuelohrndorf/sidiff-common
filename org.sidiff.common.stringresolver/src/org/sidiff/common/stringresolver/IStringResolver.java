@@ -1,7 +1,6 @@
 package org.sidiff.common.stringresolver;
 
 import org.eclipse.emf.ecore.EObject;
-import org.sidiff.common.extension.INamedExtension;
 import org.sidiff.common.extension.ITypedExtension;
 import org.sidiff.common.extension.TypedExtensionManager;
 
@@ -12,7 +11,7 @@ import org.sidiff.common.extension.TypedExtensionManager;
  * @author cpietsch
  * 
  */
-public interface IStringResolver extends INamedExtension, ITypedExtension {
+public interface IStringResolver extends ITypedExtension {
 
 	Description<IStringResolver> DESCRIPTION = Description.of(IStringResolver.class,
 			"org.sidiff.common.stringresolver.string_resolver_extension", "string_resolver", "string_resolver");

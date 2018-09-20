@@ -7,11 +7,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.RegistryFactory;
 import org.sidiff.common.extension.IExtension.Description;
@@ -22,20 +20,17 @@ import org.sidiff.common.extension.internal.ExtensionsPlugin;
  * <p>A generic manager for extensions.</p>
  * <p>The interface {@link IExtension} specifies a generic extension,
  * which is usually associated with an eclipse extension point.</p>
- * <p>If the extension implements {@link INamedExtension}, the
- * extension's custom key and name will be used for indexing and sorting,
- * else key and name will be derived from the extension's class object.</p>
  * <p>If the extension implements {@link ITypedExtension}, a
  * {@link TypedExtensionManager} should be used instead,
  * as it provides additional functionality.</p>
- * @author Robert Müller
- *
+ * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link IExtension}
+ * @author Robert Müller
  */
 public class ExtensionManager<T extends IExtension> {
 
-	private final Map<String,T> extensions = new HashMap<String,T>();
-	private final Comparator<IExtension> comparator = new ExtensionComparator();
+	private final Map<String,T> extensions = new HashMap<>();
+	private final Comparator<T> comparator = new ExtensionComparator<>();
 
 	/**
 	 * Creates a new, empty extension manager.
@@ -45,7 +40,7 @@ public class ExtensionManager<T extends IExtension> {
 	}
 
 	/**
-	 * Creates a new, empty extension manager and Loads the extensions
+	 * Creates a new, empty extension manager and loads the extensions
 	 * from the extension point specified by the description.
 	 * @param description description of the extension point
 	 */
@@ -55,9 +50,10 @@ public class ExtensionManager<T extends IExtension> {
 			RegistryFactory.getRegistry().getConfigurationElementsFor(description.getExtensionPointId())) {
 			if(element.getName().equals(description.getElementName())) {
 				try {
-					final T extension = description.getExtensionClass().cast(element.createExecutableExtension(description.getClassAttribute()));
+					final Object rawExtension = element.createExecutableExtension(description.getClassAttribute());
+					final T extension = description.getExtensionClass().cast(rawExtension);
 					addExtension(extension);
-				} catch (CoreException e) {
+				} catch (Exception e) {
 					ExtensionsPlugin.logError("Failed to create executable extension contributed by "
 							+ element.getDeclaringExtension().getContributor().getName()
 							+ " for extension point " + description.getExtensionPointId(), e);
@@ -69,69 +65,80 @@ public class ExtensionManager<T extends IExtension> {
 	/**
 	 * Adds the given extension to this manager.
 	 * Existing extensions with the same ID are replaced.
-	 * @param extension the extension, must not be <code>null</code>
+	 * @param extension the extension
 	 */
-	public void addExtension(final T extension) {
+	public final void addExtension(final T extension) {
 		Assert.isNotNull(extension);
-		final String id = getInternalExtensionId(extension);
 		synchronized (extensions) {
-			extensions.put(id, extension);
+			extensions.put(extension.getKey(), extension);
+		}
+	}
+
+	/**
+	 * Removes the extension with the given ID from this manager.
+	 * Does nothing if no extension with this ID exists.
+	 * @param id the extension's ID
+	 */
+	public final void removeExtension(final String id) {
+		Assert.isNotNull(id);
+		synchronized (extensions) {
+			extensions.remove(id);
 		}
 	}
 
 	/**
 	 * Returns all extensions of this manager.
-	 * @return collection of all extensions of this manager
+	 * @return unmodifiable collection of all extensions of this manager
 	 */
-	public Collection<T> getExtensions() {
+	public final Collection<T> getExtensions() {
 		synchronized (extensions) {
-			return new ArrayList<>(extensions.values());
+			return Collections.unmodifiableCollection(extensions.values());
 		}
 	}
 
 	/**
-	 * <p>Returns a sorted list of all extensions of this manager.</p>
-	 * <p>If the extensions implement {@link INamedExtension}, the
-	 * extension's name is used for sorting. Else, the simple name
-	 * of its class is used.</p>
+	 * <p>Returns a sorted list of all extensions of this manager,
+	 * using the comparator provided by {@link #getComparator()}.</p>
 	 * @return sorted list of all extensions of this manager
 	 */
-	public List<T> getSortedExtensions() {
+	public final List<T> getSortedExtensions() {
 		final List<T> sortedExtensions = new ArrayList<>(getExtensions());
-		Collections.sort(sortedExtensions, getComparator());
+		sortedExtensions.sort(getComparator());
 		return sortedExtensions;
 	}
 
 	/**
 	 * Returns the extension with the given ID.
 	 * The returned Optional is empty if no extension with this ID exists.
-	 * @param id the extension's ID, must not be <code>null</code>
+	 * @param id the extension's ID
 	 * @return {@link Optional} containing the extension with the id, or empty Optional if none
 	 */
-	public Optional<T> getExtension(final String id) {
+	public final Optional<T> getExtension(final String id) {
 		Assert.isNotNull(id);
 		synchronized (extensions) {
-			final T extension = extensions.get(id);
-			if(extension == null) {
-				return Optional.empty();
-			}
-			return Optional.of(extension);
+			return Optional.ofNullable(extensions.get(id));
 		}
 	}
 
 	/**
-	 * Returns a comparator for extensions, using the name for {@link INamedExtension}
-	 * and the simple class name as fallback for lexicographically string comparison.
-	 * @return comparator for extensions
+	 * <p>Returns the default extension of this manager.</p>
+	 * <p>The default implementation returns any extension
+	 * if this manager has any, else an empty optional is returned.</p>
+	 * <p>Subclasses may override.</p>
+	 * @return the default extension, or empty Optional if none
 	 */
-	public Comparator<IExtension> getComparator() {
-		return comparator;
+	public Optional<T> getDefaultExtension() {
+		return getExtensions().stream().findAny();
 	}
 
-	private String getInternalExtensionId(final IExtension extension) {
-		if(extension instanceof INamedExtension) {
-			return Objects.requireNonNull(((INamedExtension)extension).getKey());
-		}
-		return extension.getClass().getName();
+	/**
+	 * <p>Returns a comparator for the extensions of this manager.</p>
+	 * <p>The default comparator compares extensions lexicographically
+	 * using {@link IExtension#getName()}.</p>
+	 * <p>Subclasses may override.</p>
+	 * @return comparator for extensions
+	 */
+	public Comparator<? super T> getComparator() {
+		return comparator;
 	}
 }

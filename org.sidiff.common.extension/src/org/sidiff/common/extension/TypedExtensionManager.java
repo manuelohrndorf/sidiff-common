@@ -16,9 +16,9 @@ import org.sidiff.common.extension.IExtension.Description;
  * as generic extensions.</p>
  * <p>The interface {@link ITypedExtension} specifies an extension,
  * which supports only certain document types.</p>
- * @author Robert Müller
- *
+ * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link ITypedExtension}
+ * @author Robert Müller
  */
 public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionManager<T> {
 
@@ -30,7 +30,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	}
 
 	/**
-	 * Creates a new, empty typed extension manager and Loads the extensions
+	 * Creates a new, empty typed extension manager and loads the extensions
 	 * from the extension point specified by the description.
 	 * @param description description of the extension point
 	 */
@@ -41,11 +41,11 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	/**
 	 * Returns all extensions of this manager that support all of the specified document types,
 	 * optionally also including extensions supporting the generic document type.
-	 * @param documentTypes the document types, must not be <code>null</code>
+	 * @param documentTypes the document types
 	 * @param includeGeneric whether to include generic extensions
 	 * @return all extensions that support this document type, empty if none
 	 */
-	public Collection<T> getExtensions(final Collection<String> documentTypes, final boolean includeGeneric) {
+	public final Collection<T> getExtensions(final Collection<String> documentTypes, final boolean includeGeneric) {
 		Assert.isNotNull(documentTypes);
 		return getExtensions().stream()
 				.filter(e -> extensionSupportsType(e, documentTypes, includeGeneric))
@@ -56,15 +56,16 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	 * Returns all extensions of this manager that support all document types, i.e. the generic document type.
 	 * @return extensions supporting the generic document types, empty if none
 	 */
-	public Collection<T> getGenericExtensions() {
+	public final Collection<T> getGenericExtensions() {
 		return getExtensions(Collections.singleton(ITypedExtension.GENERIC_TYPE), true);
 	}
 
 	/**
-	 * Returns a default extension of this manager that supports the given document type.
-	 * If any extension support specifically this document type, it is returned.
-	 * Else, if any generic extension exists, it is returned. Else the returned Optional is empty.
-	 * @param documentType the document type, must not be <code>null</code>
+	 * <p>Returns a default extension of this manager that supports the given document type.</p>
+	 * <p>If any extension support specifically this document type, it is returned.
+	 * Else, if any generic extension exists, it is returned. Else the returned Optional is empty.</p>
+	 * <p>Subclasses may override.</p>
+	 * @param documentType the document type, may be {@link ITypedExtension#GENERIC_TYPE}
 	 * @return {@link Optional} containing the default extension for this document type, or empty optional if none
 	 */
 	public Optional<T> getDefaultExtension(final String documentType) {
@@ -83,7 +84,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	 * Returns a set of all document types that are supported by this manager's extensions.
 	 * @return set of document types, may contain {@link ITypedExtension#GENERIC_TYPE}
 	 */
-	public Set<String> getSupportedDocumentTypes() {
+	public final Set<String> getSupportedDocumentTypes() {
 		return getExtensions().stream()
 				.map(ITypedExtension::getDocumentTypes)
 				.flatMap(Collection::stream)

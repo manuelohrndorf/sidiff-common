@@ -7,7 +7,6 @@ import org.sidiff.common.extension.IExtension;
 /**
  * Basic, immutable extension description.
  * @author Robert Müller
- *
  * @param <T> the extension type
  */
 public class ExtensionDescription<T extends IExtension> implements IExtension.Description<T> {
@@ -19,10 +18,10 @@ public class ExtensionDescription<T extends IExtension> implements IExtension.De
 
 	public ExtensionDescription(final Class<T> extensionClass, final String extensionPointId,
 			final String elementName, final String classAttribute) {
-		this.extensionClass = Objects.requireNonNull(extensionClass);
-		this.extensionPointId = Objects.requireNonNull(extensionPointId);
-		this.elementName = Objects.requireNonNull(elementName);
-		this.classAttribute = Objects.requireNonNull(classAttribute);
+		this.extensionClass = Objects.requireNonNull(extensionClass, "extensionClass is null");
+		this.extensionPointId = Objects.requireNonNull(extensionPointId, "extensionPointId is null");
+		this.elementName = Objects.requireNonNull(elementName, "elementName is null");
+		this.classAttribute = Objects.requireNonNull(classAttribute, "classAttribute is null");
 	}
 
 	@Override

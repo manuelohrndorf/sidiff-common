@@ -4,6 +4,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.sidiff.common.emf.access.Scope;
+import org.sidiff.common.settings.internal.SettingsPlugin;
 
 /**
  * @see BaseSettingsItem
@@ -33,7 +34,7 @@ public class BaseSettings extends AbstractSettings {
 	@Override
 	protected void validate(MultiStatus multiStatus) {
 		if(scope == null) {
-			multiStatus.add(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Scope is not set.", null));
+			multiStatus.add(new Status(IStatus.ERROR, SettingsPlugin.PLUGIN_ID, 0, "Scope is not set.", null));
 		}
 	}
 

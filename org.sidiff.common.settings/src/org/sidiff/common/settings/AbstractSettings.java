@@ -7,6 +7,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.sidiff.common.settings.internal.SettingsPlugin;
 
 /**
  * Abstract implementation of {@link ISettings} managing a list of
@@ -28,7 +29,7 @@ public abstract class AbstractSettings implements ISettings {
 	private MultiStatus status;
 
 	public AbstractSettings() {
-		this.listeners = new ArrayList<ISettingsChangedListener>();
+		this.listeners = new ArrayList<>();
 	}
 
 	public void addSettingsChangedListener(ISettingsChangedListener listener) {
@@ -54,8 +55,8 @@ public abstract class AbstractSettings implements ISettings {
 			try {
 				listener.settingsChanged(item);
 			} catch (Exception e) {
-				Platform.getLog(Platform.getBundle(Activator.PLUGIN_ID))
-					.log(new Status(IStatus.WARNING, Activator.PLUGIN_ID, "Settings listener threw exception", e));
+				Platform.getLog(Platform.getBundle(SettingsPlugin.PLUGIN_ID))
+					.log(new Status(IStatus.WARNING, SettingsPlugin.PLUGIN_ID, "Settings listener threw exception", e));
 			}
 		}
 	}
@@ -63,7 +64,7 @@ public abstract class AbstractSettings implements ISettings {
 	@Override
 	public IStatus validate() {
 		if(status == null) {
-			status = new MultiStatus(Activator.PLUGIN_ID, 0, "The settings were validated.", null);
+			status = new MultiStatus(SettingsPlugin.PLUGIN_ID, 0, "The settings were validated.", null);
 			validate(status);
 		}
 		return status;

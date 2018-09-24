@@ -1,23 +1,26 @@
-package org.sidiff.common.settings;
+package org.sidiff.common.settings.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Activator implements BundleActivator {
+public class SettingsPlugin implements BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.sidiff.common.settings"; //$NON-NLS-1$
-		
+
+	private static BundleContext bundleContext;
+
 	@Override
 	public void start(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-
+		bundleContext = context;
 	}
 
 	@Override
 	public void stop(BundleContext context) throws Exception {
-		// TODO Auto-generated method stub
-
+		bundleContext = null;
 	}
 
+	public static BundleContext getBundleContext() {
+		return bundleContext;
+	}
 }

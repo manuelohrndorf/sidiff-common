@@ -20,7 +20,7 @@ public interface ISettings {
 
 	/**
 	 * Returns an {@link IStatus} describing the validity of this Settings-Object.
-	 * @return status
+	 * @return status the status
 	 */
 	IStatus validate();
 }

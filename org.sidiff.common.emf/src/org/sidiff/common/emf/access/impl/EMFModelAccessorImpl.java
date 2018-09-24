@@ -19,7 +19,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.emf.access.EMFMetaAccess;
-import org.sidiff.common.emf.access.EdgeSemantic;
 import org.sidiff.common.emf.access.tree.TreeVisitor;
 import org.sidiff.common.emf.collections.EMFSelectors;
 import org.sidiff.common.emf.exceptions.NoOrderedContainmentException;
@@ -56,29 +55,6 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		return Collections.unmodifiableList(result);
 	}
 
-	@Override
-	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic) {
-		List<EObject> result = new ArrayList<EObject>();
-		EList<EReference> references = object.eClass().getEAllReferences();
-		for (EReference reference : references) {
-			if (!semantic.checkSemantic(reference))
-				continue;
-			result.addAll(EMFUtil.getReferenceTargets(object, reference));
-		}
-		return Collections.unmodifiableList(result);
-	}
-
-	@Override
-	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic, EClass... types) {
-		List<EObject> result = new ArrayList<EObject>();
-		List<EClass> myTypes = Arrays.asList(types);
-		for (EObject obj : getNodeNeighbors(object, semantic)) {
-			if (myTypes.contains(obj.eClass()))
-				result.add(obj);
-		}
-		return Collections.unmodifiableList(result);
-	}
-	
 	@Override
 	public List<EObject> getMandatoryNodeNeighbors(EObject object) {
 		List<EObject> result = new ArrayList<EObject>();
@@ -220,24 +196,6 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	public List<EObject> getReferencedObjects(EObject object, EClass type) {
 		List<EObject> result = new ArrayList<EObject>();
 		for (EObject ref : getReferencedObjects(object))
-			if (type.isInstance(ref))
-				result.add(ref);
-		return Collections.unmodifiableList(result);
-	}
-
-	@Override
-	public List<EObject> getReferencedObjects(EObject object, EdgeSemantic semantic) {
-		List<EObject> result = new ArrayList<EObject>();
-		for (EReference reference : EMFMetaAccess.getReferences(object.eClass(), semantic)) {
-			result.addAll(EMFUtil.getReferenceTargets(object, reference));
-		}
-		return Collections.unmodifiableList(result);
-	}
-
-	@Override
-	public List<EObject> getReferencedObjects(EObject object, EdgeSemantic semantic, EClass type) {
-		List<EObject> result = new ArrayList<EObject>();
-		for (EObject ref : getReferencedObjects(object, semantic))
 			if (type.isInstance(ref))
 				result.add(ref);
 		return Collections.unmodifiableList(result);

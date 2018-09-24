@@ -228,24 +228,6 @@ public class EMFMetaAccess {
 	}
 
 	/**
-	 * Returns a list of all references of the given class, which are not 
-	 * container-containment references and which apply to the given {@link EdgeSemantic}
-	 * 
-	 * @param eClass
-	 * @param semantic
-	 * @return
-	 */
-	public static List<EReference> getReferences(EClass eClass, EdgeSemantic semantic) {
-		List<EReference> result = new ArrayList<EReference>();
-		for (EReference reference : eClass.getEAllReferences()) {
-			if (reference.isContainment() || reference.isContainer() || !semantic.checkSemantic(reference))
-				continue;
-			result.add(reference);
-		}
-		return Collections.unmodifiableList(result);
-	}
-
-	/**
 	 * Returns all references with point to children/containments.
 	 * 
 	 * @param eClass

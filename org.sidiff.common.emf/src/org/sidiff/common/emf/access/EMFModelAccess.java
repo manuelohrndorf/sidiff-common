@@ -199,29 +199,6 @@ public class EMFModelAccess {
 	}
 
 	/**
-	 * Returns all referenced objects which are neither children nor parent and which are connected by an edge with the given semantic.
-	 * 
-	 * @param eObject
-	 * @param semantic
-	 * @return A list of referenced objects which are neither children nor parent and which are connected by an edge with the given semantic.
-	 */
-	public static List<EObject> getReferencedObjects(EObject eObject, EdgeSemantic semantic) {
-		return modelAccessor.getReferencedObjects(eObject, semantic);
-	}
-
-	/**
-	 * Returns all referenced objects of the given type which are neither children nor parent and which are connected by an edge with the given semantic.
-	 * 
-	 * @param eObject
-	 * @param semantic
-	 * @param type
-	 * @return A list of referenced objects of the given type which are neither children nor parent and which are connected by an edge with the given semantic.
-	 */
-	public static List<EObject> getReferencedObjects(EObject eObject, EdgeSemantic semantic, EClass type) {
-		return modelAccessor.getReferencedObjects(eObject, semantic, type);
-	}
-
-	/**
 	 * Returns all stereotypes of an object according to UML Profiles. The result is 
 	 * based on the naming convention of the reference to the object (= eObject parameter)
 	 * starting with "base_*". Additionally only stereotypes are returned, which
@@ -303,29 +280,6 @@ public class EMFModelAccess {
 		return modelAccessor.getNodeNeighbors(object, types);
 	}
 
-	/**
-	 * Returns all neighbored nodes, which are connected by a reference (including container/containment-references) of the given semantic.
-	 * 
-	 * @param object
-	 * @param semantic
-	 * @return A list of neighbored nodes, which are connected by a reference (including container/containment-references) of the given semantic.
-	 */
-	public static List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic) {
-		return modelAccessor.getNodeNeighbors(object, semantic);
-	}
-
-	/**
-	 * Returns all neighbored nodes, which are connected by a reference (including container/containment-references) of the given semantic and which have the given type.
-	 * 
-	 * @param object
-	 * @param semantic
-	 * @param types
-	 * @return A list of neighbored nodes, which are connected by a reference (including container/containment-references) of the given semantic and which have the given type.
-	 */
-	public static List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic, EClass... types) {
-		return modelAccessor.getNodeNeighbors(object, semantic, types);
-	}
-	
 	/**
 	 * 
 	 * @param object
@@ -480,22 +434,6 @@ public class EMFModelAccess {
 			return docTypes.iterator().next();
 		}
 	}
-
-	/**
-	 * Returns the document type (i.e. the package namespace URI) of the model
-	 * of the given element.
-	 * 
-	 * @param eObject
-	 * @return
-	 */
-	//TODO can be deleted
-//	public static String getDocumentType(EObject object) {
-//		EPackage pkg = object.eClass().getEPackage();
-//		while (pkg != null && pkg.getESuperPackage() != null) {
-//			pkg = pkg.getESuperPackage();
-//		}
-//		return pkg.getNsURI();
-//	}
 
 	/**
 	 * First, all document types are extracted from the given model resource.

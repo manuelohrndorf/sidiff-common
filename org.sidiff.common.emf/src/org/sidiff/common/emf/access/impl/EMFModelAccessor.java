@@ -3,10 +3,11 @@ package org.sidiff.common.emf.access.impl;
 import java.util.List;
 import java.util.Set;
 
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.sidiff.common.emf.access.EdgeSemantic;
-import org.sidiff.common.emf.access.tree.*;
+import org.sidiff.common.emf.access.tree.TreeVisitor;
 
 public interface EMFModelAccessor {
 
@@ -33,10 +34,6 @@ public interface EMFModelAccessor {
 
 	public List<EObject> getReferencedObjects(EObject eObject, EClass type);
 
-	public List<EObject> getReferencedObjects(EObject eObject, EdgeSemantic semantic);
-
-	public List<EObject> getReferencedObjects(EObject eObject, EdgeSemantic semantic, EClass type);
-
 	public List<EObject> getSiblings(EObject eObject);
 
 	public EObject getLeftSibling(EObject eObject);
@@ -55,10 +52,6 @@ public interface EMFModelAccessor {
 
 	public List<EObject> getNodeNeighbors(EObject object, EClass... types);
 
-	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic);
-
-	public List<EObject> getNodeNeighbors(EObject object, EdgeSemantic semantic, EClass... types);
-	
 	public List<EObject> getMandatoryNodeNeighbors(EObject object);
 
 }

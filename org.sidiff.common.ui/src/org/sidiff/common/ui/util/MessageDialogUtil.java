@@ -57,7 +57,7 @@ public final class MessageDialogUtil {
 		if(e instanceof CoreException) {
 			status = ((CoreException)e).getStatus();
 		} else {
-			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, e.getMessage(), e);
+			status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, message, e);
 		}
 		ErrorDialog.openError(getShell(), title, message, status);
 	}

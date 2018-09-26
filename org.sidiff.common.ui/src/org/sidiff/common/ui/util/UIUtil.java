@@ -13,22 +13,44 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.IEditorDescriptor;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class UIUtil {
-	
+
+	/**
+	 * <p>Invokes the {@link ISafeRunnable} <b>{@link Display#syncExec(Runnable) synchronously}</b> on the 
+	 * user-interface thread. All exceptions are caught and logged. Convenience function for:</p>
+	 * <pre>Display.getCurrent().syncExec(() -> SafeRunner.run(code));</pre>
+	 * @param code the runnable
+	 */
+	public static void runSyncSafe(ISafeRunnable code) {
+		Display.getDefault().syncExec(() -> SafeRunner.run(code));
+	}
+
+	/**
+	 * <p>Invokes the {@link ISafeRunnable} <b>{@link Display#asyncExec(Runnable) asynchronously}</b> on the 
+	 * user-interface thread. All exceptions are caught and logged. Convenience function for:</p>
+	 * <pre>Display.getCurrent().asyncExec(() -> SafeRunner.run(code));</pre>
+	 * @param code the runnable
+	 */
+	public static void runAsyncSafe(ISafeRunnable code) {
+		Display.getDefault().asyncExec(() -> SafeRunner.run(code));
+	}
+
 	/**
 	 * Execute Eclipse command programmatically.
 	 *
@@ -66,39 +88,31 @@ public class UIUtil {
 	 * @param path
 	 *            The path on the file system.
 	 * @throws FileNotFoundException
+	 * @throws PartInitException 
 	 */
-	public static void openEditor(String path) throws FileNotFoundException {
+	public static void openEditor(String path) throws FileNotFoundException, PartInitException {
 		File osFile = new File(path);
+		if(!osFile.exists() || !osFile.isFile()) {
+			throw new FileNotFoundException("File could not be found: " + osFile);
+		}
 
-		if (osFile.exists() && osFile.isFile()) {
-			IWorkspace workspace = ResourcesPlugin.getWorkspace();
-			IPath location = Path.fromOSString(osFile.getAbsolutePath());
-			IFile file = workspace.getRoot().getFileForLocation(location);
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IPath location = Path.fromOSString(osFile.getAbsolutePath());
+		IFile file = workspace.getRoot().getFileForLocation(location);
 
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+		if(window == null) throw new IllegalStateException("No active workbench window available, or not called from UI thread");
+		IWorkbenchPage page = window.getActivePage();
+		if(page == null) throw new IllegalStateException("The active workbench window has no active page");
 
-			if (file != null) {
-				// Open from workspace:
-				IEditorDescriptor desc = PlatformUI.getWorkbench().
-						getEditorRegistry().getDefaultEditor(file.getName());
-
-				try {
-					page.openEditor(new FileEditorInput(file), desc.getId());
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			} else {
-				// Open from file system:
-				IFileStore fileStore = EFS.getLocalFileSystem().getStore(osFile.toURI());
-
-				try {
-					IDE.openEditorOnFileStore(page, fileStore);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-			}
+		if (file != null) {
+			// Open from workspace:
+			IDE.openEditor(page, file);
 		} else {
-			throw new FileNotFoundException();
+			// Open from file system:
+			IFileStore fileStore = EFS.getLocalFileSystem().getStore(osFile.toURI());
+			IDE.openEditorOnFileStore(page, fileStore);
 		}
 	}
 	

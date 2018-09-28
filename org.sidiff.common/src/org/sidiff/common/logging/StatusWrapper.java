@@ -1,12 +1,7 @@
 package org.sidiff.common.logging;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Status;
-import org.sidiff.common.CommonPlugin;
-import org.sidiff.common.exceptions.SiDiffException;
-import org.sidiff.common.exceptions.SiDiffRuntimeException;
+import org.sidiff.common.exceptions.ExceptionUtil;
 
 /**
  * <p>This utility class allows execution of arbitrary code without
@@ -47,16 +42,8 @@ public class StatusWrapper {
 	public static IStatus wrap(IStatusRunnable code) {
 		try {
 			return code.run();
-		} catch(SiDiffException e) {
-			return new Status(IStatus.ERROR, CommonPlugin.ID, e.getShortMessage(), e);
-		} catch(SiDiffRuntimeException e) {
-			return new Status(IStatus.ERROR, CommonPlugin.ID, e.getShortMessage(), e);
-		} catch(OperationCanceledException e) {
-			return Status.CANCEL_STATUS;
-		} catch(CoreException e) {
-			return e.getStatus();
 		} catch(Exception e) {
-			return new Status(IStatus.ERROR, CommonPlugin.ID, "An exception occurred", e);
+			return ExceptionUtil.toStatus(e);
 		}
 	}
 }

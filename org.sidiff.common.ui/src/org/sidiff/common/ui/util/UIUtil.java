@@ -13,9 +13,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -30,26 +28,6 @@ import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 
 public class UIUtil {
-
-	/**
-	 * <p>Invokes the {@link ISafeRunnable} <b>{@link Display#syncExec(Runnable) synchronously}</b> on the 
-	 * user-interface thread. All exceptions are caught and logged. Convenience function for:</p>
-	 * <pre>Display.getCurrent().syncExec(() -> SafeRunner.run(code));</pre>
-	 * @param code the runnable
-	 */
-	public static void runSyncSafe(ISafeRunnable code) {
-		Display.getDefault().syncExec(() -> SafeRunner.run(code));
-	}
-
-	/**
-	 * <p>Invokes the {@link ISafeRunnable} <b>{@link Display#asyncExec(Runnable) asynchronously}</b> on the 
-	 * user-interface thread. All exceptions are caught and logged. Convenience function for:</p>
-	 * <pre>Display.getCurrent().asyncExec(() -> SafeRunner.run(code));</pre>
-	 * @param code the runnable
-	 */
-	public static void runAsyncSafe(ISafeRunnable code) {
-		Display.getDefault().asyncExec(() -> SafeRunner.run(code));
-	}
 
 	/**
 	 * Execute Eclipse command programmatically.

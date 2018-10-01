@@ -169,24 +169,43 @@ public class EMFUtil {
 	}
 
 	/**
-	 * Returns a list of objects with is reachable from object with the given reference.
-	 * 
-	 * @param object
-	 * @param reference
-	 * @return
+	 * @deprecated Use {@link #getReferenceTargets(EObject, EReference)} instead.
+	 */
+	public static List<EObject> getObjectListFromReference(EObject object, EReference reference) {
+		return getReferenceTargets(object, reference);
+	}
+
+	/**
+	 * Returns a list of objects that are reachable from the object with the given reference.
+	 * @param object the object
+	 * @param reference the reference
+	 * @return list of all referenced objects, may be empty
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<EObject> getObjectListFromReference(EObject object, EReference reference) {
-
-		List<EObject> result = null;
-		if (object.eGet(reference) == null) {
+	public static List<EObject> getReferenceTargets(EObject object, EReference reference) {
+		Object value = object.eGet(reference);
+		if(value == null) {
 			return Collections.emptyList();
-		} else if (reference.isMany()) {
-			result = (EList<EObject>) object.eGet(reference);
-		} else {
-			result = Collections.singletonList((EObject) object.eGet(reference));
+		} else if(reference.getUpperBound() == 1) {
+			return Collections.singletonList((EObject)value);
 		}
-		return Collections.unmodifiableList(result);
+		return Collections.unmodifiableList((List<EObject>)value);
+	}
+
+	/**
+	 * Returns a list of all values of the attribute of the given object.
+	 * @param object the object
+	 * @param attribute the attribute
+	 * @return all values of the attribute of the object
+	 */
+	public static List<Object> getAttributeValues(EObject object, EAttribute attribute) {
+		Object value = object.eGet(attribute);
+		if(value == null) {
+			return Collections.emptyList();
+		} else if(attribute.getUpperBound() == 1) {
+			return Collections.singletonList(value);
+		}
+		return Collections.unmodifiableList((List<?>)value);
 	}
 
 	/**
@@ -196,17 +215,10 @@ public class EMFUtil {
 	 * @param object
 	 * @param reference
 	 * @return
+	 * @deprecated Use result.addAll({@link #getReferenceTargets(EObject, EReference)}) instead.
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<EObject> fillObjectListFromReference(List<EObject> result, EObject object, EReference reference) {
-
-		if (reference.isMany()) {
-			result.addAll((List<EObject>) object.eGet(reference));
-		} else {
-			EObject ref = (EObject) object.eGet(reference);
-			if (ref != null)
-				result.add(ref);
-		}
+		result.addAll(getReferenceTargets(object, reference));
 		return result;
 	}
 
@@ -321,19 +333,21 @@ public class EMFUtil {
 			return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 		}
 	}
+
 	/**
-	 * Get the value of the "name" feature iff present, otherwise null.
-	 * @param eobj
-	 * @return name of given object otherwise null is returned
+	 * Get the value of the "name" feature iff present, otherwise <code>null</code>.
+	 * @param eObject the object
+	 * @return name of given object, otherwise <code>null</code> is returned
 	 */
-	public static String getEObjectName(EObject eobj){
-		EStructuralFeature nameFeature = eobj.eClass().getEStructuralFeature("name");
-		
-		if (nameFeature != null) {
-			Object nameValue = eobj.eGet(nameFeature);
-			
-			if ((nameValue != null) && (nameValue instanceof String)) {
-				return (String) nameValue;
+	public static String getEObjectName(EObject eObject) {
+		if(eObject == null) {
+			return null;
+		}
+		EStructuralFeature nameFeature = eObject.eClass().getEStructuralFeature("name");
+		if (nameFeature instanceof EAttribute) {
+			Object nameValue = eObject.eGet(nameFeature);
+			if(nameValue instanceof String) {
+				return (String)nameValue;
 			}
 		}
 		return null;

@@ -359,6 +359,7 @@ public class EMFUtil {
 	 * @param eobj
 	 *            The instance of {@link EObject} whose URI to retrieve.
 	 * @return The object's URI.
+	 * @deprecated Use {@link EcoreUtil#getURI(EObject)} instead.
 	 */
 	public static String getEObjectURI(EObject eobj) {
 		try {
@@ -590,5 +591,111 @@ public class EMFUtil {
 			((XMIResource) eObject.eResource()).setID(eObject, id);
 		}
 	}
-	
+
+	/**
+	 * Returns the signature name for the {@link EObject}.
+	 * This is the object's name attribute, if present.
+	 * For some other commonly used objects, a different signature is provided.
+	 * As a last resort, the name of the object's class is returned.
+	 * If the object is <code>null</code>, the string "null" is returned.
+	 * @param eObject the object
+	 * @return signature name
+	 */
+	public static String getEObjectSignatureName(EObject eObject) {
+		if(eObject == null) {
+			return "null";
+		} else if(eObject instanceof EGenericType) {
+			return getEGenericTypeSignature((EGenericType)eObject);
+		} else if(eObject instanceof EAnnotation) {
+			return getEAnnotationSignature((EAnnotation)eObject);
+		} else if(eObject instanceof BasicEMap.Entry<?,?>) {
+			return getEMapEntrySignature((BasicEMap.Entry<?,?>)eObject);
+		}
+
+		String name = EMFUtil.getEObjectName(eObject);
+		if(name != null) {
+			return name;
+		}
+		return "[" + eObject.getClass().getName() + "]";
+	}
+
+	/**
+	 * Returns the signature name for the {@link EGenericType}.
+	 * This is analogous to the Java representation of generic types:
+	 * <pre>Element<? extends T, </pre>
+	 * <ul>
+	 * <li>T</li>
+	 * <li>?</li>
+	 * <li>? extends T</li>
+	 * <li></li>
+	 * </ul>
+	 * @param eGenericType the generic type, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEGenericTypeSignature(EGenericType eGenericType) {
+		ETypeParameter eTypeParameter = eGenericType.getETypeParameter();
+		if (eTypeParameter != null) {
+			return getEObjectSignatureName(eTypeParameter);
+		} else {
+			EClassifier eClassifier = eGenericType.getEClassifier();
+			if (eClassifier != null) {
+				List<EGenericType> eTypeArguments = eGenericType.getETypeArguments();
+				if (eTypeArguments.isEmpty()) {
+					return getEObjectSignatureName(eClassifier);
+				} else {
+					StringBuilder result = new StringBuilder();
+					result.append(getEObjectSignatureName(eClassifier));
+					result.append('<');
+					for (Iterator<EGenericType> i = eTypeArguments.iterator();;) {
+						result.append(getEGenericTypeSignature(i.next()));
+						if (i.hasNext()) {
+							result.append(", ");
+						} else {
+							break;
+						}
+					}
+					result.append('>');
+					return result.toString();
+				}
+			} else {
+				EGenericType eUpperBound = eGenericType.getEUpperBound();
+				if (eUpperBound != null) {
+					return "? extends " + getEGenericTypeSignature(eUpperBound);
+				}
+				EGenericType eLowerBound = eGenericType.getELowerBound();
+				if (eLowerBound != null) {
+					return "? super " + getEGenericTypeSignature(eLowerBound);
+				}
+				return "?";
+			}
+		}
+	}
+
+	/**
+	 * Returns the signature name for the {@link EAnnotation}
+	 * using the annotation's source attribute.
+	 * @param eAnnotation the annotation, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEAnnotationSignature(EAnnotation eAnnotation) {
+		return "[" + eAnnotation.getSource() + "]";
+	}
+
+	/**
+	 * Returns the signature name for the {@link BasicEMap.Entry}
+	 * using the entry's key.
+	 * @param mapEntry the map entry, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEMapEntrySignature(BasicEMap.Entry<?,?> mapEntry) {
+		Object key = mapEntry.getKey();
+		if(key == null) {
+			return null;
+		} if(key instanceof String) {
+			return (String)key;
+		} else if(key instanceof EObject) {
+			return getEObjectSignatureName((EObject)key);
+		}
+		return "[" + key.toString() + "]";
+	}
 }

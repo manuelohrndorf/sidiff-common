@@ -622,13 +622,7 @@ public class EMFUtil {
 	/**
 	 * Returns the signature name for the {@link EGenericType}.
 	 * This is analogous to the Java representation of generic types:
-	 * <pre>Element<? extends T, </pre>
-	 * <ul>
-	 * <li>T</li>
-	 * <li>?</li>
-	 * <li>? extends T</li>
-	 * <li></li>
-	 * </ul>
+	 * <pre>T extends Foo&lt;? super S, U extends Bar&lt;T, ?>></pre>
 	 * @param eGenericType the generic type, not <code>null</code>
 	 * @return signature name
 	 */

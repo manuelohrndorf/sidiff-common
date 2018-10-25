@@ -188,9 +188,9 @@ public class EClassifierInfo {
 	 * Returns all direct, global optional and mandatory children of the given EClassifier
 	 * (i.e., inclusive all inherited children resulting from the supertype of the specified classifier
 	 * but not the sub types of the children of this specified classifier.
-	 * direct = only the children, not further descending children
+	 * direct = only the first children, not further descending children
 	 * global = the own children and also inherited children from the supertype of this classifier).
-	 * Compare also {@link #getAllDirectLocalChildren(EClassifier)}.
+	 * Compare also {@link #getAllDirectLocalMandatoryChildren(EClassifier)}.
 	 * @param childEClassifier
 	 * 
 	 * @return
@@ -212,20 +212,21 @@ public class EClassifierInfo {
 	 * Returns all direct, local mandatory children of the given EClassifier
 	 * (i.e., exclusive all inherited children resulting from the supertype of the specified classifier
 	 * and also exclusive the sub types of the children of this specified classifier.
-	 * direct = only the children, not further descending children
+	 * direct = only the children, not further descending children (children of children... etc.)
 	 * local = only the own children, not children inherited from the supertype of this classifier
+	 * and also not the sub types of the local children
 	 * mandatory = only children, where the containment reference has a lowerbound > 0).
 	 * See also {@link #getAllDirectChildren(EClassifier)}.
-	 * @param childEClassifier
+	 * @param eClassifier
 	 * 
 	 * @return
 	 * 		A List of EClassifiers and their respective containment EReferences
 	 */
-	public HashMap<EReference, List<EClassifier>> getAllDirectLocalChildren(EClassifier childEClassifier) {
+	public HashMap<EReference, List<EClassifier>> getAllDirectLocalMandatoryChildren(EClassifier eClassifier) {
 		
 		HashMap<EReference, List<EClassifier>> allLocalDirectMandatoryChildren = new HashMap<EReference, List<EClassifier>>();
 		
-		List<EReference> localReferences = ((EClass)childEClassifier).getEReferences();
+		List<EReference> localReferences = ((EClass)eClassifier).getEReferences();
 		
 		for(EReference ref: localReferences) {
 			
@@ -241,6 +242,74 @@ public class EClassifierInfo {
 		return allLocalDirectMandatoryChildren;
 		
 	}
+	
+	/**
+	 * Returns all direct, local mandatory neighbors of the given EClassifier
+	 * (i.e., exclusive all inherited neighbors resulting from the supertype of the specified classifier
+	 * and also exclusive the sub types of the neighbors of this specified classifier.
+	 * direct = only the first neighbors, not further neighbors connected to these neighbors (neighbors of neighbor... etc.)
+	 * local = only the own children, not children inherited from the supertype of this classifier and also not the sub types of
+	 * the local neighbors
+	 * mandatory = only neighbors, where the reference has a lowerbound > 0).
+	 * @param eClassifier
+	 * 
+	 * @return
+	 * 		A List of EClassifiers and their respective none-containment eReferences
+	 */
+	public HashMap<EReference, List<EClassifier>> getAllDirectLocalMandatoryNeighbors(EClassifier eClassifier) {
+		
+		HashMap<EReference, List<EClassifier>> allLocalDirectMandatoryNeighbors = new HashMap<EReference, List<EClassifier>>();
+		
+		List<EReference> localReferences = ((EClass)eClassifier).getEReferences();
+		
+		for(EReference ref: localReferences) {
+			
+			if(!ref.isContainment() && EReferenceInfo.isRequired(ref)) {
+				List<EClassifier> targets = new ArrayList<EClassifier>();
+				targets.add(ref.getEType());
+				allLocalDirectMandatoryNeighbors.put(ref, targets);
+
+				
+			}			
+		}
+		
+		return allLocalDirectMandatoryNeighbors;
+		
+	}
+	
+	/**
+	 * Returns all direct, inherited mandatory neighbors of the given EClassifier
+	 * (i.e., all inherited neighbors resulting from the supertypes of the specified classifier
+	 * but exclusive the sub types of the neighbors of this specified classifier.
+	 * direct = only the first neighbors, not further neighbors connected to these neighbors (neighbors of neighbor... etc.)
+	 * mandatory = only neighbors, where the reference has a lowerbound > 0).
+	 * @param eClassifier
+	 * 
+	 * @return
+	 * 		A List of EClassifiers and their respective none-containment eReferences
+	 */
+	public HashMap<EReference, List<EClassifier>> getAllDirectInheritedMandatoryNeighbors(EClassifier eClassifier) {
+		
+		HashMap<EReference, List<EClassifier>> allInheritedDirectMandatoryNeighbors = new HashMap<EReference, List<EClassifier>>();
+		
+		for(EClass superType: ((EClass) eClassifier).getEAllSuperTypes()) {
+					
+			List<EReference> localSuperTypeReferences = ((EClass)superType).getEReferences();
+			
+			for(EReference ref: localSuperTypeReferences) {
+				
+				if(!ref.isContainment() && EReferenceInfo.isRequired(ref)) {
+					List<EClassifier> targets = new ArrayList<EClassifier>();
+					targets.add(ref.getEType());
+					allInheritedDirectMandatoryNeighbors.put(ref, targets);				
+				}			
+			}		
+		}
+		
+		return allInheritedDirectMandatoryNeighbors;
+		
+	}
+	
 	
 	/**
 	 * Returns a set of all EClassifiers which are types of EAttributes contained

@@ -692,4 +692,30 @@ public class EMFUtil {
 		}
 		return "[" + key.toString() + "]";
 	}
+	
+	/**
+	 * Check if the element is created dynamically, i.e. the containment
+	reference is transient, volatile or derived.
+
+	@param element
+	The element to test.
+	@return <code>true</code> if the element is created dynamically;
+	<code>false</code> otherwise
+	 */
+	public static boolean isDynamic(EObject element) {
+		EReference containment = element.eContainmentFeature();
+
+		if(element instanceof EDataType)
+			System.out.println("EL: " + element);
+		if ((containment != null) 
+				&& (containment.isTransient() 
+						|| containment.isVolatile() 
+						|| containment.isDerived()
+						// FIXME: How to handle the eGenericSuperTypes reference? Is dynamic until a type argument will be added!
+						|| containment.equals(EcorePackage.eINSTANCE.getEClass_EGenericSuperTypes()))) {
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -117,7 +117,7 @@ public class EMFModelAccess {
 	 * the union of all resource document types.
 	 * @return
 	 */
-	public static Set<String> getDocumentTypes(List<Resource> resources){
+	public static Set<String> getDocumentTypes(Collection<Resource> resources){
 
 		Set<String> documentTypes = new HashSet<String>();
 		for(Resource r : resources){

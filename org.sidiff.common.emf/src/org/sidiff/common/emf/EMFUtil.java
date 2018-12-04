@@ -705,8 +705,6 @@ public class EMFUtil {
 	public static boolean isDynamic(EObject element) {
 		EReference containment = element.eContainmentFeature();
 
-		if(element instanceof EDataType)
-			System.out.println("EL: " + element);
 		if ((containment != null) 
 				&& (containment.isTransient() 
 						|| containment.isVolatile() 

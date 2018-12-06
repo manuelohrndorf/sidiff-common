@@ -39,20 +39,19 @@ public class UUIDResource extends XMIIDResourceImpl {
 	}
 	
 	/**
-	 * Initialize and loads the resource into a resource set.
+	 * Initialize and loads the resource into a resource set, if it exists.
 	 * 
 	 * @param uri
 	 * @param resourceSet
+	 * @throws IOException 
 	 */
-	public UUIDResource(URI uri, ResourceSet resourceSet) {
+	public UUIDResource(URI uri, ResourceSet resourceSet) throws IOException {
 		this(uri);
-		
-		try {
-			load(resourceSet.getLoadOptions());
-			resourceSet.getResources().add(this);
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		if(resourceSet.getURIConverter().exists(uri, null)) {
+			load(resourceSet.getLoadOptions());	
 		}
+		resourceSet.getResources().add(this);
 	}
 	
 	public static UUIDResource createUUIDResource(URI uri){

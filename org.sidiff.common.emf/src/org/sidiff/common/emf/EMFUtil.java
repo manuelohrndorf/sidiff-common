@@ -169,24 +169,43 @@ public class EMFUtil {
 	}
 
 	/**
-	 * Returns a list of objects with is reachable from object with the given reference.
-	 * 
-	 * @param object
-	 * @param reference
-	 * @return
+	 * @deprecated Use {@link #getReferenceTargets(EObject, EReference)} instead.
+	 */
+	public static List<EObject> getObjectListFromReference(EObject object, EReference reference) {
+		return getReferenceTargets(object, reference);
+	}
+
+	/**
+	 * Returns a list of objects that are reachable from the object with the given reference.
+	 * @param object the object
+	 * @param reference the reference
+	 * @return list of all referenced objects, may be empty
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<EObject> getObjectListFromReference(EObject object, EReference reference) {
-
-		List<EObject> result = null;
-		if (object.eGet(reference) == null) {
+	public static List<EObject> getReferenceTargets(EObject object, EReference reference) {
+		Object value = object.eGet(reference);
+		if(value == null) {
 			return Collections.emptyList();
-		} else if (reference.isMany()) {
-			result = (EList<EObject>) object.eGet(reference);
-		} else {
-			result = Collections.singletonList((EObject) object.eGet(reference));
+		} else if(reference.getUpperBound() == 1) {
+			return Collections.singletonList((EObject)value);
 		}
-		return Collections.unmodifiableList(result);
+		return Collections.unmodifiableList((List<EObject>)value);
+	}
+
+	/**
+	 * Returns a list of all values of the attribute of the given object.
+	 * @param object the object
+	 * @param attribute the attribute
+	 * @return all values of the attribute of the object
+	 */
+	public static List<Object> getAttributeValues(EObject object, EAttribute attribute) {
+		Object value = object.eGet(attribute);
+		if(value == null) {
+			return Collections.emptyList();
+		} else if(attribute.getUpperBound() == 1) {
+			return Collections.singletonList(value);
+		}
+		return Collections.unmodifiableList((List<?>)value);
 	}
 
 	/**
@@ -196,17 +215,10 @@ public class EMFUtil {
 	 * @param object
 	 * @param reference
 	 * @return
+	 * @deprecated Use result.addAll({@link #getReferenceTargets(EObject, EReference)}) instead.
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<EObject> fillObjectListFromReference(List<EObject> result, EObject object, EReference reference) {
-
-		if (reference.isMany()) {
-			result.addAll((List<EObject>) object.eGet(reference));
-		} else {
-			EObject ref = (EObject) object.eGet(reference);
-			if (ref != null)
-				result.add(ref);
-		}
+		result.addAll(getReferenceTargets(object, reference));
 		return result;
 	}
 
@@ -321,19 +333,21 @@ public class EMFUtil {
 			return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 		}
 	}
+
 	/**
-	 * Get the value of the "name" feature iff present, otherwise null.
-	 * @param eobj
-	 * @return name of given object otherwise null is returned
+	 * Get the value of the "name" feature iff present, otherwise <code>null</code>.
+	 * @param eObject the object
+	 * @return name of given object, otherwise <code>null</code> is returned
 	 */
-	public static String getEObjectName(EObject eobj){
-		EStructuralFeature nameFeature = eobj.eClass().getEStructuralFeature("name");
-		
-		if (nameFeature != null) {
-			Object nameValue = eobj.eGet(nameFeature);
-			
-			if ((nameValue != null) && (nameValue instanceof String)) {
-				return (String) nameValue;
+	public static String getEObjectName(EObject eObject) {
+		if(eObject == null) {
+			return null;
+		}
+		EStructuralFeature nameFeature = eObject.eClass().getEStructuralFeature("name");
+		if (nameFeature instanceof EAttribute) {
+			Object nameValue = eObject.eGet(nameFeature);
+			if(nameValue instanceof String) {
+				return (String)nameValue;
 			}
 		}
 		return null;
@@ -345,6 +359,7 @@ public class EMFUtil {
 	 * @param eobj
 	 *            The instance of {@link EObject} whose URI to retrieve.
 	 * @return The object's URI.
+	 * @deprecated Use {@link EcoreUtil#getURI(EObject)} instead.
 	 */
 	public static String getEObjectURI(EObject eobj) {
 		try {
@@ -576,5 +591,129 @@ public class EMFUtil {
 			((XMIResource) eObject.eResource()).setID(eObject, id);
 		}
 	}
+
+	/**
+	 * Returns the signature name for the {@link EObject}.
+	 * This is the object's name attribute, if present.
+	 * For some other commonly used objects, a different signature is provided.
+	 * As a last resort, the name of the object's class is returned.
+	 * If the object is <code>null</code>, the string "null" is returned.
+	 * @param eObject the object
+	 * @return signature name
+	 */
+	public static String getEObjectSignatureName(EObject eObject) {
+		if(eObject == null) {
+			return "null";
+		} else if(eObject instanceof EGenericType) {
+			return getEGenericTypeSignature((EGenericType)eObject);
+		} else if(eObject instanceof EAnnotation) {
+			return getEAnnotationSignature((EAnnotation)eObject);
+		} else if(eObject instanceof BasicEMap.Entry<?,?>) {
+			return getEMapEntrySignature((BasicEMap.Entry<?,?>)eObject);
+		}
+
+		String name = EMFUtil.getEObjectName(eObject);
+		if(name != null) {
+			return name;
+		}
+		return "[" + eObject.getClass().getName() + "]";
+	}
+
+	/**
+	 * Returns the signature name for the {@link EGenericType}.
+	 * This is analogous to the Java representation of generic types:
+	 * <pre>T extends Foo&lt;? super S, U extends Bar&lt;T, ?>></pre>
+	 * @param eGenericType the generic type, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEGenericTypeSignature(EGenericType eGenericType) {
+		ETypeParameter eTypeParameter = eGenericType.getETypeParameter();
+		if (eTypeParameter != null) {
+			return getEObjectSignatureName(eTypeParameter);
+		} else {
+			EClassifier eClassifier = eGenericType.getEClassifier();
+			if (eClassifier != null) {
+				List<EGenericType> eTypeArguments = eGenericType.getETypeArguments();
+				if (eTypeArguments.isEmpty()) {
+					return getEObjectSignatureName(eClassifier);
+				} else {
+					StringBuilder result = new StringBuilder();
+					result.append(getEObjectSignatureName(eClassifier));
+					result.append('<');
+					for (Iterator<EGenericType> i = eTypeArguments.iterator();;) {
+						result.append(getEGenericTypeSignature(i.next()));
+						if (i.hasNext()) {
+							result.append(", ");
+						} else {
+							break;
+						}
+					}
+					result.append('>');
+					return result.toString();
+				}
+			} else {
+				EGenericType eUpperBound = eGenericType.getEUpperBound();
+				if (eUpperBound != null) {
+					return "? extends " + getEGenericTypeSignature(eUpperBound);
+				}
+				EGenericType eLowerBound = eGenericType.getELowerBound();
+				if (eLowerBound != null) {
+					return "? super " + getEGenericTypeSignature(eLowerBound);
+				}
+				return "?";
+			}
+		}
+	}
+
+	/**
+	 * Returns the signature name for the {@link EAnnotation}
+	 * using the annotation's source attribute.
+	 * @param eAnnotation the annotation, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEAnnotationSignature(EAnnotation eAnnotation) {
+		return "[" + eAnnotation.getSource() + "]";
+	}
+
+	/**
+	 * Returns the signature name for the {@link BasicEMap.Entry}
+	 * using the entry's key.
+	 * @param mapEntry the map entry, not <code>null</code>
+	 * @return signature name
+	 */
+	public static String getEMapEntrySignature(BasicEMap.Entry<?,?> mapEntry) {
+		Object key = mapEntry.getKey();
+		if(key == null) {
+			return null;
+		} if(key instanceof String) {
+			return (String)key;
+		} else if(key instanceof EObject) {
+			return getEObjectSignatureName((EObject)key);
+		}
+		return "[" + key.toString() + "]";
+	}
 	
+	/**
+	 * Check if the element is created dynamically, i.e. the containment
+	reference is transient, volatile or derived.
+
+	@param element
+	The element to test.
+	@return <code>true</code> if the element is created dynamically;
+	<code>false</code> otherwise
+	 */
+	public static boolean isDynamic(EObject element) {
+		EReference containment = element.eContainmentFeature();
+
+		if ((containment != null) 
+				&& (containment.isTransient() 
+						|| containment.isVolatile() 
+						|| containment.isDerived()
+						// FIXME: How to handle the eGenericSuperTypes reference? Is dynamic until a type argument will be added!
+						|| containment.equals(EcorePackage.eINSTANCE.getEClass_EGenericSuperTypes()))) {
+			return true;
+		}
+
+		return false;
+	}
 }

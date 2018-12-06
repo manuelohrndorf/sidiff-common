@@ -20,7 +20,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		List<EObject> result = new ArrayList<EObject>();
 		EList<EReference> references = object.eClass().getEAllReferences();
 		for (EReference reference : references) {
-			EMFUtil.fillObjectListFromReference(result, object, reference);
+			result.addAll(EMFUtil.getReferenceTargets(object, reference));
 		}
 		return Collections.unmodifiableList(result);
 	}
@@ -28,8 +28,9 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	@Override
 	public List<EObject> getNodeNeighbors(EObject object, EReference... types) {
 		List<EObject> result = new ArrayList<EObject>();
-		for (EReference type : types)
-			EMFUtil.fillObjectListFromReference(result, object, type);
+		for (EReference type : types) {
+			result.addAll(EMFUtil.getReferenceTargets(object, type));
+		}
 		return Collections.unmodifiableList(result);
 	}
 
@@ -51,7 +52,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		for (EReference reference : references) {
 			if (!semantic.checkSemantic(reference))
 				continue;
-			EMFUtil.fillObjectListFromReference(result, object, reference);
+			result.addAll(EMFUtil.getReferenceTargets(object, reference));
 		}
 		return Collections.unmodifiableList(result);
 	}
@@ -73,7 +74,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		EList<EReference> references = object.eClass().getEAllReferences();
 		for (EReference reference : references) {
 			if(reference.getLowerBound() > 0){
-				EMFUtil.fillObjectListFromReference(result, object, reference);
+				result.addAll(EMFUtil.getReferenceTargets(object, reference));
 			}
 		}
 		return Collections.unmodifiableList(result);
@@ -83,7 +84,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	public List<EObject> getChildren(EObject object, EReference type) {
 		if (!type.isContainment())
 			throw new IllegalArgumentException("Not a containment edge: " + type);
-		return EMFUtil.getObjectListFromReference(object, type);
+		return EMFUtil.getReferenceTargets(object, type);
 	}
 
 	@Override
@@ -199,7 +200,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	public List<EObject> getReferencedObjects(EObject object) {
 		List<EObject> result = new ArrayList<EObject>();
 		for (EReference reference : EMFMetaAccess.getReferences(object.eClass())) {
-			EMFUtil.fillObjectListFromReference(result, object, reference);
+			result.addAll(EMFUtil.getReferenceTargets(object, reference));
 		}
 		return Collections.unmodifiableList(result);
 	}
@@ -217,7 +218,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	public List<EObject> getReferencedObjects(EObject object, EdgeSemantic semantic) {
 		List<EObject> result = new ArrayList<EObject>();
 		for (EReference reference : EMFMetaAccess.getReferences(object.eClass(), semantic)) {
-			EMFUtil.fillObjectListFromReference(result, object, reference);
+			result.addAll(EMFUtil.getReferenceTargets(object, reference));
 		}
 		return Collections.unmodifiableList(result);
 	}

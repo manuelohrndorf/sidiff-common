@@ -1,14 +1,12 @@
 package org.sidiff.common.aggregation;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * <p>An <code>Aggregation</code> aggregates a sample of input values.</p>
  * <p>The following aggregations are supported: {@link #MIN}, {@link #MAX},
  * {@link #SUM}, {@link #AVG}, {@link #MEDIAN}, {@link #VARIANCE}, {@link #STDDEV}.</p>
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  * @see AggregationUtil
  */
 public enum Aggregation {
@@ -99,24 +97,36 @@ public enum Aggregation {
 	VARIANCE {
 		@Override
 		public double aggregate(double[] values) {
-			// get absolute probability for each value
-			Map<Double,Integer> probabilities = new HashMap<>();
-			for(double value : values) {
-				Integer old = probabilities.get(value);
-				if(old == null) {
-					// value is not in the map yet
-					old = 0;
-				}
-				probabilities.put(value, old+1);
-			}
-
+			
 			final double avg = AVG.aggregate(values);
-			double variance = 0.0;
-			for(Map.Entry<Double,Integer> entry : probabilities.entrySet()) {
-				double relativeProbability = entry.getValue() / (double)values.length;
-				variance += relativeProbability * Math.pow(entry.getKey() - avg, 2);
+			double[] squaredDiffs = new double[values.length];
+			int i = 0;
+			for(double value : values) {
+				double squaredDiff = Math.pow((value - avg), 2);
+				squaredDiffs[i] = squaredDiff;
+				i++;
 			}
+		
+			double variance = AVG.aggregate(squaredDiffs);
 			return variance;
+		}
+	},
+	
+	/**
+	 * <p>This {@link Aggregation} calculates the coeffecient of varation</p>.
+	 */
+	CV {
+		@Override
+		public double aggregate(double[] values) {
+			
+			final double stddev = STDDEV.aggregate(values);
+			final double avg = AVG.aggregate(values);
+			
+			double cv = stddev / avg;
+			if(Double.isNaN(cv))
+				cv = 0.0;
+			System.out.println("CV:" + stddev);
+			return cv;
 		}
 	},
 

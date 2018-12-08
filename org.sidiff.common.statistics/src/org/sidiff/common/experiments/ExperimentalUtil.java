@@ -28,9 +28,8 @@ import org.sidiff.common.statistics.StatisticsUtil;
 /**
  * Utility class for data management of {@link StatisticsUtil}s. Is can be used for
  * experiments in conjunction with the {@link StatisticsUtil} and the {@link ChartsUtil}
- * 
- * @author dreuling / Robert Müller
- *
+ * @author dreuling
+ * @author Robert MÃ¼ller
  */
 public final class ExperimentalUtil implements Serializable {
 

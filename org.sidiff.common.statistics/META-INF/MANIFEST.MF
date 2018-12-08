@@ -1,11 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Statistics
+Bundle-Name: SiDiff Common - Statistics Utilities
 Bundle-SymbolicName: org.sidiff.common.statistics
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.sidiff.common.statistics
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.sidiff.common.aggregation,
+ org.sidiff.common.compat,
  org.sidiff.common.experiments,
  org.sidiff.common.statistics
 Require-Bundle: org.eclipse.core.runtime
+Bundle-Vendor: Software Engineering Group, University of Siegen

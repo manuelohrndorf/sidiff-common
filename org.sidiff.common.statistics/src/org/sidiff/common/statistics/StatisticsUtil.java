@@ -19,8 +19,9 @@ import java.util.TreeMap;
 
 /**
  * Utility class for counting things or measuring times.
- * 
- * @author wenzel / reuling / Robert Müller
+ * @author wenzel
+ * @author dreuling
+ * @author Robert MÃ¼ller
  */
 public final class StatisticsUtil implements Serializable {
 
@@ -455,8 +456,8 @@ public final class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * Fügt data.value(data.key) an pos in map.value(data.key) ein.
-	 * Fehlende Elemente in der Liste werden mit null aufgefüllt
+	 * Fï¿½gt data.value(data.key) an pos in map.value(data.key) ein.
+	 * Fehlende Elemente in der Liste werden mit null aufgefï¿½llt
 	 * @param map
 	 * @param data
 	 * @param pos
@@ -506,7 +507,7 @@ public final class StatisticsUtil implements Serializable {
 	/**
 	 * Schreibt alles in eine CSV.
 	 * Jeder Key wird eine Zeile. Time, Size, Count und Other wird je eine Spalte.
-	 * Sind keine Daten vorhanden bleibt eine Zelle leer (Zum Ändern: setDefaultToMap-Aufrufe anpassen)
+	 * Sind keine Daten vorhanden bleibt eine Zelle leer (Zum ï¿½ndern: setDefaultToMap-Aufrufe anpassen)
 	 * @param file
 	 * @throws IOException
 	 */
@@ -538,7 +539,7 @@ public final class StatisticsUtil implements Serializable {
 	}
 
 	/**
-	 * Fügt die verschiedenen *Statistic-Maps in einer Map zusammen.
+	 * Fï¿½gt die verschiedenen *Statistic-Maps in einer Map zusammen.
 	 * Die Keys werden mit " :: Name", wobei Name der Name der Statistik ist, erweitert.
 	 * @return
 	 */

@@ -16,7 +16,7 @@ import org.sidiff.common.statistics.StatisticsUtil.StatisticType;
  * The class <code>AggregationUtil</code> provides utility methods for aggregating statistics
  * contained in {@link StatisticsUtil} and runs contained in {@link ExperimentalUtil}
  * by using an {@link Aggregation}.
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  * @see Aggregation
  */
 public final class AggregationUtil {

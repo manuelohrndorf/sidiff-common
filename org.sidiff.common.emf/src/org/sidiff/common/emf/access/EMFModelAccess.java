@@ -113,9 +113,11 @@ public class EMFModelAccess {
 	}
 
 	
-	/** Returns all document types between input models. This is
+	/**
+	 * Returns all document types between input models. This is
 	 * the union of all resource document types.
-	 * @return
+	 * @deprecated Use EMFDocumentTypeUtil (<code>org.sidiff.common.emf.doctype</code>) instead for
+	 * compatibility with entity models.
 	 */
 	public static Set<String> getDocumentTypes(Collection<Resource> resources){
 

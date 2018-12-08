@@ -1,7 +1,15 @@
 package org.sidiff.common.collections;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * Die ValueMap ist eine effiziente, Surjektive Abbildung von
@@ -90,11 +98,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @return Objekte der Map mit Wert value
 	 */
 	public Collection<O> getObjects(V value) {
-		
-		if (value2objects.containsKey(value))
-			return Collections.unmodifiableCollection(value2objects.get(value));
-		else
-			return Collections.emptyList();
+		return Collections.unmodifiableCollection(
+				value2objects.getOrDefault(value, Collections.emptyList()));
 	}
 
 	public Set<O> getValuedObjects() {
@@ -124,17 +129,10 @@ public class ValueMap<V, O> implements Serializable {
 	 */
 	public void put(O object, V value) {
 
-		Collection<O> objects = value2objects.get(value);
-		if (objects == null) {
-			if(value.equals("Customer")) 
-				System.out.println();
-			objects = new LinkedList<O>();
-			value2objects.put(value, objects);
-		}
-		objects.add(object);
+		value2objects.computeIfAbsent(value, (v) -> new ArrayList<>()).add(object);
 
 		if (objects2value.put(object, value)!=null) {
-			throw new IllegalArgumentException(object + " has already a value! (old="+objects2value.get(object)+", new="+value);
+			throw new IllegalArgumentException(object + " already has a value! (old="+objects2value.get(object)+", new="+value);
 		}
 	}
 
@@ -183,20 +181,14 @@ public class ValueMap<V, O> implements Serializable {
 	}
 
 	/**
-	 * Betimmt die Werte, denen mindestens "minimalFillSize" Objekte zugeordnet sind.
+	 * Bestimmt die Werte, denen mindestens "minimalFillSize" Objekte zugeordnet sind.
 	 * 
 	 * @param minimalFillSize
 	 * @return 
 	 */
 	public Set<V> getFilledValues(int minimalFillSize) {
-		
-		HashSet<V> values = new HashSet<V>(value2objects.keySet());
-		for (V value : value2objects.keySet()) {
-			Collection<O> elements = this.getObjects(value);
-			if (elements.size() < minimalFillSize) {
-				values.remove(value);
-			}
-		}
-		return values;
+		return value2objects.keySet().stream()
+			.filter(value -> this.getObjects(value).size() >= minimalFillSize)
+			.collect(Collectors.toSet());
 	}
 }

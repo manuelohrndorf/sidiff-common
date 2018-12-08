@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.*;
 import org.eclipse.emf.ecore.*;
@@ -176,20 +177,33 @@ public class EMFUtil {
 	}
 
 	/**
+	 * Returns the list of values of the given type represented by the given feature value (single value or collection).
+	 * @param featureValue a collection of the specified type, or a single value of the specified type, or <code>null</code>
+	 * @param type the type of the result
+	 * @return list of feature values, singleton list if single value, empty list is <code>null</code> value
+	 */
+	public static <T> List<T> getValues(Object featureValue, Class<T> type) {
+		if(featureValue == null) {
+			return Collections.emptyList();
+		} else if(featureValue instanceof Collection<?>) {
+			// check for collection before checking for type, because the type might be Object
+			return ((Collection<?>)featureValue).stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+		} else if(type.isInstance(featureValue)) {
+			return Collections.singletonList(type.cast(featureValue));
+		}
+		throw new IllegalArgumentException(
+			"Value is neither null, nor instance of type, nor a collection: "
+				+ featureValue + " (" + featureValue.getClass() + ")");
+	}
+
+	/**
 	 * Returns a list of objects that are reachable from the object with the given reference.
 	 * @param object the object
 	 * @param reference the reference
 	 * @return list of all referenced objects, may be empty
 	 */
-	@SuppressWarnings("unchecked")
 	public static List<EObject> getReferenceTargets(EObject object, EReference reference) {
-		Object value = object.eGet(reference);
-		if(value == null) {
-			return Collections.emptyList();
-		} else if(reference.getUpperBound() == 1) {
-			return Collections.singletonList((EObject)value);
-		}
-		return Collections.unmodifiableList((List<EObject>)value);
+		return getValues(object.eGet(reference), EObject.class);
 	}
 
 	/**
@@ -199,13 +213,7 @@ public class EMFUtil {
 	 * @return all values of the attribute of the object
 	 */
 	public static List<Object> getAttributeValues(EObject object, EAttribute attribute) {
-		Object value = object.eGet(attribute);
-		if(value == null) {
-			return Collections.emptyList();
-		} else if(attribute.getUpperBound() == 1) {
-			return Collections.singletonList(value);
-		}
-		return Collections.unmodifiableList((List<?>)value);
+		return getValues(object.eGet(attribute), Object.class);
 	}
 
 	/**

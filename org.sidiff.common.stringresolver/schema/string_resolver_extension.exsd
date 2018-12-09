@@ -17,7 +17,7 @@
          </appinfo>
       </annotation>
       <complexType>
-         <choice minOccurs="1" maxOccurs="unbounded">
+         <choice>
             <element ref="string_resolver"/>
          </choice>
          <attribute name="point" type="string" use="required">
@@ -49,6 +49,9 @@
 
    <element name="string_resolver">
       <complexType>
+         <choice minOccurs="1" maxOccurs="unbounded">
+            <element ref="documentType"/>
+         </choice>
          <attribute name="string_resolver" type="string">
             <annotation>
                <documentation>
@@ -60,6 +63,9 @@
             </annotation>
          </attribute>
       </complexType>
+   </element>
+
+   <element name="documentType" type="string">
    </element>
 
    <annotation>

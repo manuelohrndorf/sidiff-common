@@ -1,13 +1,14 @@
 package org.sidiff.common.stringresolver;
 
 import org.eclipse.emf.ecore.EObject;
+import org.sidiff.common.extension.AbstractTypedExtension;
 
 /**
  * 
  * @author cpietsch
  *
  */
-public abstract class AbstractStringResolver implements IStringResolver {
+public abstract class AbstractStringResolver extends AbstractTypedExtension implements IStringResolver {
 
 	@Override
 	public String resolveQualified(EObject eObject) {

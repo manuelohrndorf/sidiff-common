@@ -3,17 +3,40 @@ package org.sidiff.common.emf;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eclipse.emf.common.util.*;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.common.util.BasicEMap;
+import org.eclipse.emf.common.util.TreeIterator;
+import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAnnotation;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EFactory;
+import org.eclipse.emf.ecore.EGenericType;
+import org.eclipse.emf.ecore.EModelElement;
+import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.ETypeParameter;
+import org.eclipse.emf.ecore.EcorePackage;
+import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.*;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
+import org.eclipse.emf.ecore.util.FeatureMap;
+import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
 import org.sidiff.common.emf.exceptions.UnknownAttributeException;
@@ -703,25 +726,45 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	reference is transient, volatile or derived.
-
-	@param element
-	The element to test.
-	@return <code>true</code> if the element is created dynamically;
-	<code>false</code> otherwise
+	 * reference is transient, volatile or derived.
+	 * @param element The element to test.
+	 * @return <code>true</code> if the element is created dynamically;
+	 * <code>false</code> otherwise
 	 */
 	public static boolean isDynamic(EObject element) {
-		EReference containment = element.eContainmentFeature();
+		if(element instanceof EGenericType) {
+			return isDynamic((EGenericType)element);
+		}
+		EReference containment = element.eContainmentFeature();		
+		if (containment != null) {
+			return isDynamic(element.eContainer(), containment);
+		}
+		return false;
+	}
 
-		if ((containment != null) 
-				&& (containment.isTransient() 
-						|| containment.isVolatile() 
-						|| containment.isDerived()
-						// FIXME: How to handle the eGenericSuperTypes reference? Is dynamic until a type argument will be added!
-						|| containment.equals(EcorePackage.eINSTANCE.getEClass_EGenericSuperTypes()))) {
+	public static boolean isDynamic(EObject element, EReference reference) {
+		return reference.isTransient()
+			 || reference.isDerived()
+			 || reference.isContainer()
+			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType()
+			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic));
+	}
+
+	public static boolean isDynamic(EObject element, EAttribute attribute) {
+		return attribute.isTransient()
+			 || attribute.isDerived();
+	}
+
+	public static boolean isDynamic(EGenericType genericType) {
+		if(genericType.getETypeArguments().isEmpty()) {
+			if(genericType.eContainer() instanceof EGenericType) {
+				EGenericType container = (EGenericType)genericType.eContainer();
+				return !(container.getETypeArguments().contains(genericType)
+						|| genericType.equals(container.getELowerBound())
+						|| genericType.equals(container.getEUpperBound()));
+			}
 			return true;
 		}
-
 		return false;
 	}
 }

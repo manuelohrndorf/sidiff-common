@@ -661,39 +661,28 @@ public class EMFUtil {
 		ETypeParameter eTypeParameter = eGenericType.getETypeParameter();
 		if (eTypeParameter != null) {
 			return getEObjectSignatureName(eTypeParameter);
-		} else {
-			EClassifier eClassifier = eGenericType.getEClassifier();
-			if (eClassifier != null) {
-				List<EGenericType> eTypeArguments = eGenericType.getETypeArguments();
-				if (eTypeArguments.isEmpty()) {
-					return getEObjectSignatureName(eClassifier);
-				} else {
-					StringBuilder result = new StringBuilder();
-					result.append(getEObjectSignatureName(eClassifier));
-					result.append('<');
-					for (Iterator<EGenericType> i = eTypeArguments.iterator();;) {
-						result.append(getEGenericTypeSignature(i.next()));
-						if (i.hasNext()) {
-							result.append(", ");
-						} else {
-							break;
-						}
-					}
-					result.append('>');
-					return result.toString();
-				}
-			} else {
-				EGenericType eUpperBound = eGenericType.getEUpperBound();
-				if (eUpperBound != null) {
-					return "? extends " + getEGenericTypeSignature(eUpperBound);
-				}
-				EGenericType eLowerBound = eGenericType.getELowerBound();
-				if (eLowerBound != null) {
-					return "? super " + getEGenericTypeSignature(eLowerBound);
-				}
-				return "?";
-			}
 		}
+
+		EClassifier eClassifier = eGenericType.getEClassifier();
+		if (eClassifier != null) {
+			StringBuilder result = new StringBuilder();
+			result.append(getEObjectSignatureName(eClassifier));
+			List<EGenericType> eTypeArguments = eGenericType.getETypeArguments();
+			if(!eTypeArguments.isEmpty()) {
+				result.append(eTypeArguments.stream().map(EMFUtil::getEGenericTypeSignature).collect(Collectors.joining(", ", "<", ">")));
+			}
+			return result.toString();
+		}
+
+		EGenericType eUpperBound = eGenericType.getEUpperBound();
+		if (eUpperBound != null) {
+			return "? extends " + getEGenericTypeSignature(eUpperBound);
+		}
+		EGenericType eLowerBound = eGenericType.getELowerBound();
+		if (eLowerBound != null) {
+			return "? super " + getEGenericTypeSignature(eLowerBound);
+		}
+		return "?";
 	}
 
 	/**
@@ -726,7 +715,8 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	 * reference is transient, volatile or derived.
+	 * reference is transient, volatile or derived, or whether is a synthetically
+	 * inserted EGenericType.
 	 * @param element The element to test.
 	 * @return <code>true</code> if the element is created dynamically;
 	 * <code>false</code> otherwise
@@ -745,9 +735,10 @@ public class EMFUtil {
 	public static boolean isDynamic(EObject element, EReference reference) {
 		return reference.isTransient()
 			 || reference.isDerived()
-			 || reference.isContainer()
-			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType()
-			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic));
+			 || reference.isContainer() // container references are always dynamic
+			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
+			 		&& reference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
+			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
 	}
 
 	public static boolean isDynamic(EObject element, EAttribute attribute) {
@@ -756,15 +747,34 @@ public class EMFUtil {
 	}
 
 	public static boolean isDynamic(EGenericType genericType) {
-		if(genericType.getETypeArguments().isEmpty()) {
-			if(genericType.eContainer() instanceof EGenericType) {
-				EGenericType container = (EGenericType)genericType.eContainer();
-				return !(container.getETypeArguments().contains(genericType)
-						|| genericType.equals(container.getELowerBound())
-						|| genericType.equals(container.getEUpperBound()));
-			}
-			return true;
+		if(genericType.getETypeParameter() != null) {
+			// Generic types with type parameter are not dynamic,
+			// they might occur as generic return / exception types
+			// for operations.
+			return false;
 		}
-		return false;
+		if(!genericType.getETypeArguments().isEmpty()) {
+			// Generic types with type arguments are not dynamic,
+			// because they denote complex types.
+			return false;
+		}
+
+		if(genericType.eContainer() instanceof EGenericType) {
+			// This generic type is contained in another one
+			// and not dynamic, unless the parent does not use this one.
+			EGenericType container = (EGenericType)genericType.eContainer();
+			return !(container.getETypeArguments().contains(genericType)
+					|| genericType.equals(container.getELowerBound())
+					|| genericType.equals(container.getEUpperBound()));
+		} else if(genericType.eContainer() instanceof ETypeParameter) {
+			// This generic type is contained in a type parameter
+			// and not dynamic, unless the type parameter does not use this one.
+			return !((ETypeParameter)genericType.eContainer()).getEBounds().contains(genericType);
+		}
+
+		// The generic type is dynamic, as it only specifies a classifier,
+		// but no type arguments or parameters, and it is not part
+		// of another type that needs it.
+		return true;
 	}
 }

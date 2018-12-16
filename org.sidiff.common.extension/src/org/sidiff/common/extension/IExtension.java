@@ -3,6 +3,7 @@ package org.sidiff.common.extension;
 import java.util.Optional;
 
 import org.sidiff.common.extension.internal.ExtensionDescription;
+import org.sidiff.common.util.RegExUtil;
 
 /**
  * <p>An extension class, which can be managed using an {@link ExtensionManager}.</p>
@@ -12,7 +13,7 @@ import org.sidiff.common.extension.internal.ExtensionDescription;
  * for which a description can be define by using {@link Description#of}.</p>
  * <p>Extensions may also implement {@link ITypedExtension}.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public interface IExtension {
 
@@ -28,14 +29,15 @@ public interface IExtension {
 	/**
 	 * <p>Returns a human-readable name for this extension.</p>
 	 * <p>The default implementation returns <code>getClass().getName()</code>
-	 * for anonymous classes, else <code>getClass().getSimpleName()</code>.</p>
+	 * for anonymous classes, else <code>getClass().getSimpleName()</code>,
+	 * with spaces added to split camel case.</p>
 	 * @return readable name
 	 */
 	default String getName() {
 		if(getClass().isAnonymousClass()) {
-			return getClass().getName();
+			return RegExUtil.addSpacesToCamelCase(getClass().getName());
 		}
-		return getClass().getSimpleName();
+		return RegExUtil.addSpacesToCamelCase(getClass().getSimpleName());
 	}
 
 	/**

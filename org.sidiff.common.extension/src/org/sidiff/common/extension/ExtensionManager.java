@@ -25,7 +25,7 @@ import org.sidiff.common.extension.internal.ExtensionsPlugin;
  * as it provides additional functionality.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link IExtension}
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public class ExtensionManager<T extends IExtension> {
 
@@ -117,6 +117,22 @@ public class ExtensionManager<T extends IExtension> {
 		Assert.isNotNull(id);
 		synchronized (extensions) {
 			return Optional.ofNullable(extensions.get(id));
+		}
+	}
+
+	/**
+	 * Returns the first extension with the given class.
+	 * The returned Optional is empty if no extension with this class exists.
+	 * @param extensionClass the extension's class
+	 * @return {@link Optional} containing the extension with the class, or empty Optional if none
+	 */
+	public final <S extends T> Optional<S> getExtension(final Class<S> extensionClass) {
+		Assert.isNotNull(extensionClass);
+		synchronized (extensions) {
+			return extensions.values().stream()
+					.filter(extensionClass::isInstance)
+					.map(extensionClass::cast)
+					.findFirst();
 		}
 	}
 

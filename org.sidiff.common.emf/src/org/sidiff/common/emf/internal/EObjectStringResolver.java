@@ -17,10 +17,10 @@ public class EObjectStringResolver implements StringResolver {
 			return null;
 		EObject eobj = (EObject)obj;
 		String s = EMFUtil.getModelRelativeName(eobj.eClass()) + "(";
-		try {
-			String n = (String)EMFUtil.getEObjectsAttribute(eobj, "name");
-			s += n+",";
-		} catch (Exception e) {}
+		String n = EMFUtil.getEObjectName(eobj);
+		if(n != null) {
+			s += n + ",";
+		}
 		s += EMFUtil.getEObjectID(eobj)+")";
 		return s;
 	}

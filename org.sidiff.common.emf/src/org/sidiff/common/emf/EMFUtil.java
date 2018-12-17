@@ -123,6 +123,7 @@ public class EMFUtil {
 	 * 
 	 * @param ecoreModelName
 	 *            Name of the Ecore-File to be loaded
+	 * @deprecated Use EMFStorage and ResourceUtil directly.
 	 */
 	public static void loadEcoreModelFromResource(String ecoreModelName) {
 		ResourceSet resourceSet = new ResourceSetImpl();
@@ -141,6 +142,7 @@ public class EMFUtil {
 	 * 
 	 * @param ePackage
 	 *            the Package to be registered
+	 * @deprecated
 	 */
 	private static void registerEPackage(EPackage ePackage) {
 		EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
@@ -215,6 +217,7 @@ public class EMFUtil {
 	 * 
 	 * @param object
 	 * @return
+	 * @deprecated
 	 */
 	public static List<EObject> createListFromEAllContents(EObject object) {
 		List<EObject> result = new LinkedList<EObject>();
@@ -229,6 +232,7 @@ public class EMFUtil {
 	 * 
 	 * @param object
 	 * @return
+	 * @deprecated
 	 */
 	public static int computeEAllContentsSize(EObject object) {
 		int result = 0;
@@ -245,6 +249,7 @@ public class EMFUtil {
 	 * 
 	 * @param resource
 	 * @return
+	 * @deprecated
 	 */
 	public static List<EObject> createListFromEAllContents(Resource resource) {
 		List<EObject> result = new LinkedList<EObject>();
@@ -259,6 +264,7 @@ public class EMFUtil {
 	 * 
 	 * @param resource
 	 * @return
+	 * @deprecated
 	 */
 	public static int computeEAllContentsSize(Resource resource) {
 		int result = 0;
@@ -376,6 +382,7 @@ public class EMFUtil {
 	 * @param attributeName
 	 *            The name of the attribute to retrieve.
 	 * @return The object's attribute value.
+	 * @deprecated
 	 */
 	public static Object getEObjectsAttribute(EObject eobj, String attributeName) {
 		EStructuralFeature sf = eobj.eClass().getEStructuralFeature(attributeName);

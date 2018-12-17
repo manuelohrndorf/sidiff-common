@@ -5,10 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -18,6 +16,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EContentsEList.FeatureIterator;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.exceptions.CrossDocumentReferenceUnresolvableException;
 
 /**
@@ -135,15 +134,13 @@ public class CrossDocumentReferenceUtil {
 
 		// iterate over all resources and encapsulated resources inside the ResourceSet
 		// in order to find any proxy URIs
-		TreeIterator<Object> oIt = EcoreUtil.getAllContents(resource.getResourceSet(), true);
-		while(oIt.hasNext()) {
+		for(Object object : CollectionUtil.asIterable(EcoreUtil.getAllContents(resource.getResourceSet(), true))) {
 
 			// in case tree object is a resource
-			Object object = oIt.next();			
 			if(object instanceof Resource) {
 				Resource res = (Resource) object;
 
-				for(EObject eObject: EMFUtil.getAllContentAsIterable(res)) {
+				for(EObject eObject: CollectionUtil.asIterable(resource.getAllContents())) {
 
 					// try to resolve and replace EObjects or keep the proxyURI for further investigation
 					FeatureIterator<EObject> featureIt = (FeatureIterator<EObject>) eObject.eCrossReferences().iterator();
@@ -173,7 +170,7 @@ public class CrossDocumentReferenceUtil {
 				// try to resolve and replace EObjects or keep the proxyURI for further investigation
 				FeatureIterator<EObject> featureIt = (FeatureIterator<EObject>) eObject.eCrossReferences().iterator();
 				while(featureIt.hasNext()) {
-					EObject targetedEObject = (EObject) featureIt.next();
+					EObject targetedEObject = featureIt.next();
 
 					if(targetedEObject.eIsProxy()) {
 						//try again to resolve it

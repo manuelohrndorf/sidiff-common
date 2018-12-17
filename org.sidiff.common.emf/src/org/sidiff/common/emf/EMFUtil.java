@@ -6,7 +6,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
 import org.sidiff.common.emf.exceptions.UnknownAttributeException;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
@@ -87,31 +87,10 @@ public class EMFUtil {
 	 * 
 	 * @param element
 	 * @return
+	 * @deprecated Use <code>CollectionUtil.asIterable(element.eAllContents())</code> instead.
 	 */
 	public static Iterable<EObject> getEAllContentAsIterable(final EObject element) {
-		return new Iterable<EObject>() {
-			@Override
-			public Iterator<EObject> iterator() {
-				return new Iterator<EObject>() {
-					TreeIterator<EObject> iterator = element.eAllContents();
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
-					@Override
-					public EObject next() {
-						return iterator.next();
-					}
-
-					@Override
-					public boolean hasNext() {
-						return iterator.hasNext();
-					}
-				};
-			}
-		};
+		return CollectionUtil.asIterable(element.eAllContents());
 	}
 
 	/**
@@ -119,31 +98,10 @@ public class EMFUtil {
 	 * 
 	 * @param element
 	 * @return
+	 * @deprecated Use <code>CollectionUtil.asIterable(resource.getAllContents())</code> instead.
 	 */
 	public static Iterable<EObject> getAllContentAsIterable(final Resource resource) {
-		return new Iterable<EObject>() {
-			@Override
-			public Iterator<EObject> iterator() {
-				return new Iterator<EObject>() {
-					TreeIterator<EObject> iterator = resource.getAllContents();
-
-					@Override
-					public void remove() {
-						throw new UnsupportedOperationException();
-					}
-
-					@Override
-					public EObject next() {
-						return iterator.next();
-					}
-
-					@Override
-					public boolean hasNext() {
-						return iterator.hasNext();
-					}
-				};
-			}
-		};
+		return CollectionUtil.asIterable(resource.getAllContents());
 	}
 
 	/**
@@ -156,9 +114,8 @@ public class EMFUtil {
 	public static boolean isAnnotatedWith(EObject object, String annotation) {
 		if (object instanceof EModelElement) {
 			return ((EModelElement) object).getEAnnotation(annotation) != null;
-		} else {
-			return object.eClass().getEAnnotation(annotation) != null;
 		}
+		return object.eClass().getEAnnotation(annotation) != null;
 	}
 
 	/**
@@ -354,15 +311,14 @@ public class EMFUtil {
 	public static String getEObjectID(EObject eobj) {
 		if (eobj.eResource() != null) {
 			return eobj.eResource().getURIFragment(eobj);
-		} else {
-			if (eobj instanceof BasicEObjectImpl) {
-				URI uri = ((BasicEObjectImpl) eobj).eProxyURI();
-				if (uri != null)
-					return "" + uri;
-			}
-			LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI fragment for ", eobj.toString(), " Reason: " + eobj + " is not contained in a resource.");
-			return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 		}
+		if (eobj instanceof BasicEObjectImpl) {
+			URI uri = ((BasicEObjectImpl) eobj).eProxyURI();
+			if (uri != null)
+				return "" + uri;
+		}
+		LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI fragment for ", eobj.toString(), " Reason: " + eobj + " is not contained in a resource.");
+		return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 	}
 
 	/**
@@ -446,7 +402,7 @@ public class EMFUtil {
 	public static List<EObject> getAllEObjectsByType(EClass type, Resource resource) {
 		List<EObject> list = new ArrayList<EObject>();
 		
-		for(EObject eObject: getAllContentAsIterable(resource))  {		
+		for(EObject eObject: CollectionUtil.asIterable(resource.getAllContents()))  {		
 			if(type==null || eObject.eClass().equals(type)) {
 				list.add(eObject);
 			}			
@@ -497,22 +453,22 @@ public class EMFUtil {
 	public static EObject copyWithoutReferences(EObject eObject) {
 		if (eObject == null) {
 			return null;
-		} else {
-			EObject copyEObject = EcoreUtil.create(eObject.eClass());
-			EClass eClass = eObject.eClass();
-			for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i) {
-				EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(i);
-				if (eStructuralFeature.isChangeable() && !eStructuralFeature.isDerived()) {
-					if (eStructuralFeature instanceof EAttribute) {
-						copyAttribute((EAttribute) eStructuralFeature, eObject, copyEObject);
-					}
+		}
+
+		EObject copyEObject = EcoreUtil.create(eObject.eClass());
+		EClass eClass = eObject.eClass();
+		for (int i = 0, size = eClass.getFeatureCount(); i < size; ++i) {
+			EStructuralFeature eStructuralFeature = eClass.getEStructuralFeature(i);
+			if (eStructuralFeature.isChangeable() && !eStructuralFeature.isDerived()) {
+				if (eStructuralFeature instanceof EAttribute) {
+					copyAttribute((EAttribute) eStructuralFeature, eObject, copyEObject);
 				}
 			}
-
-			copyProxyURI(eObject, copyEObject);
-
-			return copyEObject;
 		}
+
+		copyProxyURI(eObject, copyEObject);
+
+		return copyEObject;
 	}
 	
 	public static Map<EObject, EObject> copyAll(Collection<? extends EObject> eObjects){

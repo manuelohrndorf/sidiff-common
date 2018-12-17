@@ -25,6 +25,7 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.io.BoundedInputStream;
@@ -169,9 +170,9 @@ public class ModelStorage {
 				if(mmResource.getContents().size()!=1){
 					LogUtil.log(LogEvent.WARNING, "Metamodel "+fileOrResourceName+" consists of "+mmResource.getContents().size()+" parts!");
 				}
-				for(EObject contetnt : EMFUtil.getAllContentAsIterable(mmResource)){
-					if(contetnt instanceof EPackage){
-						EPackage ePackage = (EPackage)contetnt;
+				for(EObject content : CollectionUtil.asIterable(mmResource.getAllContents())){
+					if(content instanceof EPackage){
+						EPackage ePackage = (EPackage)content;
 						this.globalResourceSet.getPackageRegistry().put(ePackage.getNsURI(), ePackage);
 						assert(LogUtil.log(LogEvent.DEBUG, "Register: "+ePackage.getNsURI()));
 					} 

@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.logging.LogEvent;
@@ -49,7 +50,7 @@ public class AnnotationManager extends ObjectUtil {
 				writeAnnotations(writer, element, null);
 			}
 			
-			for(EObject eObject : EMFUtil.getAllContentAsIterable(resource)){
+			for(EObject eObject : CollectionUtil.asIterable(resource.getAllContents())){
 				element = EMFAdapter.INSTANCE.adapt(eObject, AnnotateableElement.class);
 				if(!element.getAnnotations().isEmpty()){
 					writeAnnotations(writer, element, EMFUtil.getEObjectID(eObject));
@@ -147,7 +148,7 @@ public class AnnotationManager extends ObjectUtil {
 		AnnotateableElement element = EMFAdapter.INSTANCE.adapt(resource, AnnotateableElement.class);
 		disposeAnnotations(element);
 		
-		for(EObject eObject : EMFUtil.getAllContentAsIterable(resource)){
+		for(EObject eObject : CollectionUtil.asIterable(resource.getAllContents())) {
 			element = EMFAdapter.INSTANCE.adapt(eObject, AnnotateableElement.class);
 			disposeAnnotations(element);
 		}

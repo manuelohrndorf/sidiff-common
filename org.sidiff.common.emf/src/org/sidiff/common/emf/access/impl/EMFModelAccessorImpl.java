@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +90,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	@Override
 	public List<EObject> getStereoTypes(EObject eObject){
 		List<EObject> result = new ArrayList<EObject>();
-		for(EObject obj : EMFUtil.getAllContentAsIterable(eObject.eResource())){
+		for(EObject obj : CollectionUtil.asIterable(eObject.eResource().getAllContents())){
 			for (EStructuralFeature baseReference : EMFMetaAccess
 					.getEStructuralFeaturesByRegEx(obj.eClass(),
 							"^(base)_\\w+", true)) {				
@@ -106,7 +105,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	@Override
 	public List<EObject> getRequiredStereoTypes(EObject eObject){
 		List<EObject> result = new ArrayList<EObject>();
-		for(EObject obj : EMFUtil.getAllContentAsIterable(eObject.eResource())){
+		for(EObject obj : CollectionUtil.asIterable(eObject.eResource().getAllContents())){
 			for (EStructuralFeature baseReference : EMFMetaAccess
 					.getEStructuralFeaturesByRegEx(obj.eClass(),
 							"^(base)_\\w+", true)) {				
@@ -131,18 +130,12 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		}
 
 		// Remove irrelevant docTypes
-		for (Iterator<String> iterator = documentTypes.iterator(); iterator.hasNext();) {
-			String docType = (String) iterator.next();
-			if (docType.contains("UML") || docType.contains("Henshin/Trace")){
-				iterator.remove();
-			}
-		}
-		
+		documentTypes.removeIf(docType -> docType.contains("UML") || docType.contains("Henshin/Trace"));
+
 		if (documentTypes.size() == 1){
 			return documentTypes.get(0);
-		} else {
-			return docTypes.iterator().next();
 		}
+		return docTypes.iterator().next();
 	}
 	
 	@Override
@@ -179,8 +172,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		int index = sibs.indexOf(object);
 		if (index == 0)
 			return null;
-		else
-			return sibs.get(index - 1);
+		return sibs.get(index - 1);
 	}
 
 	@Override
@@ -210,8 +202,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 		int index = sibs.indexOf(object);
 		if (index == sibs.size() - 1)
 			return null;
-		else
-			return sibs.get(index + 1);
+		return sibs.get(index + 1);
 	}
 
 	@SuppressWarnings("unchecked")

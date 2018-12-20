@@ -18,7 +18,7 @@ import org.sidiff.common.extension.IExtension.Description;
  * which supports only certain document types.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link ITypedExtension}
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionManager<T> {
 
@@ -34,7 +34,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	 * from the extension point specified by the description.
 	 * @param description description of the extension point
 	 */
-	public TypedExtensionManager(final Description<T> description) {
+	public TypedExtensionManager(final Description<? extends T> description) {
 		super(description);
 	}
 

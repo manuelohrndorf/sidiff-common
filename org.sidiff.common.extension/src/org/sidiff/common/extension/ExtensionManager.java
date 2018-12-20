@@ -44,7 +44,15 @@ public class ExtensionManager<T extends IExtension> {
 	 * from the extension point specified by the description.
 	 * @param description description of the extension point
 	 */
-	public ExtensionManager(final Description<T> description) {
+	public ExtensionManager(final Description<? extends T> description) {
+		addExtensions(description);
+	}
+
+	/**
+	 * Loads the extensions from the extension point specified by the description.
+	 * @param description description of the extension point
+	 */
+	public void addExtensions(Description<? extends T> description) {
 		Assert.isNotNull(description);
 		for(final IConfigurationElement element :
 			RegistryFactory.getRegistry().getConfigurationElementsFor(description.getExtensionPointId())) {
@@ -83,6 +91,15 @@ public class ExtensionManager<T extends IExtension> {
 		Assert.isNotNull(id);
 		synchronized (extensions) {
 			extensions.remove(id);
+		}
+	}
+
+	/**
+	 * Removes all extensions from this manager.
+	 */
+	public final void clearExtensions() {
+		synchronized (extensions) {
+			extensions.clear();
 		}
 	}
 

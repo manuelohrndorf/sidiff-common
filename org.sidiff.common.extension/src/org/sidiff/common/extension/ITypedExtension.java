@@ -6,7 +6,7 @@ import java.util.Set;
  * <p>An {@link IExtension extension} that supports only certain document types.</p>
  * <p>May also support all document types, i.e. be generic.</b>
  * <p>Parameter and return values should never be <code>null</code>.</p>
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public interface ITypedExtension extends IExtension {
 
@@ -24,4 +24,14 @@ public interface ITypedExtension extends IExtension {
 	 * @return collection of all document types that this extension supports
 	 */
 	Set<String> getDocumentTypes();
+
+	/**
+	 * <p>Returns whether this extension is generic.</p>
+	 * <p>The default implementation returns whether {@link #getDocumentTypes()}
+	 * contains {@value #GENERIC_TYPE}.</p>
+	 * @return <code>true</code> if generic, <code>false</code> otherwise
+	 */
+	default boolean isGeneric() {
+		return getDocumentTypes().contains(GENERIC_TYPE);
+	}
 }

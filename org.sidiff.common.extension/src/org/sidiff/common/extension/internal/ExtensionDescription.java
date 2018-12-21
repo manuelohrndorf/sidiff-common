@@ -6,7 +6,7 @@ import org.sidiff.common.extension.IExtension;
 
 /**
  * Basic, immutable extension description.
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  * @param <T> the extension type
  */
 public class ExtensionDescription<T extends IExtension> implements IExtension.Description<T> {

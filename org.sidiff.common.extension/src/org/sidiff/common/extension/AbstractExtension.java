@@ -1,28 +1,34 @@
 package org.sidiff.common.extension;
 
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 
 /**
  * <p>An abstract extension implements {@link IExtension}, and
- * overrides {@link #getKey()} and {@link #getName()} to
- * use the ID and Name specified by the extension element
- * in the plug-in manifest (plugin.xml).</p>
- * <p>This implies, that an extension element in the
- * manifest only has exactly one executable extension.</p>
+ * overrides {@link #getKey()} and {@link #getName()} to use the plugin manifest,
+ * using the {@value #ATTRIBUTE_KEY} and {@value #ATTRIBUTE_NAME} attributes of the
+ * extension's element, or the "ID" and "Name" attributes of the extension.</p>
  * <p>For {@link ITypedExtension}s, use {@link AbstractTypedExtension} instead.</p>
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public abstract class AbstractExtension implements IExtension, IExecutableExtension {
 
+	public static final String ATTRIBUTE_KEY = "key";
+	public static final String ATTRIBUTE_NAME = "name";
+
 	/**
-	 * ID specified in the manifest, <code>null</code> if none
+	 * The extension's key
 	 */
 	private String key;
 
 	/**
-	 * Name specified in the manifest, empty if none
+	 * The extension's name
 	 */
 	private String name;
 
@@ -43,33 +49,66 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 	@Override
 	public void setInitializationData(IConfigurationElement config,
 			String propertyName, Object data) throws CoreException {
-		key = config.getDeclaringExtension().getSimpleIdentifier();
-		name = config.getDeclaringExtension().getLabel();
+
+		key = doGetKey(config);
+		name = doGetName(config);
+	}
+
+	protected static String getFirstUseableValue(Stream<Supplier<String>> suppliers) {
+		return suppliers
+			.map(supplier -> supplier.get())
+			.filter(Objects::nonNull)
+			.filter(s -> !s.isEmpty())
+			.findFirst()
+			.orElseThrow(() -> new NoSuchElementException("No useable value found, suppliers should always return a default"));
+	}
+
+	protected String doGetKey(IConfigurationElement config) {
+		return getFirstUseableValue(Stream.of(
+				() -> config.getAttribute(ATTRIBUTE_KEY),
+				config.getDeclaringExtension()::getSimpleIdentifier,
+				IExtension.super::getKey));
+	}
+
+	protected String doGetName(IConfigurationElement config) {
+		return getFirstUseableValue(Stream.of(
+				() -> config.getAttribute(ATTRIBUTE_NAME),
+				config.getDeclaringExtension()::getLabel,
+				IExtension.super::getName));
 	}
 
 	/**
-	 * <p>Returns the ID of the extension element in the plug-in
-	 * manifest (plugin.xml), if it was specified.</p>
-	 * <p>Otherwise, the default implementation of {@link IExtension#getKey()} is used.</p>
+	 * <p>Returns the Key of the extension. The following are used in this order:</p>
+	 * <ol>
+	 * <li>The attribute {@value #ATTRIBUTE_KEY} of the extension's element in the manifest.</li>
+	 * <li>The attribute "ID" of the extension.</li>
+	 * <li>The default implementation of {@link IExtension#getKey()}</li>
+	 * </ol>
+	 * @return the extension's key
 	 */
 	@Override
 	public String getKey() {
-		if(key != null && !key.isEmpty()) {
-			return key;
-		}
-		return IExtension.super.getKey();
+		return checkInitialized(key);
 	}
 
 	/**
-	 * <p>Returns the Name of the extension element in the plug-in
-	 * manifest (plugin.xml), if it was specified.</p>
-	 * <p>Otherwise, the default implementation of {@link IExtension#getName()} is used.</p>
+	 * <p>Returns the Name of the extension. The following are used in this order:</p>
+	 * <ol>
+	 * <li>The attribute {@value #ATTRIBUTE_NAME} of the extension's element in the manifest.</li>
+	 * <li>The attribute "Name" of the extension.</li>
+	 * <li>The default implementation of {@link IExtension#getName()}</li>
+	 * </ol>
+	 * @return the extension's name
 	 */
 	@Override
 	public String getName() {
-		if(name != null && !name.isEmpty()) {
-			return name;
+		return checkInitialized(name);
+	}
+
+	protected static <T> T checkInitialized(T object) {
+		if(object == null) {
+			throw new IllegalStateException("Extension was not initialized. Extensions must be created using the extension manager.");
 		}
-		return IExtension.super.getName();
+		return object;
 	}
 }

@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
 /**
  * Plugin activator for the extension management plugin.
  * Contains utility functions for logging.
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  *
  */
 public class ExtensionsPlugin extends Plugin {

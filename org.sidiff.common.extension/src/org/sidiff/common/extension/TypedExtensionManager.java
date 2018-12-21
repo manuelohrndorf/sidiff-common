@@ -57,7 +57,9 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	 * @return extensions supporting the generic document types, empty if none
 	 */
 	public final Collection<T> getGenericExtensions() {
-		return getExtensions(Collections.singleton(ITypedExtension.GENERIC_TYPE), true);
+		return getExtensions().stream()
+				.filter(ITypedExtension::isGeneric)
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -73,11 +75,11 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 		// 1. try to find a non-generic extension
 		// 2. if none is available, find a generic one
 		return Stream.of(
-					getExtensions(Collections.singleton(documentType), false).stream().findAny(),
-					getGenericExtensions().stream().findAny())
-				.filter(Optional::isPresent)
-				.map(Optional::get)
-				.findFirst();
+				getExtensions(Collections.singleton(documentType), false).stream().findAny(),
+				getGenericExtensions().stream().findAny())
+			.filter(Optional::isPresent)
+			.map(Optional::get)
+			.findFirst();
 	}
 
 	/**
@@ -93,7 +95,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 
 	private static boolean extensionSupportsType(final ITypedExtension ext,
 			final Collection<String> documentTypes, final boolean includeGeneric) {
-		return ext.getDocumentTypes().containsAll(documentTypes)
-				|| includeGeneric && ext.getDocumentTypes().contains(ITypedExtension.GENERIC_TYPE);
+		return (includeGeneric && ext.isGeneric())
+				|| ext.getDocumentTypes().containsAll(documentTypes);
 	}
 }

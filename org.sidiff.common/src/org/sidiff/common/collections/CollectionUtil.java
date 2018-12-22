@@ -1,6 +1,7 @@
 package org.sidiff.common.collections;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -25,7 +26,7 @@ import java.util.stream.StreamSupport;
  * as each of these methods creates a new collection.</p>
  * <p>This utility class replaces the deprecated ClassificationUtil,
  * FilterUtil, ViewUtil and CollectionView.</p>
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  *
  */
 public class CollectionUtil {
@@ -207,6 +208,25 @@ public class CollectionUtil {
 		return asStream(asIterable(iterator));
 	}
 
+	/**
+	 * Returns the list of values of the given type represented by the given feature value (single value or collection).
+	 * @param featureValue a collection of the specified type, or a single value of the specified type, or <code>null</code>
+	 * @param type the type of the result
+	 * @return list of feature values, singleton list if single value, empty list is <code>null</code> value
+	 */
+	public static <T> List<T> getValues(Object featureValue, Class<T> type) {
+		if(featureValue == null) {
+			return Collections.emptyList();
+		} else if(featureValue instanceof Collection<?>) {
+			// check for collection before checking for type, because the type might be Object
+			return ((Collection<?>)featureValue).stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
+		} else if(type.isInstance(featureValue)) {
+			return Collections.singletonList(type.cast(featureValue));
+		}
+		throw new IllegalArgumentException(
+			"Value is neither null, nor instance of type, nor a collection: "
+				+ featureValue + " (" + featureValue.getClass() + ")");
+	}
 
 	private static final class EnumerationIterable<T> implements Iterator<T> {
 		private final Enumeration<T> enumeration;

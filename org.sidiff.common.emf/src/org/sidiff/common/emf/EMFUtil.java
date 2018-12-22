@@ -159,33 +159,13 @@ public class EMFUtil {
 	}
 
 	/**
-	 * Returns the list of values of the given type represented by the given feature value (single value or collection).
-	 * @param featureValue a collection of the specified type, or a single value of the specified type, or <code>null</code>
-	 * @param type the type of the result
-	 * @return list of feature values, singleton list if single value, empty list is <code>null</code> value
-	 */
-	public static <T> List<T> getValues(Object featureValue, Class<T> type) {
-		if(featureValue == null) {
-			return Collections.emptyList();
-		} else if(featureValue instanceof Collection<?>) {
-			// check for collection before checking for type, because the type might be Object
-			return ((Collection<?>)featureValue).stream().filter(type::isInstance).map(type::cast).collect(Collectors.toList());
-		} else if(type.isInstance(featureValue)) {
-			return Collections.singletonList(type.cast(featureValue));
-		}
-		throw new IllegalArgumentException(
-			"Value is neither null, nor instance of type, nor a collection: "
-				+ featureValue + " (" + featureValue.getClass() + ")");
-	}
-
-	/**
 	 * Returns a list of objects that are reachable from the object with the given reference.
 	 * @param object the object
 	 * @param reference the reference
 	 * @return list of all referenced objects, may be empty
 	 */
 	public static List<EObject> getReferenceTargets(EObject object, EReference reference) {
-		return getValues(object.eGet(reference), EObject.class);
+		return CollectionUtil.getValues(object.eGet(reference), EObject.class);
 	}
 
 	/**
@@ -195,7 +175,7 @@ public class EMFUtil {
 	 * @return all values of the attribute of the object
 	 */
 	public static List<Object> getAttributeValues(EObject object, EAttribute attribute) {
-		return getValues(object.eGet(attribute), Object.class);
+		return CollectionUtil.getValues(object.eGet(attribute), Object.class);
 	}
 
 	/**

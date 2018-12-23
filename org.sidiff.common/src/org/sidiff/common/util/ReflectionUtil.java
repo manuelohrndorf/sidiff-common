@@ -1,7 +1,13 @@
 package org.sidiff.common.util;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.io.ResourceUtil;
@@ -193,16 +199,16 @@ public class ReflectionUtil {
 	 * @param name
 	 * @return
 	 * @throws ClassNotFoundException
+	 * @throws ClassCastException
 	 */
-	public static Class<?> loadClass(String name) throws ClassNotFoundException {
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> loadClass(String name) throws ClassNotFoundException {
 
 		ClassLoader suitableLoader = ResourceUtil.getClassLoaderByClassName(name);
 		if (suitableLoader != null) {
-			return suitableLoader.loadClass(name);
-		} else {
-			return Class.forName(name);
+			return (Class<T>)suitableLoader.loadClass(name);
 		}
-		//throw new ClassNotFoundException(name);
+		return (Class<T>)Class.forName(name);
 	}
 	
 	/**
@@ -235,32 +241,22 @@ public class ReflectionUtil {
 		return Integer.MAX_VALUE;
 		
 	}
-	
-	public static Set<Class<?>> computePolymorism(Class<?> clazz){
-		Set<Class<?>> result = new HashSet<Class<?>>();
-		lookupSupertypes(result,clazz);
-		lookupInterfaces(result, clazz);
+
+	@SuppressWarnings("unchecked")
+	public static <T> Set<Class<? super T>> computePolymophism(Class<T> type) {
+		Set<Class<? super T>> result = new HashSet<>();
+		Queue<Class<? super T>> classQueue = new LinkedList<>();
+		classQueue.add(type);
+		Class<? super T> current;
+		while((current = classQueue.poll()) != null) {
+			if(result.add(current.getSuperclass())) {
+				classQueue.add(current.getSuperclass());
+			}
+			Arrays.stream(current.getInterfaces())
+				.map(c -> (Class<? super T>)c)
+				.filter(result::add)
+				.forEach(classQueue::add);
+		}
 		return result;
 	}
-	
-	private static Set<Class<?>> lookupSupertypes(Set<Class<?>> set, Class<?> clazz){
-
-		set.add(clazz);
-		if(clazz!=Object.class){
-			return lookupSupertypes(set, clazz.getSuperclass());
-		} else {
-			return set;
-		}
-	}
-	
-	private static void lookupInterfaces(Set<Class<?>> set, Class<?> clazz){
-
-		Class<?>[] interfaces = clazz.getInterfaces();
-		for(Class<?> iclazz : interfaces){
-			set.add(iclazz);
-			lookupInterfaces(set, iclazz);
-		}
-		
-	}
-	
 }

@@ -1,7 +1,6 @@
 package org.sidiff.common.extension;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -63,19 +62,19 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	}
 
 	/**
-	 * <p>Returns a default extension of this manager that supports the given document type.</p>
-	 * <p>If any extension support specifically this document type, it is returned.
+	 * <p>Returns a default extension of this manager that supports all of the given document types.</p>
+	 * <p>If any extension support specifically this document types, it is returned.
 	 * Else, if any generic extension exists, it is returned. Else the returned Optional is empty.</p>
 	 * <p>Subclasses may override.</p>
-	 * @param documentType the document type, may be {@link ITypedExtension#GENERIC_TYPE}
+	 * @param documentTypes the document types, may contain {@link ITypedExtension#GENERIC_TYPE}
 	 * @return {@link Optional} containing the default extension for this document type, or empty optional if none
 	 */
-	public Optional<T> getDefaultExtension(final String documentType) {
-		Assert.isNotNull(documentType);
+	public Optional<T> getDefaultExtension(final Collection<String> documentTypes) {
+		Assert.isNotNull(documentTypes);
 		// 1. try to find a non-generic extension
 		// 2. if none is available, find a generic one
 		return Stream.of(
-				getExtensions(Collections.singleton(documentType), false).stream().findAny(),
+				getExtensions(documentTypes, false).stream().findAny(),
 				getGenericExtensions().stream().findAny())
 			.filter(Optional::isPresent)
 			.map(Optional::get)

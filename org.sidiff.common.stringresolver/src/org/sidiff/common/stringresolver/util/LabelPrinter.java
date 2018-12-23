@@ -1,5 +1,7 @@
 package org.sidiff.common.stringresolver.util;
 
+import java.util.Collections;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.access.EMFModelAccess;
@@ -38,7 +40,7 @@ public class LabelPrinter {
 	 * @param docType the document type
 	 */
 	public LabelPrinter(String docType) {
-		this.resolver = IStringResolver.MANAGER.getDefaultExtension(docType).orElseGet(GenericStringResolver::new);
+		this.resolver = IStringResolver.MANAGER.getDefaultExtension(Collections.singleton(docType)).orElseGet(GenericStringResolver::new);
 	}
 
 	/**

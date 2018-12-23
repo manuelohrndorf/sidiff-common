@@ -7,7 +7,8 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.sidiff.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.extension
-Export-Package: org.sidiff.common.extension
+Export-Package: org.sidiff.common.extension,
+ org.sidiff.common.extension.configuration
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-Activator: org.sidiff.common.extension.internal.ExtensionsPlugin
 Bundle-ActivationPolicy: lazy

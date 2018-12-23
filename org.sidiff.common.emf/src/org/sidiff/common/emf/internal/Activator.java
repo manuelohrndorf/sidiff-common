@@ -2,12 +2,12 @@ package org.sidiff.common.emf.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.sidiff.common.converter.ConverterUtil;
 import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.adapters.ElementByIDAdapterFactory;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
 import org.sidiff.common.emf.annotation.AnnotationsAdapterFactory;
 import org.sidiff.common.io.ResourceUtil;
-import org.sidiff.common.util.ObjectUtil;
 import org.sidiff.common.util.StringResolver;
 import org.sidiff.common.util.StringUtil;
 import org.sidiff.common.xml.XMLResolver;
@@ -27,7 +27,7 @@ public class Activator implements BundleActivator {
 
 		StringUtil.addStringResolver(eObjectStringResolver);
 
-		ObjectUtil.registerConverter(new GenericEObjectConverter());
+		ConverterUtil.registerConverter(new GenericEObjectConverter());
 
 		ResourceUtil.registerClassLoader(this.getClass().getClassLoader());
 		XMLResolver.getInstance().includeMapping(ResourceUtil.getInputStreamByResourceName("org.sidiff.common.emf.dtdmap.xml"));

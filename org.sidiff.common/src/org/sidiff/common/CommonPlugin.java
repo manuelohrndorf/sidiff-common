@@ -2,15 +2,21 @@ package org.sidiff.common;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.sidiff.common.util.ObjectUtil;
 import org.sidiff.common.util.StringUtil;
-import org.sidiff.common.util.internal.*;
+import org.sidiff.common.util.internal.ArrayStringResolver;
+import org.sidiff.common.util.internal.CollectionStringResolver;
+import org.sidiff.common.util.internal.ErrorStringResolver;
+import org.sidiff.common.util.internal.ExceptionStringResolver;
+import org.sidiff.common.util.internal.HashTableStringResolver;
+import org.sidiff.common.util.internal.MapStringResolver;
+import org.sidiff.common.util.internal.StackTraceStringResolver;
+import org.sidiff.common.util.internal.ThreadStringResolver;
 
 /**
  * The Common-Plugin bundle activator, which initializes
  * and deinitializes this plugin.
  * 
- * @author Maik Schmidt, Robert Müller
+ * @author Maik Schmidt, Robert Mï¿½ller
  */
 public class CommonPlugin implements BundleActivator {
 
@@ -37,14 +43,6 @@ public class CommonPlugin implements BundleActivator {
 		StringUtil.addStringResolver(new MapStringResolver());
 		StringUtil.addStringResolver(new ThreadStringResolver());
 		StringUtil.addStringResolver(new StackTraceStringResolver());
-
-		// register all ObjectConverter
-		ObjectUtil.registerConverter(new StringConverter());
-		ObjectUtil.registerConverter(new IntegerConverter());
-		ObjectUtil.registerConverter(new GenericListConverter());
-		ObjectUtil.registerConverter(new GenericMapConverter());
-		ObjectUtil.registerConverter(new GenericSetConverter());
-		ObjectUtil.registerConverter(new FloatConverter());
 	}
 
 	@Override

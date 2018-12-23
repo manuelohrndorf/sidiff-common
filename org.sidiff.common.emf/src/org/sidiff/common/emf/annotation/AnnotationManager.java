@@ -12,11 +12,11 @@ import java.util.Map;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.collections.CollectionUtil;
+import org.sidiff.common.converter.ConverterUtil;
 import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.sidiff.common.util.ObjectUtil;
 import org.sidiff.common.util.ReflectionUtil;
 import org.sidiff.common.xml.XMLParser;
 import org.sidiff.common.xml.XMLWriter;
@@ -25,7 +25,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-public class AnnotationManager extends ObjectUtil {
+public class AnnotationManager {
 	
 	private static final String DOC_TYPE = "/workspaces_eclipse/sidiff_core/org.sidiff.common.emf/resources/org.sidiff.common.emf.annotations.dtd";
 //	private static final String DOC_TYPE = "http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.emf.annotationPersistence.dtd";
@@ -73,13 +73,8 @@ public class AnnotationManager extends ObjectUtil {
 		for(String key : element.getAnnotations()){
 			Object annotation = element.getAnnotation(key, Object.class);
 			xmlAttributes.put(ATTR_KEY, key);
-		
-			String objectData = ObjectUtil.marshal(annotation);
-			String[] type_data = objectData.split(AnnotationManager.TYPE_SEPERATOR, 2);
-			assert(type_data.length==2) : "Missing type seperator! ("+objectData+")";
-			
-			xmlAttributes.put(ATTR_TYP, type_data[0]);
-			xmlAttributes.put(ATTR_DATA, type_data[1]);
+			xmlAttributes.put(ATTR_TYP, annotation.getClass().getName());
+			xmlAttributes.put(ATTR_DATA, ConverterUtil.marshal(annotation));
 			writer.generateEmptyTag(ANNOTATION, xmlAttributes);
 		}
 		writer.generateEndTag(OBJECT);
@@ -109,33 +104,17 @@ public class AnnotationManager extends ObjectUtil {
 		}		
 	}
 	
-
 	private static void handleAnnotation(AnnotateableElement element, Attributes attributes){
-	
-			
-			String key = attributes.getValue(ATTR_KEY);
-			String typeName = attributes.getValue(ATTR_TYP);
-			
-			StringBuffer dataString = new StringBuffer();
-			Object annotation = null;
-			try {
-				Class<?> type  = ReflectionUtil.loadClass(typeName);
-			
-				dataString.append(type.getName());
-				dataString.append(ObjectUtil.TYPE_SEPERATOR);
-				dataString.append(attributes.getValue(ATTR_DATA));
-			
-				annotation = ObjectUtil.unmarshal(type, dataString.toString());
-			} catch (Exception e) {
-				LogUtil.log(LogEvent.ERROR, String.format("Error while deserializing %s (Exception: %s, Message: %s)", element, e.getClass().getSimpleName(), e.getMessage()));
-			}
-			
-			if (annotation != null){
-				element.setAnnotation(key, annotation);
-			} else {
-				LogUtil.log(LogEvent.ERROR, "Null data while unmarshalling Annotations. Probably missing Converter");
-			}
+		String key = attributes.getValue(ATTR_KEY);
+		String typeName = attributes.getValue(ATTR_TYP);
 		
+		Object annotation = null;
+		try {
+			annotation = ConverterUtil.unmarshal(ReflectionUtil.loadClass(typeName), attributes.getValue(ATTR_DATA));
+			element.setAnnotation(key, annotation);
+		} catch (Exception e) {
+			LogUtil.log(LogEvent.ERROR, String.format("Error while deserializing %s (Exception: %s, Message: %s)", element, e.getClass().getSimpleName(), e.getMessage()));
+		}
 	}
 	
 	public static void disposeAnnotations(AnnotateableElement element) {

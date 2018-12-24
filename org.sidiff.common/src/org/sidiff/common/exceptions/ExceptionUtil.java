@@ -1,5 +1,7 @@
 package org.sidiff.common.exceptions;
 
+import java.util.function.Consumer;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -42,5 +44,38 @@ public final class ExceptionUtil {
 			return new Status(((CoreException)e).getStatus().getSeverity(), CommonPlugin.ID, "An exception occurred", e);
 		}
 		return new Status(IStatus.ERROR, CommonPlugin.ID, "An exception occurred", e);
+	}
+
+	/**
+	 * Throws the given exception without having to declare or catch it,
+	 * even if it is not a {@link RuntimeException}.
+	 * @param exception the throwable to throw
+	 * @throws E the exception
+	 */
+	@SuppressWarnings("unchecked")
+	public static <E extends Throwable> void sneakyThrow(Throwable exception) throws E {
+		throw (E)exception;
+	}
+
+	/**
+	 * Wraps the given consumer, which can throw an exception,
+	 * so that the exception is suppressed and the consumer can be
+	 * used as a lambda.
+	 * @param consumer the consumer, which may throw exceptions
+	 * @return a consumer that sneakily re-throws exceptions
+	 */
+	public static <T> Consumer<T> wrap(UnsafeConsumer<T> consumer) {
+		return t -> {
+			try {
+				consumer.accept(t);
+			} catch(Exception e) {
+				sneakyThrow(e);
+			}
+		};
+	}
+
+	@FunctionalInterface
+	public static interface UnsafeConsumer<T> {
+		void accept(T t) throws Exception;
 	}
 }

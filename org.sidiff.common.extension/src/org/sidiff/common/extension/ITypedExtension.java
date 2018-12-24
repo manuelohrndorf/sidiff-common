@@ -1,5 +1,6 @@
 package org.sidiff.common.extension;
 
+import java.util.Collections;
 import java.util.Set;
 
 /**
@@ -33,5 +34,28 @@ public interface ITypedExtension extends IExtension {
 	 */
 	default boolean isGeneric() {
 		return getDocumentTypes().contains(GENERIC_TYPE);
+	}
+
+	/**
+	 * <p>Returns whether this extension can handle the set of document types.</p>
+	 * <p>The default implementation returns <code>true</code>, if the extension
+	 * {@link #isGeneric() is generic} or {@link #getDocumentTypes() its document types}
+	 * contain the all document types of the specified set.
+	 * @param documentTypes
+	 * @return
+	 */
+	default boolean canHandle(Set<String> documentTypes) {
+		return isGeneric() || getDocumentTypes().containsAll(documentTypes);
+	}
+
+	/**
+	 * <p>Returns whether this extension can handle the document type.</p>
+	 * <p>The default implementation delegates to {@link #canHandle(Set)}
+	 * using a singleton collection.</p>
+	 * @param documentType
+	 * @return
+	 */
+	default boolean canHandle(String documentType) {
+		return canHandle(Collections.singleton(documentType));
 	}
 }

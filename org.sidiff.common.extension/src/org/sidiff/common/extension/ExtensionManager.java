@@ -155,7 +155,7 @@ public class ExtensionManager<T extends IExtension> {
 
 	/**
 	 * <p>Returns the default extension of this manager.</p>
-	 * <p>The default implementation returns any extension
+	 * <p>The default implementation of ExtensionManager returns any extension
 	 * if this manager has any, else an empty optional is returned.</p>
 	 * <p>Subclasses may override.</p>
 	 * @return the default extension, or empty Optional if none

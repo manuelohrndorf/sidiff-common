@@ -62,6 +62,18 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	}
 
 	/**
+	 * <p>Returns the default extension of this manager.</p>
+	 * <p>The default implementation of TypedExtensionManager returns any generic
+	 * extension if this manager has any, else an empty optional is returned.</p>
+	 * <p>Subclasses may override.</p>
+	 * @return the default extension, or empty Optional if none
+	 */
+	@Override
+	public Optional<T> getDefaultExtension() {
+		return getGenericExtensions().stream().findFirst();
+	}
+
+	/**
 	 * <p>Returns a default extension of this manager that supports all of the given document types.</p>
 	 * <p>If any extension support specifically this document types, it is returned.
 	 * Else, if any generic extension exists, it is returned. Else the returned Optional is empty.</p>

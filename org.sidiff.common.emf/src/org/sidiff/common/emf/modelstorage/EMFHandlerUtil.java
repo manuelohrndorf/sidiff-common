@@ -90,7 +90,6 @@ public class EMFHandlerUtil {
 		return null;
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static <E extends EObject> E loadResource(IResource resource, Class<E> type, ResourceSet rss) {
 		URI uri = getURI(resource);
 		Resource eResource = rss.getResource(uri, true);
@@ -98,7 +97,7 @@ public class EMFHandlerUtil {
 		if ((eResource != null) && !eResource.getContents().isEmpty() 
 				&& (type.isInstance(eResource.getContents().get(0)))) {
 			
-			return (E) eResource.getContents().get(0);
+			return type.cast(eResource.getContents().get(0));
 		}
 		
 		return null;

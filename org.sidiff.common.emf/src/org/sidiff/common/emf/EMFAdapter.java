@@ -9,7 +9,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
-import org.sidiff.common.emf.modelstorage.ModelStorage;
 
 /**
  * We implemented our own EMFAdapter registry for comfortabily and speedup reasons.
@@ -25,12 +24,10 @@ public class EMFAdapter {
 	}
 
 	public boolean addAdapterFactory(SiDiffAdapterFactory e) {
-		ModelStorage.getInstance().registerAdapterFactory(e);
 		return factories.add(e);
 	}
 
 	public boolean removeAdapterFactory(SiDiffAdapterFactory o) {
-		ModelStorage.getInstance().unregisterAdapterFactory(o);
 		return factories.remove(o);
 	}
 

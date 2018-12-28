@@ -1,6 +1,7 @@
 package org.sidiff.common.extension.configuration;
 
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 import org.sidiff.common.converter.ConverterUtil;
 
@@ -17,13 +18,15 @@ public class ConfigurationOption<T> {
 	private final String name;
 	private final Class<T> type;
 	private final T defaultValue;
+	private final BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
 	private T value;
 
-	protected ConfigurationOption(String key, String name, Class<T> type, T defaultValue) {
+	protected ConfigurationOption(String key, String name, Class<T> type, T defaultValue, BiFunction<ConfigurationOption<T>,T,Boolean> onSet) {
 		this.key = key;
 		this.name = name;
 		this.type = type;
 		this.defaultValue = defaultValue;
+		this.onSet = onSet;
 		this.value = defaultValue;
 	}
 
@@ -64,7 +67,9 @@ public class ConfigurationOption<T> {
 	 * @param value the new value
 	 */
 	public void setValue(T value) {
-		this.value = value;
+		if(onSet.apply(this, value)) {
+			this.value = value;
+		}
 	}
 
 	/**
@@ -128,6 +133,7 @@ public class ConfigurationOption<T> {
 		private String key;
 		private String name;
 		private T defaultValue;
+		private BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
 
 		protected Builder(Class<T> type) {
 			this.type = Objects.requireNonNull(type);
@@ -148,6 +154,20 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
+		/**
+		 * <p>Sets a callback function which is called <i>before</i> a new value is set.
+		 * The callback functions receives the ConfigurationOption and the new value
+		 * as arguments and returns a boolean value, which indicates whether the new value
+		 * should be applied (<code>true</code>) or discarded (<code>false</code>).</p>
+		 * <p>The default callback just returns <code>true</code>.</p>
+		 * @param onSet the function
+		 * @return this builder for method chaining
+		 */
+		public Builder<T> onSet(BiFunction<ConfigurationOption<T>,T,Boolean> onSet) {
+			this.onSet = Objects.requireNonNull(onSet);
+			return this;
+		}
+
 		public ConfigurationOption<T> build() {
 			if(key == null) {
 				throw new IllegalStateException("ConfigurationOption requires a key");
@@ -155,7 +175,10 @@ public class ConfigurationOption<T> {
 			if(name == null) {
 				name = key;
 			}
-			return new ConfigurationOption<T>(key, name, type, defaultValue);
+			if(onSet == null) {
+				onSet = (option, newValue) -> true;
+			}
+			return new ConfigurationOption<T>(key, name, type, defaultValue, onSet);
 		}
 	}
 }

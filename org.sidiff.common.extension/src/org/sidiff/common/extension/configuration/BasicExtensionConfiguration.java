@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * that uses a fixed collection of {@link ConfigurationOption}s.
  * @author Robert Müller
  */
-public class BasicExtensionConfiguration implements IExtensionConfiguration {
+public class BasicExtensionConfiguration extends AbstractExtensionConfiguration {
 
 	private final Map<String,ConfigurationOption<?>> optionsMap;
 
@@ -34,22 +34,6 @@ public class BasicExtensionConfiguration implements IExtensionConfiguration {
 	@Override
 	public Object getOption(String key) {
 		return optionsMap.get(key).getValue();
-	}
-
-	@Override
-	public Map<String, Object> getOptions() {
-		return getConfigurationOptions().stream()
-				.collect(Collectors.toMap(ConfigurationOption::getKey, ConfigurationOption::getValue));
-	}
-
-	@Override
-	public void setOptions(Map<String, Object> options) {
-		options.entrySet().forEach(e -> setOption(e.getKey(), e.getValue()));
-	}
-
-	@Override
-	public void resetToDefaults() {
-		getConfigurationOptions().forEach(ConfigurationOption::resetToDefault);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package org.sidiff.common.ui.widgets;
 import org.eclipse.swt.widgets.Composite;
 
 public interface IWidget {
+
 	/**
 	 * Create/Initialize the widget controls.
 	 *
@@ -11,7 +12,6 @@ public interface IWidget {
 	 * @return The top level container.
 	 */
 	public Composite createControl(Composite parent);
-//	public Composite createControl(Composite parent, WizardPage page);
 
 	/**
 	 * @return The top level container or <code>null</code> if has not yet been created.
@@ -20,9 +20,7 @@ public interface IWidget {
 
 	/**
 	 * Set the widget layout data.
-	 *
-	 * @param layoutData
-	 *            The layout of the top level container.
+	 * @param layoutData The layout of the top level container.
 	 */
 	public void setLayoutData(Object layoutData);
 }

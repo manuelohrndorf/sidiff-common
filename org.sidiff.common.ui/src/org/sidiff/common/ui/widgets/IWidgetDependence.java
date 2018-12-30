@@ -5,7 +5,7 @@ package org.sidiff.common.ui.widgets;
  * Widgets implementing this interface can have dependent widgets, can be enabled/disabled and must
  * specify whether dependent widgets are enabled.
  * 
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  *
  */
 public interface IWidgetDependence {

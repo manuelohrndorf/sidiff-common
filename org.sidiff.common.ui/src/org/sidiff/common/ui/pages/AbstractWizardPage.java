@@ -9,8 +9,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -24,9 +23,11 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
 /**
- * 
+ * <p>Abstract wizard class containing {@link IWidget}s.</p>
+ * <p>Override {@link #createWidgets()} and add them
+ * using {@link #addWidget(Composite, IWidget)}.</p>
  * @author cpietsch
- *
+ * @author Robert Müller
  */
 public abstract class AbstractWizardPage extends WizardPage implements
 		IPageChangedListener, IWidgetCallback.Callback {
@@ -37,9 +38,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	private ValidationMessage validationMessage;
 
 	/**
-	 * The {@link SelectionAdapter} in order to listen to widget selections
+	 * The {@link SelectionListener} in order to listen to widget selections
 	 */
-	protected SelectionAdapter validationListener;
+	protected SelectionListener validationListener;
 
 	// ---------- UI Elements ----------
 
@@ -62,17 +63,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 	public AbstractWizardPage(String pageName, String title) {
 		super(pageName);
-		
 		this.setTitle(title);
-		
-		this.widgets = new ArrayList<IWidget>();
-		
-		this.validationListener = new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				requestValidation();
-			}
-		};
+		this.widgets = new ArrayList<>();
+		this.validationListener = SelectionListener.widgetSelectedAdapter(e -> requestValidation());
 	}
 	
 	public AbstractWizardPage(String pageName, String title, ImageDescriptor titleImage) {
@@ -213,7 +206,14 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		setPageComplete(true);
 		validationMessage = null;
 		for (int i = widgets.size()-1; i >= 0 ; i--) {
-			if (widgets.get(i) instanceof IWidgetValidation) {
+			IWidget widget = widgets.get(i);
+			// widgets that are disabled are not validated
+			if(widget instanceof IWidgetDependence) {
+				if(!((IWidgetDependence)widget).isEnabled()) {
+					continue;
+				}
+			}
+			if(widget instanceof IWidgetValidation) {
 				validateWidget((IWidgetValidation) widgets.get(i));
 			}
 		}

@@ -1,13 +1,11 @@
 package org.sidiff.common.ui.widgets;
 
-import org.eclipse.swt.widgets.Control;
-
 /**
- * The {@link IWidgetDisposable} should be implemented by classes implementing
+ * The IWidgetDisposable should be implemented by classes implementing
  * {@link IWidget}, that need to be disposed after no longer being needed.
  * A widget can only be disposed once and cannot be reused.
  * 
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  *
  */
 public interface IWidgetDisposable {

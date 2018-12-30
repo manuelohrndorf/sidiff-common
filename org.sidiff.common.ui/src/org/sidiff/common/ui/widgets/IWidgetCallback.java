@@ -5,7 +5,7 @@ package org.sidiff.common.ui.widgets;
  * Widgets implementing this interface receive a callback to the page containing the widget,
  * which can be used to request the validation, and that the layout be updated.
  * 
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  *
  */
 public interface IWidgetCallback {

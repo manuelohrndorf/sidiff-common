@@ -10,8 +10,8 @@ import org.eclipse.swt.widgets.Composite;
  * <p>Abstract widget class with common widget functionality.<p>
  * <p>Implements {@link IWidget}, {@link IWidgetDependence} and {@link IWidgetCallback}
  * and provides default implementations for widgets dependency management and widget callbacks.</p>
- * @author Robert Müller
- *
+ * <p>The widget is responsible for requesting validation, when its value changes, using the callbacks.</p>
+ * @author Robert MÃ¼ller
  */
 public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWidgetCallback {
 
@@ -26,7 +26,7 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 
 	public AbstractWidget() {
 		this.enabled = true;
-		this.dependents = new LinkedList<IWidgetDependence>();
+		this.dependents = new LinkedList<>();
 	}
 
 	//

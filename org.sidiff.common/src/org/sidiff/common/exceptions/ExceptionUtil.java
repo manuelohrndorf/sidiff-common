@@ -6,7 +6,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
-import org.sidiff.common.CommonPlugin;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 public final class ExceptionUtil {
 
@@ -34,16 +35,43 @@ public final class ExceptionUtil {
 		if(e == null) {
 			return Status.OK_STATUS;
 		} else if(e instanceof SiDiffException) {
-			return new Status(IStatus.ERROR, CommonPlugin.ID, ((SiDiffException)e).getShortMessage(), e);
+			return new Status(IStatus.ERROR, getPluginId(e), ((SiDiffException)e).getShortMessage(), e);
 		} else if(e instanceof SiDiffRuntimeException) {
-			return new Status(IStatus.ERROR, CommonPlugin.ID, ((SiDiffRuntimeException)e).getShortMessage(), e);
+			return new Status(IStatus.ERROR, getPluginId(e), ((SiDiffRuntimeException)e).getShortMessage(), e);
 		} else if(e instanceof OperationCanceledException) {
 			return Status.CANCEL_STATUS;
 		} else if(e instanceof CoreException) {
 			// Note that we do not return e.getStatus directly, as this hides the original stack trace
-			return new Status(((CoreException)e).getStatus().getSeverity(), CommonPlugin.ID, "An exception occurred", e);
+			return new Status(((CoreException)e).getStatus().getSeverity(), getPluginId(e), "An exception occurred", e);
 		}
-		return new Status(IStatus.ERROR, CommonPlugin.ID, "An exception occurred", e);
+		return new Status(IStatus.ERROR, getPluginId(e), "An exception occurred", e);
+	}
+
+	private static String getPluginId(Throwable e) {
+		final String UNKNOWN_ID = "unknown";
+		try {
+			Bundle bundle = FrameworkUtil.getBundle(Class.forName(e.getStackTrace()[0].getClassName()));
+			return bundle == null ? UNKNOWN_ID : bundle.getSymbolicName();
+		} catch (ClassNotFoundException e2) {
+			return UNKNOWN_ID;
+		}
+	}
+
+	/**
+	 * Wraps the given throwable in a {@link CoreException} using
+	 * {@link #toStatus(Throwable)}. Returns the exception itself,
+	 * if it already is a CoreException.
+	 * @param e the throwable
+	 * @return wrapped throwable
+	 */
+	public static CoreException asCoreException(Throwable e) {
+		if(e instanceof Error) {
+			// errors should be thrown as they are, but we don't want to declare them here
+			sneakyThrow(e);
+		} else if(e instanceof CoreException) {
+			return (CoreException)e;
+		}
+		return new CoreException(ExceptionUtil.toStatus(e));
 	}
 
 	/**

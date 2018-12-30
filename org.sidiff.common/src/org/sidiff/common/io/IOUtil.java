@@ -1,13 +1,15 @@
 package org.sidiff.common.io;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.eclipse.core.runtime.FileLocator;
 
@@ -15,7 +17,7 @@ import org.eclipse.core.runtime.FileLocator;
  * Contains utility functions to work with input and
  * output streams. {@link Files} also contains further
  * utility functions.
- * @author Robert Müller
+ * @author Robert MÃ¼ller
  */
 public class IOUtil {
 
@@ -59,14 +61,33 @@ public class IOUtil {
 	 * Opens a new input stream for a file inside a plugin bundle.
 	 * The caller must close this input stream when it is no longer used.
 	 * @param pluginId the plugin bundle ID
-	 * @param path the path inside the plugin
+	 * @param path the path inside the plugin, with / as separators, leading / is option
 	 * @return new input stream
-	 * @throws IOException if an I/O error occurred
+	 * @throws IOException if an I/O error occurred, if the path is invalid, or if the file doesn't exist
 	 */
 	public static InputStream openInputStream(String pluginId, String path) throws IOException {
+		return locatePluginFile(pluginId, path).openStream();
+	}
+
+	/**
+	 * Returns the absolute path of a file inside a plugin bundle.
+	 * @param pluginId the plugin bundle ID
+	 * @param path the path inside the plugin, with / as separators, leading / is option
+	 * @return path absolute {@link Path} of the file inside the plugin bundle
+	 * @throws IOException if an I/O error occurred, if the path is invalid, or if the file doesn't exist
+	 */
+	public static Path getAbsolutePath(String pluginId, String path) throws IOException {
+		return new File(FileLocator.toFileURL(locatePluginFile(pluginId, path)).getFile()).toPath();
+	}
+
+	private static URL locatePluginFile(String pluginId, String path) throws FileNotFoundException, MalformedURLException {
 		if(!path.startsWith("/")) {
 			path = "/" + path;
 		}
-		return FileLocator.find(new URL("platform:/plugin/" + pluginId + path)).openStream();
+		URL url = FileLocator.find(new URL("platform:/plugin/" + pluginId + path));
+		if(url == null) {
+			throw new FileNotFoundException(path + " could not be found in plugin " + pluginId);
+		}
+		return url;
 	}
 }

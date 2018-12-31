@@ -6,16 +6,13 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.statushandlers.StatusManager;
 import org.sidiff.common.exceptions.ExceptionUtil;
 
 /**
  * A class that provides static methods to create {@link MessageDialog}s for
  * errors, messages and runnables with progress.
- * @author Adrian Bingener, Robert Müller
+ * @author Adrian Bingener, Robert Mï¿½ller
  */
 public final class MessageDialogUtil {
 
@@ -24,16 +21,16 @@ public final class MessageDialogUtil {
 	}
 
 	public static void showErrorDialog(String title, String message) {
-		MessageDialog.open(MessageDialog.ERROR, getShell(), title, message, SWT.NONE);
+		MessageDialog.open(MessageDialog.ERROR, UIUtil.getActiveShell(), title, message, SWT.NONE);
 	}
 
 	public static void showMessageDialog(String title, String message) {
-		MessageDialog.open(MessageDialog.INFORMATION, getShell(), title, message, SWT.NONE);
+		MessageDialog.open(MessageDialog.INFORMATION, UIUtil.getActiveShell(), title, message, SWT.NONE);
 	}
 
 	public static void showProgressDialog(IRunnableWithProgress runnable) {
 		try {
-			ProgressMonitorDialog dialog = new ProgressMonitorDialog(getShell());
+			ProgressMonitorDialog dialog = new ProgressMonitorDialog(UIUtil.getActiveShell());
 			dialog.run(false, false, runnable);
 		} catch (InvocationTargetException e) {
 			StatusManager.getManager().handle(
@@ -42,10 +39,5 @@ public final class MessageDialogUtil {
 		} catch (InterruptedException e) {
 			// operation was canceled
 		}
-	}
-
-	protected static Shell getShell() {
-		IWorkbenchWindow win = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		return win != null ? win.getShell() : null;
 	}
 }

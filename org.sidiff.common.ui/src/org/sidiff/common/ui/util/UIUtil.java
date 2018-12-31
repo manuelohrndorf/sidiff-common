@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -30,16 +31,23 @@ import org.eclipse.ui.services.IServiceLocator;
 public class UIUtil {
 
 	/**
+	 * Returns the active shell.
+	 * @return active shell, <code>null</code> if none
+	 */
+	public static Shell getActiveShell() {
+		IWorkbenchWindow win = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		return win != null ? win.getShell() : null;
+	}
+
+	/**
 	 * Execute Eclipse command programmatically.
 	 *
 	 * @param commandID The command ID.
 	 */
 	public static void callCommand(String commandID, Map<String, String> paramters) {
 		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
-		ICommandService commandService = (ICommandService) serviceLocator
-				.getService(ICommandService.class);
-		IEvaluationService evaluationService = (IEvaluationService) serviceLocator
-				.getService(IEvaluationService.class);
+		ICommandService commandService = serviceLocator.getService(ICommandService.class);
+		IEvaluationService evaluationService = serviceLocator.getService(IEvaluationService.class);
 
 		if (paramters == null) {
 			paramters = new HashMap<String, String>();
@@ -98,8 +106,7 @@ public class UIUtil {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-				MessageDialog.openInformation(
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+				MessageDialog.openInformation(getActiveShell(), 
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
 						message);
 		    }
@@ -110,8 +117,7 @@ public class UIUtil {
 		Display.getDefault().asyncExec(new Runnable() {
 		    @Override
 		    public void run() {
-				MessageDialog.openError(
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), 
+				MessageDialog.openError(getActiveShell(), 
 						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
 						message);
 		    }

@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.ControlEnableState;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 /**
@@ -89,6 +90,28 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 	@Override
 	public boolean isEnabled() {
 		return enabled;
+	}
+
+	/**
+	 * Sets the visibility of this widget. An invisible widget takes up no space.
+	 * Has no effect if the widget has not been created yet.
+	 * @param visible <code>true</code> to make visible, <code>false</code> to make invisible
+	 */
+	public void setVisible(boolean visible) {
+		Composite composite = getWidget();
+		if(composite != null) {
+			composite.setVisible(visible);
+			((GridData)composite.getLayoutData()).exclude = !visible;
+			composite.requestLayout();			
+		}
+	}
+
+	/**
+	 * Returns whether this widget is currently visible. An invisible widget takes up no space.
+	 * @return <code>true</code> if visible, <code>false</code> if invisible or not yet created
+	 */
+	public boolean isVisible() {
+		return getWidget() != null && getWidget().isVisible();
 	}
 
 	/**

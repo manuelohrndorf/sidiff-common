@@ -3,6 +3,8 @@ package org.sidiff.common.extension.configuration;
 import java.util.Collection;
 import java.util.Map;
 
+import org.sidiff.common.extension.internal.NullExtensionConfiguration;
+
 /**
  * <p>An extension configuration stores multiple configuration
  * options, identified by keys, that each have a name, value and
@@ -12,6 +14,11 @@ import java.util.Map;
  * @author Robert Müller
  */
 public interface IExtensionConfiguration {
+
+	/**
+	 * A singleton empty configuration.
+	 */
+	IExtensionConfiguration NULL = new NullExtensionConfiguration();
 
 	/**
 	 * <p>Sets the configuration option with the given key to the given value.</p>

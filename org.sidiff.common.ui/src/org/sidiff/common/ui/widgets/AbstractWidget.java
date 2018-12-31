@@ -102,7 +102,8 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 		if(composite != null) {
 			composite.setVisible(visible);
 			((GridData)composite.getLayoutData()).exclude = !visible;
-			composite.requestLayout();			
+			composite.requestLayout();
+			getWidgetCallback().requestLayout();
 		}
 	}
 

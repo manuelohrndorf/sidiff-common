@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SiDiff Common - Extension Management - UI
+Bundle-SymbolicName: org.sidiff.common.extension.ui
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.sidiff.common.extension.ui.internal.ExtensionsUiPlugin
+Bundle-Vendor: Software Engineering Group, University of Siegen
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.sidiff.common.ui,
+ org.sidiff.common.extension,
+ org.eclipse.ui.forms
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.sidiff.common.extension.ui
+Bundle-ActivationPolicy: lazy
+Export-Package: org.sidiff.common.extension.ui.widgets

@@ -21,9 +21,13 @@ public abstract class AbstractModifiableWidget<T> extends AbstractWidget impleme
 
 	@Override
 	public void setSelection(List<T> selection) {
-		if(!Objects.equals(selection, this.selection)) {
+		// remove all values which cannot be selected
+		List<T> newSelection = new ArrayList<>(selection);
+		newSelection.retainAll(getSelectableValues());
+		
+		if(!Objects.equals(newSelection, this.selection)) {
 			List<T> oldSelection = this.selection;
-			this.selection = new ArrayList<>(selection);
+			this.selection = newSelection;
 			hookSetSelection();
 			propagateValueChange(oldSelection, this.selection);
 		}

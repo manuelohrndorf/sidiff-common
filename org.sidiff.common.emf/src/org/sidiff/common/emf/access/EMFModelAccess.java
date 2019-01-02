@@ -1,6 +1,5 @@
 package org.sidiff.common.emf.access;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -10,15 +9,11 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.sidiff.common.emf.access.impl.EMFIndexedAccessorImpl;
 import org.sidiff.common.emf.access.impl.EMFModelAccessor;
 import org.sidiff.common.emf.access.impl.EMFModelAccessorImpl;
@@ -31,9 +26,6 @@ import org.sidiff.common.emf.access.tree.TreeVisitor;
 import org.sidiff.common.emf.access.value.RemoteAttribute;
 import org.sidiff.common.emf.access.value.RemoteAttributeAccessor;
 import org.sidiff.common.emf.access.value.impl.RemoteAttributeAccessorImpl;
-import org.sidiff.common.emf.modelstorage.EMFStorage;
-import org.sidiff.common.logging.LogEvent;
-import org.sidiff.common.logging.LogUtil;
 
 /**
  * This class supports easy access to model instances.
@@ -588,39 +580,13 @@ public class EMFModelAccess {
 		return (documentTypes.size() > 1) && containsUML && !containsHenshinTrace;
 	}
 
-
-	/**
-	 * derives the diagram file and all other files if exist
-	 * 
-	 * @param model
-	 * @return
-	 */
-	public static ResourceSet deriveDiagramFile(Resource model) {
-		String path = EMFStorage.uriToPath(model.getURI());
-		ResourceSet resourceSet = new ResourceSetImpl();
-		try {
-			if (EMFModelAccess.getCharacteristicDocumentType(model).contains("Ecore")) {
-				path += "diag";
-				resourceSet.getResources().add(EMFStorage.eLoad(EMFStorage.pathToUri(path)).eResource());
-			} else if (EMFModelAccess.getCharacteristicDocumentType(model).contains("UML")) {
-				path = path.replace(".uml", ".di");
-				resourceSet.getResources().add(EMFStorage.eLoad(EMFStorage.pathToUri(path)).eResource());
-				path = path.replace(".di", ".notation");
-				resourceSet.getResources().add(EMFStorage.eLoad(EMFStorage.pathToUri(path)).eResource());
-			}
-			// TODO here we could define an extension point which has to be extended by each doc type bringing along it's own diagram type 
-		} catch (Exception e) {
-			LogUtil.log(LogEvent.NOTICE, e.getMessage());
-		}
-		return resourceSet;
-	}
-
 	/**
 	 * Returns the URI fragment of the given object.
 	 * 
 	 * @param eObject
 	 *            the object
 	 * @return the object URI fragment.
+	 * @deprecated Use <code>EcoreUtil.getURI(eObject).fragment()</code> instead.
 	 */
 	public static String getURIFragment(EObject eObject) {
 		if (eObject.eIsProxy()) {
@@ -628,13 +594,5 @@ public class EMFModelAccess {
 		} else {
 			return eObject.eResource().getURIFragment(eObject);
 		}
-	}
-
-	public static Resource copyResource(Resource resource, String path, String filename){
-		URI uri = EMFStorage.pathToUri(path+File.separator+filename+"."+resource.getURI().fileExtension()); 
-		
-
-		EMFStorage.eSaveAs(uri, EcoreUtil.copy(resource.getContents().get(0)));
-		return EMFStorage.eLoad(uri).eResource();
 	}
 }

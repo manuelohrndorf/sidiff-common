@@ -18,11 +18,13 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.services.IEvaluationService;
@@ -35,8 +37,70 @@ public class UIUtil {
 	 * @return active shell, <code>null</code> if none
 	 */
 	public static Shell getActiveShell() {
-		IWorkbenchWindow win = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow win = getActiveWindow();
 		return win != null ? win.getShell() : null;
+	}
+
+	/**
+	 * Returns the active workbench window.
+	 * @return active window, <code>null</code> if none
+	 */
+	public static IWorkbenchWindow getActiveWindow() {
+		return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+	}
+	
+	/**
+	 * Returns the active workbench page.
+	 * @return the active page, <code>null</code> if none
+	 */
+	public static IWorkbenchPage getActivePage() {
+		IWorkbenchWindow win = getActiveWindow();
+		return win != null ? win.getActivePage() : null;
+	}
+	
+	/**
+	 * Returns the active workbench part.
+	 * @return the active part, <code>null</code> if none
+	 */
+	public static IWorkbenchPart getActivePart() {
+		IWorkbenchPage page = getActivePage();
+		return page != null ? page.getActivePart() : null;
+	}
+	
+	/**
+	 * Shows the perspective with the given ID.
+	 * @param perspectiveId the ID of the perspective
+	 * @return the workbench page that the perspective was shown
+	 * @throws WorkbenchException if the perspective could not be shown
+	 * @throws IllegalThreadStateException if not called from UI thread, or no active window
+	 */
+	public static IWorkbenchPage showPerspective(String perspectiveId) throws WorkbenchException {
+		IWorkbenchWindow window = getActiveWindow();
+		if(window == null) {
+			throw new IllegalThreadStateException("Not called from UI thread, or no active window");
+		}
+		return PlatformUI.getWorkbench().showPerspective(perspectiveId, window);
+	}
+
+	/**
+	 * Shows the view with the given ID and type in the active workbench page.
+	 * @param viewType the class of the view
+	 * @param viewId the ID of the view
+	 * @return the view (newly created or existing)
+	 * @throws PartInitException if the view could not be initialized
+	 * @throws IllegalThreadStateException if not called from UI thread, or no active page/window
+	 * @throws IllegalArgumentException if the part with the ID is found but does not have the specified type
+	 */
+	public static <V> V showView(Class<V> viewType, String viewId) throws PartInitException {
+		IWorkbenchPage page = getActivePage();
+		if(page == null) {
+			throw new IllegalThreadStateException("Not called from UI thread, or no active page/window");
+		}
+		IViewPart part = page.showView(viewId);
+		if(!viewType.isInstance(part)) {
+			throw new IllegalArgumentException("Part with ID " + viewId + " is not of type " + viewType);
+		}
+		return viewType.cast(part);
 	}
 
 	/**
@@ -86,10 +150,7 @@ public class UIUtil {
 		IPath location = Path.fromOSString(osFile.getAbsolutePath());
 		IFile file = workspace.getRoot().getFileForLocation(location);
 
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		if(window == null) throw new IllegalStateException("No active workbench window available, or not called from UI thread");
-		IWorkbenchPage page = window.getActivePage();
+		IWorkbenchPage page = getActivePage();
 		if(page == null) throw new IllegalStateException("The active workbench window has no active page");
 
 		if (file != null) {
@@ -107,7 +168,7 @@ public class UIUtil {
 		    @Override
 		    public void run() {
 				MessageDialog.openInformation(getActiveShell(), 
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+						getActivePart().getTitle(),
 						message);
 		    }
 		});
@@ -118,7 +179,7 @@ public class UIUtil {
 		    @Override
 		    public void run() {
 				MessageDialog.openError(getActiveShell(), 
-						PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getTitle(),
+						getActivePart().getTitle(),
 						message);
 		    }
 		});

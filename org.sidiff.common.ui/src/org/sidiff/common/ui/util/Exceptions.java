@@ -2,8 +2,6 @@ package org.sidiff.common.ui.util;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ui.statushandlers.StatusManager;
-import org.sidiff.common.exceptions.SiDiffException;
-import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.logging.StatusWrapper;
 import org.sidiff.common.logging.StatusWrapper.IStatusRunnable;
 
@@ -35,7 +33,7 @@ import org.sidiff.common.logging.StatusWrapper.IStatusRunnable;
  *     return new Status(IStatus.INFO, "&lt;plugin id>", "File written to ...");
  * });
  * </pre></p>
- * @author Robert Müller
+ * @author Robert Mï¿½ller
  */
 public final class Exceptions {
 

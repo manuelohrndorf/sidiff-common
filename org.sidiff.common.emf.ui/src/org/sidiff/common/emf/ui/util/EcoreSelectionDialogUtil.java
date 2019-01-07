@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * </copyright>
  */
-package org.sidiff.common.ui.util;
+package org.sidiff.common.emf.ui.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,13 +46,14 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.sidiff.common.ui.Activator;
 
 /**
  * @generated NOT
  * @author Christian Krause
  */
 public class EcoreSelectionDialogUtil {
+
+	private static final String PLUGIN_ID = "org.sidiff.common.emf.ui";
 	
 	/**
 	 * Open a dialog for loading a package from an Ecore file.
@@ -335,11 +336,11 @@ public class EcoreSelectionDialogUtil {
 			if (selection.length > 0) {
 				final Object obj = selection[0];
 				if (obj instanceof EPackage) {
-					return new Status(IStatus.OK, Activator.PLUGIN_ID, "EPackage selected");
+					return new Status(IStatus.OK, PLUGIN_ID, "EPackage selected");
 				}
 			}
 
-			return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "No valid EPackage selected");
+			return new Status(IStatus.ERROR, PLUGIN_ID, "No valid EPackage selected");
 		}
 	};
 	

@@ -1,4 +1,4 @@
-package org.sidiff.common.emf.modelstorage;
+package org.sidiff.common.emf.ui.util;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.resources.IResource;

@@ -5,11 +5,14 @@ Bundle-SymbolicName: org.sidiff.common.ui;singleton:=true
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.sidiff.common.ui.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
-Require-Bundle: org.eclipse.core.runtime,
+Require-Bundle: org.sidiff.common;visibility:=reexport,
+ org.eclipse.core.runtime,
  org.eclipse.core.expressions,
  org.eclipse.core.filesystem,
- org.eclipse.emf.ecore.editor,
- org.sidiff.common
+ org.eclipse.core.resources,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.ide,
+ org.eclipse.jface
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.sidiff.common.ui.pages,
  org.sidiff.common.ui.util,

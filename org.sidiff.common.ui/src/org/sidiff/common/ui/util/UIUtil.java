@@ -135,13 +135,11 @@ public class UIUtil {
 	/**
 	 * Open a file with the associated editor.
 	 *
-	 * @param path
-	 *            The path on the file system.
+	 * @param osFile file on the file system.
 	 * @throws FileNotFoundException
 	 * @throws PartInitException 
 	 */
-	public static void openEditor(String path) throws FileNotFoundException, PartInitException {
-		File osFile = new File(path);
+	public static void openEditor(File osFile) throws FileNotFoundException, PartInitException {
 		if(!osFile.exists() || !osFile.isFile()) {
 			throw new FileNotFoundException("File could not be found: " + osFile);
 		}

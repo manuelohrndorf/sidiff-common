@@ -5,8 +5,8 @@ Bundle-SymbolicName: org.sidiff.common.emf;singleton:=true
 Bundle-Description: This plugin contains various utility functions to work with the Eclipse Modeling Framework.
 Bundle-Version: 1.3.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.core.resources,
+Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
+ org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.core.commands,
  org.eclipse.ui.workbench,
  org.eclipse.jface,

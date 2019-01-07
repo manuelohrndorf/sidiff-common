@@ -2,272 +2,30 @@ package org.sidiff.common.emf.modelstorage;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Objects;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.URIConverter;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
-import org.eclipse.emf.ecore.xmi.XMIResource;
-import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
-import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 
 /**
- * The resource manager is used to save and load EMF and java resources.
+ * Contains utility functions to convert (platform/file) {@link URI}, {@link IResource}/{@link IFile}/...,
+ * {@link File} into one another.
  */
 public class EMFStorage {
 
-	/**
-	 * Do nothing while saving the URI.
-	 */
-	@SuppressWarnings("unused")
-	private static class DoNotDeresolve extends URIHandlerImpl {
-		@Override
-		public URI deresolve(URI uri) {
-			return uri;
-		}
-	}	
-	
-	/**
-	 * URI will be replaced by the last segment
-	 */
-	private static class ResolveLastSegment extends URIHandlerImpl {
-		@Override
-		public URI deresolve(URI uri) {
-			String rel= uri.toString();
-			String segment = rel.substring(rel.indexOf(uri.lastSegment()));
-			return URI.createURI(segment);
-		}
-	}
-	
-	
-	/**
-	 * URI will be replaced by the shortest relative URI.
-	 */
-	private static class DeresolveRelative extends URIHandlerImpl{
-		@Override
-		public URI deresolve(URI uri){
-			return !uri.isPlatform() || (uri.segmentCount() > 0 && baseURI.segmentCount() > 0 && uri.segment(0).equals(baseURI.segment(0))) ? super.deresolve(uri) : uri;
-		}
-	}
-	
-	/**
-	 * Deresolve as file URI to platform resource URI.
-	 */
-	private static class FileToPlatformResourceDeresolve extends URIHandlerImpl {
-		
-		@Override
-		public URI deresolve(URI uri) {
-			
-			if (uri.isFile()) {
-				// FIXME: Very slow for a high count of URIs!
-				return uriToPlatformUri(uri).appendFragment(uri.fragment());
-			}
-			
-			return uri;
-		}
-	}	
-
-	/**
-	 * Save EMF resource which is already contained in a resource. References
-	 * will be saved as platform resource URIs.
-	 * 
-	 * @param root
-	 *            the root object that will be saved.
-	 */
-	public static void eSave(EObject root) {
-
-		Resource resource = root.eResource();
-
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
-
-		try {
-			resource.save(options);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Save EMF resource to given URI path. References will be saved as platform resource URIs.
-	 * 
-	 * @param path
-	 *            the save path.
-	 * @param root
-	 *            the root object that will be saved.
-	 */
-	public static void eSaveAs(URI uri, EObject root) {
-
-		Resource resource = new XMIIDResourceImpl(uri);
-		resource.getContents().add(root);
-
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
-
-		try {
-			resource.save(options);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Save EMF resource to given URI path. References will be saved as platform resource URIs.
-	 * 
-	 * @param path
-	 *            the save path.
-	 * @param root
-	 *            the root objects that will be saved.
-	 */
-	public static void eSaveAs(URI uri, Collection<? extends EObject> content) {
-
-		Resource resource = new XMIIDResourceImpl(uri);
-		resource.getContents().addAll(content);
-
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
-
-		try {
-			resource.save(options);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Save EMF resource to given URI path.
-	 * 
-	 * @param path
-	 *            the save path.
-	 * @param root
-	 *            the root object that will be saved.
-	 * @param relative
-	 * 			  true: URIs will be replaced by the shortest relative path.
-	 *            false: Do nothing while saving the URI.
-	 */
-	public static void eSaveAs(URI uri, EObject root, boolean relative) {
-
-		Resource resource = null;
-		
-		if(root.eResource() != null){
-			resource = root.eResource();
-			resource.setURI(uri);
-		}else{
-			resource = new XMIResourceImpl(uri);
-			resource.getContents().add(root);
-		}
-		
-		Map<String, Object> options = new HashMap<String, Object>();
-		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
-		if(relative) {
-			options.put(XMIResource.OPTION_URI_HANDLER, new DeresolveRelative());
-		} else {
-			options.put(XMIResource.OPTION_URI_HANDLER, new ResolveLastSegment());
-		}
-
-		try {
-			resource.save(options);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * Overwrite EMF resource.
-	 * 
-	 * @param oldObj
-	 *            The old object to overwrite.
-	 * @param newObj
-	 *            The new object to put into the old resource.
-	 */
-	public static void eOverwrite(EObject oldObj, EObject newObj) {
-
-		Resource resource = oldObj.eResource();
-		resource.getContents().clear();
-		resource.getContents().add(newObj);
-	}
-
-	/**
-	 * Load EMF resource.
-	 * 
-	 * @param eObjectUri
-	 *            the EMF-file path.
-	 * @return the loaded EMF-object.
-	 */
-	public static EObject eLoad(URI eObjectUri) {
-		Resource eObjectResource = new ResourceSetImpl().getResource(eObjectUri, true);
-		EObject eObject = eObjectResource.getContents().get(0);
-
-		return eObject;
-	}
-	
-	/**
-	 * Load EMF resource.
-	 * 
-	 * @param eObjectUri
-	 *            the EMF-file path.
-	 * @param rss
-	 *            The resource set that should be used.
-	 * @return the loaded EMF-object.
-	 */
-	public static EObject eLoad(URI eObjectUri, ResourceSet rss) {
-		Resource eObjectResource = rss.getResource(eObjectUri, true);
-		EObject eObject = eObjectResource.getContents().get(0);
-
-		return eObject;
-	}
-
-	/**
-	 * Reload EMF-object.
-	 * 
-	 * @param root
-	 *            the root object (The same that was loaded).
-	 * @return the reloaded EMF-object.
-	 */
-	public static EObject eReload(EObject root) {
-
-		try {
-			Resource resource = root.eResource();
-			resource.unload();
-			resource.load(null);
-			EObject reloaded = resource.getContents().get(0);
-
-			return reloaded;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return null;
-	}
-
-	/**
-	 * Returns the URI of the given root object.
-	 * 
-	 * @param rootEObject
-	 *            the root object
-	 * @return the object URI.
-	 */
-	public static URI getURI(EObject rootEObject) {
-		if (rootEObject.eIsProxy()) {
-			return ((InternalEObject) rootEObject).eProxyURI().trimFragment();
-		} else {
-			return rootEObject.eResource().getURI();
-		}
+	private EMFStorage() {
+		throw new AssertionError();
 	}
 
 	/**
@@ -279,218 +37,230 @@ public class EMFStorage {
 	 * @return normalized URI of this resource
 	 */
 	public static URI getNormalizedURI(Resource resource) {
-		URI uri = resource.getURI();
 		if(resource.getResourceSet() != null) {
-			uri = resource.getResourceSet().getURIConverter().normalize(uri);
+			return resource.getResourceSet().getURIConverter().normalize(resource.getURI());
+		}
+		return resource.getURI();
+	}
+
+	/**
+	 * Converts a file path to an platform resource URI.
+	 * @param path The path to convert.
+	 * @return The given path as platform resource URI.
+	 * @deprecated Use URIs directly, or <code>EMFStorage.{@link #toPlatformURI(File) toPlatformURI}(new File(path))</code> instead.
+	 */
+	public static URI pathToUri(String path) {
+		return toPlatformURI(new File(path));
+	}
+
+	/**
+	 * Converts a URI to an absolute file path.
+	 * @param uri The URI to convert.
+	 * @return The given URI as absolute file path
+	 * @deprecated Use URIs directly, or <code>EMFStorage.{@link #toFile(URI)}.getAbsolutePath()</code> instead.
+	 */
+	public static String uriToPath(URI uri) {
+		return toFile(uri).getAbsolutePath();
+	}
+
+	/**
+	 * Returns a platform URI for the path of the {@link IResource} in the workspace.
+	 * @param resource the resource in the workspace
+	 * @return platform URI of the resource
+	 */
+	public static URI toPlatformURI(IResource resource) {
+		Objects.requireNonNull(resource, "resource must not be null");
+		return toPlatformURI(resource.getFullPath());
+	}
+
+	/**
+	 * Returns a platform URI for the given {@link IPath}, which must be
+	 * of the form <code>/project/folder/file.txt</code>.
+	 * @param path the path in the workspace
+	 * @return platform URI with the path
+	 */
+	public static URI toPlatformURI(IPath path) {
+		Objects.requireNonNull(path, "path must not be null");
+		return URI.createPlatformResourceURI(path.toString(), true);
+	}
+
+	/**
+	 * <p>Tries to convert the {@link File} in the local file system to a platform URI.</p>
+	 * <p>This is a convenience method equivalent to <code>toPlatformURI(toFileURI(file))</code>.</p>
+	 * @param file the file in the local file system
+	 * @return platform URI of the file
+	 */
+	public static URI toPlatformURI(File file) {
+		return toPlatformURI(toFileURI(file));
+	}
+
+	/**
+	 * Tries to convert an URI to platform URI. If the URI already is a platform
+	 * URI or cannot be converted, it is returned as is. URIs are deresolved
+	 * against the workspace root to form platform resource URIs.
+	 * Note that this method <u>does not support platform <i>plugin</i> URIs</u>.
+	 * @param uri the URI
+	 * @return the URI (as platform URI, if possible)
+	 */
+	public static URI toPlatformURI(URI uri) {
+		Objects.requireNonNull(uri, "uri must not be null");
+		if(uri.isPlatform()) {
+			return uri;
+		}
+		if(uri.isArchive()) {
+			URI authority = toPlatformURI(URI.createURI(uri.authority().substring(0, uri.authority().length()-1)));
+			return URI.createHierarchicalURI("archive", authority.toString() + "!",
+					null, uri.segments(), null, uri.fragment());
+		}
+		if(uri.isFile()) {
+			// append an empty segment so that the base is a prefix URI
+			URI workspaceBase = toFileURI(getWorkspaceRoot().getLocation()).appendSegment("");
+			URI replaced = uri.replacePrefix(workspaceBase, URI.createURI("/"));
+			if(replaced != null) {
+				return URI.createPlatformResourceURI(replaced.toString(), true);
+			}
 		}
 		return uri;
 	}
 
 	/**
-	 * Converts a (e.g. platform) URI to a file URI.
-	 * 
-	 * @param uri The URI to convert.
-	 * @return The given URI as file URI.
+	 * <p>Tries to convert the {@link IResource} in the workspace to a file URI.</p>
+	 * <p>If the resource has a location in the local file system, it is used
+	 * for the file URI, else the URI is converted to a platform URI first and
+	 * then resolved to a file URI.</p>
+	 * @param resource the resource in the workspace
+	 * @return file URI of the resource
 	 */
-	public static URI uriToFileUri(URI uri) {
-		URI fileURI = pathToFileUri(uriToPath(uri));
-		return fileURI;
-	}
-	
-	/**
-	 * Converts a (e.g. file) URI to a platform resource URI.
-	 * Returns an file URI if the URI is not workspace relative.
-	 * 
-	 * @param uri The URI to convert.
-	 * @return The given URI as platform resource URI.
-	 */
-	public static URI uriToPlatformUri(URI uri) {
-		URI fileURI = pathToUri(uriToPath(uri));
-		return fileURI;
-	}
-
-	/**
-	 * Converts a file path to an platform resource URI.
-	 * 
-	 * @param path
-	 *            The path to convert.
-	 * @return The given path as platform resource URI.
-	 */
-	public static URI pathToUri(String path) {
-		File file = pathToFile(path);
-		return fileToUri(file);
-	}
-	
-	/**
-	 * Converts a file path to an platform resource URI.
-	 * 
-	 * @param path
-	 *            The path to convert.
-	 * @return The given path as platform resource URI.
-	 */
-	public static URI pathToFileUri(String path) {
-		File file = pathToFile(path);
-		return fileToFileUri(file);
-	}
-	
-	public static java.net.URI pathToRelativeUri(String base, String path) {
-		return new File(base).toURI().relativize(new File(path).toURI());
-	}
-
-	/**
-	 * Converts a file path to a <code>File</code>.
-	 * 
-	 * @param path
-	 *            The path to convert.
-	 * @return The given path as <code>File</code>
-	 */
-	public static File pathToFile(String path) {
-		return new File(path);
-	}
-
-	/**
-	 * Converts a URI to an absolute file path.
-	 * 
-	 * @param uri
-	 *            The URI to convert.
-	 * @return The given URI as absolute file path
-	 */
-	public static String uriToPath(URI uri) {
-		
-		//We can assume that this URI is used in the platform context
-		if (uri.isPlatform()) {
-			// NOTE: Get the project the URI is corresponding to,
-			// so we can resolve linked resources in this way.
-			// This perhaps can be done in a cleaner way.
-			
-			// NOTE: A project name might differ from its folder name.
-			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(uri.segment(1));
-			String projectLoc = project.getLocation().toString();
-			String platformPath = uri.toPlatformString(true);
-			String projectPath = platformPath.substring(project.getName().length() + 1, platformPath.length());
-			return pathToFile(projectLoc + projectPath).getAbsolutePath();
+	public static URI toFileURI(IResource resource) {
+		Objects.requireNonNull(resource, "resource must not be null");
+		if(resource.getLocation() != null) {
+			return toFileURI(resource.getLocation());
 		}
-
-		return pathToFile(uri.devicePath()).getAbsolutePath();
+		return toFileURI(toPlatformURI(resource));
 	}
 
 	/**
-	 * Converts a URI to a <code>File</code>.
-	 * 
-	 * @param uri
-	 *            The URI to convert.
-	 * @return The given URI as <code>File</code>.
+	 * Returns a file URI for the absolute path of the given {@link IPath}.
+	 * @param path the path in the local file system
+	 * @return file URI for absolute path
 	 */
-	public static File uriToFile(URI uri) {
-		return new File(uriToPath(uri));
+	public static URI toFileURI(IPath path) {
+		Objects.requireNonNull(path, "path must not be null");
+		return URI.createFileURI(path.makeAbsolute().toString());
 	}
 
 	/**
-	 * Converts a {@link URI#isPlatformResource platform resource} {@link URI}
-	 * (a platform resource with the first segment being "resource") to an {@link IFile}.
+	 * Returns a file URI for the absolute path of the given {@link File}.
+	 * @param file the file
+	 * @return file URI for absolute path of file
+	 */
+	public static URI toFileURI(File file) {
+		Objects.requireNonNull(file, "file must not be null");
+		return URI.createFileURI(file.getAbsolutePath());
+	}
+
+	/**
+	 * <p>Tries to convert an URI to a file URI. If the URI already is a file URI
+	 * or cannot be converted, it is returned as is.</p>
+	 * <p>Platform resource URIs are resolved to file URIs using the
+	 * {@link EcorePlugin#getPlatformResourceMap() Ecore platform resource map}
+	 * if possible, or else by querying the workspace root.</p>
+	 * <p>Platform plugin URIs are resolved to file URIs using the location
+	 * of the corresponding plugin bundle.</p>
 	 * @param uri the URI
-	 * @return IFile for the given URI, <code>null</code> if the URI is not a platform resource URI
+	 * @return the URI (as file URI, if possible)
 	 */
-	public static IFile uriToIFile(URI uri) {
-		if(uri.isPlatformResource() && uri.segmentCount() > 2) {
-			return ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(uri.toPlatformString(true)));
+	public static URI toFileURI(URI uri) {
+		Objects.requireNonNull(uri, "uri must not be null");
+		if(uri.isFile()) {
+			return uri;
+		} else if(uri.isPlatformResource() && uri.segmentCount() > 1) {
+			// first, try the ecore platform resource map
+			URI resolved = EcorePlugin.resolvePlatformResourcePath(uri.toPlatformString(true));
+			if(resolved != null) {
+				return resolved;
+			}
+			// segment 0 is always "resource"
+			IProject project = getWorkspaceRoot().getProject(uri.segment(1));
+			URI result;
+			if(project.exists()) {
+				// if the project exists, it might have a mapped location
+				result = toFileURI(project.getLocation());
+			} else {
+				// if the project doesn't exist, we still want to return a file URI, but project.getLocation() fails
+				result = toFileURI(getWorkspaceRoot().getLocation()).appendSegment(project.getName());
+			}
+			for(int i = 2; i < uri.segmentCount(); i++) {
+				result = result.appendSegment(uri.segment(i));
+			}
+			result.appendFragment(uri.fragment());
+			return result;
+		} else if(uri.isPlatformPlugin() && uri.segmentCount() > 1) {
+			try {
+				URL url = FileLocator.toFileURL(new URL(uri.toString()));
+				return URI.createFileURI(url.toURI().getSchemeSpecificPart()).appendFragment(uri.fragment());
+			} catch (IOException | URISyntaxException e) {
+				throw new IllegalArgumentException("Unable to resolve platform plugin URI: " + uri, e);
+			}
+		}
+		return uri;
+	}
+
+	/**
+	 * Tries to convert the URI to a file URI and returns the corresponding {@link File} in the local file system.
+	 * The returned File is a resource handle and may or may not actually exist.
+	 * If the URI cannot be converted to a file URI, <code>null</code> is returned.
+	 * @param uri the URI
+	 * @return file in the local file system for the given URI, <code>null</code> if not convertible to a file URI
+	 */
+	public static File toFile(URI uri) {
+		URI fileURI = toFileURI(uri);
+		if(fileURI.isFile()) {
+			return new File(fileURI.toFileString());
 		}
 		return null;
 	}
 
 	/**
-	 * Converts a <code>File</code> inside the workspace to an absolute file path.
-	 * 
-	 * @param file The <code>File</code> to convert.
-	 * @return The given <code>File</code> as absolute file path
+	 * <p>Tries to convert the {@link IFile} in the workspace to a {@link File} in the local file system.</p>
+	 * <p>This is a convenience method equivalent to <code>toFile(toPlatformURI(file))</code>.</p>
+	 * @param file the file in the workspace
+	 * @return corresponding file in the local file system, <code>null</code> if none
 	 */
-	public static String fileToPath(File file) {
-		if (file.isAbsolute()) {
-			return file.getAbsolutePath();
-		} else {
-			return new File(
-					ResourcesPlugin.getWorkspace().getRoot().getLocation().toString() 
-					+ file.getPath()).getAbsolutePath();	
-		}
+	public static File toFile(IFile file) {
+		return toFile(toPlatformURI(file));
 	}
 
 	/**
-	 * Converts a <code>File</code> to a platform resource URI.
-	 * Returns an file URI if the URI is not workspace relative.
-	 * 
-	 * @param file The <code>File</code> to convert.
-	 * @return The given file as platform resource URI.
+	 * Tries to convert the URI to a platform URI and returns the corresponding {@link IFile} in the workspace.
+	 * For archive URIs that have a platform authority, the IFile is the archive file.
+	 * The returned IFile is a resource handle and may or may not actually exist.
+	 * If the URI cannot be converted to a platform URI, <code>null</code> is returned.
+	 * @param uri the URI
+	 * @return file in the workspace for the given URI, <code>null</code> if not in workspace
 	 */
-	public static URI fileToUri(File file) {
-		IFile[] iFiles = ResourcesPlugin.getWorkspace().getRoot().findFilesForLocationURI(file.toURI());
-		
-		if (iFiles.length > 0) {
-			return URI.createPlatformResourceURI(iFiles[0].getFullPath().toString(), true);
-		} else {
-			return URI.createFileURI(file.getAbsolutePath());
+	public static IFile toIFile(URI uri) {
+		URI platformURI = toPlatformURI(uri);
+		if(platformURI.isPlatform()) {
+			return getWorkspaceRoot().getFile(new Path(platformURI.toPlatformString(true)));
 		}
-	}
-	
-	/**
-	 * Converts a <code>File</code> to a file URI.
-	 * 
-	 * @param file
-	 *            The <code>File</code> to convert.
-	 * @return The given file as file URI.
-	 */
-	public static URI fileToFileUri(File file) {
-		return URI.createFileURI(fileToPath(file));
-	}
-	
-	/**
-	 * Converts a <code>IResource</code> to a platform resource URI.
-	 * 
-	 * @param file
-	 *            The <code>IResource</code> to convert.
-	 * @return The given resource as file URI.
-	 */
-	public static URI iResourceToURI(IResource iResource) {
-		return URI.createPlatformResourceURI(iResource.getFullPath().toString(), true);
-	}
-	
-	/**
-	 * Converts a <code>IFile</code> to a platform resource URI.
-	 * 
-	 * @param file
-	 *            The <code>IFile</code> to convert.
-	 * @return The given file as file URI.
-	 * @deprecated Use {@link #iResourceToURI(IResource)} instead.
-	 */
-	public static URI iFileToURI(IFile iFile) {
-		return iResourceToURI(iFile);
-	}
-	
-	/**
-	 * Converts a <code>IFile</code> to a platform resource URI.
-	 * 
-	 * @param file
-	 *            The <code>IFolder</code> to convert.
-	 * @return The given folder as file URI.
-	 * @deprecated Use {@link #iResourceToURI(IResource)} instead.
-	 */
-	public static URI iFolderToURI(IFolder iFolder) {
-		return iResourceToURI(iFolder);
+		if(platformURI.isArchive() && platformURI.authority().startsWith("platform:")) {
+			return toIFile(URI.createURI(platformURI.authority().substring(0, platformURI.authority().length()-1)));
+		}
+		return null;
 	}
 
 	/**
-	 * Returns the folder path.
-	 * 
-	 * @param filePath
-	 *            the file or folder path.
-	 * @return the folder path.
+	 * <p>Tries to convert the {@link File} in the local file system to a {@link IFile} in the workspace</p>
+	 * <p>This is a convenience method equivalent to <code>toIFile(toFileURI(file))</code>.</p>
+	 * @param file the file in the local file system
+	 * @return corresponding file in the workspace, <code>null</code> if none
 	 */
-	public static File getDirectory(String filePath) {
-		File path = new File(filePath);
+	public static IFile toIFile(File file) {
+		return toIFile(toFileURI(file));
+	}
 
-		if (path.isFile()) {
-			return new File(path.getParent());
-		} else {
-			return path;
-		}
+	protected static IWorkspaceRoot getWorkspaceRoot() {
+		return ResourcesPlugin.getWorkspace().getRoot();
 	}
 }

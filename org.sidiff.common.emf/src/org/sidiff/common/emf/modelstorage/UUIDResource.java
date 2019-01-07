@@ -11,9 +11,13 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.xmi.XMLResource;
+import org.eclipse.emf.ecore.xmi.impl.XMIResourceImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 
-public class UUIDResource extends XMIIDResourceImpl {
+/**
+ * @deprecated Use {@link SiDiffResourceSet} instead.
+ */
+public class UUIDResource extends XMIResourceImpl {
 	
 	/**
 	 * Initialize (unloaded) resource.
@@ -44,6 +48,7 @@ public class UUIDResource extends XMIIDResourceImpl {
 	 * @param uri
 	 * @param resourceSet
 	 * @throws IOException 
+	 * @deprecated Use {@link SiDiffResourceSet#getResource(URI, boolean)} instead.
 	 */
 	public UUIDResource(URI uri, ResourceSet resourceSet) throws IOException {
 		this(uri);
@@ -54,13 +59,18 @@ public class UUIDResource extends XMIIDResourceImpl {
 		resourceSet.getResources().add(this);
 	}
 	
+	/**
+	 * @deprecated Use a {@link SiDiffResourceSet#createResource(URI)} instead.
+	 */
 	public static UUIDResource createUUIDResource(URI uri){
 		UUIDResource resource = new UUIDResource(uri);
 		new ResourceSetImpl().getResources().add(resource);
 		return resource;
-		
 	}
 	
+	/**
+	 * @deprecated Use a {@link SiDiffResourceSet#createResource(URI)} instead.
+	 */
 	public static UUIDResource createUUIDResource(URI uri, ResourceSet resourceSet) {
 		UUIDResource resource = new UUIDResource(uri);
 		resourceSet.getResources().add(resource);
@@ -92,9 +102,7 @@ public class UUIDResource extends XMIIDResourceImpl {
 			getEObjectToIDMap().put(eObject, uuid);
 			getIDToEObjectMap().put(uuid, eObject);
 		}
-		
-		
+
 		return uuid;
 	}
-	
 }

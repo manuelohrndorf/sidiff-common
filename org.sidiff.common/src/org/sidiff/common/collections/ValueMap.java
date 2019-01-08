@@ -191,4 +191,9 @@ public class ValueMap<V, O> implements Serializable {
 			.filter(value -> this.getObjects(value).size() >= minimalFillSize)
 			.collect(Collectors.toSet());
 	}
+
+	public void clear() {
+		value2objects.clear();
+		objects2value.clear();
+	}
 }

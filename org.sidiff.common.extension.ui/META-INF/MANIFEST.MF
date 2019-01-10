@@ -7,10 +7,11 @@ Bundle-Activator: org.sidiff.common.extension.ui.internal.ExtensionsUiPlugin
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.sidiff.common.ui,
- org.sidiff.common.extension,
+ org.sidiff.common.ui;visibility:=reexport,
+ org.sidiff.common.extension;visibility:=reexport,
  org.eclipse.ui.forms
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.extension.ui
 Bundle-ActivationPolicy: lazy
-Export-Package: org.sidiff.common.extension.ui.widgets
+Export-Package: org.sidiff.common.extension.ui.labelprovider,
+ org.sidiff.common.extension.ui.widgets

@@ -1,5 +1,6 @@
 package org.sidiff.common.extension.ui.internal;
 
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -43,8 +44,11 @@ public class ExtensionsUiPlugin extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static ExtensionsUiPlugin getDefault() {
+	public static ExtensionsUiPlugin getInstance() {
 		return plugin;
 	}
 
+	public static ImageDescriptor getExtensionImageDescriptor() {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/obj16/elextension_obj.png");
+	}
 }

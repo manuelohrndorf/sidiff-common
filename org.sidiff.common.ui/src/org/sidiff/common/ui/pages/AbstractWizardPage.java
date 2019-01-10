@@ -3,9 +3,11 @@ package org.sidiff.common.ui.pages;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -108,6 +110,13 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		setControl(wrapper);
 
 		requestValidation();
+		
+		IWizard wizard = getWizard();
+		if(wizard != null) {
+			if(wizard.getContainer() instanceof IPageChangeProvider) {
+				((IPageChangeProvider)wizard.getContainer()).addPageChangedListener(this);
+			}
+		}
 	}
 
 	@Override

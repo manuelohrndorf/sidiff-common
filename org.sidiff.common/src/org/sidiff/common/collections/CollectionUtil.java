@@ -212,7 +212,7 @@ public class CollectionUtil {
 	 * Returns the list of values of the given type represented by the given feature value (single value or collection).
 	 * @param featureValue a collection of the specified type, or a single value of the specified type, or <code>null</code>
 	 * @param type the type of the result
-	 * @return list of feature values, singleton list if single value, empty list is <code>null</code> value
+	 * @return list of feature values, singleton list if single value, empty list if <code>null</code> value
 	 */
 	public static <T> List<T> getValues(Object featureValue, Class<T> type) {
 		if(featureValue == null) {

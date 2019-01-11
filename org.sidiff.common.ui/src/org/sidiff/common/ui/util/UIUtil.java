@@ -91,7 +91,7 @@ public class UIUtil {
 	 * @throws IllegalThreadStateException if not called from UI thread, or no active page/window
 	 * @throws IllegalArgumentException if the part with the ID is found but does not have the specified type
 	 */
-	public static <V> V showView(Class<V> viewType, String viewId) throws PartInitException {
+	public static <V extends IViewPart> V showView(Class<V> viewType, String viewId) throws PartInitException {
 		IWorkbenchPage page = getActivePage();
 		if(page == null) {
 			throw new IllegalThreadStateException("Not called from UI thread, or no active page/window");

@@ -35,6 +35,12 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		IPageChangedListener, IWidgetCallback.Callback {
 
 	/**
+	 * The number of columns that the layout containing the widgets has.
+	 * The value is 12, as it has a many divisors: 1, 2, 3, 4, 6, 12.
+	 */
+	protected static final int NUM_COLUMNS = 12;
+
+	/**
 	 * The current {@link ValidationMessage} being shown, may be <code>null</code>.
 	 */
 	private ValidationMessage validationMessage;
@@ -95,7 +101,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 		container = new Composite(scrolledComposite, SWT.NONE);
 		{
-			GridLayout gl_container = new GridLayout(1, false);
+			GridLayout gl_container = new GridLayout(NUM_COLUMNS, true);
 			gl_container.marginWidth = 10;
 			gl_container.marginHeight = 10;
 			container.setLayout(gl_container);
@@ -137,6 +143,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	@Override
 	public void pageChanged(PageChangedEvent event) {
 		requestValidation();
+		requestLayout();
 	}
 
 	// ---------- IWidgetCallback.Callback ----------
@@ -161,15 +168,25 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	protected abstract void createWidgets();
 
 	/**
-	 * This methods adds a widget to the list {@link #widgets}, adds a listener
-	 * to the widget and sets the layout of the respective widget.
-	 * 
-	 * @param parent
-	 *            the {@link Composite} to that the widget is added
-	 * @param widget
-	 *            the {@link IWidget} that is added
+	 * <p>This methods adds a widget to the list {@link #widgets}, adds a listener
+	 * to the widget and sets the layout of the respective widget.</p>
+	 * <p>The widget will take up the whole row.</p>
+	 * @param parent the {@link Composite} to that the widget is added
+	 * @param widget the {@link IWidget} that is added
 	 */
 	protected void addWidget(Composite parent, IWidget widget) {
+		addWidget(parent, widget, NUM_COLUMNS);
+	}
+	
+	/**
+	 * <p>This methods adds a widget to the list {@link #widgets}, adds a listener
+	 * to the widget and sets the layout of the respective widget.</p>
+	 * 
+	 * @param parent the {@link Composite} to that the widget is added
+	 * @param widget the {@link IWidget} that is added
+	 * @param numColumns how many columns of the row this widget takes up, the total are {@link #NUM_COLUMNS}
+	 */
+	protected void addWidget(Composite parent, IWidget widget, int numColumns) {
 		// Set callbacks:
 		if (widget instanceof IWidgetCallback) {
 			((IWidgetCallback) widget).setWidgetCallback(this);
@@ -180,8 +197,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		{
 			// Set layout data and minimum size
 			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-			gridData.minimumWidth = SWT.DEFAULT;
-			gridData.minimumHeight = SWT.DEFAULT;
+			gridData.horizontalSpan = numColumns;
 			widget.setLayoutData(gridData);
 		}
 

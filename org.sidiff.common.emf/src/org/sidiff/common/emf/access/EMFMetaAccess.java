@@ -1,10 +1,22 @@
 package org.sidiff.common.emf.access;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.*;
+import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EPackage;
+import org.eclipse.emf.ecore.EReference;
+import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EcoreFactoryImpl;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.emf.access.path.EMFPath;
@@ -15,6 +27,19 @@ public class EMFMetaAccess {
 
 	private static final String PACKAGE_DELIMITER_CHAR = ".";
 	private static final String PACKAGE_DELIMITER_CHAR_REGEX = "\\.";
+
+	/**
+	 * Returns all {@link EPackage}s registered on the global {@link EPackage.Registry#INSTANCE}.
+	 * @return set of packages
+	 */
+	public static Set<EPackage> getAllRegisteredEPackages() {
+		Set<EPackage> ePackages = new HashSet<>();
+		// copy to avoid concurrent modification
+		for(String nsURI : new HashSet<>(EPackage.Registry.INSTANCE.keySet())) {
+			ePackages.add(EPackage.Registry.INSTANCE.getEPackage(nsURI));
+		}
+		return ePackages;
+	}
 
 	/**
 	 * Returns the {@link EClassifier} of the given type from meta model 

@@ -12,7 +12,6 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -41,20 +40,19 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * to filter the choice of values.</p>
  * <p>Default values:</p>
  * <ul>
- * <li>LabelProvider: unset (using toString)</li>
  * <li>Title: Name of Element Type Class</li>
  * <li>Ordered: true</li>
  * <li>Filterable: false</li>
  * <li>Bounds: 1 - <code>Integer.MAX_VALUE</code></li>
- * <li>Table width: 200</li>
- * <li>Table height: 100</li>
+ * <li>Table width: 150</li>
+ * <li>Table height: 70</li>
  * </ul>
  * @author Robert Müller
  * @param <T> the type of the input elements
  */
 public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> implements IWidgetValidation {
 
-	protected Group contents;
+	protected Composite contents;
 	protected TableViewer featureTableViewer;
 	protected TableViewer choiceTableViewer;
 	protected Button addButton;
@@ -64,14 +62,13 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	protected Text patternText;
 
 	private final Class<T> elementType;
-	private ILabelProvider labelProvider;
 	private String title;
 	private boolean ordered = true;
 	private boolean filterable = false;
 	private int lowerBound = 1;
 	private int upperBound = Integer.MAX_VALUE;
-	private int tableWidth = 200;
-	private int tableHeight = 100;
+	private int tableWidth = 150;
+	private int tableHeight = 70;
 
 	private ValidationMessage validationMessage;
 
@@ -81,11 +78,8 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	}
 
 	@Override
-	public Composite createControl(Composite parent) {
-		contents = new Group(parent, SWT.NONE);
-		if(getTitle() != null) {
-			contents.setText(getTitle());			
-		}
+	protected Composite createContents(Composite container) {
+		contents = new Composite(container, SWT.NONE);
 		contents.setLayout(new GridLayout(3, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(contents);
 
@@ -105,12 +99,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		return contents;
 	}
 
-	@Override
-	public Composite getWidget() {
-		return contents;
-	}
-
-	protected void createFilterText(Group contents) {
+	protected void createFilterText(Composite contents) {
 		Group filterGroupComposite = new Group(contents, SWT.NONE);
 		filterGroupComposite.setText("Filter");
 		filterGroupComposite.setLayout(new GridLayout(2, false));
@@ -137,7 +126,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		});
 	}
 
-	protected void createChoiceTable(Group contents) {
+	protected void createChoiceTable(Composite contents) {
 		Composite choiceComposite = new Composite(contents, SWT.NONE);
 		{
 			GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -192,7 +181,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		});
 	}
 
-	protected void createFeatureTable(Group contents) {
+	protected void createFeatureTable(Composite contents) {
 		Composite featureComposite = new Composite(contents, SWT.NONE);
 		{
 			GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
@@ -227,7 +216,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 
 		featureTableViewer = new TableViewer(featureTable);
 		featureTableViewer.setContentProvider(new ArrayContentProvider());
-		featureTableViewer.setLabelProvider(labelProvider);
+		featureTableViewer.setLabelProvider(getLabelProvider());
 		featureTableViewer.setInput(getSelection().toArray());
 		if(!isOrdered() && isMulti()) {
 			// If the order of the values is not significant, we sort them according to their labels.
@@ -244,7 +233,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		});
 	}
 
-	protected void createControlButtons(Group contents) {
+	protected void createControlButtons(Composite contents) {
 		Composite controlButtons = new Composite(contents, SWT.NONE);
 		GridData controlButtonsGridData = new GridData();
 		controlButtonsGridData.verticalAlignment = SWT.FILL;
@@ -476,14 +465,6 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 				"Invalid bounds [lower: " + lowerBound + ", upper: " + upperBound + "]");
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
-	}
-	
-	public ILabelProvider getLabelProvider() {
-		return labelProvider;
-	}
-	
-	public void setLabelProvider(ILabelProvider labelProvider) {
-		this.labelProvider = Objects.requireNonNull(labelProvider);
 	}
 	
 	public int getTableWidth() {

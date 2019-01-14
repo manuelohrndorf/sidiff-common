@@ -15,12 +15,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.events.ExpansionEvent;
-import org.eclipse.ui.forms.events.IExpansionListener;
-import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.sidiff.common.extension.configuration.ConfigurationOption;
 import org.sidiff.common.extension.configuration.IConfigurableExtension;
-import org.sidiff.common.ui.widgets.AbstractWidget;
+import org.sidiff.common.ui.widgets.AbstractContainerWidget;
 import org.sidiff.common.ui.widgets.IWidget;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
 import org.sidiff.common.ui.widgets.IWidgetModification;
@@ -33,35 +30,19 @@ import org.sidiff.common.ui.widgets.IWidgetModification;
  * managed by a widget and automatically handle toggling of widget visibility.</p>
  * @author Robert Müller
  */
-public class ConfigurableExtensionWidget extends AbstractWidget {
+public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 	private IConfigurableExtension extension;
-	private ExpandableComposite expandableParent;
 
 	public ConfigurableExtensionWidget(IConfigurableExtension extension) {
 		this.extension = Objects.requireNonNull(extension);
+		setTitle("Configuration Options: " + extension.getName());
+		setContainerFactory(DefaultContainerFactory.EXPANDABLE);
 	}
 
 	@Override
-	public Composite createControl(Composite parent) {
-		expandableParent = new ExpandableComposite(parent, SWT.BORDER);
-		GridLayoutFactory.fillDefaults().applyTo(expandableParent);
-		expandableParent.setText("Configuration Options: " + extension.getName());
-		expandableParent.setClient(createConfigurationControl(expandableParent));
-		expandableParent.addExpansionListener(new IExpansionListener() {
-			@Override
-			public void expansionStateChanging(ExpansionEvent e) {
-			}
-			@Override
-			public void expansionStateChanged(ExpansionEvent e) {
-				getWidgetCallback().requestLayout();
-			}
-		});
-		return expandableParent;
-	}
-
-	protected Control createConfigurationControl(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NONE);
+	protected Composite createContents(Composite container) {
+		Composite composite = new Composite(container, SWT.NONE);
 		GridLayoutFactory.fillDefaults().margins(5, 5).applyTo(composite);
 		for(ConfigurationOption<?> option : extension.getConfiguration().getConfigurationOptions()) {
 			createConfigurationOptionControl(composite, option);
@@ -119,11 +100,6 @@ public class ConfigurableExtensionWidget extends AbstractWidget {
 	protected static boolean isTypeSupported(Class<?> type) {
 		return type == Boolean.class || type == Short.class || type == Byte.class || type == Integer.class
 				|| type == String.class || type == Float.class || type == Double.class || type == Long.class;
-	}
-
-	@Override
-	public Composite getWidget() {
-		return expandableParent;
 	}
 
 	/**

@@ -6,18 +6,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jface.viewers.ILabelProvider;
+
 /**
  * <p>Abstract widget with type argument to also implement {@link IWidgetModification}.</p>
  * <p>Implements a list of selected values, a collection of modification listeners, and
  * functions to propagate changes to the listeners. {@link #setSelection(List)} is
  * implemented to propagate changes. Override {@link #hookSetSelection()} to implement
  * custom handling for selections.</p>
+ * <p>Has a label provider which is used by subclasses to get label and icon for
+ * the values of the type T. The default label provider is <code>null</code>,
+ * which uses {@link Object#toString()}. </p>
+ * @param <T> the type of the input elements
  * @author Robert Müller
  */
-public abstract class AbstractModifiableWidget<T> extends AbstractWidget implements IWidgetModification<T>  {
+public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidget implements IWidgetModification<T>  {
 
 	private List<T> selection = Collections.emptyList();
-	private Collection<ModificationListener<T>> modificationListeners = new ArrayList<>();
+	private Collection<ModificationListener<? super T>> modificationListeners = new ArrayList<>();
+	private ILabelProvider labelProvider;
 
 	@Override
 	public void setSelection(List<T> selection) {
@@ -51,12 +58,12 @@ public abstract class AbstractModifiableWidget<T> extends AbstractWidget impleme
 	}
 	
 	@Override
-	public void addModificationListener(ModificationListener<T> listener) {
+	public void addModificationListener(ModificationListener<? super T> listener) {
 		modificationListeners.add(listener);
 	}
 
 	@Override
-	public void removeModificationListener(ModificationListener<T> listener) {
+	public void removeModificationListener(ModificationListener<? super T> listener) {
 		modificationListeners.remove(listener);
 	}
 
@@ -81,5 +88,21 @@ public abstract class AbstractModifiableWidget<T> extends AbstractWidget impleme
 		propagateValueChange(
 				oldValue == null ? Collections.emptyList() : Collections.singletonList(oldValue),
 				newValue == null ? Collections.emptyList() : Collections.singletonList(newValue));
+	}
+
+	public ILabelProvider getLabelProvider() {
+		return labelProvider;
+	}
+
+	public void setLabelProvider(ILabelProvider labelProvider) {
+		this.labelProvider = Objects.requireNonNull(labelProvider);
+	}
+
+	protected String getLabel(T value) {
+		ILabelProvider provider = getLabelProvider();
+		if(provider == null) {
+			return Objects.toString(value);
+		}
+		return provider.getText(value);
 	}
 }

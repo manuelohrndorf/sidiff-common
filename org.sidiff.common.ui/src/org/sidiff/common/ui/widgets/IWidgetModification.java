@@ -44,13 +44,13 @@ public interface IWidgetModification<T> {
 	 * Adds a {@link ModificationListener} to this widget.
 	 * @param listener the listener
 	 */
-	void addModificationListener(ModificationListener<T> listener);
+	void addModificationListener(ModificationListener<? super T> listener);
 
 	/**
 	 * Removes a {@link ModificationListener} from this widget.
 	 * @param listener the listener
 	 */
-	void removeModificationListener(ModificationListener<T> listener);
+	void removeModificationListener(ModificationListener<? super T> listener);
 
 	/**
 	 * A modification listener is notified by a widget after its value changes.
@@ -66,6 +66,6 @@ public interface IWidgetModification<T> {
 		 * @param oldValues list of old values
 		 * @param newValues list of new values
 		 */
-		void onModify(List<T> oldValues, List<T> newValues);
+		void onModify(List<? extends T> oldValues, List<? extends T> newValues);
 	}
 }

@@ -61,7 +61,9 @@ public class ExtensionManager<T extends IExtension> {
 					final Object rawExtension = element.createExecutableExtension(description.getClassAttribute());
 					final T extension = description.getExtensionClass().cast(rawExtension);
 					addExtension(extension);
-				} catch (Exception e) {
+				} catch (Exception | LinkageError e) {
+					// We also catch LinkageError because it may be thrown if the executable
+					// extension class is not found or incompatible with the environment.
 					ExtensionsPlugin.logError("Failed to create executable extension contributed by "
 							+ element.getDeclaringExtension().getContributor().getName()
 							+ " for extension point " + description.getExtensionPointId(), e);

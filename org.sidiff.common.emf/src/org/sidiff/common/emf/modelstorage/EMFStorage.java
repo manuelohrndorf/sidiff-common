@@ -133,7 +133,7 @@ public class EMFStorage {
 	 * @param root
 	 *            the root objects that will be saved.
 	 */
-	public static void eSaveAs(URI uri, Collection<EObject> content) {
+	public static void eSaveAs(URI uri, Collection<? extends EObject> content) {
 
 		Resource resource = new XMIIDResourceImpl(uri);
 		resource.getContents().addAll(content);

@@ -58,7 +58,12 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 			values.put(button, value);
 		}
 
+		hookInitButtons();
 		return composite;
+	}
+
+	protected void hookInitButtons() {
+		// default implementation does nothing
 	}
 
 	@Override
@@ -76,5 +81,13 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 				button.setSelection(false);
 			}			
 		}
+	}
+
+	protected Map<T, Button> getButtons() {
+		return buttons;
+	}
+
+	protected Map<Button, T> getValues() {
+		return values;
 	}
 }

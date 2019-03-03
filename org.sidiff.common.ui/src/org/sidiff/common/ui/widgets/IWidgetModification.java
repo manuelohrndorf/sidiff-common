@@ -34,12 +34,11 @@ public interface IWidgetModification<T> {
 
 	/**
 	 * <p>Returns all values that can be selected in this widget.</p>
-	 * <p>Returns an empty list if it would not make sense to
-	 * list all values, e.g. for primitive types.</p>
-	 * @return all selectable values
+	 * <p>Returns <code>null</code> if all values assignable to T are allowed, e.g. for primitive types.</p>
+	 * @return all selectable values, <code>null</code> to allow all assignable
 	 */
 	List<T> getSelectableValues();
-	
+
 	/**
 	 * Adds a {@link ModificationListener} to this widget.
 	 * @param listener the listener

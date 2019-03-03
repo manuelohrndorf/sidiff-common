@@ -30,8 +30,11 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	public void setSelection(List<T> selection) {
 		// remove all values which cannot be selected
 		List<T> newSelection = new ArrayList<>(selection);
-		newSelection.retainAll(getSelectableValues());
-		
+		List<T> selectable = getSelectableValues();
+		if(selectable != null) {
+			newSelection.retainAll(selectable);
+		}
+
 		if(!Objects.equals(newSelection, this.selection)) {
 			List<T> oldSelection = this.selection;
 			this.selection = newSelection;

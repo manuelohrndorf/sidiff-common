@@ -3,6 +3,7 @@ package org.sidiff.common.ui.widgets;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -108,6 +109,7 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 		GROUP((parent, title, callback, childrenFactory) -> {
 			Group group = new Group(parent, SWT.NONE);
 			GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(group);
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(group);
 			group.setText(title);
 			childrenFactory.apply(group);
 			return group;
@@ -119,6 +121,7 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 		EXPANDABLE((parent, title, callback, childrenFactory) -> {
 			ExpandableComposite expandable = new ExpandableComposite(parent, SWT.BORDER);
 			GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(expandable);
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(expandable);
 			expandable.setText(title);
 			expandable.setClient(childrenFactory.apply(expandable));
 			expandable.addExpansionListener(new IExpansionListener() {

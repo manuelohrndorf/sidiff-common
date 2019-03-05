@@ -1,8 +1,10 @@
 package org.sidiff.common.collections;
 
-import java.util.*;
-
-import org.sidiff.common.util.ReflectionUtil;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
 
 /**
  * This map implements the management of unique bidirectional relationships between objects.
@@ -24,14 +26,12 @@ public class CrossMap<K, V> implements Map<K, V>{
 	}
 	
 	/**
-	 * Neue Instanz einer CrossMap, implementiert durch eine zu �bergebende Klasse.
+	 * Neue Instanz einer CrossMap, implementiert durch Factory.
 	 * 
-	 * @param implClass Eine Map implementierende Klasse.
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public CrossMap(Class<? extends Map> implClass) {
-		map = ReflectionUtil.createInstance(implClass);
-		rMap = ReflectionUtil.createInstance(implClass);
+	public CrossMap(Supplier<Map<K,V>> mapFactory, Supplier<Map<V,K>> reverseMapSupplier) {
+		map = mapFactory.get();
+		rMap = reverseMapSupplier.get();
 	}
 
 	@Override

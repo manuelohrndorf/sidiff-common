@@ -1,9 +1,8 @@
 package org.sidiff.common.collections;
 
-import java.util.*;
-
-import org.sidiff.common.logging.LogEvent;
-import org.sidiff.common.logging.LogUtil;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This map decorated another map by extending it with a default value that is
@@ -78,13 +77,9 @@ public class MapWithDefault<K, V> implements Map<K, V> {
 	@Override
 	public V get(Object key) {
 		if (!this.decoratedMap.containsKey(key) && this.defaultValue != null) {
-			V result = this.defaultValue;
-
-			assert(LogUtil.log(LogEvent.MESSAGE, "Using default value '" + result + "' for key '" + key + "'"));
-			return result;
-		} else {
-			return this.decoratedMap.get(key);
+			return this.defaultValue;
 		}
+		return this.decoratedMap.get(key);
 	}
 
 	@Override

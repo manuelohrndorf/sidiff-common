@@ -125,7 +125,6 @@ public enum Aggregation {
 			double cv = stddev / avg;
 			if(Double.isNaN(cv))
 				cv = 0.0;
-			System.out.println("CV:" + stddev);
 			return cv;
 		}
 	},

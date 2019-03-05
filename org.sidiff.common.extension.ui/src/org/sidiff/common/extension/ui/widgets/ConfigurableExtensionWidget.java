@@ -35,9 +35,9 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	private IConfigurableExtension extension;
 
 	public ConfigurableExtensionWidget(IConfigurableExtension extension) {
+		super(DefaultContainerFactory.EXPANDABLE);
 		this.extension = Objects.requireNonNull(extension);
 		setTitle("Configuration Options: " + extension.getName());
-		setContainerFactory(DefaultContainerFactory.EXPANDABLE);
 	}
 
 	@Override
@@ -129,10 +129,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			}
 		}
 
-		widget.addModificationListener((oldValues, newValues) -> {
-			extensionWidgets.entrySet().forEach(entry -> {
-				entry.getValue().setVisible(newValues.contains(entry.getKey()));
-			});
-		});
+		widget.addModificationListener((oldValues, newValues) ->
+			extensionWidgets.forEach((key, value) -> value.setVisible(newValues.contains(key))));
 	}
 }

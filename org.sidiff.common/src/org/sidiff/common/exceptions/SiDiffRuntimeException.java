@@ -1,7 +1,5 @@
 package org.sidiff.common.exceptions;
 
-import org.sidiff.common.util.StringUtil;
-
 /**
  * Root exception for all runtime exceptions in SiDiff.
  */
@@ -11,13 +9,27 @@ public class SiDiffRuntimeException extends RuntimeException {
 
 	private String shortMessage;
 
-	public SiDiffRuntimeException(Object... extra) {
-		super(StringUtil.resolve(extra), SiDiffException.getOriginalException(extra));
-		this.shortMessage = "A runtime error occurred";
+	public SiDiffRuntimeException(String message) {
+		this(message, null, null);
 	}
 
-	public SiDiffRuntimeException(String message, String shortMessage, Object... extra) {
-		super(message, SiDiffException.getOriginalException(extra));
+	public SiDiffRuntimeException(String message, Throwable exception) {
+		this(message, null, exception);
+	}
+
+	public SiDiffRuntimeException(Throwable exception) {
+		this(exception.getMessage(), null, exception);
+	}
+	
+	public SiDiffRuntimeException(String message, String shortMessage) {
+		this(message, shortMessage, null);
+	}
+
+	public SiDiffRuntimeException(String message, String shortMessage, Throwable exception) {
+		super(message, exception);
+		if(shortMessage == null) {
+			shortMessage = "A runtime error occurred";
+		}
 		this.shortMessage = shortMessage;
 	}
 

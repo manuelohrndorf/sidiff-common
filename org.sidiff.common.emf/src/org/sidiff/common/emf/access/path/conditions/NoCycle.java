@@ -21,9 +21,8 @@ public class NoCycle extends EMFCondition {
 	public NoCycle(String argumentString) {
 		
 		super(argumentString);
-		if(argumentString!=null){
-			throw new SiDiffRuntimeException(this,
-					"Illegal Argument: '"+argumentString+"' Cannot processed by Condition");
+		if(argumentString != null) {
+			throw new SiDiffRuntimeException("Illegal Argument: '"+argumentString+"' Cannot processed by Condition");
 		}
 	}
 

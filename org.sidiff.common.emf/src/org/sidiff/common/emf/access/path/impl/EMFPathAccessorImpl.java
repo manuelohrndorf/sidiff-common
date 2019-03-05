@@ -10,8 +10,8 @@ import org.sidiff.common.emf.access.path.*;
 import org.sidiff.common.emf.access.path.axis.EMFAxis;
 import org.sidiff.common.emf.access.path.conditions.EMFCondition;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
+import org.sidiff.common.reflection.ReflectionUtil;
 import org.sidiff.common.util.NestedParameterUtil;
-import org.sidiff.common.util.ReflectionUtil;
 
 /**
  * Implementation of a EMF-Navigation-Path Engine.
@@ -202,7 +202,7 @@ public class EMFPathAccessorImpl implements EMFPathAccessor {
 				try{
 					result = lookupClass(contextClass.eResource(), tokenizedTypeString[0]);
 				} catch(EClassLookupException e2) {
-					throw new SiDiffRuntimeException("Cannot get Type "+typeString,e1,e2);
+					throw new SiDiffRuntimeException("Cannot get Type " + typeString, e2);
 				}
 			}
 		} else if(tokenizedTypeString.length==2){
@@ -212,8 +212,6 @@ public class EMFPathAccessorImpl implements EMFPathAccessor {
 			} catch(EClassLookupException e) {
 				throw new SiDiffRuntimeException("Cannot get Type ("+typeString+") using ns-identifier",e);
 			}
-		} else {
-			
 		}
 		
 		return result;

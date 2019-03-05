@@ -91,15 +91,13 @@ public class ResourceUtil {
 		ClassLoader loader = null;
 		synchronized (classLoaders) {
 			for (ClassLoader currentLoader : classLoaders) {
-				InputStream stream = currentLoader.getResourceAsStream(name);
-				if (stream != null) {
-					loader = currentLoader;
-					try {
-						stream.close();
-					} catch (IOException e) {
-						throw new SiDiffRuntimeException("Exception while closing stream?!", e);
-					}
-					break;
+				try (InputStream stream = currentLoader.getResourceAsStream(name)) {
+					if (stream != null) {
+						loader = currentLoader;
+						break;
+					}					
+				} catch (IOException e) {
+					throw new SiDiffRuntimeException("Exception while closing stream", e);
 				}
 			}
 		}

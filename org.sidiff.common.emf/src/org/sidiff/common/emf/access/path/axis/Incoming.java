@@ -32,7 +32,7 @@ public class Incoming extends EMFAxis {
 		}
 		} else {
 			// Wildcat used?? Impossible in conjunction with reverse-traversal
-			throw new SiDiffRuntimeException("Type Wildcat not allowed in conjunction with reverse navigation!",step);
+			throw new SiDiffRuntimeException("Type Wildcat not allowed in conjunction with reverse navigation! " + step);
 		}
 
 	}

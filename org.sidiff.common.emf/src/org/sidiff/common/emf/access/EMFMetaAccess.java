@@ -59,7 +59,7 @@ public class EMFMetaAccess {
 			ePackage = EPackage.Registry.INSTANCE.getEPackage(packageNS + "/" + subpackage);
 		}
 		if (ePackage == null)
-			throw new UnknownDocumentTypeException("Not a valid package namespace. ", packageNS);
+			throw new UnknownDocumentTypeException(packageNS);
 		if (type.indexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR) == -1)
 			return ePackage.getEClassifier(type);
 		else {
@@ -120,7 +120,7 @@ public class EMFMetaAccess {
 	private static EPackage getSubpackageByName(String packageNS, String subpackage) {
 		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(packageNS);
 		if (ePackage == null)
-			throw new UnknownDocumentTypeException("Not a valid package namespace.", packageNS);
+			throw new UnknownDocumentTypeException(packageNS);
 		if (subpackage == null || "".equals(subpackage))
 			return ePackage;
 		return getSubpackageByName(ePackage, subpackage);
@@ -171,7 +171,7 @@ public class EMFMetaAccess {
 	public static EList<EClassifier> getMetaClassesForPackage(String packageNS, String subpackage) {
 		EPackage ePackage = getSubpackageByName(packageNS, subpackage);
 		if (ePackage == null)
-			throw new UnknownDocumentTypeException("Not a valid package namespace.", packageNS);
+			throw new UnknownDocumentTypeException(packageNS);
 		return ePackage.getEClassifiers();
 	}
 
@@ -185,7 +185,7 @@ public class EMFMetaAccess {
 	public static EList<EClassifier> getAllMetaClassesForPackage(String packageNS) {
 		EPackage ePackage = EPackage.Registry.INSTANCE.getEPackage(packageNS);
 		if (ePackage == null)
-			throw new UnknownDocumentTypeException("Not a valid package namespace.", packageNS);
+			throw new UnknownDocumentTypeException(packageNS);
 		return getAllMetaClassesForPackage(ePackage);
 	}
 

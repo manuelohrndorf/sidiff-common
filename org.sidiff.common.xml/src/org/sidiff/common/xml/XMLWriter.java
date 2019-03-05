@@ -43,7 +43,7 @@ public class XMLWriter {
 	}
 
 	public void setNamespace(String nsName, String URI) {
-		throw new SiDiffRuntimeException(this, "Operation not supported");
+		throw new UnsupportedOperationException();
 	}
 
 	public void initDocument(String rootelement) {
@@ -75,7 +75,7 @@ public class XMLWriter {
 				performException(e);
 			}
 		} else {
-			throw new SiDiffRuntimeException(this, "Cannot init Document -> invalid Rootelement" + rootelement);
+			throw new SiDiffRuntimeException("Cannot init Document -> invalid Rootelement" + rootelement);
 		}
 	}
 
@@ -92,7 +92,7 @@ public class XMLWriter {
 				performException(e);
 			}
 		} else {
-			throw new SiDiffRuntimeException(this, "Cannot init Document -> invalid Rootelement" + rootelement);
+			throw new SiDiffRuntimeException("Cannot init Document -> invalid Rootelement" + rootelement);
 		}
 	}
 
@@ -101,9 +101,9 @@ public class XMLWriter {
 			generateEndTag(this.openElements.pop());
 		} else {
 			if (this.openElements.size() > 1) {
-				throw new SiDiffRuntimeException(this, "Cannot finish Document until " + openElements.pop() + " is open!");
+				throw new SiDiffRuntimeException("Cannot finish Document until " + openElements.pop() + " is open!");
 			} else {
-				throw new SiDiffRuntimeException(this, "Document already closed!");
+				throw new SiDiffRuntimeException("Document already closed!");
 			}
 		}
 
@@ -159,7 +159,7 @@ public class XMLWriter {
 				out.write("</" + name);
 				out.write(">\r\n");
 			} else {
-				throw new SiDiffRuntimeException(this, "Cannot close Element " + name + ", must close " + expected_element + " before!");
+				throw new SiDiffRuntimeException("Cannot close Element " + name + ", must close " + expected_element + " before!");
 			}
 		} catch (IOException e) {
 			performException(e);
@@ -276,14 +276,14 @@ public class XMLWriter {
 			Iterator<String> iterAttrs = attrs.keySet().iterator();
 			while (iterAttrs.hasNext()) {
 				String key = iterAttrs.next();
-				out.write(" " + key + "=\"" + escape(validateID(name, key, (String) attrs.get(key))) + "\"");
+				out.write(" " + key + "=\"" + escape(validateID(name, key, attrs.get(key))) + "\"");
 			}
 		}
 		indentLevel++;
 	}
 
 	private void performException(Exception e) {
-		throw new SiDiffRuntimeException(this, "Exception while writing XML:", e);
+		throw new SiDiffRuntimeException("Exception while writing XML:", e);
 	}
 
 }

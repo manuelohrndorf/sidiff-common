@@ -55,7 +55,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 			if (result != null && result.available() > 0) {
 				return new InputSource(result);
 			} else {
-				throw new SiDiffRuntimeException(this, "Cannot get " + mapping + " as Stream, please check your classpath");
+				throw new SiDiffRuntimeException("Cannot get " + mapping + " as Stream, please check your classpath");
 			}
 		}
 
@@ -72,7 +72,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 			SAXSource source = new SAXSource(reader, new InputSource(new FileInputStream(href)));
 			return source;
 		} catch (Exception e) {
-			throw new SiDiffRuntimeException(this, "Cannot resolve " + href, e);
+			throw new SiDiffRuntimeException("Cannot resolve " + href, e);
 		}
 	}
 

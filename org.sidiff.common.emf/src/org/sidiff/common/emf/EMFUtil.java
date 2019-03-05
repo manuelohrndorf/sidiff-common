@@ -367,9 +367,9 @@ public class EMFUtil {
 	public static Object getEObjectsAttribute(EObject eobj, String attributeName) {
 		EStructuralFeature sf = eobj.eClass().getEStructuralFeature(attributeName);
 		if (sf == null)
-			throw new UnknownAttributeException("No such attribute '", attributeName, "' for " + eobj.eClass());
+			throw new UnknownAttributeException("No such attribute '" + attributeName + "' for " + eobj.eClass());
 		if (!(sf instanceof EAttribute)) {
-			throw new UnknownAttributeException("Feature is not an attribute: '", attributeName, "' for " + eobj.eClass());
+			throw new UnknownAttributeException("Feature is not an attribute: '" + attributeName + "' for " + eobj.eClass());
 		}
 		return eobj.eGet(sf);
 	}

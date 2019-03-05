@@ -36,16 +36,15 @@ public class AnnotateableElementImpl extends SiDiffAdapterImpl implements Annota
 		annotations.put(key, value);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getOrCreateAnnotation(String key, Class<T> type) {
 		if (!hasAnnotation(key))
 			try {
-				setAnnotation(key, type.newInstance());
+				setAnnotation(key, type.getDeclaredConstructor().newInstance());
 			} catch (Exception e) {
-				throw new SiDiffRuntimeException("Cannot instantiate '", type.getName(), "' for annotations. ", e);
+				throw new SiDiffRuntimeException("Cannot instantiate '" + type.getName() + "' for annotations. ", e);
 			}
-		return (T) annotations.get(key);
+		return type.cast(annotations.get(key));
 	}
 
 	@Override

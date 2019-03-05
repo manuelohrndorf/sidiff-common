@@ -43,12 +43,8 @@ public class XMLDOMCreator {
 			DOMSource source = new DOMSource(document);
 			StreamResult result = new StreamResult(outputStream);
 			transformer.transform(source, result);
-		} catch (TransformerConfigurationException e) {
-			e.printStackTrace();
-		} catch (TransformerFactoryConfigurationError e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
+		} catch (TransformerFactoryConfigurationError | TransformerException e) {
+			throw new SiDiffRuntimeException(e);
 		}
 	}	
 	
@@ -58,9 +54,9 @@ public class XMLDOMCreator {
 	 * @return
 	 */
 	public static String writeToString(Node node) {
-		StringBuffer buffer = new StringBuffer();
-		writeToStringBuffer(buffer, node);
-		return buffer.toString();
+		StringBuilder builder = new StringBuilder();
+		writeToStringBuilder(builder, node);
+		return builder.toString();
 	}
 	
 	/**
@@ -71,58 +67,54 @@ public class XMLDOMCreator {
 	 * @return
 	 */
 	public static String writeChildNodesToString(Node node, String optionalContainer) {
-		StringBuffer buffer = new StringBuffer();
+		StringBuilder builder = new StringBuilder();
 		if (optionalContainer!=null && !optionalContainer.trim().equals("")) {
-			buffer.append("<");
-			buffer.append(optionalContainer);
-			buffer.append(">");
+			builder.append("<");
+			builder.append(optionalContainer);
+			builder.append(">");
 		}
 		if (node.hasChildNodes()) {
 			NodeList childs = node.getChildNodes();
 			for (int i=0; i<childs.getLength(); i++)
-				writeToStringBuffer(buffer, childs.item(i));
+				writeToStringBuilder(builder, childs.item(i));
 		}
 		if (optionalContainer!=null && !optionalContainer.trim().equals("")) {
-			buffer.append("</");
-			buffer.append(optionalContainer);
-			buffer.append(">");
+			builder.append("</");
+			builder.append(optionalContainer);
+			builder.append(">");
 		}
-		return buffer.toString();
+		return builder.toString();
 	}
 	
-	private static void writeToStringBuffer(StringBuffer buffer, Node node) {
+	private static void writeToStringBuilder(StringBuilder builder, Node node) {
 		if (node.getNodeType()==3) {
-			buffer.append(node.getTextContent());
+			builder.append(node.getTextContent());
 			return;
 		}
-		buffer.append("<");
-		buffer.append(node.getNodeName());
+		builder.append("<");
+		builder.append(node.getNodeName());
 		if (node.hasAttributes()) {
 			NamedNodeMap map = node.getAttributes();
 			for (int i=0; i<map.getLength(); i++) {
 				Node attr = map.item(i);
-				buffer.append(" ");
-				buffer.append(attr.getLocalName());
-				buffer.append("=\"");
-				buffer.append(attr.getNodeValue());
-				buffer.append("\"");
+				builder.append(" ");
+				builder.append(attr.getLocalName());
+				builder.append("=\"");
+				builder.append(attr.getNodeValue());
+				builder.append("\"");
 			}
 		}
 		if (node.hasChildNodes()) {
-			buffer.append(">");
+			builder.append(">");
 			NodeList childs = node.getChildNodes();
-			for (int i=0; i<childs.getLength(); i++)
-				writeToStringBuffer(buffer, childs.item(i));
-			buffer.append("</");
-			buffer.append(node.getNodeName());
-			buffer.append(">");
+			for (int i=0; i<childs.getLength(); i++) {
+				writeToStringBuilder(builder, childs.item(i));				
+			}
+			builder.append("</");
+			builder.append(node.getNodeName());
+			builder.append(">");
 		} else {
-			buffer.append("/>");
+			builder.append("/>");
 		}
 	}
-	
-	static class DOMSerializerException extends SiDiffRuntimeException {
-		private static final long serialVersionUID = -8802586857836471431L;
-	}
-
 }

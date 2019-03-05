@@ -167,7 +167,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	@Override
 	public EObject getLeftSibling(EObject object) {
 		if (!object.eContainmentFeature().isOrdered())
-			throw new NoOrderedContainmentException("The containment feature ", object.eContainmentFeature(), " is not ordered.");
+			throw new NoOrderedContainmentException("The containment feature " + object.eContainmentFeature() + " is not ordered.");
 		EList<EObject> sibs = (EList<EObject>) object.eContainer().eGet(object.eContainmentFeature());
 		int index = sibs.indexOf(object);
 		if (index == 0)
@@ -197,7 +197,7 @@ public class EMFModelAccessorImpl implements EMFModelAccessor {
 	@Override
 	public EObject getRightSibling(EObject object) {
 		if (!object.eContainmentFeature().isOrdered())
-			throw new NoOrderedContainmentException("The containment feature ", object.eContainmentFeature(), " is not ordered.");
+			throw new NoOrderedContainmentException("The containment feature " + object.eContainmentFeature() + " is not ordered.");
 		EList<EObject> sibs = (EList<EObject>) object.eContainer().eGet(object.eContainmentFeature());
 		int index = sibs.indexOf(object);
 		if (index == sibs.size() - 1)

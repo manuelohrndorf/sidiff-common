@@ -2,15 +2,15 @@ package org.sidiff.common;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.sidiff.common.util.StringUtil;
-import org.sidiff.common.util.internal.ArrayStringResolver;
-import org.sidiff.common.util.internal.CollectionStringResolver;
-import org.sidiff.common.util.internal.ErrorStringResolver;
-import org.sidiff.common.util.internal.ExceptionStringResolver;
-import org.sidiff.common.util.internal.HashTableStringResolver;
-import org.sidiff.common.util.internal.MapStringResolver;
-import org.sidiff.common.util.internal.StackTraceStringResolver;
-import org.sidiff.common.util.internal.ThreadStringResolver;
+import org.sidiff.common.stringresolver.StringUtil;
+import org.sidiff.common.stringresolver.internal.ArrayStringResolver;
+import org.sidiff.common.stringresolver.internal.CollectionStringResolver;
+import org.sidiff.common.stringresolver.internal.ErrorStringResolver;
+import org.sidiff.common.stringresolver.internal.ExceptionStringResolver;
+import org.sidiff.common.stringresolver.internal.HashTableStringResolver;
+import org.sidiff.common.stringresolver.internal.MapStringResolver;
+import org.sidiff.common.stringresolver.internal.StackTraceStringResolver;
+import org.sidiff.common.stringresolver.internal.ThreadStringResolver;
 
 /**
  * The Common-Plugin bundle activator, which initializes

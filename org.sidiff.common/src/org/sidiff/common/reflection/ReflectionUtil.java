@@ -1,4 +1,4 @@
-package org.sidiff.common.util;
+package org.sidiff.common.reflection;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -11,6 +11,7 @@ import java.util.Set;
 
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.io.ResourceUtil;
+import org.sidiff.common.stringresolver.StringUtil;
 
 /**
  * Utility class for the reflective instantiation of classes.

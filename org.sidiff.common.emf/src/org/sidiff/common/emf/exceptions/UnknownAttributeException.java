@@ -9,7 +9,7 @@ public class UnknownAttributeException extends SiDiffRuntimeException {
 
 	private static final long serialVersionUID = 2902417114575317516L;
 
-	public UnknownAttributeException(Object... message) {
+	public UnknownAttributeException(String message) {
 		super(message);
 	}
 

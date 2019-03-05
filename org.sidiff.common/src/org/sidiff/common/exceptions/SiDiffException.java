@@ -1,7 +1,5 @@
 package org.sidiff.common.exceptions;
 
-import org.sidiff.common.util.StringUtil;
-
 /**
  * Root exception for all (non-runtime) exceptions in SiDiff.
  */
@@ -11,27 +9,31 @@ public class SiDiffException extends Exception {
 
 	private String shortMessage;
 
-	public SiDiffException(Object... extra) {
-		super(StringUtil.resolve(extra), getOriginalException(extra));
-		this.shortMessage = "An error occurred";
+	public SiDiffException(String message) {
+		this(message, null, null);
 	}
 
-	public SiDiffException(String message, String shortMessage, Object... extra) {
-		super(message, getOriginalException(extra));
+	public SiDiffException(String message, Throwable exception) {
+		this(message, null, exception);
+	}
+
+	public SiDiffException(Throwable exception) {
+		this(exception.getMessage(), null, exception);
+	}
+
+	public SiDiffException(String message, String shortMessage) {
+		this(message, shortMessage, null);
+	}
+
+	public SiDiffException(String message, String shortMessage, Throwable exception) {
+		super(message, exception);
+		if(shortMessage == null) {
+			shortMessage = "An error occurred";
+		}
 		this.shortMessage = shortMessage;
 	}
 
 	public String getShortMessage() {
 		return shortMessage;
 	}
-
-	static Throwable getOriginalException(Object[] message) {
-		for (Object msgPart : message) {
-			if (msgPart instanceof Throwable) {
-				return (Throwable)msgPart;
-			}
-		}
-		return null;
-	}
-
 }

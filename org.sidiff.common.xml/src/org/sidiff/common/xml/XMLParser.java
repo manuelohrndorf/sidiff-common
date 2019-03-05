@@ -72,9 +72,9 @@ public class XMLParser {
 			try {
 				domParser.parse(xmlinput);
 			} catch (IOException e) {
-				throw new SiDiffRuntimeException(XMLReader.class, "IO Error while parsing DOM",e);
+				throw new SiDiffRuntimeException("IO Error while parsing DOM", e);
 			} catch (SAXException e) {
-				throw new SiDiffRuntimeException(XMLReader.class, "SAX Error while parsing DOM",e);
+				throw new SiDiffRuntimeException("SAX Error while parsing DOM", e);
 			} finally {
 				result = domParser.getDocument();
 				domParser.reset();
@@ -98,9 +98,9 @@ public class XMLParser {
 			try {
 				saxParser.parse(xmlinput);
 			} catch (IOException e) {
-				throw new SiDiffRuntimeException(XMLReader.class, "IO Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString() + "!", e);
+				throw new SiDiffRuntimeException("IO Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString(), e);
 			} catch (SAXException e) {
-				throw new SiDiffRuntimeException(XMLReader.class, "SAX Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString() + "!", e);
+				throw new SiDiffRuntimeException("SAX Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString(), e);
 			} finally {
 				saxParser.setContentHandler(null);
 			}
@@ -127,7 +127,7 @@ public class XMLParser {
 		try {
 			parser = XMLReaderFactory.createXMLReader(DEFAULT_PARSER_NAME_SAX);
 		} catch (Exception e) {
-			throw new SiDiffRuntimeException(XMLReader.class, "Error while Initializing XML Reader!", e);
+			throw new SiDiffRuntimeException("Error while Initializing XML Reader", e);
 		}
 
 		parser.setEntityResolver(XMLResolver.getInstance());
@@ -202,15 +202,15 @@ public class XMLParser {
 	private static class XMLErrorHander implements ErrorHandler {
 
 		public void error(SAXParseException exception) throws SAXException {
-			throw new SiDiffRuntimeException(this, "Parser Error," + exception.getMessage(), exception);
+			throw new SiDiffRuntimeException("Parser Error," + exception.getMessage(), exception);
 		}
 
 		public void fatalError(SAXParseException exception) throws SAXException {
-			throw new SiDiffRuntimeException(this, "Fatal Parser Error," + exception.getMessage(), exception);
+			throw new SiDiffRuntimeException("Fatal Parser Error," + exception.getMessage(), exception);
 		}
 
 		public void warning(SAXParseException exception) throws SAXException {
-			throw new SiDiffRuntimeException(this, "Parser Warning," + exception.getMessage(), exception);
+			throw new SiDiffRuntimeException("Parser Warning," + exception.getMessage(), exception);
 		}
 
 	}

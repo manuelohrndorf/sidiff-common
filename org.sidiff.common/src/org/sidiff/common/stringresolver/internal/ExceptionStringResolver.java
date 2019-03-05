@@ -1,9 +1,9 @@
-package org.sidiff.common.util.internal;
+package org.sidiff.common.stringresolver.internal;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.sidiff.common.util.StringResolver;
+import org.sidiff.common.stringresolver.StringResolver;
 
 /**
  * StringResolver to compute the string representation of an exception.

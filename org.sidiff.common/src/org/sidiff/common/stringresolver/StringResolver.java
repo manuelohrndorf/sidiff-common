@@ -1,4 +1,4 @@
-package org.sidiff.common.util;
+package org.sidiff.common.stringresolver;
 
 /**
  * Interface for a class that converts an object of a specific class into string representation.

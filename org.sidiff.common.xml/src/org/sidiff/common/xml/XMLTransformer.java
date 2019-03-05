@@ -84,7 +84,7 @@ public class XMLTransformer {
 			transformer.transform(saxSource, result);
 
 		} catch (Exception e) {
-			throw new SiDiffRuntimeException(XMLTransformer.class, "Error while transforming document!", e);
+			throw new SiDiffRuntimeException("Error while transforming document!", e);
 		}
 	}
 }

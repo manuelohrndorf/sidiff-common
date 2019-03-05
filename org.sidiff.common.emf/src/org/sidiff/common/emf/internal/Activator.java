@@ -7,9 +7,10 @@ import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.adapters.ElementByIDAdapterFactory;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
 import org.sidiff.common.emf.annotation.AnnotationsAdapterFactory;
+import org.sidiff.common.emf.stringresolver.internal.EObjectStringResolver;
 import org.sidiff.common.io.ResourceUtil;
-import org.sidiff.common.util.StringResolver;
-import org.sidiff.common.util.StringUtil;
+import org.sidiff.common.stringresolver.StringResolver;
+import org.sidiff.common.stringresolver.StringUtil;
 import org.sidiff.common.xml.XMLResolver;
 
 public class Activator implements BundleActivator {

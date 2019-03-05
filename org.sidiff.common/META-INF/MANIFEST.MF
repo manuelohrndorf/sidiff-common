@@ -13,6 +13,8 @@ Export-Package: org.sidiff.common.app,
  org.sidiff.common.io,
  org.sidiff.common.lcs,
  org.sidiff.common.logging,
+ org.sidiff.common.reflection,
+ org.sidiff.common.stringresolver,
  org.sidiff.common.util
 Require-Bundle: org.eclipse.core.runtime
 Bundle-Activator: org.sidiff.common.CommonPlugin

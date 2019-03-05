@@ -1,6 +1,6 @@
-package org.sidiff.common.util.internal;
+package org.sidiff.common.stringresolver.internal;
 
-import org.sidiff.common.util.StringResolver;
+import org.sidiff.common.stringresolver.StringResolver;
 
 
 /**

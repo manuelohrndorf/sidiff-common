@@ -9,8 +9,8 @@ public class UnknownDocumentTypeException extends SiDiffRuntimeException {
 
 	private static final long serialVersionUID = -1058428634529368842L;
 
-	public UnknownDocumentTypeException(Object... message) {
-		super(message);
+	public UnknownDocumentTypeException(String packageNS) {
+		super("Not a valid package namespace: " + packageNS);
 	}
 
 }

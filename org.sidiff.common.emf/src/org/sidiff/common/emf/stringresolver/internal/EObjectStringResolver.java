@@ -1,8 +1,8 @@
-package org.sidiff.common.emf.internal;
+package org.sidiff.common.emf.stringresolver.internal;
 
 import org.eclipse.emf.ecore.EObject;
 import org.sidiff.common.emf.EMFUtil;
-import org.sidiff.common.util.StringResolver;
+import org.sidiff.common.stringresolver.StringResolver;
 
 /**
  * StringResolver that creates a string representation of an EObject.

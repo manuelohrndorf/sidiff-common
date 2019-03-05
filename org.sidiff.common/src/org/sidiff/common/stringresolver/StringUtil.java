@@ -1,6 +1,8 @@
-package org.sidiff.common.util;
+package org.sidiff.common.stringresolver;
 
 import java.util.*;
+
+import org.sidiff.common.reflection.ReflectionUtil;
 
 /**
  * Utility class for string operations, e.g. converting objects to strings, counting substrings, etc.
@@ -67,25 +69,24 @@ public class StringUtil {
 		Class<?> objectClass = object.getClass();
 		if (resolvers.containsKey(objectClass)) {
 			return resolvers.get(objectClass).resolve(object);
-		} else {
-			// Get best resolver applicable
-			StringResolver bestMatch = null;
-			int bestInheritanceDistance = Integer.MAX_VALUE;
-			for(StringResolver resolver : resolvers.values()){
-				if(resolver.dedicatedClass().isAssignableFrom(objectClass)){
-					int currentInheritanceDistance = ReflectionUtil.computeInheritanceDistance(resolver.dedicatedClass(), objectClass);
-					if(currentInheritanceDistance<bestInheritanceDistance){
-						bestInheritanceDistance=currentInheritanceDistance;
-						bestMatch=resolver;
-					}
+		}
+
+		// Get best resolver applicable
+		StringResolver bestMatch = null;
+		int bestInheritanceDistance = Integer.MAX_VALUE;
+		for(StringResolver resolver : resolvers.values()){
+			if(resolver.dedicatedClass().isAssignableFrom(objectClass)){
+				int currentInheritanceDistance = ReflectionUtil.computeInheritanceDistance(resolver.dedicatedClass(), objectClass);
+				if(currentInheritanceDistance<bestInheritanceDistance){
+					bestInheritanceDistance=currentInheritanceDistance;
+					bestMatch=resolver;
 				}
 			}
-			if(bestMatch!=null){
-				return bestMatch.resolve(object);
-			} else {
-				return object.toString();
-			}
 		}
+		if(bestMatch != null) {
+			return bestMatch.resolve(object);
+		}
+		return object.toString();
 	}
 
 	
@@ -113,7 +114,7 @@ public class StringUtil {
 	 */
 	public static String concat(String... subStrings) {
 
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		for (int i = 0; i < subStrings.length; i++) {
 			result.append(subStrings[i]);
 		}

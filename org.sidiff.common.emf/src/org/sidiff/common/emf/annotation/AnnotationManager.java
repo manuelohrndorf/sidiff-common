@@ -17,7 +17,7 @@ import org.sidiff.common.emf.EMFAdapter;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.sidiff.common.util.ReflectionUtil;
+import org.sidiff.common.reflection.ReflectionUtil;
 import org.sidiff.common.xml.XMLParser;
 import org.sidiff.common.xml.XMLWriter;
 import org.xml.sax.Attributes;

@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import org.sidiff.common.CommonPlugin;
-import org.sidiff.common.util.ReflectionUtil;
-import org.sidiff.common.util.StringUtil;
+import org.sidiff.common.reflection.ReflectionUtil;
+import org.sidiff.common.stringresolver.StringUtil;
 
 // -DLOGEVENTS="MESSAGE,ERROR,WARNING,NOTICE,EVENT,SIGNAL,DEBUG"
 // -DLOGMODULES=""

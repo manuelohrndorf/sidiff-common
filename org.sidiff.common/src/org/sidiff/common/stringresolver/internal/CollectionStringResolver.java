@@ -1,10 +1,10 @@
-package org.sidiff.common.util.internal;
+package org.sidiff.common.stringresolver.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.sidiff.common.util.StringResolver;
-import org.sidiff.common.util.StringUtil;
+import org.sidiff.common.stringresolver.StringResolver;
+import org.sidiff.common.stringresolver.StringUtil;
 
 /**
  * StringResolver to compute the string representation of a collection.

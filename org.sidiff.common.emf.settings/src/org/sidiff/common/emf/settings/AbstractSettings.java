@@ -1,4 +1,4 @@
-package org.sidiff.common.settings;
+package org.sidiff.common.emf.settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.sidiff.common.settings.internal.SettingsPlugin;
+import org.sidiff.common.emf.settings.internal.SettingsPlugin;
 
 /**
  * Abstract implementation of {@link ISettings} managing a list of
@@ -45,9 +45,9 @@ public abstract class AbstractSettings implements ISettings {
 	/**
 	 * Call this function every time when a setting was changed!
 	 * 
-	 * @param item The Enumeration associated with the changed setting.
+	 * @param item The Enumeration item associated with the changed setting.
 	 */
-	protected void notifyListeners(Enum<?> item) {
+	protected void notifyListeners(ISettingsItem item) {
 		// reset cached validation result
 		status = null;
 

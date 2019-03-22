@@ -1,4 +1,4 @@
-package org.sidiff.common.settings.internal;
+package org.sidiff.common.emf.settings.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -6,7 +6,7 @@ import org.osgi.framework.BundleContext;
 public class SettingsPlugin implements BundleActivator {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.sidiff.common.settings"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.sidiff.common.emf.settings"; //$NON-NLS-1$
 
 	private static BundleContext bundleContext;
 

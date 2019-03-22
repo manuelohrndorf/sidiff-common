@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<class-diagram version="1.2.2" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+<class-diagram version="1.2.3" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
-  <class id="1" language="java" name="org.sidiff.common.settings.AbstractSettings" project="org.sidiff.common.settings" 
-    file="/org.sidiff.common.settings/src/org/sidiff/common/settings/AbstractSettings.java" binary="false" 
+  <class id="1" language="java" name="org.sidiff.common.emf.settings.AbstractSettings" 
+    project="org.sidiff.common.emf.settings" 
+    file="/org.sidiff.common.emf.settings/src/org/sidiff/common/emf/settings/AbstractSettings.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="275" y="255"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -11,10 +12,10 @@
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <interface id="2" language="java" name="org.sidiff.common.settings.ISettingsChangedListener" 
-    project="org.sidiff.common.settings" 
-    file="/org.sidiff.common.settings/src/org/sidiff/common/settings/ISettingsChangedListener.java" binary="false" 
-    corner="BOTTOM_RIGHT">    
+  <interface id="2" language="java" name="org.sidiff.common.emf.settings.ISettingsChangedListener" 
+    project="org.sidiff.common.emf.settings" 
+    file="/org.sidiff.common.emf.settings/src/org/sidiff/common/emf/settings/ISettingsChangedListener.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="600" y="74"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
@@ -22,8 +23,9 @@
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </interface>  
-  <class id="3" language="java" name="org.sidiff.common.settings.BaseSettings" project="org.sidiff.common.settings" 
-    file="/org.sidiff.common.settings/src/org/sidiff/common/settings/BaseSettings.java" binary="false" 
+  <class id="3" language="java" name="org.sidiff.common.emf.settings.BaseSettings" 
+    project="org.sidiff.common.emf.settings" 
+    file="/org.sidiff.common.emf.settings/src/org/sidiff/common/emf/settings/BaseSettings.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="275" y="481"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -32,8 +34,9 @@
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <interface id="4" language="java" name="org.sidiff.common.settings.ISettings" project="org.sidiff.common.settings" 
-    file="/org.sidiff.common.settings/src/org/sidiff/common/settings/ISettings.java" binary="false" 
+  <interface id="4" language="java" name="org.sidiff.common.emf.settings.ISettings" 
+    project="org.sidiff.common.emf.settings" 
+    file="/org.sidiff.common.emf.settings/src/org/sidiff/common/emf/settings/ISettings.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="275" y="69"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -53,9 +56,9 @@
       <operations public="true" package="false" protected="false" private="false" static="false"/>    
     </display>  
   </class>  
-  <enumeration id="6" language="java" name="org.sidiff.common.settings.BaseSettingsItem" 
-    project="org.sidiff.common.settings" 
-    file="/org.sidiff.common.settings/src/org/sidiff/common/settings/BaseSettingsItem.java" binary="false" 
+  <enumeration id="6" language="java" name="org.sidiff.common.emf.settings.BaseSettingsItem" 
+    project="org.sidiff.common.emf.settings" 
+    file="/org.sidiff.common.emf.settings/src/org/sidiff/common/emf/settings/BaseSettingsItem.java" binary="false" 
     corner="BOTTOM_RIGHT">    
     <position height="-1" width="-1" x="466" y="478"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
@@ -162,45 +165,45 @@
     </display>  
   </interface>  
   <generalization id="16">    
-    <end type="SOURCE" refId="5"/>    
-    <end type="TARGET" refId="3"/>  
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="7"/>  
   </generalization>  
   <generalization id="17">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="9"/>  
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="1"/>  
   </generalization>  
-  <generalization id="18">    
-    <end type="SOURCE" refId="14"/>    
-    <end type="TARGET" refId="15"/>  
-  </generalization>  
-  <generalization id="19">    
-    <end type="SOURCE" refId="9"/>    
-    <end type="TARGET" refId="5"/>  
-  </generalization>  
-  <association id="20">    
+  <realization id="18">    
+    <end type="SOURCE" refId="12"/>    
+    <end type="TARGET" refId="14"/>  
+  </realization>  
+  <association id="19">    
     <bendpoint x="600" y="256"/>    
     <end type="SOURCE" refId="1" navigable="false">      
-      <attribute id="21" name="listeners"/>      
-      <multiplicity id="22" minimum="0" maximum="2147483647"/>    
+      <attribute id="20" name="listeners">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="21" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
     </end>    
     <end type="TARGET" refId="2" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <realization id="23">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="14"/>  
-  </realization>  
-  <generalization id="24">    
-    <end type="SOURCE" refId="3"/>    
-    <end type="TARGET" refId="1"/>  
+  <generalization id="22">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="9"/>  
   </generalization>  
-  <realization id="25">    
+  <generalization id="23">    
+    <end type="SOURCE" refId="14"/>    
+    <end type="TARGET" refId="15"/>  
+  </generalization>  
+  <realization id="24">    
     <end type="SOURCE" refId="1"/>    
     <end type="TARGET" refId="4"/>  
   </realization>  
-  <generalization id="26">    
-    <end type="SOURCE" refId="12"/>    
-    <end type="TARGET" refId="7"/>  
+  <generalization id="25">    
+    <end type="SOURCE" refId="9"/>    
+    <end type="TARGET" refId="5"/>  
   </generalization>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    

@@ -1,4 +1,4 @@
-package org.sidiff.common.settings;
+package org.sidiff.common.emf.settings;
 
 import org.eclipse.core.runtime.IStatus;
 

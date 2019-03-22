@@ -1,12 +1,12 @@
-package org.sidiff.common.stringresolver.util;
+package org.sidiff.common.emf.stringresolver.util;
 
 import java.util.Collections;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.access.EMFModelAccess;
-import org.sidiff.common.stringresolver.GenericStringResolver;
-import org.sidiff.common.stringresolver.IStringResolver;
+import org.sidiff.common.emf.stringresolver.GenericStringResolver;
+import org.sidiff.common.emf.stringresolver.IStringResolver;
 
 /**
  * The label printer provides human readable labels

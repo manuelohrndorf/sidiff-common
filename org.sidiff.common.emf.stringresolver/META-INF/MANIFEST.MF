@@ -1,14 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common - Model String Resolver
-Bundle-SymbolicName: org.sidiff.common.stringresolver;singleton:=true
+Bundle-SymbolicName: org.sidiff.common.emf.stringresolver;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.sidiff.common.stringresolver.internal.Activator
-Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
- org.sidiff.common.emf;visibility:=reexport,
+Bundle-Activator: org.sidiff.common.emf.stringresolver.internal.Activator
+Require-Bundle: org.sidiff.common.emf;visibility:=reexport,
  org.sidiff.common.extension;visibility:=reexport
-Export-Package: org.sidiff.common.stringresolver,
- org.sidiff.common.stringresolver.util
+Export-Package: org.sidiff.common.emf.stringresolver,
+ org.sidiff.common.emf.stringresolver.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-ActivationPolicy: lazy

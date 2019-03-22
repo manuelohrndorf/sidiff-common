@@ -1,4 +1,4 @@
-package org.sidiff.common.stringresolver;
+package org.sidiff.common.emf.stringresolver;
 
 import org.eclipse.emf.ecore.EObject;
 import org.sidiff.common.extension.AbstractTypedExtension;

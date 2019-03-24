@@ -3,6 +3,7 @@ package org.sidiff.common.xml;
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
@@ -20,7 +21,6 @@ import org.xml.sax.SAXNotRecognizedException;
 import org.xml.sax.SAXNotSupportedException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Utility class for parsing XML documents.
@@ -125,7 +125,7 @@ public class XMLParser {
 	public static XMLReader createSAXParser() {
 		XMLReader parser = null;
 		try {
-			parser = XMLReaderFactory.createXMLReader(DEFAULT_PARSER_NAME_SAX);
+			parser = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 		} catch (Exception e) {
 			throw new SiDiffRuntimeException("Error while Initializing XML Reader", e);
 		}

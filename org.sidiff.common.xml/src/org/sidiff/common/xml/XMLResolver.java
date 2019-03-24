@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.URIResolver;
@@ -20,7 +21,6 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * Class that is used by the XML parsers to resolve XML document type definitions.
@@ -67,7 +67,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 	public Source resolve(String href, String base) throws TransformerException {
 
 		try {
-			XMLReader reader = XMLReaderFactory.createXMLReader();
+			XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 			reader.setEntityResolver(this);
 			SAXSource source = new SAXSource(reader, new InputSource(new FileInputStream(href)));
 			return source;

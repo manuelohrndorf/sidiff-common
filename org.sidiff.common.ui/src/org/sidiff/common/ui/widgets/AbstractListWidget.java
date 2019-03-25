@@ -385,7 +385,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	 */
 	@Override
 	public boolean validate() {
-		if(getSelectableValues().isEmpty()) {
+		if(getSelectableValues().isEmpty() && getLowerBound() > 0) {
 			setValidationMessage(new ValidationMessage(ValidationType.ERROR, "No " + getTitle() + " is available."));
 			return false;
 		} else if(getSelection().size() < getLowerBound()) {

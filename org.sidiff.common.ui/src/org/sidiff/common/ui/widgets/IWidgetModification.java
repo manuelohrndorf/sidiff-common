@@ -1,5 +1,6 @@
 package org.sidiff.common.ui.widgets;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,6 +32,20 @@ public interface IWidgetModification<T> {
 	 * @throws IllegalArgumentException if the selection is not legal
 	 */
 	void setSelection(List<T> selection);
+
+	/**
+	 * Convenience method for single-valued selection.
+	 * {@link #setSelection(List) Sets the selection} to only the given element,
+	 * or empty if <code>null</code>.
+	 * @param selection the element to select, <code>null</code> for empty selection
+	 */
+	default void setSelection(T selection) {
+		if(selection == null) {
+			setSelection(Collections.emptyList());
+		} else {
+			setSelection(Collections.singletonList(selection));
+		}
+	}
 
 	/**
 	 * <p>Returns all values that can be selected in this widget.</p>

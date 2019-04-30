@@ -2,6 +2,7 @@ package org.sidiff.common.extension;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -21,6 +22,7 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 
 	public static final String ATTRIBUTE_KEY = "key";
 	public static final String ATTRIBUTE_NAME = "name";
+	public static final String ATTRIBUTE_DESCRIPTION = "description";
 
 	/**
 	 * The extension's key
@@ -31,6 +33,11 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 	 * The extension's name
 	 */
 	private String name;
+	
+	/**
+	 * The extension's description
+	 */
+	private Optional<String> description;
 
 	/**
 	 * 
@@ -52,6 +59,7 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 
 		key = doGetKey(config);
 		name = doGetName(config);
+		description = doGetDescription(config);
 	}
 
 	protected static String getFirstUseableValue(Stream<Supplier<String>> suppliers) {
@@ -75,6 +83,14 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 				() -> config.getAttribute(ATTRIBUTE_NAME),
 				config.getDeclaringExtension()::getLabel,
 				IExtension.super::getName));
+	}
+
+	protected Optional<String> doGetDescription(IConfigurationElement config) {
+		String desc = config.getAttribute(ATTRIBUTE_DESCRIPTION);
+		if(desc == null) {
+			return IExtension.super.getDescription();
+		}
+		return Optional.of(desc);
 	}
 
 	/**
@@ -103,6 +119,11 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 	@Override
 	public String getName() {
 		return checkInitialized(name);
+	}
+
+	@Override
+	public Optional<String> getDescription() {
+		return checkInitialized(description);
 	}
 
 	protected static <T> T checkInitialized(T object) {

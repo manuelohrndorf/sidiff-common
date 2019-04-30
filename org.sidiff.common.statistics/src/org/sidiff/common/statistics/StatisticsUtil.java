@@ -264,7 +264,7 @@ public final class StatisticsUtil implements Serializable {
 				time = ((Float)o).longValue();
 			if (time == null)
 				time = 0l;
-			timeStatistic.put(STAT_KEY_STARTTIME + key, new Long(System.currentTimeMillis() - time));
+			timeStatistic.put(STAT_KEY_STARTTIME + key, System.currentTimeMillis() - time);
 		}
 	}
 
@@ -387,7 +387,7 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	public void put(String key, int value) {
 		if (enabled) {
-			otherStatistic.put(key, new Integer(value));
+			otherStatistic.put(key, value);
 		}
 	}
 
@@ -437,7 +437,7 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	public void resetCounter(String key) {
 		if (enabled) {
-			countStatistic.put(key, new Integer(0));
+			countStatistic.put(key, 0);
 		}
 	}
 

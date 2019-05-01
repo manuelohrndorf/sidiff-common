@@ -57,18 +57,18 @@ public final class StatisticsUtil implements Serializable {
 	private static StatisticsUtil instance;
 
 	private StatisticsUtil() {
-		this.timeStatistic = new TreeMap<String, Object>();
-		this.sizeStatistic = new TreeMap<String, Object>();
-		this.countStatistic = new TreeMap<String, Object>();
-		this.otherStatistic = new TreeMap<String, Object>();
+		this.timeStatistic = new TreeMap<>();
+		this.sizeStatistic = new TreeMap<>();
+		this.countStatistic = new TreeMap<>();
+		this.otherStatistic = new TreeMap<>();
 	}
 
 	private StatisticsUtil(Map<String, Object> timeStatistic, Map<String, Object> sizeStatistic,
 			Map<String, Object> countStatistic, Map<String, Object> otherStatistic) {
-		this.timeStatistic = new TreeMap<String, Object>(timeStatistic);
-		this.sizeStatistic = new TreeMap<String, Object>(sizeStatistic);
-		this.countStatistic = new TreeMap<String, Object>(countStatistic);
-		this.otherStatistic = new TreeMap<String, Object>(otherStatistic);
+		this.timeStatistic = new TreeMap<>(timeStatistic);
+		this.sizeStatistic = new TreeMap<>(sizeStatistic);
+		this.countStatistic = new TreeMap<>(countStatistic);
+		this.otherStatistic = new TreeMap<>(otherStatistic);
 	}
 
 	/**
@@ -95,6 +95,17 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	public static StatisticsUtil createStatisticsUtil() {
 		return new StatisticsUtil();
+	}
+
+	/**
+	 * Creates a new StatisticsUtil containing the given data as other statistics.
+	 * @param statisticData the data
+	 * @return new statistics util with the given data
+	 */
+	public static StatisticsUtil createStatisticsUtil(Map<String,Object> statisticData) {
+		StatisticsUtil statUtil = new StatisticsUtil();
+		statisticData.forEach(statUtil::put);
+		return statUtil;
 	}
 
 	/**
@@ -646,6 +657,16 @@ public final class StatisticsUtil implements Serializable {
 		for (Map.Entry<String, Object> entry : statistics.entrySet()) {
 			sb.append(entry.getKey()).append(" = ").append(entry.getValue()).append(LINE_SEPERATOR);
 		}
+	}
+
+	@Override
+	public String toString() {
+		return "StatisticsUtil{enabled=" + enabled
+				+ ", time=" + timeStatistic
+				+ ", size=" + sizeStatistic
+				+ ", count=" + countStatistic
+				+ ", other=" + otherStatistic
+				+ "}";
 	}
 
 	/**

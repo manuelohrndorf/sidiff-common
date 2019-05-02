@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="ASCII"?>
+<deltamodel:DeltaModuleSet xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:deltamodel="http://www.sidiff.org/deltamodeling/deltamodel/1.0" xmlns:formula="http://www.sidiff.org/formula/model/1.0" name="test">
+  <featureModel xsi:type="formula:Or" satSolverAdapter="org.sidiff.formula.adapter.z3.Z3SatSolverAdapter">
+    <left xsi:type="formula:Variable" name="Aggregation"/>
+    <right xsi:type="formula:Variable" name="SecondProperty"/>
+  </featureModel>
+  <superimposedModel>
+    <elements annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]" uuid="_HRH0IFbGEemFmPykLCkG_A" outgoings="//@superimposedModel/@elements.0/@ownedReferences.0 //@superimposedModel/@elements.0/@ownedReferences.1 //@superimposedModel/@elements.0/@ownedReferences.2" attributes="//@superimposedModel/@elements.0/@ownedAttributes.0 //@superimposedModel/@elements.0/@ownedAttributes.1">
+      <object href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_HRH0IFbGEemFmPykLCkG_A"/>
+      <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Package"/>
+      <objects href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_HRH0IFbGEemFmPykLCkG_A"/>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]/visibility/[public]" container="_HRH0IFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/visibility"/>
+        <value>public</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]/name/[Package]" container="_HRH0IFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/name"/>
+        <value>Package</value>
+      </ownedAttributes>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]/packagedElement/[org.eclipse.uml2.uml.internal.impl.PackageImpl].A" source="_HRH0IFbGEemFmPykLCkG_A" target="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Package/packagedElement"/>
+      </ownedReferences>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]/packagedElement/[org.eclipse.uml2.uml.internal.impl.PackageImpl].B" source="_HRH0IFbGEemFmPykLCkG_A" target="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Package/packagedElement"/>
+      </ownedReferences>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl]/packagedElement/[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc" source="_HRH0IFbGEemFmPykLCkG_A" target="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Package/packagedElement"/>
+      </ownedReferences>
+      <objectAnnotations value="//@superimposedModel/@annotations.0">
+        <key href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_HRH0IFbGEemFmPykLCkG_A"/>
+      </objectAnnotations>
+    </elements>
+    <elements annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A" uuid="_IukpkFbGEemFmPykLCkG_A" outgoings="//@superimposedModel/@elements.1/@ownedReferences.0" incomings="//@superimposedModel/@elements.0/@ownedReferences.0" attributes="//@superimposedModel/@elements.1/@ownedAttributes.0 //@superimposedModel/@elements.1/@ownedAttributes.1 //@superimposedModel/@elements.1/@ownedAttributes.2 //@superimposedModel/@elements.1/@ownedAttributes.3 //@superimposedModel/@elements.1/@ownedAttributes.4 //@superimposedModel/@elements.1/@ownedAttributes.5">
+      <object href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_IukpkFbGEemFmPykLCkG_A"/>
+      <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Class"/>
+      <objects href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_IukpkFbGEemFmPykLCkG_A"/>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/name/[A]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/name"/>
+        <value>A</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/visibility/[public]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/visibility"/>
+        <value>public</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/isLeaf/[false]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//RedefinableElement/isLeaf"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/isAbstract/[false]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isAbstract"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/isFinalSpecialization/[false]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isFinalSpecialization"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/isActive/[false]" container="_IukpkFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Class/isActive"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A/ownedAttribute/[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa" source="_IukpkFbGEemFmPykLCkG_A" target="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//StructuredClassifier/ownedAttribute"/>
+      </ownedReferences>
+      <objectAnnotations value="//@superimposedModel/@annotations.0">
+        <key href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_IukpkFbGEemFmPykLCkG_A"/>
+      </objectAnnotations>
+    </elements>
+    <elements annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B" uuid="_JUTz4FbGEemFmPykLCkG_A" incomings="//@superimposedModel/@elements.0/@ownedReferences.1" attributes="//@superimposedModel/@elements.2/@ownedAttributes.0 //@superimposedModel/@elements.2/@ownedAttributes.1 //@superimposedModel/@elements.2/@ownedAttributes.2 //@superimposedModel/@elements.2/@ownedAttributes.3 //@superimposedModel/@elements.2/@ownedAttributes.4 //@superimposedModel/@elements.2/@ownedAttributes.5">
+      <object href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_JUTz4FbGEemFmPykLCkG_A"/>
+      <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Class"/>
+      <objects href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_JUTz4FbGEemFmPykLCkG_A"/>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/name/[B]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/name"/>
+        <value>B</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/visibility/[public]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/visibility"/>
+        <value>public</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/isLeaf/[false]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//RedefinableElement/isLeaf"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/isAbstract/[false]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isAbstract"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/isFinalSpecialization/[false]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isFinalSpecialization"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].B/isActive/[false]" container="_JUTz4FbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Class/isActive"/>
+        <value>false</value>
+      </ownedAttributes>
+      <objectAnnotations value="//@superimposedModel/@annotations.0">
+        <key href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_JUTz4FbGEemFmPykLCkG_A"/>
+      </objectAnnotations>
+    </elements>
+    <elements annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc" uuid="_KXfIIFbGEemFmPykLCkG_A" outgoings="//@superimposedModel/@elements.3/@ownedReferences.0" incomings="//@superimposedModel/@elements.0/@ownedReferences.2 //@superimposedModel/@elements.4/@ownedReferences.0" attributes="//@superimposedModel/@elements.3/@ownedAttributes.0 //@superimposedModel/@elements.3/@ownedAttributes.1 //@superimposedModel/@elements.3/@ownedAttributes.2 //@superimposedModel/@elements.3/@ownedAttributes.3 //@superimposedModel/@elements.3/@ownedAttributes.4 //@superimposedModel/@elements.3/@ownedAttributes.5">
+      <object href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_KXfIIFbGEemFmPykLCkG_A"/>
+      <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Association"/>
+      <objects href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_KXfIIFbGEemFmPykLCkG_A"/>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/name/[Assoc]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/name"/>
+        <value>Assoc</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/visibility/[public]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/visibility"/>
+        <value>public</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/isLeaf/[false]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//RedefinableElement/isLeaf"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/isAbstract/[false]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isAbstract"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/isFinalSpecialization/[false]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Classifier/isFinalSpecialization"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/isDerived/[false]" container="_KXfIIFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Association/isDerived"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc/memberEnd/[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa" source="_KXfIIFbGEemFmPykLCkG_A" target="_N1ITsFbGEemFmPykLCkG_A" opposite="//@superimposedModel/@elements.4/@ownedReferences.0">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Association/memberEnd"/>
+      </ownedReferences>
+      <objectAnnotations value="//@superimposedModel/@annotations.0">
+        <key href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_KXfIIFbGEemFmPykLCkG_A"/>
+      </objectAnnotations>
+    </elements>
+    <elements annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa" uuid="_N1ITsFbGEemFmPykLCkG_A" outgoings="//@superimposedModel/@elements.4/@ownedReferences.0" incomings="//@superimposedModel/@elements.1/@ownedReferences.0 //@superimposedModel/@elements.3/@ownedReferences.0" attributes="//@superimposedModel/@elements.4/@ownedAttributes.0 //@superimposedModel/@elements.4/@ownedAttributes.1 //@superimposedModel/@elements.4/@ownedAttributes.2 //@superimposedModel/@elements.4/@ownedAttributes.3 //@superimposedModel/@elements.4/@ownedAttributes.4 //@superimposedModel/@elements.4/@ownedAttributes.5 //@superimposedModel/@elements.4/@ownedAttributes.6 //@superimposedModel/@elements.4/@ownedAttributes.7 //@superimposedModel/@elements.4/@ownedAttributes.8 //@superimposedModel/@elements.4/@ownedAttributes.9 //@superimposedModel/@elements.4/@ownedAttributes.10">
+      <object href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_N1ITsFbGEemFmPykLCkG_A"/>
+      <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property"/>
+      <objects href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_N1ITsFbGEemFmPykLCkG_A"/>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/name/[pa]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/name"/>
+        <value>pa</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/visibility/[public]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//NamedElement/visibility"/>
+        <value>public</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isLeaf/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//RedefinableElement/isLeaf"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isStatic/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Feature/isStatic"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isOrdered/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//MultiplicityElement/isOrdered"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isUnique/[true]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//MultiplicityElement/isUnique"/>
+        <value>true</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isReadOnly/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//StructuralFeature/isReadOnly"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/aggregation/[none]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property/aggregation"/>
+        <value>none</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isDerived/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property/isDerived"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isDerivedUnion/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property/isDerivedUnion"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedAttributes annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/isID/[false]" container="_N1ITsFbGEemFmPykLCkG_A">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property/isID"/>
+        <value>false</value>
+      </ownedAttributes>
+      <ownedReferences annotations="//@superimposedModel/@annotations.0" signature="[org.eclipse.uml2.uml.internal.impl.PackageImpl].A.pa/association/[org.eclipse.uml2.uml.internal.impl.PackageImpl].Assoc" source="_N1ITsFbGEemFmPykLCkG_A" target="_KXfIIFbGEemFmPykLCkG_A" opposite="//@superimposedModel/@elements.3/@ownedReferences.0">
+        <type href="http://www.eclipse.org/uml2/5.0.0/UML#//Property/association"/>
+      </ownedReferences>
+      <objectAnnotations value="//@superimposedModel/@annotations.0">
+        <key href="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml#_N1ITsFbGEemFmPykLCkG_A"/>
+      </objectAnnotations>
+    </elements>
+    <type href="http://www.eclipse.org/uml2/5.0.0/UML#/"/>
+    <annotations body="CoreModel" type="MODEL" entities="_HRH0IFbGEemFmPykLCkG_A //@superimposedModel/@elements.0/@ownedAttributes.0 //@superimposedModel/@elements.0/@ownedReferences.0 //@superimposedModel/@elements.0/@ownedReferences.1 //@superimposedModel/@elements.0/@ownedReferences.2 _IukpkFbGEemFmPykLCkG_A //@superimposedModel/@elements.1/@ownedAttributes.0 //@superimposedModel/@elements.1/@ownedAttributes.1 //@superimposedModel/@elements.1/@ownedAttributes.2 //@superimposedModel/@elements.1/@ownedAttributes.3 //@superimposedModel/@elements.1/@ownedAttributes.4 //@superimposedModel/@elements.1/@ownedAttributes.5 //@superimposedModel/@elements.1/@ownedReferences.0 _JUTz4FbGEemFmPykLCkG_A //@superimposedModel/@elements.2/@ownedAttributes.0 //@superimposedModel/@elements.2/@ownedAttributes.1 //@superimposedModel/@elements.2/@ownedAttributes.2 //@superimposedModel/@elements.2/@ownedAttributes.3 //@superimposedModel/@elements.2/@ownedAttributes.4 //@superimposedModel/@elements.2/@ownedAttributes.5 _KXfIIFbGEemFmPykLCkG_A //@superimposedModel/@elements.3/@ownedAttributes.0 //@superimposedModel/@elements.3/@ownedAttributes.1 //@superimposedModel/@elements.3/@ownedAttributes.2 //@superimposedModel/@elements.3/@ownedAttributes.3 //@superimposedModel/@elements.3/@ownedAttributes.4 //@superimposedModel/@elements.3/@ownedAttributes.5 //@superimposedModel/@elements.3/@ownedReferences.0 _N1ITsFbGEemFmPykLCkG_A //@superimposedModel/@elements.4/@ownedAttributes.0 //@superimposedModel/@elements.4/@ownedAttributes.1 //@superimposedModel/@elements.4/@ownedAttributes.2 //@superimposedModel/@elements.4/@ownedAttributes.3 //@superimposedModel/@elements.4/@ownedAttributes.4 //@superimposedModel/@elements.4/@ownedAttributes.5 //@superimposedModel/@elements.4/@ownedAttributes.6 //@superimposedModel/@elements.4/@ownedAttributes.7 //@superimposedModel/@elements.4/@ownedAttributes.8 //@superimposedModel/@elements.4/@ownedAttributes.9 //@superimposedModel/@elements.4/@ownedAttributes.10 //@superimposedModel/@elements.4/@ownedReferences.0 //@superimposedModel/@elements.0/@ownedAttributes.1"/>
+    <signatureCalculators>DefaultSignatureCalculator</signatureCalculators>
+  </superimposedModel>
+  <deltaModules name="Aggregation">
+    <applicationCondition xsi:type="formula:Variable" name="Aggregation"/>
+    <delta href="platform:/resource/uml_delta_test/DeltaModules/Aggregation/Aggregation.asymmetric#_qppm8FbREem8Lak0rVPeYw"/>
+  </deltaModules>
+  <deltaModules name="SecondProperty">
+    <applicationCondition xsi:type="formula:Variable" name="SecondProperty"/>
+    <delta href="platform:/resource/uml_delta_test/DeltaModules/SecondProperty/SecondProperty.asymmetric#_xLDn8FehEemb5cOjHS-d8g"/>
+  </deltaModules>
+  <coreModel uri="platform:/resource/uml_delta_test/CoreModel/CoreModel.uml"/>
+</deltamodel:DeltaModuleSet>

@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="ASCII"?>
+<superimposition:SuperimposedModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:superimposition="http://www.sidiff.org/superimposition/model/1.0" xmi:id="_CzLGoGtVEem9H_jgfW3A9Q">
+  <elements xmi:id="_C5ZqcWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome" uuid="_C5ZqcGtVEem9H_jgfW3A9Q" outgoings="_C5jbcGtVEem9H_jgfW3A9Q _C5jbcmtVEem9H_jgfW3A9Q _C5kCgGtVEem9H_jgfW3A9Q _C5kCgmtVEem9H_jgfW3A9Q _C5kChGtVEem9H_jgfW3A9Q _C5kChmtVEem9H_jgfW3A9Q _C5kCiGtVEem9H_jgfW3A9Q _C5kCi2tVEem9H_jgfW3A9Q _C5kCjmtVEem9H_jgfW3A9Q _C5kCkWtVEem9H_jgfW3A9Q" attributes="_C5g_MGtVEem9H_jgfW3A9Q _C5g_MWtVEem9H_jgfW3A9Q _C5g_MmtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#/"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage"/>
+    <objects href="CoreModel.ecore#/"/>
+    <ownedAttributes xmi:id="_C5g_MGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/name/[smarthome]" container="_C5ZqcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>smarthome</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5g_MWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/nsURI/[http://smarthome/1.0]" container="_C5ZqcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/nsURI"/>
+      <value>http://smarthome/1.0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5g_MmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/nsPrefix/[smarthome]" container="_C5ZqcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/nsPrefix"/>
+      <value>smarthome</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5jbcGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.Actuator" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5hmQGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5jbcmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.Sensor" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5jbcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCgGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.SmartHome" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5jbc2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCgmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.LockControlRegistration" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCgWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kChGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.Lock" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kChmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.Gate" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kChWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCiGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.GateKind" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCh2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCi2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.State" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCimtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCjmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.LockSensor" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCjWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kCkWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome/eClassifiers/smarthome.ManualLock" source="_C5ZqcWtVEem9H_jgfW3A9Q" target="_C5kCkGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EPackage/eClassifiers"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5dU0GtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#/"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5hmQGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator" uuid="Actuator" outgoings="_C5kplmtVEem9H_jgfW3A9Q _C5kpmWtVEem9H_jgfW3A9Q" incomings="_C5jbcGtVEem9H_jgfW3A9Q" attributes="_C5kpkWtVEem9H_jgfW3A9Q _C5kpkmtVEem9H_jgfW3A9Q _C5kpk2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Actuator"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#Actuator"/>
+    <ownedAttributes xmi:id="_C5kpkWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator/name/[Actuator]" container="_C5hmQGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>Actuator</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5kpkmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator/abstract/[true]" container="_C5hmQGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5kpk2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator/interface/[true]" container="_C5hmQGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5kplmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator/eOperations/smarthome.Actuator.open" source="_C5hmQGtVEem9H_jgfW3A9Q" target="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eOperations"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5kpmWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator/eOperations/smarthome.Actuator.close" source="_C5hmQGtVEem9H_jgfW3A9Q" target="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eOperations"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5kpkGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Actuator"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5jbcWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor" uuid="Sensor" outgoings="_C5lQpmtVEem9H_jgfW3A9Q" incomings="_C5jbcmtVEem9H_jgfW3A9Q _C5oT9WtVEem9H_jgfW3A9Q" attributes="_C5lQoWtVEem9H_jgfW3A9Q _C5lQomtVEem9H_jgfW3A9Q _C5lQo2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Sensor"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#Sensor"/>
+    <ownedAttributes xmi:id="_C5lQoWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor/name/[Sensor]" container="_C5jbcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>Sensor</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5lQomtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor/abstract/[true]" container="_C5jbcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5lQo2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor/interface/[true]" container="_C5jbcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5lQpmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor/eOperations/smarthome.Sensor.scan" source="_C5jbcWtVEem9H_jgfW3A9Q" target="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eOperations"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5lQoGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Sensor"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5jbc2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome" uuid="SmartHome" outgoings="_C5l3s2tVEem9H_jgfW3A9Q _C5l3tmtVEem9H_jgfW3A9Q _C5l3uWtVEem9H_jgfW3A9Q" incomings="_C5kCgGtVEem9H_jgfW3A9Q" attributes="_C5lQqGtVEem9H_jgfW3A9Q _C5l3sGtVEem9H_jgfW3A9Q _C5l3sWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#SmartHome"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#SmartHome"/>
+    <ownedAttributes xmi:id="_C5lQqGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/name/[SmartHome]" container="_C5jbc2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>SmartHome</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5l3sGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/abstract/[false]" container="_C5jbc2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5l3sWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/interface/[false]" container="_C5jbc2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5l3s2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/eStructuralFeatures/smarthome.SmartHome.lcReg" source="_C5jbc2tVEem9H_jgfW3A9Q" target="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5l3tmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/eStructuralFeatures/smarthome.SmartHome.locks" source="_C5jbc2tVEem9H_jgfW3A9Q" target="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5l3uWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome/eStructuralFeatures/smarthome.SmartHome.date" source="_C5jbc2tVEem9H_jgfW3A9Q" target="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5lQp2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#SmartHome"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCgWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration" uuid="LockControlRegistration" outgoings="_C5mewmtVEem9H_jgfW3A9Q _C5mexGtVEem9H_jgfW3A9Q" incomings="_C5kCgmtVEem9H_jgfW3A9Q _C5qJJGtVEem9H_jgfW3A9Q" attributes="_C5l3u2tVEem9H_jgfW3A9Q _C5l3vGtVEem9H_jgfW3A9Q _C5l3vWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#LockControlRegistration"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#LockControlRegistration"/>
+    <ownedAttributes xmi:id="_C5l3u2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration/name/[LockControlRegistration]" container="_C5kCgWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>LockControlRegistration</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5l3vGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration/abstract/[false]" container="_C5kCgWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5l3vWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration/interface/[false]" container="_C5kCgWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5mewmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration/eOperations/smarthome.LockControlRegistration.register" source="_C5kCgWtVEem9H_jgfW3A9Q" target="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eOperations"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5mexGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration/eStructuralFeatures/smarthome.LockControlRegistration.locks" source="_C5kCgWtVEem9H_jgfW3A9Q" target="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5l3umtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#LockControlRegistration"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCg2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock" uuid="Lock" outgoings="_C5nF0GtVEem9H_jgfW3A9Q _C5nF02tVEem9H_jgfW3A9Q _C5nF1mtVEem9H_jgfW3A9Q" incomings="_C5kChGtVEem9H_jgfW3A9Q _C5oT-mtVEem9H_jgfW3A9Q _C5qJMmtVEem9H_jgfW3A9Q _C5rXUWtVEem9H_jgfW3A9Q" attributes="_C5mexmtVEem9H_jgfW3A9Q _C5mex2tVEem9H_jgfW3A9Q _C5meyGtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Lock"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#Lock"/>
+    <ownedAttributes xmi:id="_C5mexmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/name/[Lock]" container="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>Lock</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5mex2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/abstract/[true]" container="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5meyGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/interface/[false]" container="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5nF0GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/eStructuralFeatures/smarthome.Lock.gate" source="_C5kCg2tVEem9H_jgfW3A9Q" target="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5nF02tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/eStructuralFeatures/smarthome.Lock.sensor" source="_C5kCg2tVEem9H_jgfW3A9Q" target="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5nF1mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock/eStructuralFeatures/smarthome.Lock.state" source="_C5kCg2tVEem9H_jgfW3A9Q" target="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5mexWtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Lock"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kChWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate" uuid="Gate" outgoings="_C5nF3GtVEem9H_jgfW3A9Q" incomings="_C5kChmtVEem9H_jgfW3A9Q _C5r-WmtVEem9H_jgfW3A9Q" attributes="_C5nF2GtVEem9H_jgfW3A9Q _C5nF2WtVEem9H_jgfW3A9Q _C5nF2mtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Gate"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#Gate"/>
+    <ownedAttributes xmi:id="_C5nF2GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate/name/[Gate]" container="_C5kChWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>Gate</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5nF2WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate/abstract/[false]" container="_C5kChWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5nF2mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate/interface/[false]" container="_C5kChWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5nF3GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate/eStructuralFeatures/smarthome.Gate.kind" source="_C5kChWtVEem9H_jgfW3A9Q" target="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eStructuralFeatures"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5nF12tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Gate"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCh2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind" uuid="GateKind" outgoings="_C5ns42tVEem9H_jgfW3A9Q _C5ns5WtVEem9H_jgfW3A9Q" incomings="_C5kCiGtVEem9H_jgfW3A9Q _C5tzgmtVEem9H_jgfW3A9Q" attributes="_C5ns4GtVEem9H_jgfW3A9Q _C5ns4WtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#GateKind"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum"/>
+    <objects href="CoreModel.ecore#GateKind"/>
+    <ownedAttributes xmi:id="_C5ns4GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind/name/[GateKind]" container="_C5kCh2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>GateKind</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5ns4WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind/serializable/[true]" container="_C5kCh2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EDataType/serializable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5ns42tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind/eLiterals/smarthome.GateKind.DOOR" source="_C5kCh2tVEem9H_jgfW3A9Q" target="_C5ns4mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum/eLiterals"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5ns5WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind/eLiterals/smarthome.GateKind.WINDOW" source="_C5kCh2tVEem9H_jgfW3A9Q" target="_C5ns5GtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum/eLiterals"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5nF3WtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#GateKind"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCimtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State" uuid="_C5kCiWtVEem9H_jgfW3A9Q" outgoings="_C5ns62tVEem9H_jgfW3A9Q _C5oT8GtVEem9H_jgfW3A9Q" incomings="_C5kCi2tVEem9H_jgfW3A9Q _C5tMcWtVEem9H_jgfW3A9Q" attributes="_C5ns52tVEem9H_jgfW3A9Q _C5ns6GtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//State"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum"/>
+    <objects href="CoreModel.ecore#//State"/>
+    <ownedAttributes xmi:id="_C5ns52tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State/name/[State]" container="_C5kCimtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>State</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5ns6GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State/serializable/[true]" container="_C5kCimtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EDataType/serializable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5ns62tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State/eLiterals/smarthome.State.LOCKED" source="_C5kCimtVEem9H_jgfW3A9Q" target="_C5ns6mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum/eLiterals"/>
+    </ownedReferences>
+    <ownedReferences xmi:id="_C5oT8GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State/eLiterals/smarthome.State.UNLOCKED" source="_C5kCimtVEem9H_jgfW3A9Q" target="_C5ns7WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnum/eLiterals"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5ns5mtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//State"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCjWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockSensor" uuid="_C5kCjGtVEem9H_jgfW3A9Q" outgoings="_C5oT9WtVEem9H_jgfW3A9Q" incomings="_C5kCjmtVEem9H_jgfW3A9Q _C5slY2tVEem9H_jgfW3A9Q" attributes="_C5oT8mtVEem9H_jgfW3A9Q _C5oT82tVEem9H_jgfW3A9Q _C5oT9GtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//LockSensor"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#//LockSensor"/>
+    <ownedAttributes xmi:id="_C5oT8mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockSensor/name/[LockSensor]" container="_C5kCjWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>LockSensor</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5oT82tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockSensor/abstract/[false]" container="_C5kCjWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5oT9GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockSensor/interface/[false]" container="_C5kCjWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5oT9WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockSensor/eSuperTypes/smarthome.Sensor" source="_C5kCjWtVEem9H_jgfW3A9Q" target="_C5jbcWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eSuperTypes"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5oT8WtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//LockSensor"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kCkGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.ManualLock" uuid="_C5kCj2tVEem9H_jgfW3A9Q" outgoings="_C5oT-mtVEem9H_jgfW3A9Q" incomings="_C5kCkWtVEem9H_jgfW3A9Q" attributes="_C5oT92tVEem9H_jgfW3A9Q _C5oT-GtVEem9H_jgfW3A9Q _C5oT-WtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//ManualLock"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass"/>
+    <objects href="CoreModel.ecore#//ManualLock"/>
+    <ownedAttributes xmi:id="_C5oT92tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.ManualLock/name/[ManualLock]" container="_C5kCkGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>ManualLock</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5oT-GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.ManualLock/abstract/[false]" container="_C5kCkGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/abstract"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5oT-WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.ManualLock/interface/[false]" container="_C5kCkGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/interface"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5oT-mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.ManualLock/eSuperTypes/smarthome.Lock" source="_C5kCkGtVEem9H_jgfW3A9Q" target="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EClass/eSuperTypes"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5oT9mtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//ManualLock"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kplWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open" uuid="_C5kplGtVEem9H_jgfW3A9Q" incomings="_C5kplmtVEem9H_jgfW3A9Q" attributes="_C5o7AWtVEem9H_jgfW3A9Q _C5o7AmtVEem9H_jgfW3A9Q _C5o7A2tVEem9H_jgfW3A9Q _C5o7BGtVEem9H_jgfW3A9Q _C5o7BWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//Actuator/open"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+    <objects href="CoreModel.ecore#//Actuator/open"/>
+    <ownedAttributes xmi:id="_C5o7AWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open/name/[open]" container="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>open</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7AmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open/ordered/[true]" container="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7A2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open/unique/[true]" container="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7BGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open/lowerBound/[0]" container="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7BWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.open/upperBound/[1]" container="_C5kplWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5o7AGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//Actuator/open"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5kpmGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close" uuid="_C5kpl2tVEem9H_jgfW3A9Q" incomings="_C5kpmWtVEem9H_jgfW3A9Q" attributes="_C5o7B2tVEem9H_jgfW3A9Q _C5o7CGtVEem9H_jgfW3A9Q _C5o7CWtVEem9H_jgfW3A9Q _C5piEGtVEem9H_jgfW3A9Q _C5piEWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//Actuator/close"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+    <objects href="CoreModel.ecore#//Actuator/close"/>
+    <ownedAttributes xmi:id="_C5o7B2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close/name/[close]" container="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>close</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7CGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close/ordered/[true]" container="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5o7CWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close/unique/[true]" container="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piEGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close/lowerBound/[0]" container="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piEWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Actuator.close/upperBound/[1]" container="_C5kpmGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5o7BmtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//Actuator/close"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5lQpWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan" uuid="_C5lQpGtVEem9H_jgfW3A9Q" incomings="_C5lQpmtVEem9H_jgfW3A9Q" attributes="_C5piE2tVEem9H_jgfW3A9Q _C5piFGtVEem9H_jgfW3A9Q _C5piFWtVEem9H_jgfW3A9Q _C5piFmtVEem9H_jgfW3A9Q _C5piF2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//Sensor/scan"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+    <objects href="CoreModel.ecore#//Sensor/scan"/>
+    <ownedAttributes xmi:id="_C5piE2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan/name/[scan]" container="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>scan</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piFGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan/ordered/[true]" container="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piFWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan/unique/[true]" container="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piFmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan/lowerBound/[0]" container="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piF2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Sensor.scan/upperBound/[1]" container="_C5lQpWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5piEmtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//Sensor/scan"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5l3smtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg" uuid="SmartHome.lcReg" outgoings="_C5qJJGtVEem9H_jgfW3A9Q" incomings="_C5l3s2tVEem9H_jgfW3A9Q" attributes="_C5piGWtVEem9H_jgfW3A9Q _C5piGmtVEem9H_jgfW3A9Q _C5piG2tVEem9H_jgfW3A9Q _C5piHGtVEem9H_jgfW3A9Q _C5piHWtVEem9H_jgfW3A9Q _C5piHmtVEem9H_jgfW3A9Q _C5piH2tVEem9H_jgfW3A9Q _C5piIGtVEem9H_jgfW3A9Q _C5qJIGtVEem9H_jgfW3A9Q _C5qJIWtVEem9H_jgfW3A9Q _C5qJImtVEem9H_jgfW3A9Q _C5qJI2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#SmartHome.lcReg"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <objects href="CoreModel.ecore#SmartHome.lcReg"/>
+    <ownedAttributes xmi:id="_C5piGWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/name/[lcReg]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>lcReg</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piGmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/ordered/[true]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piG2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/unique/[true]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piHGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/lowerBound/[1]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piHWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/upperBound/[1]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piHmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/changeable/[true]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piH2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/volatile/[false]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5piIGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/transient/[false]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJIGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/unsettable/[false]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJIWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/derived/[false]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJImtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/containment/[true]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/containment"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJI2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/resolveProxies/[true]" container="_C5l3smtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/resolveProxies"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5qJJGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.lcReg/eType/smarthome.LockControlRegistration" source="_C5l3smtVEem9H_jgfW3A9Q" target="_C5kCgWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5piGGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#SmartHome.lcReg"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5l3tWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks" uuid="_C5l3tGtVEem9H_jgfW3A9Q" outgoings="_C5qJMmtVEem9H_jgfW3A9Q" incomings="_C5l3tmtVEem9H_jgfW3A9Q" attributes="_C5qJJmtVEem9H_jgfW3A9Q _C5qJJ2tVEem9H_jgfW3A9Q _C5qJKGtVEem9H_jgfW3A9Q _C5qJKWtVEem9H_jgfW3A9Q _C5qJKmtVEem9H_jgfW3A9Q _C5qJK2tVEem9H_jgfW3A9Q _C5qJLGtVEem9H_jgfW3A9Q _C5qJLWtVEem9H_jgfW3A9Q _C5qJLmtVEem9H_jgfW3A9Q _C5qJL2tVEem9H_jgfW3A9Q _C5qJMGtVEem9H_jgfW3A9Q _C5qJMWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//SmartHome/locks"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <objects href="CoreModel.ecore#//SmartHome/locks"/>
+    <ownedAttributes xmi:id="_C5qJJmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/name/[locks]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>locks</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJJ2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/ordered/[true]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJKGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/unique/[true]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJKWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/lowerBound/[0]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJKmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/upperBound/[-1]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>-1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJK2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/changeable/[true]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJLGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/volatile/[false]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJLWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/transient/[false]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJLmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/unsettable/[false]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJL2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/derived/[false]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJMGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/containment/[true]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/containment"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qJMWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/resolveProxies/[true]" container="_C5l3tWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/resolveProxies"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5qJMmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.locks/eType/smarthome.Lock" source="_C5l3tWtVEem9H_jgfW3A9Q" target="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5qJJWtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//SmartHome/locks"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5l3uGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date" uuid="_C5l3t2tVEem9H_jgfW3A9Q" outgoings="_C5qwPmtVEem9H_jgfW3A9Q" incomings="_C5l3uWtVEem9H_jgfW3A9Q" attributes="_C5qwMWtVEem9H_jgfW3A9Q _C5qwMmtVEem9H_jgfW3A9Q _C5qwM2tVEem9H_jgfW3A9Q _C5qwNGtVEem9H_jgfW3A9Q _C5qwNWtVEem9H_jgfW3A9Q _C5qwNmtVEem9H_jgfW3A9Q _C5qwN2tVEem9H_jgfW3A9Q _C5qwOGtVEem9H_jgfW3A9Q _C5qwOWtVEem9H_jgfW3A9Q _C5qwOmtVEem9H_jgfW3A9Q _C5qwO2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//SmartHome/date"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute"/>
+    <objects href="CoreModel.ecore#//SmartHome/date"/>
+    <ownedAttributes xmi:id="_C5qwMWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/name/[date]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>date</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwMmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/ordered/[true]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwM2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/unique/[true]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwNGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/lowerBound/[0]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwNWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/upperBound/[1]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwNmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/changeable/[true]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwN2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/volatile/[false]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwOGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/transient/[false]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwOWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/unsettable/[false]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwOmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/derived/[false]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5qwO2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/iD/[false]" container="_C5l3uGtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute/iD"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5qwPmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.SmartHome.date/eType/ecore.EDate" source="_C5l3uGtVEem9H_jgfW3A9Q" target="_C5qwPWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5qwMGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//SmartHome/date"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5mewWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register" uuid="_C5mewGtVEem9H_jgfW3A9Q" incomings="_C5mewmtVEem9H_jgfW3A9Q" attributes="_C5qwQGtVEem9H_jgfW3A9Q _C5rXQGtVEem9H_jgfW3A9Q _C5rXQWtVEem9H_jgfW3A9Q _C5rXQmtVEem9H_jgfW3A9Q _C5rXQ2tVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//LockControlRegistration/register"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EOperation"/>
+    <objects href="CoreModel.ecore#//LockControlRegistration/register"/>
+    <ownedAttributes xmi:id="_C5qwQGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register/name/[register]" container="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>register</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXQGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register/ordered/[true]" container="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXQWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register/unique/[true]" container="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXQmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register/lowerBound/[0]" container="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXQ2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.register/upperBound/[1]" container="_C5mewWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5qwP2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//LockControlRegistration/register"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5mew2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks" uuid="LockControlRegistration.lock" outgoings="_C5rXUWtVEem9H_jgfW3A9Q" incomings="_C5mexGtVEem9H_jgfW3A9Q" attributes="_C5rXRWtVEem9H_jgfW3A9Q _C5rXRmtVEem9H_jgfW3A9Q _C5rXR2tVEem9H_jgfW3A9Q _C5rXSGtVEem9H_jgfW3A9Q _C5rXSWtVEem9H_jgfW3A9Q _C5rXSmtVEem9H_jgfW3A9Q _C5rXS2tVEem9H_jgfW3A9Q _C5rXTGtVEem9H_jgfW3A9Q _C5rXTWtVEem9H_jgfW3A9Q _C5rXTmtVEem9H_jgfW3A9Q _C5rXT2tVEem9H_jgfW3A9Q _C5rXUGtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#LockControlRegistration.lock"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <objects href="CoreModel.ecore#LockControlRegistration.lock"/>
+    <ownedAttributes xmi:id="_C5rXRWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/name/[locks]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>locks</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXRmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/ordered/[true]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXR2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/unique/[true]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXSGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/lowerBound/[0]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXSWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/upperBound/[-1]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>-1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXSmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/changeable/[true]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXS2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/volatile/[false]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXTGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/transient/[false]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXTWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/unsettable/[false]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXTmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/derived/[false]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXT2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/containment/[false]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/containment"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXUGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/resolveProxies/[true]" container="_C5mew2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/resolveProxies"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5rXUWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.LockControlRegistration.locks/eType/smarthome.Lock" source="_C5mew2tVEem9H_jgfW3A9Q" target="_C5kCg2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5rXRGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#LockControlRegistration.lock"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5meyWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate" uuid="Lock.gate" outgoings="_C5r-WmtVEem9H_jgfW3A9Q" incomings="_C5nF0GtVEem9H_jgfW3A9Q" attributes="_C5rXU2tVEem9H_jgfW3A9Q _C5rXVGtVEem9H_jgfW3A9Q _C5r-UGtVEem9H_jgfW3A9Q _C5r-UWtVEem9H_jgfW3A9Q _C5r-UmtVEem9H_jgfW3A9Q _C5r-U2tVEem9H_jgfW3A9Q _C5r-VGtVEem9H_jgfW3A9Q _C5r-VWtVEem9H_jgfW3A9Q _C5r-VmtVEem9H_jgfW3A9Q _C5r-V2tVEem9H_jgfW3A9Q _C5r-WGtVEem9H_jgfW3A9Q _C5r-WWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Lock.gate"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <objects href="CoreModel.ecore#Lock.gate"/>
+    <ownedAttributes xmi:id="_C5rXU2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/name/[gate]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>gate</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5rXVGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/ordered/[true]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-UGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/unique/[true]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-UWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/lowerBound/[1]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-UmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/upperBound/[1]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-U2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/changeable/[true]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-VGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/volatile/[false]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-VWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/transient/[false]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-VmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/unsettable/[false]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-V2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/derived/[false]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-WGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/containment/[true]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/containment"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-WWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/resolveProxies/[true]" container="_C5meyWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/resolveProxies"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5r-WmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.gate/eType/smarthome.Gate" source="_C5meyWtVEem9H_jgfW3A9Q" target="_C5kChWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5rXUmtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Lock.gate"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5nF0mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor" uuid="_C5nF0WtVEem9H_jgfW3A9Q" outgoings="_C5slY2tVEem9H_jgfW3A9Q" incomings="_C5nF02tVEem9H_jgfW3A9Q" attributes="_C5r-XGtVEem9H_jgfW3A9Q _C5r-XWtVEem9H_jgfW3A9Q _C5r-XmtVEem9H_jgfW3A9Q _C5r-X2tVEem9H_jgfW3A9Q _C5r-YGtVEem9H_jgfW3A9Q _C5r-YWtVEem9H_jgfW3A9Q _C5r-YmtVEem9H_jgfW3A9Q _C5r-Y2tVEem9H_jgfW3A9Q _C5r-ZGtVEem9H_jgfW3A9Q _C5slYGtVEem9H_jgfW3A9Q _C5slYWtVEem9H_jgfW3A9Q _C5slYmtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//Lock/sensor"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference"/>
+    <objects href="CoreModel.ecore#//Lock/sensor"/>
+    <ownedAttributes xmi:id="_C5r-XGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/name/[sensor]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>sensor</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-XWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/ordered/[true]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-XmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/unique/[true]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-X2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/lowerBound/[1]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-YGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/upperBound/[1]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-YWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/changeable/[true]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-YmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/volatile/[false]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-Y2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/transient/[false]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5r-ZGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/unsettable/[false]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slYGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/derived/[false]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slYWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/containment/[true]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/containment"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slYmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/resolveProxies/[true]" container="_C5nF0mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EReference/resolveProxies"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5slY2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.sensor/eType/smarthome.LockSensor" source="_C5nF0mtVEem9H_jgfW3A9Q" target="_C5kCjWtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5r-W2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//Lock/sensor"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5nF1WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state" uuid="_C5nF1GtVEem9H_jgfW3A9Q" outgoings="_C5tMcWtVEem9H_jgfW3A9Q" incomings="_C5nF1mtVEem9H_jgfW3A9Q" attributes="_C5slZWtVEem9H_jgfW3A9Q _C5slZmtVEem9H_jgfW3A9Q _C5slZ2tVEem9H_jgfW3A9Q _C5slaGtVEem9H_jgfW3A9Q _C5slaWtVEem9H_jgfW3A9Q _C5slamtVEem9H_jgfW3A9Q _C5sla2tVEem9H_jgfW3A9Q _C5slbGtVEem9H_jgfW3A9Q _C5slbWtVEem9H_jgfW3A9Q _C5slbmtVEem9H_jgfW3A9Q _C5tMcGtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//Lock/state"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute"/>
+    <objects href="CoreModel.ecore#//Lock/state"/>
+    <ownedAttributes xmi:id="_C5slZWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/name/[state]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>state</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slZmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/ordered/[true]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slZ2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/unique/[true]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slaGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/lowerBound/[0]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slaWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/upperBound/[1]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slamtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/changeable/[true]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5sla2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/volatile/[false]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slbGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/transient/[false]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slbWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/unsettable/[false]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5slbmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/derived/[false]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMcGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/iD/[false]" container="_C5nF1WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute/iD"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5tMcWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Lock.state/eType/smarthome.State" source="_C5nF1WtVEem9H_jgfW3A9Q" target="_C5kCimtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5slZGtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//Lock/state"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5nF22tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind" uuid="Gate.kind" outgoings="_C5tzgmtVEem9H_jgfW3A9Q" incomings="_C5nF3GtVEem9H_jgfW3A9Q" attributes="_C5tMc2tVEem9H_jgfW3A9Q _C5tMdGtVEem9H_jgfW3A9Q _C5tMdWtVEem9H_jgfW3A9Q _C5tMdmtVEem9H_jgfW3A9Q _C5tMd2tVEem9H_jgfW3A9Q _C5tMeGtVEem9H_jgfW3A9Q _C5tMeWtVEem9H_jgfW3A9Q _C5tMemtVEem9H_jgfW3A9Q _C5tMe2tVEem9H_jgfW3A9Q _C5tzgGtVEem9H_jgfW3A9Q _C5tzgWtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#Gate.kind"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute"/>
+    <objects href="CoreModel.ecore#Gate.kind"/>
+    <ownedAttributes xmi:id="_C5tMc2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/name/[kind]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>kind</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMdGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/ordered/[true]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/ordered"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMdWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/unique/[true]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/unique"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMdmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/lowerBound/[0]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/lowerBound"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMd2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/upperBound/[1]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/upperBound"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMeGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/changeable/[true]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/changeable"/>
+      <value>true</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMeWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/volatile/[false]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/volatile"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMemtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/transient/[false]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/transient"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tMe2tVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/unsettable/[false]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/unsettable"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzgGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/derived/[false]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EStructuralFeature/derived"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzgWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/iD/[false]" container="_C5nF22tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EAttribute/iD"/>
+      <value>false</value>
+    </ownedAttributes>
+    <ownedReferences xmi:id="_C5tzgmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.Gate.kind/eType/smarthome.GateKind" source="_C5nF22tVEem9H_jgfW3A9Q" target="_C5kCh2tVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ETypedElement/eType"/>
+    </ownedReferences>
+    <objectAnnotations xmi:id="_C5tMcmtVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#Gate.kind"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5ns4mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.DOOR" uuid="GateKind.Door" incomings="_C5ns42tVEem9H_jgfW3A9Q" attributes="_C5tzhGtVEem9H_jgfW3A9Q _C5tzhWtVEem9H_jgfW3A9Q _C5tzhmtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#GateKind.Door"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral"/>
+    <objects href="CoreModel.ecore#GateKind.Door"/>
+    <ownedAttributes xmi:id="_C5tzhGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.DOOR/name/[DOOR]" container="_C5ns4mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>DOOR</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzhWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.DOOR/value/[0]" container="_C5ns4mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/value"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzhmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.DOOR/literal/[DOOR]" container="_C5ns4mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/literal"/>
+      <value>DOOR</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5tzg2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#GateKind.Door"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5ns5GtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.WINDOW" uuid="GateKind.Window" incomings="_C5ns5WtVEem9H_jgfW3A9Q" attributes="_C5tziGtVEem9H_jgfW3A9Q _C5tziWtVEem9H_jgfW3A9Q _C5tzimtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#GateKind.Window"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral"/>
+    <objects href="CoreModel.ecore#GateKind.Window"/>
+    <ownedAttributes xmi:id="_C5tziGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.WINDOW/name/[WINDOW]" container="_C5ns5GtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>WINDOW</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tziWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.WINDOW/value/[1]" container="_C5ns5GtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/value"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzimtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.GateKind.WINDOW/literal/[WINDOW]" container="_C5ns5GtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/literal"/>
+      <value>WINDOW</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5tzh2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#GateKind.Window"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5ns6mtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.LOCKED" uuid="_C5ns6WtVEem9H_jgfW3A9Q" incomings="_C5ns62tVEem9H_jgfW3A9Q" attributes="_C5tzjGtVEem9H_jgfW3A9Q _C5tzjWtVEem9H_jgfW3A9Q _C5tzjmtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//State/LOCKED"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral"/>
+    <objects href="CoreModel.ecore#//State/LOCKED"/>
+    <ownedAttributes xmi:id="_C5tzjGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.LOCKED/name/[LOCKED]" container="_C5ns6mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>LOCKED</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzjWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.LOCKED/value/[0]" container="_C5ns6mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/value"/>
+      <value>0</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzjmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.LOCKED/literal/[LOCKED]" container="_C5ns6mtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/literal"/>
+      <value>LOCKED</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5tzi2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//State/LOCKED"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5ns7WtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.UNLOCKED" uuid="_C5ns7GtVEem9H_jgfW3A9Q" incomings="_C5oT8GtVEem9H_jgfW3A9Q" attributes="_C5tzkGtVEem9H_jgfW3A9Q _C5tzkWtVEem9H_jgfW3A9Q _C5tzkmtVEem9H_jgfW3A9Q">
+    <object href="CoreModel.ecore#//State/UNLOCKED"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral"/>
+    <objects href="CoreModel.ecore#//State/UNLOCKED"/>
+    <ownedAttributes xmi:id="_C5tzkGtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.UNLOCKED/name/[UNLOCKED]" container="_C5ns7WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//ENamedElement/name"/>
+      <value>UNLOCKED</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzkWtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.UNLOCKED/value/[1]" container="_C5ns7WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/value"/>
+      <value>1</value>
+    </ownedAttributes>
+    <ownedAttributes xmi:id="_C5tzkmtVEem9H_jgfW3A9Q" annotations="_C4V6gGtVEem9H_jgfW3A9Q" signature="smarthome.State.UNLOCKED/literal/[UNLOCKED]" container="_C5ns7WtVEem9H_jgfW3A9Q">
+      <type href="http://www.eclipse.org/emf/2002/Ecore#//EEnumLiteral/literal"/>
+      <value>UNLOCKED</value>
+    </ownedAttributes>
+    <objectAnnotations xmi:id="_C5tzj2tVEem9H_jgfW3A9Q" value="_C4V6gGtVEem9H_jgfW3A9Q">
+      <key href="CoreModel.ecore#//State/UNLOCKED"/>
+    </objectAnnotations>
+  </elements>
+  <elements xmi:id="_C5qwPWtVEem9H_jgfW3A9Q" signature="ecore.EDate" uuid="_C5qwPGtVEem9H_jgfW3A9Q" incomings="_C5qwPmtVEem9H_jgfW3A9Q" external="true">
+    <object href="http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+    <type href="http://www.eclipse.org/emf/2002/Ecore#//EDataType"/>
+    <objects href="http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </elements>
+  <type href="http://www.eclipse.org/emf/2002/Ecore#/"/>
+  <annotations xmi:id="_C4V6gGtVEem9H_jgfW3A9Q" body="platform:/resource/org.sidiff.deltamodeling.testdata/example_domains/smarthome/coremodel/CoreModel.ecore" type="MODEL" entities="_C5ZqcWtVEem9H_jgfW3A9Q _C5g_MGtVEem9H_jgfW3A9Q _C5g_MWtVEem9H_jgfW3A9Q _C5g_MmtVEem9H_jgfW3A9Q _C5jbcGtVEem9H_jgfW3A9Q _C5jbcmtVEem9H_jgfW3A9Q _C5kCgGtVEem9H_jgfW3A9Q _C5kCgmtVEem9H_jgfW3A9Q _C5kChGtVEem9H_jgfW3A9Q _C5kChmtVEem9H_jgfW3A9Q _C5kCiGtVEem9H_jgfW3A9Q _C5kCi2tVEem9H_jgfW3A9Q _C5kCjmtVEem9H_jgfW3A9Q _C5kCkWtVEem9H_jgfW3A9Q _C5hmQGtVEem9H_jgfW3A9Q _C5kpkWtVEem9H_jgfW3A9Q _C5kpkmtVEem9H_jgfW3A9Q _C5kpk2tVEem9H_jgfW3A9Q _C5kplmtVEem9H_jgfW3A9Q _C5kpmWtVEem9H_jgfW3A9Q _C5jbcWtVEem9H_jgfW3A9Q _C5lQoWtVEem9H_jgfW3A9Q _C5lQomtVEem9H_jgfW3A9Q _C5lQo2tVEem9H_jgfW3A9Q _C5lQpmtVEem9H_jgfW3A9Q _C5jbc2tVEem9H_jgfW3A9Q _C5lQqGtVEem9H_jgfW3A9Q _C5l3sGtVEem9H_jgfW3A9Q _C5l3sWtVEem9H_jgfW3A9Q _C5l3s2tVEem9H_jgfW3A9Q _C5l3tmtVEem9H_jgfW3A9Q _C5l3uWtVEem9H_jgfW3A9Q _C5kCgWtVEem9H_jgfW3A9Q _C5l3u2tVEem9H_jgfW3A9Q _C5l3vGtVEem9H_jgfW3A9Q _C5l3vWtVEem9H_jgfW3A9Q _C5mewmtVEem9H_jgfW3A9Q _C5mexGtVEem9H_jgfW3A9Q _C5kCg2tVEem9H_jgfW3A9Q _C5mexmtVEem9H_jgfW3A9Q _C5mex2tVEem9H_jgfW3A9Q _C5meyGtVEem9H_jgfW3A9Q _C5nF0GtVEem9H_jgfW3A9Q _C5nF02tVEem9H_jgfW3A9Q _C5nF1mtVEem9H_jgfW3A9Q _C5kChWtVEem9H_jgfW3A9Q _C5nF2GtVEem9H_jgfW3A9Q _C5nF2WtVEem9H_jgfW3A9Q _C5nF2mtVEem9H_jgfW3A9Q _C5nF3GtVEem9H_jgfW3A9Q _C5kCh2tVEem9H_jgfW3A9Q _C5ns4GtVEem9H_jgfW3A9Q _C5ns4WtVEem9H_jgfW3A9Q _C5ns42tVEem9H_jgfW3A9Q _C5ns5WtVEem9H_jgfW3A9Q _C5kCimtVEem9H_jgfW3A9Q _C5ns52tVEem9H_jgfW3A9Q _C5ns6GtVEem9H_jgfW3A9Q _C5ns62tVEem9H_jgfW3A9Q _C5oT8GtVEem9H_jgfW3A9Q _C5kCjWtVEem9H_jgfW3A9Q _C5oT8mtVEem9H_jgfW3A9Q _C5oT82tVEem9H_jgfW3A9Q _C5oT9GtVEem9H_jgfW3A9Q _C5oT9WtVEem9H_jgfW3A9Q _C5kCkGtVEem9H_jgfW3A9Q _C5oT92tVEem9H_jgfW3A9Q _C5oT-GtVEem9H_jgfW3A9Q _C5oT-WtVEem9H_jgfW3A9Q _C5oT-mtVEem9H_jgfW3A9Q _C5kplWtVEem9H_jgfW3A9Q _C5o7AWtVEem9H_jgfW3A9Q _C5o7AmtVEem9H_jgfW3A9Q _C5o7A2tVEem9H_jgfW3A9Q _C5o7BGtVEem9H_jgfW3A9Q _C5o7BWtVEem9H_jgfW3A9Q _C5kpmGtVEem9H_jgfW3A9Q _C5o7B2tVEem9H_jgfW3A9Q _C5o7CGtVEem9H_jgfW3A9Q _C5o7CWtVEem9H_jgfW3A9Q _C5piEGtVEem9H_jgfW3A9Q _C5piEWtVEem9H_jgfW3A9Q _C5lQpWtVEem9H_jgfW3A9Q _C5piE2tVEem9H_jgfW3A9Q _C5piFGtVEem9H_jgfW3A9Q _C5piFWtVEem9H_jgfW3A9Q _C5piFmtVEem9H_jgfW3A9Q _C5piF2tVEem9H_jgfW3A9Q _C5l3smtVEem9H_jgfW3A9Q _C5piGWtVEem9H_jgfW3A9Q _C5piGmtVEem9H_jgfW3A9Q _C5piG2tVEem9H_jgfW3A9Q _C5piHGtVEem9H_jgfW3A9Q _C5piHWtVEem9H_jgfW3A9Q _C5piHmtVEem9H_jgfW3A9Q _C5piH2tVEem9H_jgfW3A9Q _C5piIGtVEem9H_jgfW3A9Q _C5qJIGtVEem9H_jgfW3A9Q _C5qJIWtVEem9H_jgfW3A9Q _C5qJImtVEem9H_jgfW3A9Q _C5qJI2tVEem9H_jgfW3A9Q _C5qJJGtVEem9H_jgfW3A9Q _C5l3tWtVEem9H_jgfW3A9Q _C5qJJmtVEem9H_jgfW3A9Q _C5qJJ2tVEem9H_jgfW3A9Q _C5qJKGtVEem9H_jgfW3A9Q _C5qJKWtVEem9H_jgfW3A9Q _C5qJKmtVEem9H_jgfW3A9Q _C5qJK2tVEem9H_jgfW3A9Q _C5qJLGtVEem9H_jgfW3A9Q _C5qJLWtVEem9H_jgfW3A9Q _C5qJLmtVEem9H_jgfW3A9Q _C5qJL2tVEem9H_jgfW3A9Q _C5qJMGtVEem9H_jgfW3A9Q _C5qJMWtVEem9H_jgfW3A9Q _C5qJMmtVEem9H_jgfW3A9Q _C5l3uGtVEem9H_jgfW3A9Q _C5qwMWtVEem9H_jgfW3A9Q _C5qwMmtVEem9H_jgfW3A9Q _C5qwM2tVEem9H_jgfW3A9Q _C5qwNGtVEem9H_jgfW3A9Q _C5qwNWtVEem9H_jgfW3A9Q _C5qwNmtVEem9H_jgfW3A9Q _C5qwN2tVEem9H_jgfW3A9Q _C5qwOGtVEem9H_jgfW3A9Q _C5qwOWtVEem9H_jgfW3A9Q _C5qwOmtVEem9H_jgfW3A9Q _C5qwO2tVEem9H_jgfW3A9Q _C5qwPmtVEem9H_jgfW3A9Q _C5mewWtVEem9H_jgfW3A9Q _C5qwQGtVEem9H_jgfW3A9Q _C5rXQGtVEem9H_jgfW3A9Q _C5rXQWtVEem9H_jgfW3A9Q _C5rXQmtVEem9H_jgfW3A9Q _C5rXQ2tVEem9H_jgfW3A9Q _C5mew2tVEem9H_jgfW3A9Q _C5rXRWtVEem9H_jgfW3A9Q _C5rXRmtVEem9H_jgfW3A9Q _C5rXR2tVEem9H_jgfW3A9Q _C5rXSGtVEem9H_jgfW3A9Q _C5rXSWtVEem9H_jgfW3A9Q _C5rXSmtVEem9H_jgfW3A9Q _C5rXS2tVEem9H_jgfW3A9Q _C5rXTGtVEem9H_jgfW3A9Q _C5rXTWtVEem9H_jgfW3A9Q _C5rXTmtVEem9H_jgfW3A9Q _C5rXT2tVEem9H_jgfW3A9Q _C5rXUGtVEem9H_jgfW3A9Q _C5rXUWtVEem9H_jgfW3A9Q _C5meyWtVEem9H_jgfW3A9Q _C5rXU2tVEem9H_jgfW3A9Q _C5rXVGtVEem9H_jgfW3A9Q _C5r-UGtVEem9H_jgfW3A9Q _C5r-UWtVEem9H_jgfW3A9Q _C5r-UmtVEem9H_jgfW3A9Q _C5r-U2tVEem9H_jgfW3A9Q _C5r-VGtVEem9H_jgfW3A9Q _C5r-VWtVEem9H_jgfW3A9Q _C5r-VmtVEem9H_jgfW3A9Q _C5r-V2tVEem9H_jgfW3A9Q _C5r-WGtVEem9H_jgfW3A9Q _C5r-WWtVEem9H_jgfW3A9Q _C5r-WmtVEem9H_jgfW3A9Q _C5nF0mtVEem9H_jgfW3A9Q _C5r-XGtVEem9H_jgfW3A9Q _C5r-XWtVEem9H_jgfW3A9Q _C5r-XmtVEem9H_jgfW3A9Q _C5r-X2tVEem9H_jgfW3A9Q _C5r-YGtVEem9H_jgfW3A9Q _C5r-YWtVEem9H_jgfW3A9Q _C5r-YmtVEem9H_jgfW3A9Q _C5r-Y2tVEem9H_jgfW3A9Q _C5r-ZGtVEem9H_jgfW3A9Q _C5slYGtVEem9H_jgfW3A9Q _C5slYWtVEem9H_jgfW3A9Q _C5slYmtVEem9H_jgfW3A9Q _C5slY2tVEem9H_jgfW3A9Q _C5nF1WtVEem9H_jgfW3A9Q _C5slZWtVEem9H_jgfW3A9Q _C5slZmtVEem9H_jgfW3A9Q _C5slZ2tVEem9H_jgfW3A9Q _C5slaGtVEem9H_jgfW3A9Q _C5slaWtVEem9H_jgfW3A9Q _C5slamtVEem9H_jgfW3A9Q _C5sla2tVEem9H_jgfW3A9Q _C5slbGtVEem9H_jgfW3A9Q _C5slbWtVEem9H_jgfW3A9Q _C5slbmtVEem9H_jgfW3A9Q _C5tMcGtVEem9H_jgfW3A9Q _C5tMcWtVEem9H_jgfW3A9Q _C5nF22tVEem9H_jgfW3A9Q _C5tMc2tVEem9H_jgfW3A9Q _C5tMdGtVEem9H_jgfW3A9Q _C5tMdWtVEem9H_jgfW3A9Q _C5tMdmtVEem9H_jgfW3A9Q _C5tMd2tVEem9H_jgfW3A9Q _C5tMeGtVEem9H_jgfW3A9Q _C5tMeWtVEem9H_jgfW3A9Q _C5tMemtVEem9H_jgfW3A9Q _C5tMe2tVEem9H_jgfW3A9Q _C5tzgGtVEem9H_jgfW3A9Q _C5tzgWtVEem9H_jgfW3A9Q _C5tzgmtVEem9H_jgfW3A9Q _C5ns4mtVEem9H_jgfW3A9Q _C5tzhGtVEem9H_jgfW3A9Q _C5tzhWtVEem9H_jgfW3A9Q _C5tzhmtVEem9H_jgfW3A9Q _C5ns5GtVEem9H_jgfW3A9Q _C5tziGtVEem9H_jgfW3A9Q _C5tziWtVEem9H_jgfW3A9Q _C5tzimtVEem9H_jgfW3A9Q _C5ns6mtVEem9H_jgfW3A9Q _C5tzjGtVEem9H_jgfW3A9Q _C5tzjWtVEem9H_jgfW3A9Q _C5tzjmtVEem9H_jgfW3A9Q _C5ns7WtVEem9H_jgfW3A9Q _C5tzkGtVEem9H_jgfW3A9Q _C5tzkWtVEem9H_jgfW3A9Q _C5tzkmtVEem9H_jgfW3A9Q"/>
+  <signatureCalculators>DefaultSignatureCalculator</signatureCalculators>
+</superimposition:SuperimposedModel>

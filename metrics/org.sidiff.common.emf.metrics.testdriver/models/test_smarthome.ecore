@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecore:EPackage xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" name="smarthome" nsURI="http://smarthome/1.0" nsPrefix="smarthome">
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="Actuator" name="Actuator" abstract="true"
+      interface="true">
+    <eOperations name="open"/>
+    <eOperations name="close"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="Sensor" name="Sensor" abstract="true"
+      interface="true">
+    <eOperations name="scan"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="SmartHome" name="SmartHome">
+    <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="SmartHome.lcReg" name="lcReg"
+        lowerBound="1" eType="#LockControlRegistration" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="locks" upperBound="-1"
+        eType="#Lock" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EDate"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="LockControlRegistration" name="LockControlRegistration">
+    <eOperations name="register"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="LockControlRegistration.lock"
+        name="locks" upperBound="-1" eType="#Lock"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="Lock" name="Lock" abstract="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" xmi:id="Lock.gate" name="gate"
+        lowerBound="1" eType="#Gate" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="sensor" lowerBound="1"
+        eType="#//LockSensor" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="state" eType="#//State"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" xmi:id="Gate" name="Gate">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" xmi:id="Gate.kind" name="kind"
+        eType="#GateKind"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" xmi:id="GateKind" name="GateKind">
+    <eLiterals xmi:id="GateKind.Door" name="DOOR"/>
+    <eLiterals xmi:id="GateKind.Window" name="WINDOW" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="State">
+    <eLiterals name="LOCKED"/>
+    <eLiterals name="UNLOCKED" value="1"/>
+  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="LockSensor" eSuperTypes="#Sensor"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ManualLock" eSuperTypes="#Lock"/>
+</ecore:EPackage>

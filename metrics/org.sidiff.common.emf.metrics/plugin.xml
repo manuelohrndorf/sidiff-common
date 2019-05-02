@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="metrics_extension" name="EMF Metrics Extension Point" schema="schema/metrics_extension.exsd"/>
+
+</plugin>

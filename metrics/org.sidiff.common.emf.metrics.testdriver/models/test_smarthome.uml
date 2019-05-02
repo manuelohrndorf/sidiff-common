@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:uml="http://www.eclipse.org/uml2/5.0.0/UML" xmi:id="_HRH0IFbGEemFmPykLCkG_A" name="Package">
+  <packagedElement xsi:type="uml:Class" xmi:id="_IukpkFbGEemFmPykLCkG_A" name="A">
+    <ownedAttribute xmi:id="_N1ITsFbGEemFmPykLCkG_A" name="pa" association="_KXfIIFbGEemFmPykLCkG_A"/>
+  </packagedElement>
+  <packagedElement xsi:type="uml:Class" xmi:id="_JUTz4FbGEemFmPykLCkG_A" name="B"/>
+  <packagedElement xsi:type="uml:Association" xmi:id="_KXfIIFbGEemFmPykLCkG_A" name="Assoc" memberEnd="_N1ITsFbGEemFmPykLCkG_A"/>
+</uml:Package>

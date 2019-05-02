@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SiDiff Commons - EMF - Metrics UI
+Bundle-SymbolicName: org.sidiff.common.emf.metrics.ui;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin
+Bundle-Vendor: Software Engineering Group, University of Siegen
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.sidiff.common.emf.metrics
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Automatic-Module-Name: org.sidiff.common.emf.metrics.ui
+Bundle-ActivationPolicy: lazy
+Export-Package: org.sidiff.common.emf.metrics.ui.jobs,
+ org.sidiff.common.emf.metrics.ui.views

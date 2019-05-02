@@ -5,6 +5,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.metrics.IMetricValueAcceptor;
 import org.sidiff.common.exceptions.ExceptionUtil;
@@ -39,7 +40,7 @@ public class TypeCountingMetric extends AbstractMetric {
 	@Override
 	public void calculate(Resource resource, IMetricValueAcceptor acceptor, IProgressMonitor monitor) {
 		acceptor.accept(
-			CollectionUtil.asStream(resource.getAllContents())
+			CollectionUtil.asStream(EcoreUtil.getAllProperContents(resource, true))
 				.filter(countedType::isInstance).count());
 	}
 }

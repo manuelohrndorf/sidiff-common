@@ -1,7 +1,9 @@
 package org.sidiff.common.emf.metrics.ui.views;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,12 +27,15 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
@@ -52,7 +57,9 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 	private Label label;
 	private TableViewer tableViewer;
-	
+	private TableViewerColumn metricNameColumn;
+	private TableViewerColumn metricValueColumn;
+
 	private Clipboard clipboard;
 
 	private Action recomputeAction;
@@ -205,7 +212,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	}
 
 	private void createNameColumn() {
-		TableViewerColumn metricNameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		metricNameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		metricNameColumn.getColumn().setText("Name");
 		metricNameColumn.getColumn().setWidth(200);
 		metricNameColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -218,10 +225,11 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				return ((MetricHandle)element).getMetric().getName();
 			}
 		});
+		metricNameColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
 	}
 
 	private void createValueColumn() {
-		TableViewerColumn metricValueColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		metricValueColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		metricValueColumn.getColumn().setText("Value");
 		metricValueColumn.getColumn().setWidth(125);
 		metricValueColumn.setLabelProvider(new ColumnLabelProvider() {
@@ -235,6 +243,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				return "Double click to recompute.";
 			}
 		});
+		metricValueColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
 	}
 
 	@Override
@@ -253,6 +262,26 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				 }
 			 }
 		 }
+	}
+
+	private void handleColumnSelection(SelectionEvent event) {
+		if(event.widget == metricNameColumn.getColumn()) {
+			sortColumn(metricNameColumn.getColumn(), MetricHandle::getByNameComparator);
+		} else if(event.widget == metricValueColumn.getColumn()) {
+			sortColumn(metricValueColumn.getColumn(), MetricHandle::getByValueComparator);
+		}
+		tableViewer.refresh();
+	}
+
+	private void sortColumn(TableColumn column, Supplier<Comparator<MetricHandle>> comparatorFactory) {
+		if(tableViewer.getTable().getSortColumn() == column && tableViewer.getTable().getSortDirection() == SWT.DOWN) {
+			metrics.sort(comparatorFactory.get().reversed());
+			tableViewer.getTable().setSortDirection(SWT.UP);
+		} else {
+			metrics.sort(comparatorFactory.get());				
+			tableViewer.getTable().setSortDirection(SWT.DOWN);
+		}
+		tableViewer.getTable().setSortColumn(column);
 	}
 
 	public void setResource(Resource resource) {
@@ -275,6 +304,8 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			metrics = MetricsFacade.getMetrics(resource);		
 		}
 		tableViewer.setInput(metrics);
+		tableViewer.getTable().setSortDirection(SWT.NONE);
+		tableViewer.getTable().setSortColumn(null);
 		recomputeAllAction.setEnabled(metrics != null);
 		label.requestLayout(); // needs layout because label may wrap
 	}

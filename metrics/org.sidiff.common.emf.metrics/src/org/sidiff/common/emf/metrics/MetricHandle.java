@@ -1,6 +1,7 @@
 package org.sidiff.common.emf.metrics;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -131,5 +132,24 @@ public class MetricHandle {
 	@Override
 	public String toString() {
 		return "[" + metric.getKey() + " : " + context.getURI() + " : " + cachedValue + "]";
+	}
+
+	public static Comparator<MetricHandle> getByKeyComparator() {
+		return Comparator.comparing(h -> h.getMetric().getKey());
+	}
+	
+	public static Comparator<MetricHandle> getByNameComparator() {
+		return Comparator.comparing(h -> h.getMetric().getName());
+	}
+
+	public static Comparator<MetricHandle> getByValueComparator() {
+		return Comparator.<MetricHandle>comparingInt(h -> {
+			if(h.getValue() == MetricHandle.NOT_APPLICABLE) {
+				return 1;
+			} else if(h.getValue() == MetricHandle.NOT_APPLICABLE) {
+				return 2;
+			}
+			return 0;
+		}).thenComparing(h -> h.getValue().toString());
 	}
 }

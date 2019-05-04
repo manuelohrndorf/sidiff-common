@@ -1,19 +1,20 @@
 package org.sidiff.common.emf.access;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.sidiff.common.emf.access.impl.EMFIndexedAccessorImpl;
 import org.sidiff.common.emf.access.impl.EMFModelAccessor;
 import org.sidiff.common.emf.access.impl.EMFModelAccessorImpl;
@@ -104,19 +105,26 @@ public class EMFModelAccess {
 		return modelAccessor.getDocumentType(model);
 	}
 
-	
 	/**
 	 * Returns all document types between input models. This is
 	 * the union of all resource document types.
-	 * @deprecated Use EMFDocumentTypeUtil (<code>org.sidiff.common.emf.doctype</code>) instead for
-	 * compatibility with entity models.
 	 */
-	public static Set<String> getDocumentTypes(Collection<Resource> resources){
-
-		Set<String> documentTypes = new HashSet<String>();
-		for(Resource r : resources){
-			documentTypes.addAll(EMFModelAccess.getDocumentTypes(r, Scope.RESOURCE_SET));
-		}	
+	public static Set<String> getDocumentTypes(Collection<? extends Resource> resources) {
+		final Set<String> documentTypes = new HashSet<String>();
+		for (Resource resource : resources) {
+				EMFModelAccess.traverse(resource, new TreeVisitor() {
+					@Override
+					public boolean preExecute(EObject object) {
+						documentTypes.add(getDocumentType(object));
+						//Visit all Objects
+						return true;
+					}
+					@Override
+					public void postExecute(EObject object) {
+						//Nothing to do
+					}
+				});
+		}
 		return documentTypes;
 	}
 	
@@ -524,40 +532,21 @@ public class EMFModelAccess {
 	 * @return
 	 */
 	public static Set<String> getDocumentTypes(Resource modelResource, Scope scope) {
-		List<Resource> resources = new ArrayList<Resource>();
 		if (scope == Scope.RESOURCE_SET) {
-			resources.addAll(modelResource.getResourceSet().getResources());
-		} else {
-			resources.add(modelResource);
+			return getDocumentTypes(modelResource.getResourceSet().getResources());
 		}
-
-		// Collect all document types
-		final Set<String> documentTypes = new HashSet<String>();
-		for (Resource resource : resources) {
-			if(resource.getContents()!=null){
-				EMFModelAccess.traverse(resource,new TreeVisitor() {
-
-					@Override
-					public boolean preExecute(EObject object) {
-						//Add document type
-						documentTypes.add(getDocumentType(object));		
-						
-						//Visit all Objects	
-						return true;
-					}
-
-					@Override
-					public void postExecute(EObject object) {
-						
-						//Nothing to do
-											
-					}
-				});		
-
-			}
+		return getDocumentTypes(Collections.singleton(modelResource));
+	}
+	
+	public static Set<String> getDocumentTypes(Notifier context) {
+		if(context instanceof ResourceSet) {
+			return getDocumentTypes(((ResourceSet)context).getResources());
+		} else if(context instanceof Resource) {
+			return getDocumentTypes(Collections.singleton((Resource)context));
+		} else if(context instanceof EObject) {
+			return getDocumentTypes(((EObject)context).eResource());			
 		}
-
-		return documentTypes;
+		throw new AssertionError();
 	}
 
 	/**
@@ -581,18 +570,18 @@ public class EMFModelAccess {
 	}
 
 	/**
-	 * Returns the URI fragment of the given object.
-	 * 
-	 * @param eObject
-	 *            the object
-	 * @return the object URI fragment.
-	 * @deprecated Use <code>EcoreUtil.getURI(eObject).fragment()</code> instead.
+	 * Returns the ResourceSet which contains or is the given context notifier.
+	 * @param context the context (ResourceSet, Resource, EObject)
+	 * @return ResourceSet containing/being the context, <code>null</code> if none
 	 */
-	public static String getURIFragment(EObject eObject) {
-		if (eObject.eIsProxy()) {
-			return ((InternalEObject) eObject).eProxyURI().fragment();
-		} else {
-			return eObject.eResource().getURIFragment(eObject);
+	public static ResourceSet getResourceSet(Notifier context) {
+		if(context instanceof ResourceSet) {
+			return (ResourceSet)context;
+		} else if(context instanceof Resource) {
+			return ((Resource)context).getResourceSet();
+		} else if(context instanceof EObject) {
+			return getResourceSet(((EObject)context).eResource());
 		}
+		return null;
 	}
 }

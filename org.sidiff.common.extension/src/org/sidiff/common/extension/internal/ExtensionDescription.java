@@ -11,12 +11,12 @@ import org.sidiff.common.extension.IExtension;
  */
 public class ExtensionDescription<T extends IExtension> implements IExtension.Description<T> {
 
-	private final Class<T> extensionClass;
+	private final Class<? extends T> extensionClass;
 	private final String extensionPointId;
 	private final String elementName;
 	private final String classAttribute;
 
-	public ExtensionDescription(final Class<T> extensionClass, final String extensionPointId,
+	public ExtensionDescription(final Class<? extends T> extensionClass, final String extensionPointId,
 			final String elementName, final String classAttribute) {
 		this.extensionClass = Objects.requireNonNull(extensionClass, "extensionClass is null");
 		this.extensionPointId = Objects.requireNonNull(extensionPointId, "extensionPointId is null");
@@ -25,7 +25,7 @@ public class ExtensionDescription<T extends IExtension> implements IExtension.De
 	}
 
 	@Override
-	public Class<T> getExtensionClass() {
+	public Class<? extends T> getExtensionClass() {
 		return extensionClass;
 	}
 

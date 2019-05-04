@@ -62,7 +62,7 @@ public interface IExtension {
 		 * Returns the runtime class of this extension.
 		 * @return class object of this extension
 		 */
-		Class<T> getExtensionClass();
+		Class<? extends T> getExtensionClass();
 
 		/**
 		 * Returns the extension point ID.
@@ -90,7 +90,7 @@ public interface IExtension {
 		 * @param classAttribute the name of the class attribute
 		 * @return extension description
 		 */
-		static <T extends IExtension> Description<T> of(Class<T> extensionClass,
+		static <T extends IExtension> Description<T> of(Class<? extends T> extensionClass,
 				String extensionPointId, String elementName, String classAttribute) {
 			return new ExtensionDescription<T>(extensionClass, extensionPointId, elementName, classAttribute);
 		}

@@ -19,7 +19,7 @@ import org.sidiff.common.exceptions.ExceptionUtil;
  * <pre>org.sidiff.common.emf.metrics.defaults.TypeCountingMetric:org.eclipse.emf.ecore.EClass</pre>
  * @author rmueller
  */
-public class TypeCountingMetric extends AbstractMetric {
+public class TypeCountingMetric extends AbstractResourceMetric {
 
 	private Class<?> countedType;
 
@@ -38,9 +38,9 @@ public class TypeCountingMetric extends AbstractMetric {
 	}
 
 	@Override
-	public void calculate(Resource resource, IMetricValueAcceptor acceptor, IProgressMonitor monitor) {
+	protected void doCalculate(Resource context, IMetricValueAcceptor acceptor, IProgressMonitor monitor) {
 		acceptor.accept(
-			CollectionUtil.asStream(EcoreUtil.getAllProperContents(resource, true))
+			CollectionUtil.asStream(EcoreUtil.getAllProperContents(context, true))
 				.filter(countedType::isInstance).count());
 	}
 }

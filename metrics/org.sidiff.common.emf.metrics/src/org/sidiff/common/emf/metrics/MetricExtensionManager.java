@@ -15,7 +15,7 @@ import org.sidiff.common.extension.TypedExtensionManager;
  */
 public class MetricExtensionManager extends TypedExtensionManager<IMetric> {
 
-	public MetricExtensionManager(Description<IMetric> description) {
+	public MetricExtensionManager(Description<? extends IMetric> description) {
 		super(description);
 	}
 

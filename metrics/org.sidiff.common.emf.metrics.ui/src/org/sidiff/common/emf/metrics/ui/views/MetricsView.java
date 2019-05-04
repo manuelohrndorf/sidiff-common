@@ -8,9 +8,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Adapters;
+import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -66,9 +67,10 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	private Action copyValueAction;
 	private Action copyAsCsvAction;
 	private Action recomputeAllAction;
+	private Action expandSelectionAction;
 
 	private MetricsList metrics;
-	private Resource resource;
+	private Notifier selectedNotifier;
 
 	@Override
 	public void createPartControl(Composite parent) {
@@ -79,19 +81,20 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 		clipboard = new Clipboard(Display.getCurrent());
 
-		createRecomputeAction();
-		createCopyAsCsvAction();
-		createCopyValueAction();
-		createRecomputeAllAction();
+		recomputeAction = createRecomputeAction();
+		copyValueAction = createCopyValueAction();
+		copyAsCsvAction = createCopyAsCsvAction();
+		recomputeAllAction = createRecomputeAllAction();
+		expandSelectionAction = createExpandSelectionAction();
 		createToolBarMenu();
 		createContextMenu();
 
 		getSite().getPage().addSelectionListener(this);
-		handleResourceChanged();
+		handleSelectedNotifierChanged();
 	}
 
-	private void createRecomputeAction() {
-		recomputeAction = new Action() {
+	private Action createRecomputeAction() {
+		Action action = new Action() {
 			@Override
 			public void run() {
 				List<MetricHandle> handles =
@@ -102,13 +105,14 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 					() -> Display.getDefault().asyncExec(() -> tableViewer.update(handles.toArray(), null))).schedule();
 			}
 		};
-		recomputeAction.setText("Recompute");
-		recomputeAction.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
-		recomputeAction.setToolTipText("Recompute the value of the selected metrics");
+		action.setText("Recompute");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
+		action.setToolTipText("Recompute the value of the selected metrics");
+		return action;
 	}
 
-	private void createCopyAsCsvAction() {
-		copyAsCsvAction = new Action() {
+	private Action createCopyAsCsvAction() {
+		Action action = new Action() {
 			@Override
 			public void run() {
 				String csv = CSVWriter.writeToString(csvWriter -> {
@@ -120,13 +124,14 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				clipboard.setContents(new Object[] { csv }, new Transfer[] { TextTransfer.getInstance() });
 			}
 		};
-		copyAsCsvAction.setText("Copy as CSV");
-		copyAsCsvAction.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
-		copyAsCsvAction.setToolTipText("Copy the selected metrics to the system clipboard in CSV format");
+		action.setText("Copy as CSV");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
+		action.setToolTipText("Copy the selected metrics to the system clipboard in CSV format");
+		return action;
 	}
 
-	private void createCopyValueAction() {
-		copyValueAction = new Action() {
+	private Action createCopyValueAction() {
+		Action action = new Action() {
 			@Override
 			public void run() {
 				String values = Stream.of(tableViewer.getStructuredSelection().toArray())
@@ -137,13 +142,14 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				clipboard.setContents(new Object[] { values }, new Transfer[] { TextTransfer.getInstance() });
 			}
 		};
-		copyValueAction.setText("Copy value");
-		copyValueAction.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
-		copyValueAction.setToolTipText("Copy the values of the selected metrics to the system clipboard");
+		action.setText("Copy value");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
+		action.setToolTipText("Copy the values of the selected metrics to the system clipboard");
+		return action;
 	}
 
-	private void createRecomputeAllAction() {
-		recomputeAllAction = new Action() {
+	private Action createRecomputeAllAction() {
+		Action action = new Action() {
 			@Override
 			public void run() {
 				if(metrics != null) {
@@ -152,9 +158,23 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				}
 			}
 		};
-		recomputeAllAction.setText("Recompute All");
-		recomputeAllAction.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
-		recomputeAllAction.setToolTipText("Recompute the values of all metrics");
+		action.setText("Recompute All");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
+		action.setToolTipText("Recompute the values of all metrics");
+		return action;
+	}
+	
+	private Action createExpandSelectionAction() {
+		Action action = new Action("Expand Selection to Resource", IAction.AS_CHECK_BOX) {
+			@Override
+			public void run() {
+				// nothing to do, checked state is already changed
+			}
+		};
+		action.setToolTipText("Expand selection to containing Resource when selecting an EObject");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("arrow_out.png"));
+		action.setChecked(true);
+		return action;
 	}
 
 	private void createToolBarMenu() {
@@ -178,10 +198,12 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 	protected void fillToolBar(IToolBarManager toolBar) {
 		toolBar.add(recomputeAllAction);
+		toolBar.add(expandSelectionAction);
 	}
 
 	protected void fillDropDownMenu(IMenuManager dropDownMenu) {
 		dropDownMenu.add(recomputeAllAction);
+		dropDownMenu.add(expandSelectionAction);
 	}
 
 	protected void fillContextMenu(IMenuManager menuManager) {
@@ -252,13 +274,13 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			 IStructuredSelection structuredSelection = (IStructuredSelection)selection;
 			 if(structuredSelection.size() == 1) {
 				 Object element = structuredSelection.getFirstElement();
-				 if(element instanceof Resource) {
-					 setResource((Resource)element);
-				 } else {
+				 if(element instanceof EObject && expandSelectionAction.isChecked()) {
 					 EObject eObject = Adapters.adapt(element, EObject.class);
 					 if(eObject != null) {
-						 setResource(eObject.eResource());					 
+						 setSelectedNotifier(eObject.eResource());					 
 					 }					 
+				 } else if(element instanceof Notifier) {
+					 setSelectedNotifier((Notifier)element);
 				 }
 			 }
 		 }
@@ -284,25 +306,24 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		tableViewer.getTable().setSortColumn(column);
 	}
 
-	public void setResource(Resource resource) {
-		if(!Objects.equals(resource, this.resource)) {
-			this.resource = resource;
-			handleResourceChanged();
+	public void setSelectedNotifier(Notifier selectedNotifier) {
+		if(!Objects.equals(selectedNotifier, this.selectedNotifier)) {
+			this.selectedNotifier = selectedNotifier;
+			handleSelectedNotifierChanged();
 		}
 	}
 
-	public Resource getResource() {
-		return resource;
+	public Notifier getSelectedNotifier() {
+		return selectedNotifier;
 	}
 
-	private void handleResourceChanged() {
-		if(resource == null) {
-			label.setText("Metrics: no model selected");
+	private void handleSelectedNotifierChanged() {
+		if(selectedNotifier == null) {
 			metrics = null;
 		} else {
-			label.setText("Metrics: " + resource.getURI());
-			metrics = MetricsFacade.getMetrics(resource);		
+			metrics = MetricsFacade.getMetrics(selectedNotifier);		
 		}
+		label.setText("Metrics: " + MetricHandle.getLabelForNotifier(selectedNotifier));
 		tableViewer.setInput(metrics);
 		tableViewer.getTable().setSortDirection(SWT.NONE);
 		tableViewer.getTable().setSortColumn(null);

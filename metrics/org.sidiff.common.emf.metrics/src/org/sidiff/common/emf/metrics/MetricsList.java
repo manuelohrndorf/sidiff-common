@@ -39,7 +39,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 		return stream()
 			.filter(MetricHandle::isValuePresent)
 			.collect(Collectors.toMap(
-				h -> h.getMetric().getKey() + " : " + h.getContext().getURI(),
+				h -> h.getMetric().getKey() + " : " + MetricHandle.getLabelForNotifier(h.getContext()),
 				h -> h.getValue()));
 	}
 
@@ -55,7 +55,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 				if(handle.isValuePresent()) {
 					csvWriter.write(
 						handle.getMetric().getKey(),
-						handle.getContext().getURI(),
+						MetricHandle.getLabelForNotifier(handle.getContext()),
 						handle.getValue());
 				}
 			}

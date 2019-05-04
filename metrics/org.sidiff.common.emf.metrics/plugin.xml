@@ -2,5 +2,17 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="metrics_extension" name="EMF Metrics Extension Point" schema="schema/metrics_extension.exsd"/>
+   <extension
+         point="org.sidiff.common.emf.metrics.metrics_extension">
+      <metric
+            class="org.sidiff.common.emf.metrics.defaults.impl.NumberOfResources"
+            description="The number of Resources in the ResourceSet."
+            key="emf.NumberOfResources"
+            name="Number of Resources">
+         <documentType>
+            generic
+         </documentType>
+      </metric>
+   </extension>
 
 </plugin>

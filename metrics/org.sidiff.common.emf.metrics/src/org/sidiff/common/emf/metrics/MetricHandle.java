@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.notify.Notifier;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
- * A metric handle is a wrapper for a {@link IMetric} and a context {@link Resource},
+ * A metric handle is a wrapper for a {@link IMetric} and a context {@link Notifier},
  * which computes the value of the metric for the context and caches the result.
  * @author rmueller
  */
@@ -28,7 +34,7 @@ public class MetricHandle {
 
 	/**
 	 * A special value which indicates that the metric of a handle
-	 * is not applicable for its resource.
+	 * is not applicable for its context.
 	 */
 	public static final Object NOT_APPLICABLE = new Object() {
 		@Override
@@ -39,11 +45,12 @@ public class MetricHandle {
 
 
 	private final IMetric metric;
-	private final Resource context;
+	private final Notifier context;
 
 	private Object cachedValue = NOT_COMPUTED;
 
-	MetricHandle(IMetric metric, Resource context) {
+	MetricHandle(IMetric metric, Notifier context) {
+		Assert.isLegal(metric.getContextType().isInstance(context), "Type of metric is incompatible with context");
 		this.metric = Objects.requireNonNull(metric);
 		this.context = Objects.requireNonNull(context);
 	}
@@ -57,10 +64,10 @@ public class MetricHandle {
 	}
 
 	/**
-	 * The resource for which the metric is computed by this handle.
-	 * @return the context resource
+	 * The notifier for which the metric is computed by this handle.
+	 * @return the context notifier
 	 */
-	public Resource getContext() {
+	public Notifier getContext() {
 		return context;
 	}
 
@@ -81,7 +88,7 @@ public class MetricHandle {
 	}
 
 	/**
-	 * Recomputes the metric using the context resource.
+	 * Recomputes the metric using the context notifier.
 	 * @param monitor a monitor for progress reporting
 	 */
 	public void recompute(IProgressMonitor monitor) {
@@ -129,9 +136,25 @@ public class MetricHandle {
 		return false;
 	}
 
+	public static String getLabelForNotifier(Notifier notifier) {
+		if(notifier == null) {
+			return "no selection";
+		} else if(notifier instanceof ResourceSet) {
+			return ((ResourceSet)notifier).getResources().stream()
+				.map(Resource::getURI)
+				.map(Object::toString)
+				.collect(Collectors.joining(", ", "ResourceSet[", "]"));
+		} else if(notifier instanceof Resource) {
+			return ((Resource)notifier).getURI().toString();
+		} else if(notifier instanceof EObject) {
+			return EcoreUtil.getURI((EObject)notifier).toString();
+		}
+		throw new AssertionError();
+	}
+
 	@Override
 	public String toString() {
-		return "[" + metric.getKey() + " : " + context.getURI() + " : " + cachedValue + "]";
+		return "[" + metric.getKey() + " : " + getLabelForNotifier(context) + " : " + cachedValue + "]";
 	}
 
 	public static Comparator<MetricHandle> getByKeyComparator() {

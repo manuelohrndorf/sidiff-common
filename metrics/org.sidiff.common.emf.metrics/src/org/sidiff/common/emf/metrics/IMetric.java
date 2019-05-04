@@ -1,11 +1,11 @@
 package org.sidiff.common.emf.metrics;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.common.notify.Notifier;
 import org.sidiff.common.extension.ITypedExtension;
 
 /**
- * A metric is a typed extension which computes a value for input resources.
+ * A metric is a typed extension which computes a value for input notifiers.
  * Metrics only compute values for arbitrary resources and must be stateless.
  * @author rmueller
  */
@@ -17,10 +17,17 @@ public interface IMetric extends ITypedExtension {
 	MetricExtensionManager MANAGER = new MetricExtensionManager(DESCRIPTION);
 
 	/**
-	 * Calculates the value of the metric for the resource.
-	 * @param resource the resource for which to compute the metric
+	 * Returns the type of the notifier that this metric calculates values for.
+	 * Can be an arbitrary Resource's, ResourceSet's or EObject's class.
+	 * @return the context type
+	 */
+	Class<? extends Notifier> getContextType();
+
+	/**
+	 * Calculates the value of the metric for the notifier.
+	 * @param context the context for which to compute the metric, is always an instance of {@link #getContextType()}
 	 * @param acceptor an acceptor for the resulting metric value/s
 	 * @param monitor a progress monitor
 	 */
-	void calculate(Resource resource, IMetricValueAcceptor acceptor, IProgressMonitor monitor);
+	void calculate(Notifier context, IMetricValueAcceptor acceptor, IProgressMonitor monitor);
 }

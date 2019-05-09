@@ -9,6 +9,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.sidiff.common.emf.metrics.MetricsFacade;
 import org.sidiff.common.emf.metrics.MetricsList;
+import org.sidiff.common.emf.metrics.MetricsScope;
 import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
 import org.sidiff.common.statistics.StatisticsUtil;
 
@@ -29,7 +30,7 @@ public class MetricTestdriverApplication implements IApplication {
 			Resource resource = resourceSet.getResource(uri, true);
 
 			System.out.println("########### Metrics : " + uri + " ###########");
-			MetricsList metrics = MetricsFacade.getMetrics(resource);
+			MetricsList metrics = MetricsFacade.getMetrics(new MetricsScope(resource));
 			metrics.recomputeAll(new NullProgressMonitor());
 			System.out.println("All metrics: " + metrics);
 			metrics.removeAllIrrelevant();

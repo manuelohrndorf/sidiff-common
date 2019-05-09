@@ -9,7 +9,6 @@ import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Adapters;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
@@ -44,6 +43,7 @@ import org.eclipse.ui.part.ViewPart;
 import org.sidiff.common.emf.metrics.MetricHandle;
 import org.sidiff.common.emf.metrics.MetricsFacade;
 import org.sidiff.common.emf.metrics.MetricsList;
+import org.sidiff.common.emf.metrics.MetricsScope;
 import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
 import org.sidiff.common.emf.metrics.ui.jobs.RecomputeMetricsJob;
 import org.sidiff.common.file.CSVWriter;
@@ -59,6 +59,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	private Label label;
 	private TableViewer tableViewer;
 	private TableViewerColumn metricNameColumn;
+	private TableViewerColumn metricContextColumn;
 	private TableViewerColumn metricValueColumn;
 
 	private Clipboard clipboard;
@@ -118,7 +119,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				String csv = CSVWriter.writeToString(csvWriter -> {
 					for(Object selectedObject : tableViewer.getStructuredSelection().toArray()) {
 						MetricHandle handle = (MetricHandle)selectedObject;
-						csvWriter.write(handle.getMetric().getKey(), handle.getValue());
+						csvWriter.write(handle.getMetric().getKey(), handle.getContextLabel(), handle.getValue());
 					}
 				});
 				clipboard.setContents(new Object[] { csv }, new Transfer[] { TextTransfer.getInstance() });
@@ -226,6 +227,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		tableViewer.getTable().setLinesVisible(true);
 		tableViewer.setContentProvider(new ArrayContentProvider());
 		createNameColumn();
+		createContextColumn();
 		createValueColumn();
 
 		ColumnViewerToolTipSupport.enableFor(tableViewer, ToolTip.NO_RECREATE);
@@ -248,6 +250,23 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			}
 		});
 		metricNameColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
+	}
+
+	private void createContextColumn() {
+		metricContextColumn = new TableViewerColumn(tableViewer, SWT.NONE);
+		metricContextColumn.getColumn().setText("Context");
+		metricContextColumn.getColumn().setWidth(200);
+		metricContextColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getToolTipText(Object element) {
+				return Objects.toString(((MetricHandle)element).getContext());
+			}
+			@Override
+			public String getText(Object element) {
+				return ((MetricHandle)element).getContextLabel();
+			}
+		});
+		metricContextColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
 	}
 
 	private void createValueColumn() {
@@ -273,15 +292,8 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		 if (selection instanceof IStructuredSelection) {
 			 IStructuredSelection structuredSelection = (IStructuredSelection)selection;
 			 if(structuredSelection.size() == 1) {
-				 Object element = structuredSelection.getFirstElement();
-				 if(element instanceof EObject && expandSelectionAction.isChecked()) {
-					 EObject eObject = Adapters.adapt(element, EObject.class);
-					 if(eObject != null) {
-						 setSelectedNotifier(eObject.eResource());					 
-					 }					 
-				 } else if(element instanceof Notifier) {
-					 setSelectedNotifier((Notifier)element);
-				 }
+				 Notifier notifier = Adapters.adapt(structuredSelection.getFirstElement(), Notifier.class);
+				setSelectedNotifier(notifier);					 
 			 }
 		 }
 	}
@@ -289,6 +301,8 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	private void handleColumnSelection(SelectionEvent event) {
 		if(event.widget == metricNameColumn.getColumn()) {
 			sortColumn(metricNameColumn.getColumn(), MetricHandle::getByNameComparator);
+		} else if(event.widget == metricContextColumn.getColumn()) {
+			sortColumn(metricContextColumn.getColumn(), MetricHandle::getByContextComparator);
 		} else if(event.widget == metricValueColumn.getColumn()) {
 			sortColumn(metricValueColumn.getColumn(), MetricHandle::getByValueComparator);
 		}
@@ -321,7 +335,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		if(selectedNotifier == null) {
 			metrics = null;
 		} else {
-			metrics = MetricsFacade.getMetrics(selectedNotifier);		
+			metrics = MetricsFacade.getMetrics(createMetricsScope());
 		}
 		label.setText("Metrics: " + MetricHandle.getLabelForNotifier(selectedNotifier));
 		tableViewer.setInput(metrics);
@@ -329,6 +343,13 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		tableViewer.getTable().setSortColumn(null);
 		recomputeAllAction.setEnabled(metrics != null);
 		label.requestLayout(); // needs layout because label may wrap
+	}
+
+	private MetricsScope createMetricsScope() {
+		MetricsScope scope = new MetricsScope(selectedNotifier);
+		scope.includeParentResource = expandSelectionAction.isChecked();
+		scope.includeParentResourceSet = expandSelectionAction.isChecked();
+		return scope;
 	}
 
 	@Override

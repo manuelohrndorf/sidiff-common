@@ -136,6 +136,10 @@ public class MetricHandle {
 		return false;
 	}
 
+	public String getContextLabel() {
+		return getLabelForNotifier(context);
+	}
+
 	public static String getLabelForNotifier(Notifier notifier) {
 		if(notifier == null) {
 			return "no selection";
@@ -154,7 +158,7 @@ public class MetricHandle {
 
 	@Override
 	public String toString() {
-		return "[" + metric.getKey() + " : " + getLabelForNotifier(context) + " : " + cachedValue + "]";
+		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + cachedValue + "]";
 	}
 
 	public static Comparator<MetricHandle> getByKeyComparator() {
@@ -163,6 +167,10 @@ public class MetricHandle {
 	
 	public static Comparator<MetricHandle> getByNameComparator() {
 		return Comparator.comparing(h -> h.getMetric().getName());
+	}
+
+	public static Comparator<MetricHandle> getByContextComparator() {
+		return Comparator.comparing(MetricHandle::getContextLabel);
 	}
 
 	public static Comparator<MetricHandle> getByValueComparator() {

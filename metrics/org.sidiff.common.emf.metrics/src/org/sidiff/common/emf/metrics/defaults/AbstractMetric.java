@@ -21,20 +21,35 @@ public abstract class AbstractMetric<T extends Notifier> extends AbstractTypedEx
 
 	private final Class<T> contextType;
 
+	/**
+	 * Creates an AbstractMetric.
+	 * @param contextType the type of notifier this metric supports
+	 */
 	public AbstractMetric(Class<T> contextType) {
 		this.contextType = Objects.requireNonNull(contextType);
 	}
 
+	/**
+	 * Implementation of AbstractMetric checks type of context and
+	 * calls {@link #doCalculate(T, IMetricValueAcceptor, IProgressMonitor)}
+	 * only if the given context is compatible with {@link #getContextType()}.
+	 */
 	@Override
-	public void calculate(Notifier context, IMetricValueAcceptor acceptor, IProgressMonitor monitor) {
+	public final void calculate(Notifier context, IMetricValueAcceptor acceptor, IProgressMonitor monitor) {
 		Assert.isTrue(getContextType().isInstance(context), "Context is not compatible with context type");
 		doCalculate(getContextType().cast(context), acceptor, monitor);
 	}
 
 	@Override
-	public Class<T> getContextType() {
+	public final Class<T> getContextType() {
 		return contextType;
 	}
 
+	/**
+	 * Performs the calculation on the type checked context object.
+	 * @param context the context, is instance of {@link #getContextType()}
+	 * @param acceptor an acceptor for the resulting metric value/s
+	 * @param monitor a progress monitor
+	 */
 	protected abstract void doCalculate(T context, IMetricValueAcceptor acceptor, IProgressMonitor monitor);
 }

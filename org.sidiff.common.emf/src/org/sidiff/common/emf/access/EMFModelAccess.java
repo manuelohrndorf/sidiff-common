@@ -570,6 +570,20 @@ public class EMFModelAccess {
 	}
 
 	/**
+	 * Returns the Resource which contains or is the given context notifier.
+	 * @param context the context (Resource, EObject)
+	 * @return Resource containing/being the context, <code>null</code> if none
+	 */
+	public static Resource getResource(Notifier context) {
+		if(context instanceof Resource) {
+			return (Resource)context;
+		} if(context instanceof EObject) {
+			return ((EObject)context).eResource();
+		}
+		return null;
+	}
+
+	/**
 	 * Returns the ResourceSet which contains or is the given context notifier.
 	 * @param context the context (ResourceSet, Resource, EObject)
 	 * @return ResourceSet containing/being the context, <code>null</code> if none

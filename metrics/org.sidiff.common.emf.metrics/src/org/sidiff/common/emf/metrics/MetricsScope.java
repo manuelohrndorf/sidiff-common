@@ -60,9 +60,12 @@ public class MetricsScope {
 		if(context instanceof ResourceSet) {
 			resourceSet = (ResourceSet)context;
 		} else if(includeParentResourceSet) {
-			resourceSet = EMFModelAccess.getResourceSet(context);			
+			resourceSet = EMFModelAccess.getResourceSet(context);
 		}
-		return Stream.ofNullable(resourceSet);
+		if(resourceSet == null) {
+			return Stream.empty();
+		}
+		return Stream.of(resourceSet);
 	}
 
 	private Stream<Notifier> getResourceContexts(Notifier context) {

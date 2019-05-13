@@ -54,6 +54,8 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public void addExtensions(Description<? extends T> description) {
 		Assert.isNotNull(description);
+		ExtensionsPlugin.logInfo("Initializing " + description.getExtensionClass().getSimpleName()
+				+ " extensions of extension point " + description.getExtensionPointId());
 		for(final IConfigurationElement element :
 			RegistryFactory.getRegistry().getConfigurationElementsFor(description.getExtensionPointId())) {
 			if(element.getName().equals(description.getElementName())) {
@@ -61,6 +63,8 @@ public class ExtensionManager<T extends IExtension> {
 					final Object rawExtension = element.createExecutableExtension(description.getClassAttribute());
 					final T extension = description.getExtensionClass().cast(rawExtension);
 					addExtension(extension);
+					ExtensionsPlugin.logInfo("Created executable extension " + extension.getKey()
+						+ " of " + element.getDeclaringExtension().getContributor().getName());
 				} catch (Exception | LinkageError e) {
 					// We also catch LinkageError because it may be thrown if the executable
 					// extension class is not found or incompatible with the environment.

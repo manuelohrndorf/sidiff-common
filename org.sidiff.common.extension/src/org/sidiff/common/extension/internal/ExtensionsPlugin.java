@@ -40,6 +40,10 @@ public class ExtensionsPlugin extends Plugin {
 		getDefault().getLog().log(new Status(severity, PLUGIN_ID, message, throwable));
 	}
 
+	public static void logInfo(String message) {
+		log(Status.INFO, message, null);
+	}
+	
 	public static void logError(String message, Throwable throwable) {
 		log(Status.ERROR, message, throwable);
 	}

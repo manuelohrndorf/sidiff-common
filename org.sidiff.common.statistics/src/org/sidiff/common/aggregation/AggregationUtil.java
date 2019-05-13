@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,11 +55,12 @@ public final class AggregationUtil {
 		Collection<ExperimentalUtil> experiments = new ArrayList<>();
 		for(File file : directory.listFiles()) {
 			// ignore everything that is not a file or doesn't have the .ser extension
-			if(!file.isFile() || !file.getName().endsWith("." + ExperimentalUtil.FILE_EXTENSION))
+			if(!file.isFile() || !file.getName().endsWith("." + ExperimentalUtil.FILE_EXTENSION)) {
 				continue;
+			}
 			experiments.add(ExperimentalUtil.loadExperiment(file.getPath()));
 		}
-		if(experiments.size() == 0) {
+		if(experiments.isEmpty()) {
 			// no experiments were found in this folder
 			return null;
 		}
@@ -126,9 +128,9 @@ public final class AggregationUtil {
 		Assert.isLegal(!statistics.isEmpty(), "statistics must not be empty");
 
 		// initialize collection for all values for all keys for all statistic types
-		Map<StatisticType, Map<String, Collection<Number>>> collections = new HashMap<>();
+		Map<StatisticType, Map<String, Collection<Number>>> collections = new EnumMap<>(StatisticType.class);
 		for(StatisticType type : StatisticType.values()) {
-			collections.put(type, new HashMap<String, Collection<Number>>());
+			collections.put(type, new HashMap<>());
 		}
 
 		// collect values for every key for every type for every StatisticsUtil
@@ -150,12 +152,12 @@ public final class AggregationUtil {
 	//
 	// internal methods
 
-	protected static void collectValues(Map<String, Object> entryStatistics,
+	static void collectValues(Map<String, Object> entryStatistics,
 			Map<String, Collection<Number>> collection, int size) {
 
 		for(Map.Entry<String, Object> entry : entryStatistics.entrySet()) {
 			if(!collection.containsKey(entry.getKey())) {
-				collection.put(entry.getKey(), new ArrayList<Number>(size));
+				collection.put(entry.getKey(), new ArrayList<>(size));
 			}
 			//If value is already a number 
 			if(entry.getValue() instanceof Number) {
@@ -173,7 +175,7 @@ public final class AggregationUtil {
 		}
 	}
 
-	protected static void aggregateEntries(Map<String, Collection<Number>> collection,
+	static void aggregateEntries(Map<String, Collection<Number>> collection,
 			Map<String, Object> aggregate, Aggregation aggregation) {
 
 		for(Map.Entry<String, Collection<Number>> entry : collection.entrySet()) {
@@ -184,8 +186,7 @@ public final class AggregationUtil {
 				i++;
 			}
 
-			double aggregateValue = aggregation.aggregate(values);
-			aggregate.put(entry.getKey(), aggregateValue);
+			aggregate.put(entry.getKey(), aggregation.aggregate(values));
 		}
 	}
 }

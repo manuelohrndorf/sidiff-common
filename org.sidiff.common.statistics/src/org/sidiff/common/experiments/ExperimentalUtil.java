@@ -83,7 +83,7 @@ public final class ExperimentalUtil implements Serializable {
 	private ExperimentalUtil(String experimentName) {
 		this.experimentName = experimentName;
 		this.date = getTodayDateFormatted();
-		this.experimentRuns = new HashMap<String, StatisticsUtil>();
+		this.experimentRuns = new HashMap<>();
 	}
 
 	/**
@@ -102,8 +102,9 @@ public final class ExperimentalUtil implements Serializable {
 	 * @throws IllegalStateException if no singleton instance was created yet
 	 */
 	public static ExperimentalUtil getInstance() {
-		if(instance == null)
+		if(instance == null) {
 			throw new IllegalStateException("No singleton instance was created with newInstance");
+		}
 		return instance;
 	}
 
@@ -536,9 +537,7 @@ public final class ExperimentalUtil implements Serializable {
 		} else {
 			name = "String";
 		}
-		if (currentType == null) {
-			return name;
-		} else if (currentType.equals(name)) {
+		if (currentType == null || currentType.equals(name)) {
 			return name;
 		} else if (("Integer".equals(currentType) && "Decimal".equals(name))
 				|| ("Decimal".equals(currentType) && "Integer".equals(name))) {
@@ -557,8 +556,8 @@ public final class ExperimentalUtil implements Serializable {
 	 * @throws IOException
 	 */
 	public void writeToCSV(String filename) throws IOException{
-		Map<String, String> types= new HashMap<String, String>();
-		Set<String> cols = new HashSet<String>();
+		Map<String, String> types= new HashMap<>();
+		Set<String> cols = new HashSet<>();
 		
 		/* Spalten und deren Typ ermitteln */
 		for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()){
@@ -570,7 +569,7 @@ public final class ExperimentalUtil implements Serializable {
 			}
 		}
 		/* Aus den Set List machen */
-		List<String> colList = new ArrayList<String>(cols);
+		List<String> colList = new ArrayList<>(cols);
 		Collections.sort(colList);
 		/* In Datei schreiben */
 		Path csvPath = Paths.get(filename);
@@ -609,8 +608,8 @@ public final class ExperimentalUtil implements Serializable {
 	 */
 	public String dump() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("*********************").append(this.experimentName).append(" Statistics")
-			.append("*********************").append(LINESEP).append(LINESEP);
+		sb.append("********************* ").append(this.experimentName)
+			.append(" Statistics *********************").append(LINESEP).append(LINESEP);
 		for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()) {
 			sb.append("---------- ").append(run.getKey()).append(" ----------").append(LINESEP);
 			run.getValue().dump(sb);

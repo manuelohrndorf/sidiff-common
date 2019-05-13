@@ -100,15 +100,12 @@ public enum Aggregation {
 			
 			final double avg = AVG.aggregate(values);
 			double[] squaredDiffs = new double[values.length];
-			int i = 0;
-			for(double value : values) {
-				double squaredDiff = Math.pow((value - avg), 2);
+			for(int i = 0; i < values.length; i++) {
+				double squaredDiff = Math.pow(values[i] - avg, 2);
 				squaredDiffs[i] = squaredDiff;
-				i++;
 			}
 		
-			double variance = AVG.aggregate(squaredDiffs);
-			return variance;
+			return AVG.aggregate(squaredDiffs);
 		}
 	},
 	
@@ -123,8 +120,9 @@ public enum Aggregation {
 			final double avg = AVG.aggregate(values);
 			
 			double cv = stddev / avg;
-			if(Double.isNaN(cv))
+			if(Double.isNaN(cv)) {
 				cv = 0.0;
+			}
 			return cv;
 		}
 	},

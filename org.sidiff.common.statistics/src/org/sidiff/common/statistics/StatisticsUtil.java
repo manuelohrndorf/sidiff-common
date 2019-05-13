@@ -75,8 +75,9 @@ public final class StatisticsUtil implements Serializable {
 	 * @return {@link StatisticsUtil} the singleton instance.
 	 */
 	public static StatisticsUtil getInstance() {
-		if (instance == null)
+		if (instance == null) {
 			instance = new StatisticsUtil();
+		}
 		return instance;
 	}
 
@@ -246,7 +247,7 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	private void reset(String keyPrefix, Map<String, Object> statistic) {
 		if (enabled) {
-			Set<String> keys = new HashSet<String>();
+			Set<String> keys = new HashSet<>();
 
 			for (String key : statistic.keySet()) {
 				if (key.startsWith(keyPrefix)) {
@@ -269,12 +270,14 @@ public final class StatisticsUtil implements Serializable {
 		if (enabled) {
 			Object o = timeStatistic.get(key);
 			Long time = null;
-			if(o instanceof Long)
+			if(o instanceof Long) {
 				time = (Long) o;
-			else if (o instanceof Float)
+			} else if (o instanceof Float) {
 				time = ((Float)o).longValue();
-			if (time == null)
-				time = 0l;
+			}
+			if (time == null) {
+				time = 0L;
+			}
 			timeStatistic.put(STAT_KEY_STARTTIME + key, System.currentTimeMillis() - time);
 		}
 	}
@@ -290,7 +293,7 @@ public final class StatisticsUtil implements Serializable {
 			long stop = System.currentTimeMillis();
 			Long startO = (Long) timeStatistic.get(STAT_KEY_STARTTIME + key);
 			long start = startO == null ? 0 : startO.longValue();
-			long time = (stop - start);
+			long time = stop - start;
 			timeStatistic.remove(STAT_KEY_STARTTIME + key);
 			timeStatistic.put(key, time);
 			return time / 1000f;
@@ -318,12 +321,12 @@ public final class StatisticsUtil implements Serializable {
 	public Long getTime(String key) {
 		if (enabled) {
 			try {
-				return (long) (((Long) timeStatistic.get(key)) / 1000l);
+				return (Long) timeStatistic.get(key) / 1000L;
 			} catch (Exception e) {
-				return 0l;
+				return 0L;
 			}
 		}
-		return 0l;
+		return 0L;
 	}
 
 	/**
@@ -360,7 +363,7 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	public int getInt(String key) {
 		if (enabled) {
-			Integer i = ((Integer) otherStatistic.get(key));
+			Integer i = (Integer) otherStatistic.get(key);
 			return (i == null) ? 0 : i.intValue();
 		}
 		return 0;
@@ -434,9 +437,8 @@ public final class StatisticsUtil implements Serializable {
 	 * @return
 	 */
 	public int getCounter(String key) {
-		if (enabled) {
-			if(countStatistic.get(key) != null)
-				return (Integer) countStatistic.get(key);
+		if (enabled && countStatistic.get(key) != null) {
+			return (Integer) countStatistic.get(key);
 		}
 		return 0;
 	}
@@ -460,8 +462,9 @@ public final class StatisticsUtil implements Serializable {
 	public void count(String key) {
 		if (enabled) {
 			int i = 0;
-			if(countStatistic.get(key) != null)
+			if(countStatistic.get(key) != null) {
 				i = (Integer) countStatistic.get(key);
+			}
 			countStatistic.put(key, ++i);
 		}
 	}
@@ -477,7 +480,7 @@ public final class StatisticsUtil implements Serializable {
 		for (Map.Entry<String, Object> e : data.entrySet()) {
 			List<Object> d = map.get(e.getKey());
 			if (d == null) {
-				d = new ArrayList<Object>();
+				d = new ArrayList<>();
 				map.put(e.getKey(), d);
 			}
 			while (d.size() <= pos) {
@@ -523,7 +526,7 @@ public final class StatisticsUtil implements Serializable {
 	 * @throws IOException
 	 */
 	public void writeToCsv(String file) throws IOException {
-		Map<String, List<Object>> map = new HashMap<String, List<Object>>();
+		Map<String, List<Object>> map = new HashMap<>();
 		addToMap(map, timeStatistic, 0);
 		addToMap(map, sizeStatistic, 1);
 		addToMap(map, countStatistic, 2);
@@ -555,13 +558,13 @@ public final class StatisticsUtil implements Serializable {
 	 * @return
 	 */
 	public Map<String, Object> getUnifiedStatistics() {
-		List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+		List<Map<String, Object>> maps = new ArrayList<>();
 		maps.add(timeStatistic);
 		maps.add(sizeStatistic);
 		maps.add(countStatistic);
 		maps.add(otherStatistic);
 		List<String> extras = Arrays.asList(new String[] { "(ms)", "", "", "" });
-		Map<String, Object> result = new HashMap<String, Object>();
+		Map<String, Object> result = new HashMap<>();
 		for (int i = 0; i < maps.size(); i++) {
 			Map<String, Object> map = maps.get(i);
 			String extra = extras.get(i);
@@ -586,7 +589,7 @@ public final class StatisticsUtil implements Serializable {
 			Map<String, Object> map = maps.get(i);
 			String extra = extras.get(i);
 			for (Map.Entry<String, Object> e : map.entrySet()) {
-				sb1.append(e.getKey() + (extra != null ? " :: " + extra : "") + COL);
+				sb1.append(e.getKey()).append(extra != null ? " :: " + extra : "").append(COL);
 				String name = e.getValue().getClass().getSimpleName();
 				if ("Long".equals(name) || "Integer".equals(name)) {
 					name = "Integer";
@@ -597,8 +600,8 @@ public final class StatisticsUtil implements Serializable {
 				} else {
 					name = "String";
 				}
-				sb2.append(name + COL);
-				sb3.append(e.getValue().toString() + COL);
+				sb2.append(name).append(COL);
+				sb3.append(e.getValue()).append(COL);
 			}
 		}
 		return sb1.substring(0, sb1.length() - 1) + LINE_SEPERATOR + sb2.substring(0, sb2.length() - 1) + LINE_SEPERATOR + sb3.substring(0, sb3.length() - 1);
@@ -613,7 +616,7 @@ public final class StatisticsUtil implements Serializable {
 	 */
 	public void writeToCsv2(String file) throws IOException {
 		try (BufferedWriter writer = new BufferedWriter(new FileWriter(new File(file), true))) {
-			List<Map<String, Object>> maps = new ArrayList<Map<String, Object>>();
+			List<Map<String, Object>> maps = new ArrayList<>();
 			maps.add(timeStatistic);
 			maps.add(sizeStatistic);
 			maps.add(countStatistic);

@@ -11,16 +11,16 @@ public interface IWidget {
 	 *            The widget parent container.
 	 * @return The top level container.
 	 */
-	public Composite createControl(Composite parent);
+	Composite createControl(Composite parent);
 
 	/**
 	 * @return The top level container or <code>null</code> if has not yet been created.
 	 */
-	public Composite getWidget();
+	Composite getWidget();
 
 	/**
 	 * Set the widget layout data.
 	 * @param layoutData The layout of the top level container.
 	 */
-	public void setLayoutData(Object layoutData);
+	void setLayoutData(Object layoutData);
 }

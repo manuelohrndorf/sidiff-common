@@ -78,10 +78,8 @@ public class EcoreSelectionDialogUtil {
 		dialog.open();
 		
 		final Object[] result = dialog.getResult();
-		if (result != null && result.length > 0) {
-			if (result[0] instanceof EPackage) {
-				return (EPackage) result[0];
-			}
+		if (result != null && result.length > 0 && result[0] instanceof EPackage) {
+			return (EPackage) result[0];
 		}
 		return null;
 		
@@ -117,18 +115,16 @@ public class EcoreSelectionDialogUtil {
 					EcoreUtil.resolveAll(resource);
 				}
 				for (Resource resource : resourceSet.getResources()) {
-					for (EPackage current : EcoreSelectionDialogUtil.getAllPackages(resource)) {
+					for (EPackage current : getAllPackages(resource)) {
 						if (nsURIs.contains(current.getNsURI())) {
 							epackage = current;
 							break;
 						}
 					}
 				}
-			} else {
-				if (result.length > 0) {
-					String uri = result[0].toString();
-					return EPackage.Registry.INSTANCE.getEPackage(uri);
-				}
+			} else if (result.length > 0) {
+				String uri = result[0].toString();
+				return EPackage.Registry.INSTANCE.getEPackage(uri);
 			}
 		}
 		
@@ -156,7 +152,7 @@ public class EcoreSelectionDialogUtil {
 				Button button = (Button) control;
 				// button.setEnabled(false);
 				String text = button.getText().toLowerCase();
-				if (text.indexOf("runtime")>=0) {
+				if (text.contains("runtime")) {
 					button.setSelection(true);
 				} else {
 					button.setSelection(false);
@@ -178,7 +174,7 @@ public class EcoreSelectionDialogUtil {
 	protected static Collection<EPackage> getAllPackages(Resource resource) {
 		
 		// List of all packages:
-		List<EPackage> result = new ArrayList<EPackage>();
+		List<EPackage> result = new ArrayList<>();
 		
 		// Create a tree editor for packages:
 		TreeIterator<?> iterator = new EcoreUtil.ContentTreeIterator<Object>(resource.getContents()) {
@@ -222,7 +218,7 @@ public class EcoreSelectionDialogUtil {
 					}
 				}
 			}
-			return (element instanceof EPackage);
+			return element instanceof EPackage;
 		}
 		
 	}
@@ -342,6 +338,6 @@ public class EcoreSelectionDialogUtil {
 
 			return new Status(IStatus.ERROR, PLUGIN_ID, "No valid EPackage selected");
 		}
-	};
+	}
 	
 }

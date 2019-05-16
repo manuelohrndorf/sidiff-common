@@ -11,5 +11,5 @@ public interface ISettingsChangedListener {
 	 * @param item The settings item that changed.
 	 * Usually some enumeration that is associated with the changed setting (Enumeration: <em><...>SettingsItem</em>).
 	 */
-	public void settingsChanged(ISettingsItem item);
+	void settingsChanged(ISettingsItem item);
 }

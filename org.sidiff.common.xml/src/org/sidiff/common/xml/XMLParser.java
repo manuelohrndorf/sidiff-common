@@ -98,9 +98,9 @@ public class XMLParser {
 			try {
 				saxParser.parse(xmlinput);
 			} catch (IOException e) {
-				throw new SiDiffRuntimeException("IO Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString(), e);
+				throw new SiDiffRuntimeException("IO Error while parsing " + xmlinput + " with " + contentHandler, e);
 			} catch (SAXException e) {
-				throw new SiDiffRuntimeException("SAX Error while parsing " + xmlinput.toString() + " with " + contentHandler.toString(), e);
+				throw new SiDiffRuntimeException("SAX Error while parsing " + xmlinput + " with " + contentHandler, e);
 			} finally {
 				saxParser.setContentHandler(null);
 			}
@@ -131,13 +131,11 @@ public class XMLParser {
 		}
 
 		parser.setEntityResolver(XMLResolver.getInstance());
-		parser.setErrorHandler(XMLParser.errorHandler);
+		parser.setErrorHandler(errorHandler);
 		for (ParserFeature feature : ParserFeature.values()) {
 			try {
 				parser.setFeature(feature.featureID, feature.featureValue);
-			} catch (SAXNotRecognizedException e) {
-				e.printStackTrace();
-			} catch (SAXNotSupportedException e) {
+			} catch (SAXNotRecognizedException | SAXNotSupportedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -154,13 +152,11 @@ public class XMLParser {
 		DOMParser parser = new DOMParser();
 
 		parser.setEntityResolver(XMLResolver.getInstance());
-		parser.setErrorHandler(XMLParser.errorHandler);
+		parser.setErrorHandler(errorHandler);
 		for (ParserFeature feature : ParserFeature.values()) {
 			try {
 				parser.setFeature(feature.featureID, feature.featureValue);
-			} catch (SAXNotRecognizedException e) {
-				e.printStackTrace();
-			} catch (SAXNotSupportedException e) {
+			} catch (SAXNotRecognizedException | SAXNotSupportedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -190,8 +186,8 @@ public class XMLParser {
 		/** XInclude fixup language feature id (http://apache.org/xml/features/xinclude/fixup-language). */
 		XINCLUDE_FIXUP_LANGUAGE_FEATURE("http://apache.org/xml/features/xinclude/fixup-language", true);
 
-		private String featureID = null;
-		private boolean featureValue = false;
+		private String featureID;
+		private boolean featureValue;
 
 		private ParserFeature(String featureID, boolean featureDefault) {
 			this.featureID = featureID;

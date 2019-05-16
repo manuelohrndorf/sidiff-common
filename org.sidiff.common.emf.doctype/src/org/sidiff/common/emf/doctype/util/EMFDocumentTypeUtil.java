@@ -16,7 +16,7 @@ import org.sidiff.common.emf.doctype.IDocumentTypeResolver;
 /**
  * <code>EMFDocumentTypeUtil</code> contains utility functions for resolving
  * the document types of {@link Resource}s.
- * @author cpietsch, Robert Müller
+ * @author cpietsch, Robert Mï¿½ller
  *
  */
 public class EMFDocumentTypeUtil {
@@ -36,7 +36,7 @@ public class EMFDocumentTypeUtil {
 	 * @return list of document types
 	 */
 	public static List<String> resolve(Collection<Resource> resources) {
-		Set<String> docTypes = new HashSet<String>();
+		Set<String> docTypes = new HashSet<>();
 		for(Resource resource : resources) {
 			if(resource == null || resource.getContents().isEmpty()) {
 				continue;
@@ -49,7 +49,7 @@ public class EMFDocumentTypeUtil {
 			for(String docType : modelDocTypes) {
 				Collection<IDocumentTypeResolver> resolvers =
 						IDocumentTypeResolver.MANAGER.getExtensions(Collections.singleton(docType), false);
-				if(resolvers.size() > 0) {
+				if(!resolvers.isEmpty()) {
 					for(IDocumentTypeResolver resolver : resolvers) {
 						List<String> resolvedTypes = resolver.resolve(resource);
 						if(resolvedTypes != null) {

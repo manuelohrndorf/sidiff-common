@@ -22,11 +22,9 @@ public class BaseSettings extends AbstractSettings {
 	private boolean validate = false;
 
 	public BaseSettings() {
-		super();
 	}
 
 	public BaseSettings(Scope scope, boolean validate) {
-		super();
 		this.scope = scope;
 		this.validate = validate;
 	}
@@ -40,12 +38,7 @@ public class BaseSettings extends AbstractSettings {
 
 	@Override
 	public String toString() {
-		return new StringBuilder()
-			.append("BaseSettings[")
-			.append("Scope: ").append(getScope()).append(", ")
-			.append("Validate input models: ").append(isValidate())
-			.append("]")
-			.toString();
+		return "BaseSettings[" + "Scope: " + getScope() + ", " + "Validate input models: " + isValidate() + "]";
 	}
 
 	// ---------- Getter and Setter Methods----------

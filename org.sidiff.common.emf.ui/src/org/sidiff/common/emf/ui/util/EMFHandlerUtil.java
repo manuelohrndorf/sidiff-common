@@ -16,14 +16,12 @@ public class EMFHandlerUtil {
 	public static Resource getSelection(ExecutionEvent event, ResourceSet rss, int selectionIndex) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection instanceof IStructuredSelection) {
-			if (selectionIndex < ((IStructuredSelection) selection).size()) {
-				Object selected = ((IStructuredSelection) selection).toArray()[selectionIndex];
-				
-				if ((selected != null) && (selected instanceof IResource)) {
-					URI uri = getURI((IResource) selected);
-					return rss.getResource(uri, true);
-				}
+		if (selection instanceof IStructuredSelection && selectionIndex < ((IStructuredSelection) selection).size()) {
+			Object selected = ((IStructuredSelection) selection).toArray()[selectionIndex];
+			
+			if (selected instanceof IResource) {
+				URI uri = getURI((IResource) selected);
+				return rss.getResource(uri, true);
 			}
 		}
 		
@@ -36,7 +34,7 @@ public class EMFHandlerUtil {
 		if (selection instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			
-			if ((selected != null) && (selected instanceof IResource)) {
+			if (selected instanceof IResource) {
 				ResourceSet rss = new ResourceSetImpl();
 				URI uri = getURI((IResource) selected);
 				return rss.getResource(uri, true);
@@ -52,7 +50,7 @@ public class EMFHandlerUtil {
 		if (selection instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			
-			if ((selected != null) && (selected instanceof IResource)) {
+			if (selected instanceof IResource) {
 				return getURI((IResource) selected);
 			}
 		}
@@ -63,13 +61,11 @@ public class EMFHandlerUtil {
 	public static <E extends EObject> E getSelection(ExecutionEvent event, Class<E> type, ResourceSet rss, int selectionIndex) {
 		ISelection selection = HandlerUtil.getCurrentSelection(event);
 
-		if (selection instanceof IStructuredSelection) {
-			if (selectionIndex < ((IStructuredSelection) selection).size()) {
-				Object selected = ((IStructuredSelection) selection).toArray()[selectionIndex];
+		if (selection instanceof IStructuredSelection && selectionIndex < ((IStructuredSelection) selection).size()) {
+			Object selected = ((IStructuredSelection) selection).toArray()[selectionIndex];
 
-				if ((selected != null) && (selected instanceof IResource)) {
-					return loadResource((IResource) selected, type, rss);
-				}
+			if (selected instanceof IResource) {
+				return loadResource((IResource) selected, type, rss);
 			}
 		}
 
@@ -82,7 +78,7 @@ public class EMFHandlerUtil {
 		if (selection instanceof IStructuredSelection) {
 			Object selected = ((IStructuredSelection) selection).getFirstElement();
 			
-			if ((selected != null) && (selected instanceof IResource)) {
+			if (selected instanceof IResource) {
 				return loadResource((IResource) selected, type, new ResourceSetImpl());
 			}
 		}
@@ -94,8 +90,8 @@ public class EMFHandlerUtil {
 		URI uri = getURI(resource);
 		Resource eResource = rss.getResource(uri, true);
 		
-		if ((eResource != null) && !eResource.getContents().isEmpty() 
-				&& (type.isInstance(eResource.getContents().get(0)))) {
+		if (eResource != null && !eResource.getContents().isEmpty() 
+				&& type.isInstance(eResource.getContents().get(0))) {
 			
 			return type.cast(eResource.getContents().get(0));
 		}

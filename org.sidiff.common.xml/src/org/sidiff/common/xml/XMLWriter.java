@@ -10,24 +10,23 @@ import org.sidiff.common.exceptions.SiDiffRuntimeException;
  */
 public class XMLWriter {
 
-	private final static String TAB = "    ";
+	private static final String TAB = "    ";
 
-	public final static String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n";
-	public final static String XML_COMMENT_VAR = "#COMMENT#";
-	public final static String XML_COMMENT = "<!-- " + XML_COMMENT_VAR + " -->\r\n";
-	public final static String DOCTYPE_ROOTELEMENT_VAR = "#ROOT#";
-	public final static String DOCTYPE_TYPE_VAR = "#DOCTYPE#";
-	public final static String DOCTYPE_TYPE_DEFINITION = "#DEFINITION#";
-	public final static String XML_DOCTYPE = "<!DOCTYPE " + DOCTYPE_ROOTELEMENT_VAR + " SYSTEM \"" + DOCTYPE_TYPE_VAR + "\"" + DOCTYPE_TYPE_DEFINITION + ">\r\n";
-	public final static String XML_CDATA_VAR = "#CDATA#";
-	public final static String XML_CDATA = "<![CDATA[" + XML_CDATA_VAR + "]]>";
+	public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\r\n";
+	public static final String XML_COMMENT_VAR = "#COMMENT#";
+	public static final String XML_COMMENT = "<!-- " + XML_COMMENT_VAR + " -->\r\n";
+	public static final String DOCTYPE_ROOTELEMENT_VAR = "#ROOT#";
+	public static final String DOCTYPE_TYPE_VAR = "#DOCTYPE#";
+	public static final String DOCTYPE_TYPE_DEFINITION = "#DEFINITION#";
+	public static final String XML_DOCTYPE = "<!DOCTYPE " + DOCTYPE_ROOTELEMENT_VAR + " SYSTEM \"" + DOCTYPE_TYPE_VAR + "\"" + DOCTYPE_TYPE_DEFINITION + ">\r\n";
+	public static final String XML_CDATA_VAR = "#CDATA#";
+	public static final String XML_CDATA = "<![CDATA[" + XML_CDATA_VAR + "]]>";
 
 	private int indentLevel;
-	private Stack<String> openElements = null;
-	// private Map<String, String> namespaceMap = null;
-	private Map<String, String> charTranslationMap = null;
-	private Map<String, String> idTranslationMap = null;
-	private Map<String, Vector<String>> idValidationMap = null;
+	private Stack<String> openElements;
+	private Map<String, String> charTranslationMap;
+	private Map<String, String> idTranslationMap;
+	private Map<String, Vector<String>> idValidationMap;
 	private Writer out;
 
 	public XMLWriter(OutputStream outputStream) {
@@ -36,8 +35,7 @@ public class XMLWriter {
 
 	public XMLWriter(Writer writer) {
 		this.indentLevel = 0;
-		// this.namespaceMap = new HashMap<String, String>();
-		this.openElements = new Stack<String>();
+		this.openElements = new Stack<>();
 		this.out = writer;
 		initCharTranslations();
 	}
@@ -59,7 +57,7 @@ public class XMLWriter {
 	}
 
 	public void initDocument(String doctype, String[][] idValidationMap, String rootelement, Map<String, String> attrs) {
-		if (rootelement != null && !rootelement.equals("")) {
+		if (rootelement != null && !"".equals(rootelement)) {
 			try {
 				out.write(XML_HEADER);
 
@@ -80,7 +78,7 @@ public class XMLWriter {
 	}
 
 	public void initDocumentEnhanced(String doctype, String rootelement, String doctypedefinition, Map<String, String> attrs) {
-		if (rootelement != null && !rootelement.equals("")) {
+		if (rootelement != null && !"".equals(rootelement)) {
 			try {
 				out.write(XML_HEADER);
 
@@ -99,12 +97,10 @@ public class XMLWriter {
 	public void finishDocument() {
 		if (this.openElements.size() == 1) {
 			generateEndTag(this.openElements.pop());
+		} else if (this.openElements.size() > 1) {
+			throw new SiDiffRuntimeException("Cannot finish Document until " + openElements.pop() + " is open!");
 		} else {
-			if (this.openElements.size() > 1) {
-				throw new SiDiffRuntimeException("Cannot finish Document until " + openElements.pop() + " is open!");
-			} else {
-				throw new SiDiffRuntimeException("Document already closed!");
-			}
+			throw new SiDiffRuntimeException("Document already closed!");
 		}
 
 		try {
@@ -170,11 +166,11 @@ public class XMLWriter {
 		text = XML_CDATA.replaceAll(XML_CDATA_VAR, text);
 		try {
 			if (indent) {
-				StringBuffer tabs = new StringBuffer();
+				StringBuilder tabs = new StringBuilder();
 				for (int i = 0; i < indentLevel + 1; i++) {
 					tabs.append(TAB);
 				}
-				text = tabs + text.replaceAll("\n", "\n" + tabs.toString());
+				text = tabs + text.replaceAll("\n", "\n" + tabs);
 				if (!text.endsWith("\n")) {
 					text += "\n";
 				}
@@ -186,7 +182,7 @@ public class XMLWriter {
 	}
 
 	private void generateTabs() throws IOException {
-		StringBuffer tabs = new StringBuffer();
+		StringBuilder tabs = new StringBuilder();
 		for (int i = 0; i < indentLevel; i++) {
 			tabs.append(TAB);
 		}
@@ -194,14 +190,14 @@ public class XMLWriter {
 	}
 
 	private void initIdValidation(String[][] idValidationMap) {
-		this.idValidationMap = new HashMap<String, Vector<String>>();
+		this.idValidationMap = new HashMap<>();
 		for (String[] entry : idValidationMap) {
 			if (entry.length != 2) {
 				throw new IllegalArgumentException("Id Validation Entry must have 2 Elements!\n" + entry + "\n" + idValidationMap + "\n");
 			} else {
 				Vector<String> idAttr = this.idValidationMap.get(entry[0]);
 				if (idAttr == null) {
-					idAttr = new Vector<String>();
+					idAttr = new Vector<>();
 					this.idValidationMap.put(entry[0], idAttr);
 				}
 				idAttr.add(entry[1]);
@@ -210,7 +206,7 @@ public class XMLWriter {
 	}
 
 	private void initIdTranslations() {
-		this.idTranslationMap = new HashMap<String, String>();
+		this.idTranslationMap = new HashMap<>();
 		this.idTranslationMap.put(" ", "__");
 		this.idTranslationMap.put(":", "...");
 		this.idTranslationMap.put("\"", "---");
@@ -226,7 +222,7 @@ public class XMLWriter {
 	}
 
 	private void initCharTranslations() {
-		this.charTranslationMap = new HashMap<String, String>();
+		this.charTranslationMap = new HashMap<>();
 		this.charTranslationMap.put("\n", "&#10;");
 		this.charTranslationMap.put("\"", "&quot;");
 		this.charTranslationMap.put("<", "&lt;");
@@ -241,8 +237,9 @@ public class XMLWriter {
 
 	private String translate(String toTranslate, Map<String, String> translationMap) {
 		String result = toTranslate;
-		for (String key : translationMap.keySet()) {
-			result = result.replace(key, translationMap.get(key));
+		for (Map.Entry<String, String> entry : translationMap.entrySet()) {
+			String key = entry.getKey();
+			result = result.replace(key, entry.getValue());
 		}
 		return result;
 	}
@@ -251,7 +248,7 @@ public class XMLWriter {
 		String result = null;
 		if (this.idValidationMap != null) {
 			Vector<String> idAttr = idValidationMap.get(element);
-			if ((idAttr != null) && idAttr.contains(attribute)) {
+			if (idAttr != null && idAttr.contains(attribute)) {
 				// We have a ID/IDREF Attribute, check for XML-Name Syntax
 				value = translate(value, idTranslationMap); // Replace non Name-Syntax Characters
 				if (Character.isLetter(value.charAt(0)) && !value.startsWith("xml")) { // Check Syntax

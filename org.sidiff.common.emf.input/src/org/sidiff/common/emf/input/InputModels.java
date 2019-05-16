@@ -30,8 +30,8 @@ public class InputModels {
 	private IProject project;
 
 	private InputModels() {
-		this.files = new ArrayList<IFile>();
-		this.resources = new ArrayList<Resource>();
+		this.files = new ArrayList<>();
+		this.resources = new ArrayList<>();
 		this.resourceSet = SiDiffResourceSet.create();
 	}
 
@@ -70,7 +70,7 @@ public class InputModels {
 	 * @return <code>true</code> if all resources have the same set of document types, <code>false</code> otherwise
 	 */
 	public boolean haveSameDocumentType() {
-		Set<Set<String>> documentTypes = new HashSet<Set<String>>();
+		Set<Set<String>> documentTypes = new HashSet<>();
 		for(Resource resource : resources) {
 			documentTypes.add(new HashSet<String>(EMFDocumentTypeUtil.resolve(resource)));
 		}
@@ -84,7 +84,7 @@ public class InputModels {
 	 */
 	public Set<String> getDocumentTypes() {
 		if(documentTypes == null) {
-			documentTypes = new HashSet<String>(EMFDocumentTypeUtil.resolve(resources));
+			documentTypes = new HashSet<>(EMFDocumentTypeUtil.resolve(resources));
 		}
 		return Collections.unmodifiableSet(documentTypes);
 	}
@@ -158,7 +158,7 @@ public class InputModels {
 		}
 
 		// by creating a set, we can check for duplicate labels
-		while((new HashSet<String>(labels).size()) < labels.size()) {
+		while(new HashSet<String>(labels).size() < labels.size()) {
 			// update each label by prepending the parent's name
 			boolean noParents = true;
 			for(int i = 0; i < parents.size(); i++) {

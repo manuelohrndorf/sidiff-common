@@ -28,13 +28,13 @@ import org.xml.sax.XMLReader;
 public class XMLResolver implements EntityResolver, URIResolver {
 
 	private static final String DTDMAPPING_MAPTYPE = "DTDMappings";
-	private final static String BOOTSTRAP_FILENAME = "org.sidiff.common.xml.EntityResolver.xml";
+	private static final String BOOTSTRAP_FILENAME = "org.sidiff.common.xml.EntityResolver.xml";
 
-	private static XMLResolver instance = null;
-	private Map<String, String> mappings = null;
+	private static XMLResolver instance;
+	private Map<String, String> mappings;
 
 	private XMLResolver() {
-		mappings = new HashMap<String, String>();
+		mappings = new HashMap<>();
 		// bootstrap
 		mappings.put("http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.io.map.dtd", "org.sidiff.common.io.map.dtd");
 	}
@@ -42,14 +42,14 @@ public class XMLResolver implements EntityResolver, URIResolver {
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 
 		if (systemId.startsWith("file")) {
-			systemId = systemId.substring(systemId.lastIndexOf("/") + 1);
+			systemId = systemId.substring(systemId.lastIndexOf('/') + 1);
 		}
 
 		String mapping = mappings.get(systemId);
 
 		if (publicId == null && mapping != null) {
 
-			assert(LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n -> Mapped to " + mapping));
+			assert LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n -> Mapped to " + mapping);
 
 			InputStream result = ResourceUtil.getInputStreamByResourceName(mapping);
 			if (result != null && result.available() > 0) {
@@ -59,7 +59,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 			}
 		}
 
-		assert(LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n  -> No Mapping"));
+		assert LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n  -> No Mapping");
 
 		return null;
 	}
@@ -69,8 +69,7 @@ public class XMLResolver implements EntityResolver, URIResolver {
 		try {
 			XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 			reader.setEntityResolver(this);
-			SAXSource source = new SAXSource(reader, new InputSource(new FileInputStream(href)));
-			return source;
+			return new SAXSource(reader, new InputSource(new FileInputStream(href)));
 		} catch (Exception e) {
 			throw new SiDiffRuntimeException("Cannot resolve " + href, e);
 		}

@@ -49,7 +49,7 @@ public class XMLTransformer {
 	public static InputStream transformUsingTempfile(InputStream xmlDataStream, InputStream xsltData) {
 		File tmpFile = null;
 		try {
-			tmpFile = File.createTempFile(xmlDataStream.hashCode()+"", ".xml");
+			tmpFile = File.createTempFile(String.valueOf(xmlDataStream.hashCode()), ".xml");
 		} catch (IOException e) {
 			return null;
 		}

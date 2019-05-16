@@ -15,12 +15,12 @@ public interface IWidgetSelection {
 	 *
 	 * @param listener The new listener.
 	 */
-	public void addSelectionListener(SelectionListener listener);
+	void addSelectionListener(SelectionListener listener);
 
 	/**
 	 * Remove a selection listener from the widget control(s).
 	 *
 	 * @param listener The listener to remove.
 	 */
-	public void removeSelectionListener(SelectionListener listener);
+	void removeSelectionListener(SelectionListener listener);
 }

@@ -114,7 +114,7 @@ public class UIUtil {
 		IEvaluationService evaluationService = serviceLocator.getService(IEvaluationService.class);
 
 		if (paramters == null) {
-			paramters = new HashMap<String, String>();
+			paramters = new HashMap<>();
 		}
 
 		try {
@@ -149,7 +149,9 @@ public class UIUtil {
 		IFile file = workspace.getRoot().getFileForLocation(location);
 
 		IWorkbenchPage page = getActivePage();
-		if(page == null) throw new IllegalStateException("The active workbench window has no active page");
+		if(page == null) {
+			throw new IllegalStateException("The active workbench window has no active page");
+		}
 
 		if (file != null) {
 			// Open from workspace:
@@ -193,7 +195,9 @@ public class UIUtil {
 	    int len = newText.length();
 
 	    // Determine if input is empty
-	    if (len < 1) return "Empty inputs are not allowed!";
+	    if (len < 1) {
+			return "Empty inputs are not allowed!";
+		}
 
 	    // Input must be OK
 	    return null;

@@ -11,7 +11,7 @@ public class ScopeLabelProvider extends ColumnLabelProvider {
 			switch((Scope)element) {
 				case RESOURCE: return "Single Resource";
 				case RESOURCE_SET: return "Complete Resource Set";
-			};
+			}
 		}
 		return super.getText(element);
 	}

@@ -14,8 +14,8 @@ import org.jdom2.output.XMLOutputter;
 
 public class XMLUtil {
 
-	private File file = null;
-	private Document doc = null;
+	private File file;
+	private Document doc;
 	private SAXBuilder builder;
 	private XMLOutputter outputter;
 	
@@ -30,12 +30,15 @@ public class XMLUtil {
 	}
 	
 	public void printXML() throws IOException{
-		if(doc != null) outputter.output(doc, System.out);
+		if(doc != null) {
+			outputter.output(doc, System.out);
+		}
 	}
 	
 	public void save(String path) throws FileNotFoundException, IOException{
-		if(file != null && doc != null)
+		if(file != null && doc != null) {
 			outputter.output(doc, new BufferedOutputStream(new FileOutputStream(path)));
+		}
 	}
 	
 	/**
@@ -44,8 +47,7 @@ public class XMLUtil {
 	 */
 	public List<Attribute> getAttributes(){
 		Iterator<Content> it = doc.getRootElement().getDescendants();
-		ArrayList<Attribute> result = new ArrayList<Attribute>();
-		result.addAll(doc.getRootElement().getAttributes());
+		ArrayList<Attribute> result = new ArrayList<>(doc.getRootElement().getAttributes());
 		while(it.hasNext()){
 			Object obj = it.next();
 			if(obj instanceof Element){
@@ -63,7 +65,7 @@ public class XMLUtil {
 	 */
 	public List<Attribute> getAttributesByName(String...names){
 		Iterator<Content> it = doc.getRootElement().getDescendants();
-		ArrayList<Attribute> result = new ArrayList<Attribute>();
+		ArrayList<Attribute> result = new ArrayList<>();
 		for(int i = 0; i<names.length; i++){
 			result.add(doc.getRootElement().getAttribute(names[i]));
 			while(it.hasNext()){

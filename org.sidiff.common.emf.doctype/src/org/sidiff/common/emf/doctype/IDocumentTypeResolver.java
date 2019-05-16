@@ -9,7 +9,7 @@ import org.sidiff.common.extension.TypedExtensionManager;
 /**
  * An <code>IDocumentTypeResolver</code> resolves the document types
  * of {@link Resource}s for models with a specific document type.
- * @author cpietsch, Robert Müller
+ * @author cpietsch, Robert Mï¿½ller
  *
  */
 public interface IDocumentTypeResolver extends ITypedExtension {
@@ -25,5 +25,5 @@ public interface IDocumentTypeResolver extends ITypedExtension {
 	 * @param resource the resource
 	 * @return list of document types
 	 */
-	public List<String> resolve(Resource resource);
+	List<String> resolve(Resource resource);
 }

@@ -9,13 +9,13 @@ public interface IWidgetValidation {
 	 *
 	 * @return <code>true</code> if everything is fine; <code>false</code> otherwise.
 	 */
-	public boolean validate();
+	boolean validate();
 
 	/**
 	 * 
 	 * @return An warning or error message about the actual state of the widget.
 	 */
-	public ValidationMessage getValidationMessage();
+	ValidationMessage getValidationMessage();
 
 
 	public class ValidationMessage {

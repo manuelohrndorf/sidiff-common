@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -184,7 +185,26 @@ public class UIUtil {
 		    }
 		});
 	}
-	
+
+	/**
+	 * Runs the given runnable on the UI thread and waits until it is finished,
+	 * returning the return value of the invocation of {@link RunnableWithResult#run()}
+	 * @param <T> type of the result
+	 * @param runnable a runnable which returns a result of type T
+	 * @return the result of type T
+	 */
+	public static <T> T syncExecWithResult(RunnableWithResult<T> runnable) {
+		AtomicReference<T> reference = new AtomicReference<T>(null);
+		Display.getDefault().syncExec(() -> {
+			reference.set(runnable.run());
+		});
+		return reference.get();
+	}
+
+	@FunctionalInterface
+	public interface RunnableWithResult<T> {
+		T run();
+	}
 	
 	/**
 	 * This class validates a String.

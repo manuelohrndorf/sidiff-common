@@ -3,6 +3,7 @@ package org.sidiff.common.ui.widgets;
 import java.util.Objects;
 import java.util.function.Function;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -47,6 +48,7 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 	 */
 	@Override
 	public final Composite createControl(Composite parent) {
+		Assert.isNotNull(getTitle(), "Title of AbstractContainerWidget must be set before its controls are created");
 		composite = containerFactory.createContainer(parent, getTitle(), getWidgetCallback(), this::createContents);
 		return composite;
 	}

@@ -3,11 +3,9 @@ package org.sidiff.common.ui.widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -18,18 +16,13 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * @author cpietsch
  *
  */
-public abstract class UriValidationWidget implements IWidget, IWidgetSelection, IWidgetValidation {
+public abstract class UriValidationWidget extends AbstractWidget {
 	
 	/**
 	 * 
 	 */
 	protected String label_group;
-	
-	/**
-	 * 
-	 */
-	protected ValidationMessage validationMessage;
-	
+
 	// ---------- UI Elements ----------
 	
 	/**
@@ -91,11 +84,10 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 		uri_text = new Text(uri_group, SWT.BORDER);
 		uri_text.setLayoutData(gd_uri_group_input);
 		uri_text.addModifyListener(new ModifyListener() {
-			
 			@Override
 			public void modifyText(ModifyEvent e) {
 				modifyTextHook();
-				uri_text.notifyListeners(SWT.Selection, new Event());
+				getWidgetCallback().requestValidation();
 			}
 		});
 		
@@ -106,45 +98,16 @@ public abstract class UriValidationWidget implements IWidget, IWidgetSelection, 
 	public Composite getWidget() {
 		return container;
 	}
-	
-	@Override
-	public void setLayoutData(Object layoutData) {
-		container.setLayoutData(layoutData);
-	}
-	
-	// ---------- IWidgetSelection -----------
-	
-	@Override
-	public void addSelectionListener(SelectionListener listener) {
-		if (uri_text == null) {
-			throw new RuntimeException("Create controls first!");
-		}
-		uri_text.addSelectionListener(listener);
-	}
 
-	@Override
-	public void removeSelectionListener(SelectionListener listener) {
-		if (uri_text != null) {
-			uri_text.removeSelectionListener(listener);
-		}
-	}
-	
 	// ---------- IWidgetValidation ----------
-	
-	@Override
-	public boolean validate() {
-		
-		return !uri_text.getText().isEmpty() && isValidURI(uri_text.getText());
-	}
 
 	@Override
-	public ValidationMessage getValidationMessage() {
-		if (validate()) {
-			validationMessage = new ValidationMessage(ValidationType.OK, "");
-		} else{
-			validationMessage = new ValidationMessage(ValidationType.ERROR, "Please select an URL for " + label_group);
+	protected ValidationMessage doValidate() {
+		if (!uri_text.getText().isEmpty() && isValidURI(uri_text.getText())) {
+			return new ValidationMessage(ValidationType.OK, "");
+		} else {
+			return new ValidationMessage(ValidationType.ERROR, "Please select an URL for " + label_group);
 		}
-		return validationMessage;
 	}
 	
 	//FIXME the URI_PATTERN depends on the supported protocols

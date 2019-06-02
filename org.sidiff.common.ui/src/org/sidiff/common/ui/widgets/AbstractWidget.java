@@ -2,6 +2,7 @@ package org.sidiff.common.ui.widgets;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.eclipse.jface.dialogs.ControlEnableState;
 import org.eclipse.swt.layout.GridData;
@@ -9,12 +10,13 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * <p>Abstract widget class with common widget functionality.<p>
- * <p>Implements {@link IWidget}, {@link IWidgetDependence} and {@link IWidgetCallback}
+ * <p>Implements {@link IWidget}, {@link IWidgetDependence}, {@link IWidgetCallback} and {@link IWidgetValidation}.
  * and provides default implementations for widgets dependency management and widget callbacks.</p>
- * <p>The widget is responsible for requesting validation, when its value changes, using the callbacks.</p>
+ * <p>Implements widget validation, storing the validation message provided by {@link #doValidate()}.
+ * The widget is responsible for requesting validation, when its value changes, using the callbacks.</p>
  * @author Robert Müller
  */
-public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWidgetCallback {
+public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWidgetCallback, IWidgetValidation {
 
 	private boolean enabled;
 
@@ -23,7 +25,16 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 
 	private ControlEnableState enableState;
 
-	private IWidgetCallback.Callback callback;
+	/**
+	 * The widget container callback.
+	 * Initially a Null-Implementation for compatibility with widget pages that do not set the callbacks.
+	 */
+	private IWidgetCallback.Callback callback = IWidgetCallback.Callback.NULL;
+	
+	/**
+	 * The cached validation message result of {@link #doValidate()}.
+	 */
+	private ValidationMessage validationMessage = ValidationMessage.OK;
 
 	public AbstractWidget() {
 		this.enabled = true;
@@ -159,22 +170,32 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 	}
 
 	@Override
-	public void setWidgetCallback(IWidgetCallback.Callback callback) {
+	public final void setWidgetCallback(IWidgetCallback.Callback callback) {
 		this.callback = callback;
 	}
 
 	/**
 	 * Returns this widget's {@link Callback}.
 	 * If no callback was set, this method does <u>not</u> return <code>null</code>,
-	 * but a {@link IWidgetCallback.Callback#NO_OP null-implementation}.
+	 * but a {@link IWidgetCallback.Callback#NULL null-implementation}.
 	 * @return the callback
 	 */
-	protected IWidgetCallback.Callback getWidgetCallback() {
-		// if the callback is null, return an implementation that does nothing
-		// for backwards compatibility with wizards that are not setting the callback
-		if(callback == null) {
-			return IWidgetCallback.Callback.NO_OP;
-		}
+	protected final IWidgetCallback.Callback getWidgetCallback() {
 		return callback;
+	}
+
+	@Override
+	public final ValidationMessage validate() {
+		validationMessage = Objects.requireNonNull(doValidate(), "doValidate must not return null");
+		return validationMessage;
+	}
+
+	@Override
+	public final ValidationMessage getValidationMessage() {
+		return validationMessage;
+	}
+
+	protected ValidationMessage doValidate() {
+		return ValidationMessage.OK;
 	}
 }

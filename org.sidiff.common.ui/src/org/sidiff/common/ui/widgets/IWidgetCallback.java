@@ -35,7 +35,7 @@ public interface IWidgetCallback {
 		/**
 		 * An implementation of {@link Callback} that does nothing.
 		 */
-		Callback NO_OP = new Callback() {
+		Callback NULL = new Callback() {
 			@Override
 			public void requestValidation() {
 				// do nothing

@@ -5,18 +5,17 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 public interface IWidgetValidation {
 
 	/**
-	 * Validate the actual state of the widget.
+	 * Validate the state of the widget and returns a descriptive ValidationMessage.
 	 *
 	 * @return <code>true</code> if everything is fine; <code>false</code> otherwise.
 	 */
-	boolean validate();
+	ValidationMessage validate();
 
 	/**
 	 * 
-	 * @return An warning or error message about the actual state of the widget.
+	 * @return Returns the ValidationMessage of the last call to {@link #validate()}.
 	 */
 	ValidationMessage getValidationMessage();
-
 
 	public class ValidationMessage {
 

@@ -9,7 +9,6 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,7 +23,7 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * @author cpietsch
  *
  */
-public abstract class SelectResourceWidget<R extends IResource>  implements IWidget, IWidgetSelection, IWidgetValidation {
+public abstract class SelectResourceWidget<R extends IResource> extends AbstractWidget {
 	
 	/**
 	 * 
@@ -40,12 +39,7 @@ public abstract class SelectResourceWidget<R extends IResource>  implements IWid
 	 * 
 	 */
 	protected String resourceType;
-	
-	/**
-	 * 
-	 */
-	protected ValidationMessage validationMessage;
-	
+
 	// ---------- UI Elements ----------
 	
 	/**
@@ -108,6 +102,7 @@ public abstract class SelectResourceWidget<R extends IResource>  implements IWid
 				IResource res = ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 				if(res != null) {
 					resource = (R) res;
+					getWidgetCallback().requestValidation();
 				}
 			}
 		});
@@ -117,7 +112,8 @@ public abstract class SelectResourceWidget<R extends IResource>  implements IWid
 		resourceChooseButton.addSelectionListener(new SelectionAdapter() {
 			@SuppressWarnings("unchecked")
 			public void widgetSelected(SelectionEvent event) {
-				ContainerSelectionDialog containerSelectionDialog = new ContainerSelectionDialog(container.getShell(), iContainer, false, "select a " + resourceType);; 
+				ContainerSelectionDialog containerSelectionDialog = new ContainerSelectionDialog(
+						container.getShell(), iContainer, false, "Select a " + resourceType);;
 				int i = containerSelectionDialog.open();
 				if(i == ContainerSelectionDialog.OK){
 					Object[] result = containerSelectionDialog.getResult();
@@ -126,6 +122,7 @@ public abstract class SelectResourceWidget<R extends IResource>  implements IWid
 						resource = (R) ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 						resourcePathText.setText(path.toOSString());
 						selectionHook();
+						getWidgetCallback().requestValidation();
 					}
 				}
 			}
@@ -140,50 +137,22 @@ public abstract class SelectResourceWidget<R extends IResource>  implements IWid
 	public Composite getWidget() {
 		return container;
 	}
-	
-	@Override
-	public void setLayoutData(Object layoutData) {
-		container.setLayoutData(layoutData);
-	}
-	
-	// ---------- IWidgetSelection ----------
-	
-	@Override
-	public void addSelectionListener(SelectionListener listener) {
-		if(resourceChooseButton == null){
-			throw new RuntimeException("Create controls first!");
-		}
-		resourceChooseButton.addSelectionListener(listener);
-	}
 
-	@Override
-	public void removeSelectionListener(SelectionListener listener) {
-		if(resourceChooseButton != null){
-			resourceChooseButton.removeSelectionListener(listener);
-		}
-	}
-	
 	// ---------- IWidgetValidation ----------
-	
-	@Override
-	public boolean validate() {
-		return resource != null;
-	}
 
 	@Override
-	public ValidationMessage getValidationMessage() {
-		if (validate()) {
-			validationMessage = new ValidationMessage(ValidationType.OK, "");
-		} else{
-			validationMessage = new ValidationMessage(ValidationType.ERROR, "Please select a resource");
+	protected ValidationMessage doValidate() {
+		if (resource != null) {
+			return ValidationMessage.OK;
+		} else {
+			return new ValidationMessage(ValidationType.ERROR, "Please select a resource");
 		}
-		return validationMessage;
 	}
 	
 	
 	// ---------- Getter- and Setter-Methods ---------- 
 	
-	public R getResorce() {
+	public R getResource() {
 		return resource;
 	}
 

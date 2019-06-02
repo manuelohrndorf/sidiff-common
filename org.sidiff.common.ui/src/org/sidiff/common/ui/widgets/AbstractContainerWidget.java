@@ -125,7 +125,13 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 			GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(expandable);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(expandable);
 			expandable.setText(title);
-			expandable.setClient(childrenFactory.apply(expandable));
+			Composite child = childrenFactory.apply(expandable);
+			if(child == expandable) {
+				throw new RuntimeException(
+						"AbstractContainerWidget.createContents must create a separate "
+						+ "composite parent when using DefaultContainerFactory.EXPANDABLE");
+			}
+			expandable.setClient(child);
 			expandable.addExpansionListener(new IExpansionListener() {
 				@Override
 				public void expansionStateChanging(ExpansionEvent e) {

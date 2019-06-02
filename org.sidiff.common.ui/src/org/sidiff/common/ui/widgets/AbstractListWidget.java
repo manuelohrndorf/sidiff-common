@@ -10,8 +10,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -69,8 +67,6 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	private int upperBound = Integer.MAX_VALUE;
 	private int tableWidth = 150;
 	private int tableHeight = 70;
-
-	private ValidationMessage validationMessage;
 
 	public AbstractListWidget(Class<T> elementType) {
 		this.elementType = Objects.requireNonNull(elementType);
@@ -166,11 +162,9 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		choiceTableViewer.setInput(getSelectableValues().toArray());
 		choiceTableViewer.setComparator(new ViewerComparator());
 		
-		choiceTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				if (addButton.isEnabled()) {
-					addButton.notifyListeners(SWT.Selection, null);
-				}
+		choiceTableViewer.addDoubleClickListener(e -> {
+			if (addButton.isEnabled()) {
+				addButton.notifyListeners(SWT.Selection, null);
 			}
 		});
 		choiceTableViewer.addFilter(new ViewerFilter() {
@@ -224,11 +218,9 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 			featureTableViewer.setComparator(new ViewerComparator());
 		}
 
-		featureTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				if (removeButton.isEnabled()) {
-					removeButton.notifyListeners(SWT.Selection, null);
-				}
+		featureTableViewer.addDoubleClickListener(e -> {
+			if (removeButton.isEnabled()) {
+				removeButton.notifyListeners(SWT.Selection, null);
 			}
 		});
 	}
@@ -384,50 +376,37 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	 * </pre>
 	 */
 	@Override
-	public boolean validate() {
+	protected ValidationMessage doValidate() {
 		if(getSelectableValues().isEmpty() && getLowerBound() > 0) {
-			setValidationMessage(new ValidationMessage(ValidationType.ERROR, "No " + getTitle() + " is available."));
-			return false;
+			return new ValidationMessage(ValidationType.ERROR, "No " + getTitle() + " is available.");
 		} else if(getSelection().size() < getLowerBound()) {
 			if(getLowerBound() == 1) {
-				setValidationMessage(new ValidationMessage(ValidationType.ERROR,
-						getTitle() + " requires a value."));
-			} else {
-				setValidationMessage(new ValidationMessage(ValidationType.ERROR,
-						getTitle() + " requires at least " + getLowerBound() + " values."));
+				return new ValidationMessage(ValidationType.ERROR,
+						getTitle() + " requires a value.");
 			}
-			return false;
+			return new ValidationMessage(ValidationType.ERROR,
+					getTitle() + " requires at least " + getLowerBound() + " values.");
 		} else if(getSelection().size() > getUpperBound()) {
 			if(getUpperBound() == 1) {
-				setValidationMessage(new ValidationMessage(ValidationType.ERROR,
-						getTitle() + " cannot have multiple values."));
-			} else {
-				setValidationMessage(new ValidationMessage(ValidationType.ERROR,
-						getTitle() + " must have less than " + getUpperBound() + " values."));
+				return new ValidationMessage(ValidationType.ERROR,
+						getTitle() + " cannot have multiple values.");
 			}
-			return false;
+			return new ValidationMessage(ValidationType.ERROR,
+					getTitle() + " must have less than " + getUpperBound() + " values.");
 		}
-		setValidationMessage(ValidationMessage.OK);
-		return true;
-	}
-	
-	@Override
-	public ValidationMessage getValidationMessage() {
-		return validationMessage;
-	}
-	
-	protected void setValidationMessage(ValidationMessage validationMessage) {
-		this.validationMessage = validationMessage;
+		return ValidationMessage.OK;
 	}
 
 	public Class<T> getElementType() {
 		return elementType;
 	}
 	
+	@Override
 	public String getTitle() {
 		return title;
 	}
 
+	@Override
 	public void setTitle(String title) {
 		this.title = Objects.requireNonNull(title);
 	}

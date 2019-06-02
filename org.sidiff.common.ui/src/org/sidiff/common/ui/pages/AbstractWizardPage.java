@@ -250,10 +250,11 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 * @param widget the widget
 	 */
 	protected void validateWidget(IWidgetValidation widget) {
-		if(!widget.validate()) {
-			setPageComplete(false);
+		ValidationMessage message = widget.validate();
+		if(message.getType() == ValidationType.ERROR) {
+			setPageComplete(false);			
 		}
-		setValidationMessage(widget.getValidationMessage());
+		setValidationMessage(message);
 	}
 
 	protected void setValidationMessage(ValidationMessage message) {

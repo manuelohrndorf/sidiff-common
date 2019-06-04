@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -118,6 +120,23 @@ public class EMFStorage {
 			URI replaced = uri.replacePrefix(workspaceBase, URI.createURI("/"));
 			if(replaced != null) {
 				return URI.createPlatformResourceURI(replaced.toString(), true);
+			}
+			
+			try {
+				IFile files[] = getWorkspaceRoot().findFilesForLocationURI(new java.net.URI(uri.toString()));
+				if(files.length >= 1) {
+					return toPlatformURI(files[0]);
+				}
+			} catch (URISyntaxException e) {
+				// fall through
+			}
+			
+			for(int i = 0; i < uri.segmentCount(); i++) {
+				IProject project = getWorkspaceRoot().getProject(uri.segment(i));
+				if(project.exists()) {
+					String segments = IntStream.range(i+1, uri.segmentCount()).mapToObj(uri::segment).collect(Collectors.joining("/"));
+					return URI.createPlatformResourceURI("/" + project.getName() + "/" + segments, true);
+				}
 			}
 		}
 		return uri;

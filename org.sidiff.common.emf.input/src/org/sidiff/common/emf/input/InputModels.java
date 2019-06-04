@@ -57,10 +57,6 @@ public class InputModels {
 		}
 	}
 
-	protected Resource getResource(IFile file) {
-		return resourceSet.getResource(EMFStorage.toPlatformURI(file), true);
-	}
-
 	/**
 	 * Returns whether the resources have the same document types.
 	 * 

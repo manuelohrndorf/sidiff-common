@@ -1,7 +1,9 @@
 package org.sidiff.common.emf.settings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -21,23 +23,21 @@ public abstract class AbstractSettings implements ISettings {
 	/**
 	 * All listeners of this Setting-Object.
 	 */
-	private final List<ISettingsChangedListener> listeners;
+	private final List<ISettingsChangedListener> listeners = new ArrayList<>();
 
 	/**
 	 * Cached status describing the validity of this Settings-Object.
 	 */
 	private MultiStatus status;
 
-	public AbstractSettings() {
-		this.listeners = new ArrayList<>();
-	}
-
+	@Override
 	public void addSettingsChangedListener(ISettingsChangedListener listener) {
 		if (!this.listeners.contains(listener)) {
 			this.listeners.add(listener);
 		}
 	}
 
+	@Override
 	public void removeSettingsChangedListener(ISettingsChangedListener listener) {
 		this.listeners.remove(listener);
 	}
@@ -68,6 +68,21 @@ public abstract class AbstractSettings implements ISettings {
 			validate(status);
 		}
 		return status;
+	}
+
+	/**
+	 * Initializes all required, unset parameters to default values for the specific document types.
+	 * The set of document types will be empty for the generic document type.
+	 * @param documentTypes the document types, empty if generic
+	 */
+	public abstract void initDefaults(Set<String> documentTypes);
+
+	/**
+	 * Initializes all required, unset parameters to default values using generic extensions.
+	 * Convenience method equivalent to <code>initDefaults(Collections.emptySet())</code>.
+	 */
+	public void initDefaults() {
+		initDefaults(Collections.emptySet());
 	}
 
 	/**

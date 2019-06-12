@@ -1,5 +1,7 @@
 package org.sidiff.common.emf.settings;
 
+import java.util.Set;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
@@ -14,19 +16,35 @@ public class BaseSettings extends AbstractSettings {
 	/**
 	 * The {@link Scope} of the comparison. (Default: {@link Scope#RESOURCE}.
 	 */
-	private Scope scope = Scope.RESOURCE;
+	private Scope scope;
 
 	/**
 	 * Validation of the input models. (Default: False)
 	 */
-	private boolean validate = false;
+	private boolean validate;
 
 	public BaseSettings() {
 	}
-
+	
 	public BaseSettings(Scope scope, boolean validate) {
 		this.scope = scope;
 		this.validate = validate;
+	}
+
+	@Override
+	public void initDefaults(Set<String> documentTypes) {
+		if(scope == null) {
+			scope = getDefaultScope(documentTypes);			
+		}
+		this.validate = getDefaultValidate(documentTypes);
+	}
+
+	protected Scope getDefaultScope(Set<String> documentTypes) {
+		return Scope.RESOURCE;
+	}
+
+	protected boolean getDefaultValidate(Set<String> documentTypes) {
+		return false;
 	}
 
 	@Override

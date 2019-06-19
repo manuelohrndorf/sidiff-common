@@ -50,7 +50,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return composite;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked") // we explicitly check below
 	protected Control createConfigurationOptionControl(Composite parent, ConfigurationOption<?> option) {
 		final Class<?> type = option.getType();
 		if(type == Boolean.class) {
@@ -112,7 +112,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	 * <pre>ConfigurableExtensionWidget.addAllForWidget(composite, widget, this::addWidget);</pre>
 	 * @param parent the parent composite
 	 * @param widget the widget for which to create new configuration widgets
-	 * @param addWidget the function to add a widget to wizard page
+	 * @param addWidget the function to add a widget to the wizard page
 	 */
 	public static <W extends IWidgetDependence & IWidgetModification<? extends IConfigurableExtension>>
 		void addAllForWidget(Composite parent, W widget, BiConsumer<Composite,IWidget> addWidget) {

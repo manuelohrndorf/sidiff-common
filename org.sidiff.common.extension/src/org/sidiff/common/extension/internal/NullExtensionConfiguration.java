@@ -8,7 +8,7 @@ import org.sidiff.common.extension.configuration.ConfigurationOption;
 import org.sidiff.common.extension.configuration.IExtensionConfiguration;
 
 /**
- * A extension configuration implementation that does nothing.
+ * An empty extension configuration implementation that does nothing.
  * @author Robert Müller
  */
 public class NullExtensionConfiguration implements IExtensionConfiguration {

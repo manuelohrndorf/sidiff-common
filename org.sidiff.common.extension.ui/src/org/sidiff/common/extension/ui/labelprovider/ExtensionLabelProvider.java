@@ -47,6 +47,7 @@ public class ExtensionLabelProvider extends ColumnLabelProvider {
 		super.dispose();
 		if(extensionImage != null) {
 			extensionImage.dispose();
+			extensionImage = null;
 		}
 	}
 }

@@ -58,6 +58,7 @@ public class MapContentHandler implements ContentHandler {
 	/**
 	 * @see org.xml.sax.ContentHandler#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
 	 */
+	@Override
 	public void startElement(String uri, String localName, String name, Attributes atts) throws SAXException {
 		if (localName.equalsIgnoreCase(ELEM_MAP)) {
 			checkMapType(atts);
@@ -80,9 +81,8 @@ public class MapContentHandler implements ContentHandler {
 				((MapWithDefault<String, String>) this.map).setDefaultValue(atts.getValue(ATT_MAPENTRY_VALUE));
 				assert(LogUtil.log(LogEvent.DEBUG, "Following entry was added:" + "default ,value:" + atts.getValue(ATT_MAPENTRY_VALUE)));
 				return;
-			} else {
-				assert(LogUtil.log(LogEvent.DEBUG, "Default key '" + DEFAULT_VALUE_KEY + "' occured, but map does not Support default!"));
 			}
+			assert(LogUtil.log(LogEvent.DEBUG, "Default key '" + DEFAULT_VALUE_KEY + "' occured, but map does not Support default!"));
 		}
 
 		this.map.put(atts.getValue(ATT_MAPENTRY_KEY), atts.getValue(ATT_MAPENTRY_VALUE));
@@ -105,36 +105,46 @@ public class MapContentHandler implements ContentHandler {
 	/**
 	 * @see org.xml.sax.ContentHandler#endDocument()
 	 */
+	@Override
 	public void endDocument() throws SAXException {
 		this.map = null;
 	}
 
 	// Following the unused method stubs of the ContentHandler interface.
+	@Override
 	public void endElement(String uri, String localName, String name) throws SAXException {
 	}
 
+	@Override
 	public void startDocument() throws SAXException {
 
 	}
 
+	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 	}
 
+	@Override
 	public void endPrefixMapping(String prefix) throws SAXException {
 	}
 
+	@Override
 	public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
 	}
 
+	@Override
 	public void processingInstruction(String target, String data) throws SAXException {
 	}
 
+	@Override
 	public void setDocumentLocator(Locator locator) {
 	}
 
+	@Override
 	public void skippedEntity(String name) throws SAXException {
 	}
 
+	@Override
 	public void startPrefixMapping(String prefix, String uri) throws SAXException {
 	}
 

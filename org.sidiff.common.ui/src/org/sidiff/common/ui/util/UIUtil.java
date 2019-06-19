@@ -205,22 +205,23 @@ public class UIUtil {
 	public interface RunnableWithResult<T> {
 		T run();
 	}
-	
+
 	/**
 	 * This class validates a String.
 	 */
 	public static class NotEmptyValidator implements IInputValidator {
 
-	  public String isValid(String newText) {
-	    int len = newText.length();
+		@Override
+		public String isValid(String newText) {
+			int len = newText.length();
 
-	    // Determine if input is empty
-	    if (len < 1) {
-			return "Empty inputs are not allowed!";
+			// Determine if input is empty
+			if (len < 1) {
+				return "Empty inputs are not allowed!";
+			}
+
+			// Input must be OK
+			return null;
 		}
-
-	    // Input must be OK
-	    return null;
-	  }
 	}
 }

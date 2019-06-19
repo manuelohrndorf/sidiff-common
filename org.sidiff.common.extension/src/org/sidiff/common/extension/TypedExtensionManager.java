@@ -85,12 +85,11 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 		Assert.isNotNull(documentTypes);
 		// 1. try to find a non-generic extension
 		// 2. if none is available, find a generic one
-		return Stream.of(
-				getExtensions(documentTypes, false).stream().findAny(),
-				getGenericExtensions().stream().findAny())
-			.filter(Optional::isPresent)
-			.map(Optional::get)
-			.findFirst();
+		return
+			Stream.concat(
+				getExtensions(documentTypes, false).stream(),
+				getGenericExtensions().stream()
+			).findFirst();
 	}
 
 	/**

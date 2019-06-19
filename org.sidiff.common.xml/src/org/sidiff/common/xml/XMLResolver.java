@@ -39,14 +39,14 @@ public class XMLResolver implements EntityResolver, URIResolver {
 		mappings.put("http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.io.map.dtd", "org.sidiff.common.io.map.dtd");
 	}
 
+	@SuppressWarnings("resource")
+	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-
 		if (systemId.startsWith("file")) {
 			systemId = systemId.substring(systemId.lastIndexOf('/') + 1);
 		}
 
 		String mapping = mappings.get(systemId);
-
 		if (publicId == null && mapping != null) {
 
 			assert LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n -> Mapped to " + mapping);
@@ -54,9 +54,8 @@ public class XMLResolver implements EntityResolver, URIResolver {
 			InputStream result = ResourceUtil.getInputStreamByResourceName(mapping);
 			if (result != null && result.available() > 0) {
 				return new InputSource(result);
-			} else {
-				throw new SiDiffRuntimeException("Cannot get " + mapping + " as Stream, please check your classpath");
 			}
+			throw new SiDiffRuntimeException("Cannot get " + mapping + " as Stream, please check your classpath");
 		}
 
 		assert LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n  -> No Mapping");
@@ -64,8 +63,9 @@ public class XMLResolver implements EntityResolver, URIResolver {
 		return null;
 	}
 
+	@SuppressWarnings("resource")
+	@Override
 	public Source resolve(String href, String base) throws TransformerException {
-
 		try {
 			XMLReader reader = SAXParserFactory.newInstance().newSAXParser().getXMLReader();
 			reader.setEntityResolver(this);

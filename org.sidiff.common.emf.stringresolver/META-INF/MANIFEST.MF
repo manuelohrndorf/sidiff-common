@@ -3,12 +3,10 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common - Model String Resolver
 Bundle-SymbolicName: org.sidiff.common.emf.stringresolver;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: org.sidiff.common.emf.stringresolver.internal.Activator
 Require-Bundle: org.sidiff.common.emf;visibility:=reexport,
  org.sidiff.common.extension;visibility:=reexport
 Export-Package: org.sidiff.common.emf.stringresolver,
  org.sidiff.common.emf.stringresolver.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Software Engineering Group, University of Siegen
-Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: org.sidiff.common.stringresolver

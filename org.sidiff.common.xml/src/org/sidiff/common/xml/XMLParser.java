@@ -197,14 +197,17 @@ public class XMLParser {
 
 	private static class XMLErrorHander implements ErrorHandler {
 
+		@Override
 		public void error(SAXParseException exception) throws SAXException {
 			throw new SiDiffRuntimeException("Parser Error," + exception.getMessage(), exception);
 		}
 
+		@Override
 		public void fatalError(SAXParseException exception) throws SAXException {
 			throw new SiDiffRuntimeException("Fatal Parser Error," + exception.getMessage(), exception);
 		}
 
+		@Override
 		public void warning(SAXParseException exception) throws SAXException {
 			throw new SiDiffRuntimeException("Parser Warning," + exception.getMessage(), exception);
 		}

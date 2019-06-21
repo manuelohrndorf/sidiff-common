@@ -12,6 +12,7 @@ public class SiDiffAdapterImpl extends AdapterImpl implements SiDiffAdapter {
 
 	private SiDiffAdapterFactory adapterFactory;
 
+	@Override
 	public void setAdapterFactory(SiDiffAdapterFactory factory) {
 		adapterFactory = factory;
 	}

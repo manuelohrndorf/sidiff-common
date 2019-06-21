@@ -13,12 +13,11 @@ import org.sidiff.common.exceptions.SiDiffRuntimeException;
  */
 public class AnnotateableElementImpl extends SiDiffAdapterImpl implements AnnotateableElement {
 
-	private TreeMap<String, Object> annotations = new TreeMap<String, Object>();
+	private Map<String, Object> annotations = new TreeMap<String, Object>();
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getAnnotation(String key, Class<T> type) {
-		return (T) annotations.get(key);
+		return type.cast(annotations.get(key));
 	}
 
 	@Override
@@ -51,5 +50,4 @@ public class AnnotateableElementImpl extends SiDiffAdapterImpl implements Annota
 	public Collection<String> getAnnotations() {
 		return Collections.unmodifiableSet(annotations.keySet());
 	}
-
 }

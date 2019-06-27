@@ -2,19 +2,16 @@ package org.sidiff.common.extension;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.RegistryFactory;
 import org.sidiff.common.extension.IExtension.Description;
 import org.sidiff.common.extension.internal.ExtensionComparator;
-import org.sidiff.common.extension.internal.ExtensionsPlugin;
+import org.sidiff.common.extension.storage.CachingExtensionManagerStorage;
+import org.sidiff.common.extension.storage.IExtensionManagerStorage;
 
 /**
  * <p>A generic manager for extensions.</p>
@@ -29,51 +26,31 @@ import org.sidiff.common.extension.internal.ExtensionsPlugin;
  */
 public class ExtensionManager<T extends IExtension> {
 
-	private final Map<String,T> extensions = new HashMap<>();
-	private final Comparator<T> comparator = new ExtensionComparator<>();
+	private final IExtensionManagerStorage<T> storage;
 
 	/**
-	 * Creates a new, empty extension manager.
+	 * Creates a new, empty extension manager, using a {@link CachingExtensionManagerStorage}.
 	 */
 	public ExtensionManager() {
-		// empty default constructor
+		this(new CachingExtensionManagerStorage<>());
 	}
 
 	/**
 	 * Creates a new, empty extension manager and loads the extensions
-	 * from the extension point specified by the description.
+	 * from the extension point specified by the description, using
+	 * a {@link CachingExtensionManagerStorage}.
 	 * @param description description of the extension point
 	 */
 	public ExtensionManager(final Description<? extends T> description) {
-		addExtensions(description);
+		this(new CachingExtensionManagerStorage<>(description));
 	}
 
 	/**
-	 * Loads the extensions from the extension point specified by the description.
-	 * @param description description of the extension point
+	 * Creates a new extension manager that uses the given storage implementation.
+	 * @param storage the storage implementation
 	 */
-	public void addExtensions(Description<? extends T> description) {
-		Assert.isNotNull(description);
-		ExtensionsPlugin.logInfo("Initializing " + description.getExtensionClass().getSimpleName()
-				+ " extensions of extension point " + description.getExtensionPointId());
-		for(final IConfigurationElement element :
-			RegistryFactory.getRegistry().getConfigurationElementsFor(description.getExtensionPointId())) {
-			if(element.getName().equals(description.getElementName())) {
-				try {
-					final Object rawExtension = element.createExecutableExtension(description.getClassAttribute());
-					final T extension = description.getExtensionClass().cast(rawExtension);
-					addExtension(extension);
-					ExtensionsPlugin.logInfo("Created executable extension " + extension.getKey()
-						+ " of " + element.getDeclaringExtension().getContributor().getName());
-				} catch (Exception | LinkageError e) {
-					// We also catch LinkageError because it may be thrown if the executable
-					// extension class is not found or incompatible with the environment.
-					ExtensionsPlugin.logError("Failed to create executable extension contributed by "
-							+ element.getDeclaringExtension().getContributor().getName()
-							+ " for extension point " + description.getExtensionPointId(), e);
-				}
-			}
-		}
+	public ExtensionManager(final IExtensionManagerStorage<T> storage) {
+		this.storage = Objects.requireNonNull(storage, "extension manager storage is null");
 	}
 
 	/**
@@ -83,8 +60,8 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public final void addExtension(final T extension) {
 		Assert.isNotNull(extension);
-		synchronized (extensions) {
-			extensions.put(extension.getKey(), extension);
+		synchronized (storage) {
+			storage.addExtension(extension);
 		}
 	}
 
@@ -95,8 +72,8 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public final void removeExtension(final String id) {
 		Assert.isNotNull(id);
-		synchronized (extensions) {
-			extensions.remove(id);
+		synchronized (storage) {
+			storage.removeExtension(id);
 		}
 	}
 
@@ -104,8 +81,8 @@ public class ExtensionManager<T extends IExtension> {
 	 * Removes all extensions from this manager.
 	 */
 	public final void clearExtensions() {
-		synchronized (extensions) {
-			extensions.clear();
+		synchronized (storage) {
+			storage.clearExtensions();
 		}
 	}
 
@@ -114,8 +91,8 @@ public class ExtensionManager<T extends IExtension> {
 	 * @return unmodifiable collection of all extensions of this manager
 	 */
 	public final Collection<T> getExtensions() {
-		synchronized (extensions) {
-			return Collections.unmodifiableCollection(extensions.values());
+		synchronized (storage) {
+			return storage.getExtensions();
 		}
 	}
 
@@ -136,10 +113,10 @@ public class ExtensionManager<T extends IExtension> {
 	 * @param id the extension's ID
 	 * @return {@link Optional} containing the extension with the id, or empty Optional if none
 	 */
-	public final Optional<T> getExtension(final String id) {
+	public final Optional<? extends T> getExtension(final String id) {
 		Assert.isNotNull(id);
-		synchronized (extensions) {
-			return Optional.ofNullable(extensions.get(id));
+		synchronized (storage) {
+			return storage.getExtension(id);
 		}
 	}
 
@@ -151,12 +128,10 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public final <S extends T> Optional<S> getExtension(final Class<S> extensionClass) {
 		Assert.isNotNull(extensionClass);
-		synchronized (extensions) {
-			return extensions.values().stream()
-					.filter(extensionClass::isInstance)
-					.map(extensionClass::cast)
-					.findFirst();
-		}
+		return getExtensions().stream()
+				.filter(extensionClass::isInstance)
+				.map(extensionClass::cast)
+				.findFirst();
 	}
 
 	/**
@@ -178,6 +153,6 @@ public class ExtensionManager<T extends IExtension> {
 	 * @return comparator for extensions
 	 */
 	public Comparator<? super T> getComparator() {
-		return comparator;
+		return ExtensionComparator.getInstance();
 	}
 }

@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.Assert;
 import org.sidiff.common.extension.IExtension.Description;
+import org.sidiff.common.extension.storage.IExtensionManagerStorage;
 
 /**
  * <p>A generic manager for typed extensions, extending {@link ExtensionManager}
@@ -22,7 +23,7 @@ import org.sidiff.common.extension.IExtension.Description;
 public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionManager<T> {
 
 	/**
-	 * Creates a new, empty typed extension manager.
+	 * Creates a new, empty typed extension manager, using a {@link CachingExtensionManagerStorage}.
 	 */
 	public TypedExtensionManager() {
 		super();
@@ -30,11 +31,20 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 
 	/**
 	 * Creates a new, empty typed extension manager and loads the extensions
-	 * from the extension point specified by the description.
+	 * from the extension point specified by the description, using
+	 * a {@link CachingExtensionManagerStorage}.
 	 * @param description description of the extension point
 	 */
 	public TypedExtensionManager(final Description<? extends T> description) {
 		super(description);
+	}
+	
+	/**
+	 * Creates a new typed extension manager that uses the given storage implementation.
+	 * @param storage the storage implementation
+	 */
+	public TypedExtensionManager(final IExtensionManagerStorage<T> storage) {
+		super(storage);
 	}
 
 	/**

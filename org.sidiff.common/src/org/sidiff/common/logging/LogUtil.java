@@ -1,7 +1,11 @@
 package org.sidiff.common.logging;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Supplier;
 
 import org.sidiff.common.CommonPlugin;
 import org.sidiff.common.reflection.ReflectionUtil;
@@ -277,6 +281,17 @@ public class LogUtil {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Lazily push out a log message. 
+	 * 
+	 * @param event Classification of the delivered Message.
+	 * @param messageSupplier Supplier of Objects/Messages
+	 * @return always true for use with asserts
+	 */
+	public static boolean log(LogEvent event, Supplier<?>... messageSupplier) {
+		return log(event, (Object[])messageSupplier);
 	}
 
 	private static boolean disableRelease() {

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 /**
  * An abstract extension configuration which implements some
- * methods which are likely to be equal in a subclasses.
+ * methods which are likely to be equal in all subclasses.
  * @author Robert Müller
  */
 public abstract class AbstractExtensionConfiguration implements IExtensionConfiguration {
@@ -18,7 +18,7 @@ public abstract class AbstractExtensionConfiguration implements IExtensionConfig
 
 	@Override
 	public void setOptions(Map<String, Object> options) {
-		options.entrySet().forEach(e -> setOption(e.getKey(), e.getValue()));
+		options.forEach(this::setOption);
 	}
 
 	@Override

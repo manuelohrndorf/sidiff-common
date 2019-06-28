@@ -267,7 +267,6 @@ public class LogUtil {
 	 * @param message Sequence of Objects/Messages
 	 * @return always true for use with asserts
 	 */
-	@SuppressWarnings("all")
 	public static boolean log(LogEvent event, Object... message) {
 		if(LOGGING_ENABLED && doLogEvent(event)){
 			StackTraceElement source = Thread.currentThread().getStackTrace()[2];

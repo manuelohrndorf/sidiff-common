@@ -1,6 +1,9 @@
 package org.sidiff.common.stringresolver;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.sidiff.common.reflection.ReflectionUtil;
 
@@ -65,7 +68,12 @@ public class StringUtil {
 		if(object == null) {
 			return "null";
 		}
-		
+
+		// Resolve lazy objects (supplier lambdas)
+		if(object instanceof Supplier<?>) {
+			return resolve(((Supplier<?>)object).get());
+		}
+
 		Class<?> objectClass = object.getClass();
 		if (resolvers.containsKey(objectClass)) {
 			return resolvers.get(objectClass).resolve(object);
@@ -99,18 +107,14 @@ public class StringUtil {
 	 * @return the concatted string representation of the object.
 	 */
 	public static String resolve(Object... objects) {
-		StringBuilder completeMessage = new StringBuilder();
-		for (Object object : objects) {
-			completeMessage.append(resolve(object));
-			completeMessage.append(" ");
-		}
-		return completeMessage.toString();
+		return Stream.of(objects).map(StringUtil::resolve).collect(Collectors.joining(" "));
 	}
 	
 	/**
 	 * Helper method to concatenate strings.
 	 * @param subStrings
 	 * @return
+	 * @deprecated Use Streams and {@link Collectors#joining}.
 	 */
 	public static String concat(String... subStrings) {
 

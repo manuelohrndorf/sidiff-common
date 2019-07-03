@@ -59,6 +59,8 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			return createNumberControl(parent, (ConfigurationOption<? extends Number>)option);
 		} else if(type == String.class || type == Float.class || type == Double.class || type == Long.class) {
 			return createTextControl(parent, option);
+		} else if(type.isEnum()) {
+			return createChoiceControl(parent, (ConfigurationOption<? extends Enum<?>>)option);
 		}
 		return null;
 	}
@@ -67,7 +69,9 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		Button check = new Button(parent, SWT.CHECK);
 		check.setText(option.getName());
 		check.setToolTipText("Option '" + option.getKey() + "' of '" + extension.getKey() + "'");
-		check.setSelection(option.getValue());
+		if(option.isSet()) {
+			check.setSelection(option.getValue());
+		}
 		check.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValue(check.getSelection())));
 		return check;
 	}
@@ -79,9 +83,17 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		
 		Spinner spinner = new Spinner(group, SWT.NONE);
 		spinner.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
-		spinner.setSelection(option.getValue().intValue());
+		if(option.isSet()) {
+			spinner.setSelection(option.getValue().intValue());
+		}
 		spinner.addSelectionListener(SelectionListener.widgetSelectedAdapter(
 				e -> option.setValueUnsafe(String.valueOf(spinner.getSelection()))));
+		if(option.getMinValue() != null) {
+			spinner.setMinimum(option.getMinValue().intValue());			
+		}
+		if(option.getMaxValue() != null) {
+			spinner.setMaximum(option.getMaxValue().intValue());
+		}
 		return group;
 	}
 
@@ -91,15 +103,32 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setLayout(new GridLayout(1, true));
 		
 		Text text = new Text(group, SWT.NONE);
-		text.setText(String.valueOf(option.getValue()));
+		if(option.isSet()) {
+			text.setText(String.valueOf(option.getValue()));
+		}
 		text.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		text.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(text.getText())));
 		return group;
 	}
 
+	protected Control createChoiceControl(Composite parent, ConfigurationOption<? extends Enum<?>> option) {
+		Group group = new Group(parent, SWT.NONE);
+		group.setText(option.getName());
+		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		group.setLayout(new GridLayout(1, true));
+		
+		for(Enum<?> enumLiteral : option.getType().getEnumConstants()) {
+			Button button = new Button(group, SWT.RADIO);
+			button.setText(enumLiteral.toString());
+			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(enumLiteral)));
+			button.setSelection(enumLiteral == option.getValue());
+		}
+		return group;
+	}
+
 	protected static boolean isTypeSupported(Class<?> type) {
 		return type == Boolean.class || type == Short.class || type == Byte.class || type == Integer.class
-				|| type == String.class || type == Float.class || type == Double.class || type == Long.class;
+				|| type == String.class || type == Float.class || type == Double.class || type == Long.class || type.isEnum();
 	}
 
 	/**

@@ -25,4 +25,9 @@ public abstract class AbstractExtensionConfiguration implements IExtensionConfig
 	public void resetToDefaults() {
 		getConfigurationOptions().forEach(ConfigurationOption::resetToDefault);
 	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName() + getConfigurationOptions();
+	}
 }

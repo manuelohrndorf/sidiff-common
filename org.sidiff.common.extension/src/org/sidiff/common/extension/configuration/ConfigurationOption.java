@@ -1,6 +1,8 @@
 package org.sidiff.common.extension.configuration;
 
+import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import org.sidiff.common.converter.ConverterUtil;
@@ -17,14 +19,21 @@ public class ConfigurationOption<T> {
 	private final String key;
 	private final String name;
 	private final Class<T> type;
+	private final T minValue;
+	private final T maxValue;
 	private final T defaultValue;
 	private final BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
 	private T value;
 
-	protected ConfigurationOption(String key, String name, Class<T> type, T defaultValue, BiFunction<ConfigurationOption<T>,T,Boolean> onSet) {
+	protected ConfigurationOption(String key, String name, Class<T> type,
+			T minValue, T maxValue, T defaultValue,
+			BiFunction<ConfigurationOption<T>,T,Boolean> onSet) {
+
 		this.key = key;
 		this.name = name;
 		this.type = type;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
 		this.defaultValue = defaultValue;
 		this.onSet = onSet;
 		this.value = defaultValue;
@@ -55,8 +64,24 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
-	 * Returns the default value of this option.
-	 * @return the default value
+	 * The minimum value of this option, <code>null</code> if none.
+	 * @return minimum value, or <code>null</code>
+	 */
+	public T getMinValue() {
+		return minValue;
+	}
+
+	/**
+	 * The maximum value of this option, <code>null</code> if none.
+	 * @return maximum value, or <code>null</code>
+	 */
+	public T getMaxValue() {
+		return maxValue;
+	}
+
+	/**
+	 * Returns the default value of this option, <code>null</code> if unset.
+	 * @return the default value, or <code>null</code>
 	 */
 	public T getDefaultValue() {
 		return defaultValue;
@@ -67,8 +92,32 @@ public class ConfigurationOption<T> {
 	 * @param value the new value
 	 */
 	public void setValue(T value) {
+		validateValue(value);
 		if(onSet.apply(this, value)) {
 			this.value = value;
+		}
+	}
+
+	protected void validateValue(T value) {
+		if(value instanceof Number) {
+			if(minValue instanceof Number) {
+				if(compareValues((Number)minValue, (Number)value).filter(c -> c > 0).isPresent()) {
+					throw new IllegalArgumentException("Value is smaller than minimum: " + value + " < " + minValue);
+				}
+			}
+			if(maxValue instanceof Number) {
+				if(compareValues((Number)maxValue, (Number)value).filter(c -> c < 0).isPresent()) {
+					throw new IllegalArgumentException("Value is larger than maximum: " + value + " > " + maxValue);
+				}
+			}
+		}
+	}
+
+	protected static Optional<Integer> compareValues(Number lhs, Number rhs) {
+		try {
+			return Optional.of(new BigDecimal(lhs.toString()).compareTo(new BigDecimal(rhs.toString())));							
+		} catch(NumberFormatException e) {
+			return Optional.empty();
 		}
 	}
 
@@ -113,6 +162,11 @@ public class ConfigurationOption<T> {
 		value = defaultValue;
 	}
 
+	@Override
+	public String toString() {
+		return "ConfigurationOption[" + getKey() + ":" + getType().getSimpleName() + " = " + getValue() + "]";
+	}
+
 	/**
 	 * Returns a new Builder for configuration options.
 	 * @param type the type of the option to be created
@@ -132,6 +186,8 @@ public class ConfigurationOption<T> {
 		private final Class<T> type;
 		private String key;
 		private String name;
+		private T minValue; // must extend Number
+		private T maxValue; // must extend Number
 		private T defaultValue;
 		private BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
 
@@ -149,6 +205,22 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
+		public Builder<T> minValue(T minValue) {
+			if(!(minValue instanceof Number)) {
+				throw new IllegalArgumentException("Minimum value only supported for subclasses of Number");
+			}
+			this.minValue = minValue;
+			return this;
+		}
+		
+		public Builder<T> maxValue(T maxValue) {
+			if(!(maxValue instanceof Number)) {
+				throw new IllegalArgumentException("Maximum value only supported for subclasses of Number");
+			}
+			this.maxValue = maxValue;
+			return this;
+		}
+		
 		public Builder<T> defaultValue(T defaultValue) {
 			this.defaultValue = Objects.requireNonNull(defaultValue);
 			return this;
@@ -172,13 +244,30 @@ public class ConfigurationOption<T> {
 			if(key == null) {
 				throw new IllegalStateException("ConfigurationOption requires a key");
 			}
+			if(minValue != null && maxValue != null) {
+				if(compareValues((Number)minValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
+					throw new IllegalStateException("Minimum value is greater than maximum value");
+				}
+			}
+			if(defaultValue instanceof Number) {
+				if(minValue != null) {
+					if(compareValues((Number)defaultValue, (Number)minValue).filter(c -> c < 0).isPresent()) {
+						throw new IllegalStateException("Default value is smaller than the minimum value");
+					}
+				}
+				if(maxValue != null) {
+					if(compareValues((Number)defaultValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
+						throw new IllegalStateException("Default value is greater than the maximum value");
+					}
+				}
+			}
 			if(name == null) {
 				name = key;
 			}
 			if(onSet == null) {
 				onSet = (option, newValue) -> true;
 			}
-			return new ConfigurationOption<T>(key, name, type, defaultValue, onSet);
+			return new ConfigurationOption<T>(key, name, type, minValue, maxValue, defaultValue, onSet);
 		}
 	}
 }

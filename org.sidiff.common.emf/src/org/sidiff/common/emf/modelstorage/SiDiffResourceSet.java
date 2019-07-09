@@ -13,12 +13,16 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
+import org.sidiff.common.logging.LogEvent;
+import org.sidiff.common.logging.LogUtil;
 
 /**
  * <p>A resource set implementation with additional utility functions
@@ -51,6 +55,8 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 
 
 	private Map<Object, Object> saveOptions = new HashMap<>();
+	private boolean logErrors = true;
+	private boolean logWarnings = false;
 
 	protected SiDiffResourceSet() {
 		initLoadOptions(getLoadOptions());
@@ -59,16 +65,31 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 	}
 
 	protected void initLoadOptions(Map<Object, Object> options) {
+		// Generic caching to improve load/save
+		options.put(XMLResource.OPTION_CONFIGURATION_CACHE, Boolean.TRUE);
+
 		options.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
 		options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
-		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl());
+		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(true));
 		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<Object, Object>());
 	}
 
 	protected void initSaveOptions(Map<Object, Object> options) {
+		// Generic caching to improve load/save
 		options.put(XMLResource.OPTION_CONFIGURATION_CACHE, Boolean.TRUE);
+
+		// Lookup cache to improves performance when saving multiple documents with the same type
 		options.put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE, new ArrayList<Object>());
+
+		// The ExtendedMetaData must be set when using the Cached Lookup Table and/or Configuration Cache,
+		// else this cache might store Lookup tables which do not have their respective ExtendedMetaData set,
+		// resulting in a NullPointerException in XMLSaveImpl$Lookup.getDocumentRoot(XMLSaveImpl.java:2801)
+		// when this Lookup is reused to save a resource that uses ExtendedMetaData.
+		options.put(XMIResource.OPTION_EXTENDED_META_DATA, ExtendedMetaData.INSTANCE);
+
+		// Handle dangling references by recording them in Resource.getErrors()
 		options.put(XMLResource.OPTION_PROCESS_DANGLING_HREF, XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD);
+
 		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
 		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
 	}
@@ -146,12 +167,24 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 	public void saveResource(Resource resource) {
 		Assert.isLegal(resource.getResourceSet() == this, "The resource is not contained in this resource set");
 		try {
+			resource.getErrors().clear();
+			resource.getWarnings().clear();
 			resource.save(getSaveOptions());
+			if(isLogErrors()) {
+				for(Diagnostic diag : resource.getErrors()) {
+					LogUtil.log(LogEvent.ERROR, "Saved resource has error: " + resource.getURI(), diag);
+				}
+			}
+			if(isLogWarnings()) {
+				for(Diagnostic diag : resource.getWarnings()) {
+					LogUtil.log(LogEvent.WARNING, "Saved resource has warning: " + resource.getURI(), diag);
+				}
+			}
 		} catch (IOException e) {
 			throw new SiDiffRuntimeException("Could not save " + resource, "Saving resource failed", e);
 		}
 	}
-	
+
 	/**
 	 * Saves all resources of this resource set.
 	 */
@@ -197,6 +230,22 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		resource.setURI(uri);
 		saveResource(resource);
 	}
+	
+	@Override
+	public Resource getResource(URI uri, boolean loadOnDemand) {
+		Resource resource = super.getResource(uri, loadOnDemand);
+		if(isLogErrors()) {
+			for(Diagnostic diag : resource.getErrors()) {
+				LogUtil.log(LogEvent.ERROR, "Loaded resource has error: " + resource.getURI(), diag);
+			}
+		}
+		if(isLogWarnings()) {
+			for(Diagnostic diag : resource.getWarnings()) {
+				LogUtil.log(LogEvent.WARNING, "Loaded resource has warning: " + resource.getURI(), diag);
+			}
+		}
+		return resource;
+	}
 
 	/**
 	 * Loads the model with the given URI.
@@ -234,6 +283,39 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		Resource sourceResource = getResource(source, true);
 		saveResourceAs(sourceResource, destination);
 	}
+
+	/**
+	 * Sets whether errors during resource loading and saving should be logged.
+	 * @param logErrors <code>true</code> to log errors, <code>false</code> otherwise
+	 */
+	public void setLogErrors(boolean logErrors) {
+		this.logErrors = logErrors;
+	}
+
+	/**
+	 * Returns whether errors during resource loading and saving are logged by this resource set.
+	 * @return <code>true</code> if errors are logged, <code>false</code> otherwise
+	 */
+	public boolean isLogErrors() {
+		return logErrors;
+	}
+
+	/**
+	 * Sets whether warnings during resource loading and saving should be logged.
+	 * @param logWarnings <code>true</code> to log warnings, <code>false</code> otherwise
+	 */
+	public void setLogWarnings(boolean logWarnings) {
+		this.logWarnings = logWarnings;
+	}
+
+	/**
+	 * Returns whether warnings during resource loading and saving are logged by this resource set.
+	 * @return <code>true</code> if warnings are logged, <code>false</code> otherwise
+	 */
+	public boolean isLogWarnings() {
+		return logWarnings;
+	}
+
 
 	/**
 	 * URI will be replaced by the last segment

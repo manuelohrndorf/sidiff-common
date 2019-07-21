@@ -30,9 +30,8 @@ public class TeePipeChannel implements ILogChannel {
 		
 		String logChannelsString = System.getProperty(PROPERTY_NAME_LOGCHANNELS);
 		
-		if	(logChannelsString == null || logChannelsString == ""){ 			
-			System.err.println("invalid TEEPIPECHANNELS Property");
-			System.exit(-1);
+		if	(logChannelsString == null || logChannelsString == ""){
+			throw new IllegalStateException("invalid TEEPIPECHANNELS Property");
 		}
 			
 		String[] logChannelTokens = logChannelsString.split(CHANNEL_SEPARATOR);
@@ -40,18 +39,18 @@ public class TeePipeChannel implements ILogChannel {
 			
 			String nameEvents[] = channelToken.split(EVENT_DECLARATOR);	
 			
-			ILogChannel outputChannel = 	getOutputChannel(nameEvents[0]);
+			ILogChannel outputChannel = getOutputChannel(nameEvents[0]);
 			
 			Set<LogEvent> events = new TreeSet<LogEvent>();
 			if(nameEvents.length>2){
-				System.err.println("invalid TEEPIPECHANNELS argument "+channelToken);
+				throw new IllegalStateException("invalid TEEPIPECHANNELS argument " + channelToken);
 			}else if(nameEvents.length>1) {	
 				String[] eventNames = nameEvents[1].split(EVENT_SEPARATOR);
 				for(String eventName : eventNames){
 					try{
 						events.add(LogEvent.valueOf(eventName));
 					} catch (Exception e) {
-						System.err.println("invalid LogEvent : \"" + eventName + "\"");
+						throw new IllegalStateException("invalid LogEvent : \"" + eventName + "\"");
 					}
 				}
 			} else {
@@ -69,21 +68,16 @@ public class TeePipeChannel implements ILogChannel {
 	}
 	
 	private ILogChannel getOutputChannel(String channelName) {
-		
-		if (channelName.indexOf(".")==-1)
-			channelName = CHANNEL_PREFIX + channelName;
+		if (channelName.indexOf(".")==-1) {
+			channelName = CHANNEL_PREFIX + channelName;			
+		}
 		
 		try {
-			
 			Class<?> channelClass = Class.forName(channelName);
 			return (ILogChannel)channelClass.getConstructor().newInstance();
-			
 		} catch (Exception e) {
-			
-			System.out.println("Cannot get output Channel:" + channelName);
-			System.exit(1);
+			throw new IllegalStateException("Cannot get output Channel:" + channelName, e);
 		}
-		return null;
 	}
 	
 	
@@ -120,7 +114,6 @@ public class TeePipeChannel implements ILogChannel {
 
 	@Override
 	public SimpleDateFormat createDateFormat() {
-		
 		return new SimpleDateFormat("EE dd.MM.yy hh:mm:ss ");
 	}
 

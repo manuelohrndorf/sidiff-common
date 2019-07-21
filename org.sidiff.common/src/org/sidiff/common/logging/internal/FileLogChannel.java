@@ -16,7 +16,6 @@ public class FileLogChannel implements ILogChannel {
 	private PrintWriter log = null;
 	
 	public FileLogChannel(){
-		
 		String fileName = System.getProperty(PROPERTY_NAME_LOGFILE);
 		if (fileName != null&&!fileName.equals("")) {
 			try {
@@ -25,10 +24,9 @@ public class FileLogChannel implements ILogChannel {
 				log = new PrintWriter(System.out);
 				System.err.print("Cannot access logfile:" + fileName+"\n"+e.getLocalizedMessage());
 				e.printStackTrace();
-				System.exit(1);
 			}
 		} else {
-			 System.err.print("ERROR - Missing filename Property! try -D"+PROPERTY_NAME_LOGFILE);
+			throw new IllegalStateException("ERROR - Missing filename Property! try -D" + PROPERTY_NAME_LOGFILE);
 		}
 	}
 	
@@ -41,7 +39,6 @@ public class FileLogChannel implements ILogChannel {
 	public void log(String message, LogEvent event) {
 		this.log.print(message + "\n");
 		this.log.flush();
-
 	}
 
 	@Override

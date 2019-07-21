@@ -128,8 +128,7 @@ public class LogUtil {
 					}
 				}
 				if (!match) {
-					System.out.println("Unknown Event:" + cmd);
-					System.exit(1);
+					throw new IllegalStateException("Unknown Event: " + cmd);
 				}
 			}
 			LogUtil.logevents = EnumSet.copyOf(logevents);
@@ -148,29 +147,25 @@ public class LogUtil {
 			LogUtil.logmodules = null; // Null dedicates all Modules have to be logged
 		} else {
 			Set<String> logmodules = new HashSet<String>();
-			for(String cmd : logmodulecmds){
-			if(!cmd.equals(WILDCARD)){
-				logmodules.add(cmd);
-			} else {
-				System.out.println("Illegal wildcat usage:" + cmd);
-				System.exit(1);
+			for(String cmd : logmodulecmds) {
+				if(!cmd.equals(WILDCARD)) {
+					logmodules.add(cmd);
+				} else {
+					throw new IllegalStateException("Illegal wildcard usage: " + cmd);
+				}
 			}
-		}
 			LogUtil.logmodules = logmodules;
 		}
 	}
 
 	public static void setLogChannel(String channelName) {
-
 		try {
 			if (channelName.indexOf(".")==-1)
 				channelName = CHANNEL_PREFIX + channelName;
 			Class<?> channelClass = ReflectionUtil.loadClass(channelName);
 			LogUtil.channel = (ILogChannel)channelClass.getConstructor().newInstance();
 		} catch (Exception e) {
-			System.out.println("Cannot get output Channel:" + channelName);
-			e.printStackTrace();
-			System.exit(1);
+			throw new IllegalArgumentException("Cannot get output Channel:" + channelName, e);
 		}
 		
 		LogUtil.sdf= channel.createDateFormat();

@@ -59,7 +59,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	protected Button downButton;
 	protected Text patternText;
 
-	private final Class<T> elementType;
+	private final Class<? extends T> elementType;
 	private String title;
 	private boolean ordered = true;
 	private boolean filterable = false;
@@ -68,7 +68,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	private int tableWidth = 150;
 	private int tableHeight = 70;
 
-	public AbstractListWidget(Class<T> elementType) {
+	public AbstractListWidget(Class<? extends T> elementType) {
 		this.elementType = Objects.requireNonNull(elementType);
 		setTitle(elementType.getSimpleName());
 	}
@@ -397,7 +397,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		return ValidationMessage.OK;
 	}
 
-	public Class<T> getElementType() {
+	public Class<? extends T> getElementType() {
 		return elementType;
 	}
 	

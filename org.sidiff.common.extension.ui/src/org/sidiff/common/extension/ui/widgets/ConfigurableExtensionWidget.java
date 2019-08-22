@@ -51,16 +51,18 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	}
 
 	@SuppressWarnings("unchecked") // we explicitly check below
-	protected Control createConfigurationOptionControl(Composite parent, ConfigurationOption<?> option) {
-		final Class<?> type = option.getType();
+	protected <T> Control createConfigurationOptionControl(Composite parent, ConfigurationOption<T> option) {
+		if(option.getSelectableValues() != null) {
+			return createChoiceControl(parent, option);
+		}
+
+		final Class<T> type = option.getType();
 		if(type == Boolean.class) {
 			return createCheckboxControl(parent, (ConfigurationOption<Boolean>)option);
 		} else if(type == Short.class || type == Byte.class || type == Integer.class) {
 			return createNumberControl(parent, (ConfigurationOption<? extends Number>)option);
 		} else if(type == String.class || type == Float.class || type == Double.class || type == Long.class) {
 			return createTextControl(parent, option);
-		} else if(type.isEnum()) {
-			return createChoiceControl(parent, (ConfigurationOption<? extends Enum<?>>)option);
 		}
 		return null;
 	}
@@ -111,23 +113,25 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return group;
 	}
 
-	protected Control createChoiceControl(Composite parent, ConfigurationOption<? extends Enum<?>> option) {
+	protected <T> Control createChoiceControl(Composite parent, ConfigurationOption<T> option) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		group.setLayout(new GridLayout(1, true));
 		
-		for(Enum<?> enumLiteral : option.getType().getEnumConstants()) {
+		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.RADIO);
-			button.setText(enumLiteral.toString());
-			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(enumLiteral)));
-			button.setSelection(enumLiteral == option.getValue());
+			button.setText(option.getLabelForValue(value));
+			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(value)));
+			button.setSelection(value == option.getValue());
 		}
 		return group;
 	}
 
-	protected static boolean isTypeSupported(Class<?> type) {
-		return type == Boolean.class || type == Short.class || type == Byte.class || type == Integer.class
+	protected static <T> boolean isOptionSupported(ConfigurationOption<T> option) {
+		Class<T> type = option.getType();
+		return option.getSelectableValues() != null
+				|| type == Boolean.class || type == Short.class || type == Byte.class || type == Integer.class
 				|| type == String.class || type == Float.class || type == Double.class || type == Long.class || type.isEnum();
 	}
 
@@ -148,8 +152,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		Map<IConfigurableExtension,ConfigurableExtensionWidget> extensionWidgets = new HashMap<>();
 		for(IConfigurableExtension extension : widget.getSelectableValues()) {
-			if(extension.getConfiguration().getConfigurationOptions().stream()
-					.map(ConfigurationOption::getType).anyMatch(ConfigurableExtensionWidget::isTypeSupported)) {
+			if(extension.getConfiguration().getConfigurationOptions().stream().anyMatch(ConfigurableExtensionWidget::isOptionSupported)) {
 				ConfigurableExtensionWidget extensionWidget = new ConfigurableExtensionWidget(extension);
 				extensionWidget.setDependency(widget);
 				extensionWidgets.put(extension, extensionWidget);

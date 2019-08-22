@@ -1,9 +1,15 @@
 package org.sidiff.common.extension.configuration;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.sidiff.common.converter.ConverterUtil;
 
@@ -22,12 +28,15 @@ public class ConfigurationOption<T> {
 	private final T minValue;
 	private final T maxValue;
 	private final T defaultValue;
+	private final Set<T> selectableValues;
 	private final BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
+	private final Function<? super T,String> valueLabelProvider;
 	private T value;
 
 	protected ConfigurationOption(String key, String name, Class<T> type,
-			T minValue, T maxValue, T defaultValue,
-			BiFunction<ConfigurationOption<T>,T,Boolean> onSet) {
+			T minValue, T maxValue, T defaultValue, Collection<? extends T> selectableValues,
+			BiFunction<ConfigurationOption<T>,T,Boolean> onSet,
+			Function<? super T,String> valueLabelProvider) {
 
 		this.key = key;
 		this.name = name;
@@ -35,7 +44,9 @@ public class ConfigurationOption<T> {
 		this.minValue = minValue;
 		this.maxValue = maxValue;
 		this.defaultValue = defaultValue;
+		this.selectableValues = selectableValues == null ? null : new HashSet<>(selectableValues);
 		this.onSet = onSet;
+		this.valueLabelProvider = valueLabelProvider;
 		this.value = defaultValue;
 	}
 
@@ -85,6 +96,14 @@ public class ConfigurationOption<T> {
 	 */
 	public T getDefaultValue() {
 		return defaultValue;
+	}
+	
+	public Set<T> getSelectableValues() {
+		return selectableValues == null ? null : Collections.unmodifiableSet(selectableValues);
+	}
+
+	public String getLabelForValue(T value) {
+		return valueLabelProvider.apply(value);
 	}
 
 	/**
@@ -189,7 +208,9 @@ public class ConfigurationOption<T> {
 		private T minValue; // must extend Number
 		private T maxValue; // must extend Number
 		private T defaultValue;
+		private Collection<? extends T> selectableValues;
 		private BiFunction<ConfigurationOption<T>,T,Boolean> onSet;
+		private Function<? super T,String> valueLabelProvider;
 
 		protected Builder(Class<T> type) {
 			this.type = Objects.requireNonNull(type);
@@ -239,6 +260,11 @@ public class ConfigurationOption<T> {
 			this.onSet = Objects.requireNonNull(onSet);
 			return this;
 		}
+		
+		public Builder<T> valueLabelProvider(Function<? super T,String> valueLabelProvider) {
+			this.valueLabelProvider = Objects.requireNonNull(valueLabelProvider);
+			return this;
+		}
 
 		public ConfigurationOption<T> build() {
 			if(key == null) {
@@ -264,10 +290,22 @@ public class ConfigurationOption<T> {
 			if(name == null) {
 				name = key;
 			}
+			if(type.isEnum() && selectableValues == null) {
+				selectableValues = Arrays.asList(type.getEnumConstants());
+			}
 			if(onSet == null) {
 				onSet = (option, newValue) -> true;
 			}
-			return new ConfigurationOption<T>(key, name, type, minValue, maxValue, defaultValue, onSet);
+			if(valueLabelProvider == null) {
+				valueLabelProvider = value -> value == null ? "No value" : value.toString();
+			}
+			return new ConfigurationOption<T>(key, name, type, minValue, maxValue,
+					defaultValue, selectableValues, onSet, valueLabelProvider);
+		}
+
+		public Builder<T> selectableValues(Collection<? extends T> selectableValues) {
+			this.selectableValues = Objects.requireNonNull(selectableValues);
+			return this;
 		}
 	}
 }

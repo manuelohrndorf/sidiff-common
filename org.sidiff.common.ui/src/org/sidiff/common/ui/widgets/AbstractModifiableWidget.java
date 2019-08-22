@@ -101,7 +101,7 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 		this.labelProvider = Objects.requireNonNull(labelProvider);
 	}
 
-	protected String getLabel(T value) {
+	protected String getLabel(Object value) {
 		ILabelProvider provider = getLabelProvider();
 		if(provider == null) {
 			return Objects.toString(value);

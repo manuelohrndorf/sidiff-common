@@ -118,12 +118,23 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setText(option.getName());
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		group.setLayout(new GridLayout(1, true));
-		
+
+		boolean anySelected = false;
+		Button anyButton = null;
 		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.RADIO);
 			button.setText(option.getLabelForValue(value));
 			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(value)));
-			button.setSelection(value == option.getValue());
+			if(value == option.getValue()) {
+				button.setSelection(true);
+				anySelected = true;
+			}
+			if(anyButton == null) {
+				anyButton = button;
+			}
+		}
+		if(!anySelected && anyButton != null) {
+			anyButton.setSelection(true);
 		}
 		return group;
 	}

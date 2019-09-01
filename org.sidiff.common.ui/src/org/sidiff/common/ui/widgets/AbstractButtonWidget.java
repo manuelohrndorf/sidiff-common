@@ -50,7 +50,7 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 		values = new HashMap<>();
 		for(T value : getSelectableValues()) {
 			Button button = new Button(composite, buttonStyle);
-			button.setText(getLabel(value));
+			button.setText(getLabelProvider().getText(value));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(button);
 			button.addSelectionListener(selectionListener);
 			button.setSelection(getSelection().contains(value));

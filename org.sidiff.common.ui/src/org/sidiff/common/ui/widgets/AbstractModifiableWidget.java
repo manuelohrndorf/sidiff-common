@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 
 /**
@@ -94,18 +95,13 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	}
 
 	public ILabelProvider getLabelProvider() {
+		if(labelProvider == null) {
+			labelProvider = new ColumnLabelProvider(); // initialize to default which uses toString
+		}
 		return labelProvider;
 	}
 
 	public void setLabelProvider(ILabelProvider labelProvider) {
 		this.labelProvider = Objects.requireNonNull(labelProvider);
-	}
-
-	protected String getLabel(Object value) {
-		ILabelProvider provider = getLabelProvider();
-		if(provider == null) {
-			return Objects.toString(value);
-		}
-		return provider.getText(value);
 	}
 }

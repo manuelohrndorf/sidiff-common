@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -17,8 +16,6 @@ import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.sidiff.common.ui.widgets.AbstractModifiableWidget;
-import org.sidiff.common.ui.widgets.IWidgetValidation;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
 public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWidget<T> implements IWidgetValidation {
@@ -37,12 +34,7 @@ public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWi
 	@Override
 	protected Composite createContents(Composite container) {
 		tableViewer = new TableViewer(container);
-		tableViewer.setLabelProvider(new ColumnLabelProvider() {
-			@Override
-			public String getText(Object element) {
-				return getLabel(element);
-			}
-		});
+		tableViewer.setLabelProvider(getLabelProvider());
 		tableViewer.setContentProvider(new IStructuredContentProvider() {
 			@Override
 			public Object[] getElements(Object inputElement) {

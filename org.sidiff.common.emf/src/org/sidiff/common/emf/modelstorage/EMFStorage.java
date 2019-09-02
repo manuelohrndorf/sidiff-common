@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -277,6 +278,31 @@ public class EMFStorage {
 	 */
 	public static IFile toIFile(File file) {
 		return toIFile(toFileURI(file));
+	}
+
+	/**
+	 * Tries to convert the URI to a platform URI and returns the corresponding {@link IFolder} in the workspace.
+	 * The returned IFolder is a resource handle and may or may not actually exist.
+	 * If the URI cannot be converted to a platform URI, <code>null</code> is returned.
+	 * @param uri the URI
+	 * @return folder in the workspace for the given URI, <code>null</code> if not in workspace
+	 */
+	public static IFolder toIFolder(URI uri) {
+		URI platformURI = toPlatformURI(uri);
+		if(platformURI.isPlatform()) {
+			return getWorkspaceRoot().getFolder(new Path(platformURI.toPlatformString(true)));
+		}
+		return null;
+	}
+
+	/**
+	 * <p>Tries to convert the {@link File} in the local file system to a {@link IFolder} in the workspace</p>
+	 * <p>This is a convenience method equivalent to <code>toIFolder(toFileURI(file))</code>.</p>
+	 * @param file the file in the local file system
+	 * @return corresponding folder in the workspace, <code>null</code> if none
+	 */
+	public static IFolder toIFolder(File file) {
+		return toIFolder(toFileURI(file));
 	}
 
 	protected static IWorkspaceRoot getWorkspaceRoot() {

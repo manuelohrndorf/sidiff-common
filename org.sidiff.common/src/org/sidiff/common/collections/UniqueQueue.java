@@ -52,6 +52,7 @@ public class UniqueQueue<T> extends AbstractQueue<T> {
 	public UniqueQueue(Set<T> set, Queue<T> queue) {
 		this.set = Objects.requireNonNull(set, "set is null");
 		this.queue = Objects.requireNonNull(queue, "queue is null");
+		set.addAll(queue);
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class UniqueQueue<T> extends AbstractQueue<T> {
 	@Override
 	public boolean offer(T e) {
 		if(set.add(e)) {
-			return queue.offer(e);
+			return queue.add(e);
 		}
 		return false;
 	}

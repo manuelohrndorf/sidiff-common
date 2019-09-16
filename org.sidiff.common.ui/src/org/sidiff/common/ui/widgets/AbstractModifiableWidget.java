@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.stream.IntStream;
 
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -26,17 +28,22 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	private List<T> selection = Collections.emptyList();
 	private Collection<ModificationListener<? super T>> modificationListeners = new ArrayList<>();
 	private ILabelProvider labelProvider;
+	private BiPredicate<T,T> equalityDelegate;
 
 	@Override
 	public void setSelection(List<T> selection) {
+		BiPredicate<T,T> equality = getEqualityDelegate();
+
 		// remove all values which cannot be selected
 		List<T> newSelection = new ArrayList<>(selection);
 		List<T> selectable = getSelectableValues();
 		if(selectable != null) {
-			newSelection.retainAll(selectable);
+			newSelection.removeIf(newItem -> selectable.stream().noneMatch(selItem -> equality.test(newItem, selItem)));
 		}
 
-		if(!Objects.equals(newSelection, this.selection)) {
+		// Check whether new selection is different from current one (using equality delegate)
+		if(newSelection.size() != this.selection.size()
+				|| IntStream.range(0, this.selection.size()).anyMatch(i -> !equality.test(newSelection.get(i), this.selection.get(i)))) {
 			List<T> oldSelection = this.selection;
 			this.selection = newSelection;
 			hookSetSelection();
@@ -103,5 +110,16 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 
 	public void setLabelProvider(ILabelProvider labelProvider) {
 		this.labelProvider = Objects.requireNonNull(labelProvider);
+	}
+
+	public BiPredicate<T, T> getEqualityDelegate() {
+		if(equalityDelegate == null) {
+			equalityDelegate = Objects::equals;
+		}
+		return equalityDelegate;
+	}
+	
+	public void setEqualityDelegate(BiPredicate<T, T> equalityDelegate) {
+		this.equalityDelegate = Objects.requireNonNull(equalityDelegate);
 	}
 }

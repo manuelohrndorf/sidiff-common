@@ -1,6 +1,6 @@
 package org.sidiff.common.emf.adapters;
 
-import org.eclipse.emf.common.notify.*;
+import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.impl.AdapterFactoryImpl;
 
 /**
@@ -13,7 +13,7 @@ public abstract class SiDiffAdapterFactory extends AdapterFactoryImpl implements
 
 	private Object adapterType;
 
-	public SiDiffAdapterFactory(Object type) {
+	public SiDiffAdapterFactory(Class<?> type) {
 		this.adapterType = type;
 	}
 
@@ -25,15 +25,4 @@ public abstract class SiDiffAdapterFactory extends AdapterFactoryImpl implements
 	public boolean isFactoryForType(Object type) {
 		return type == adapterType;
 	}
-
-	@Override
-	protected Adapter createAdapter(Notifier target) {
-		SiDiffAdapter adapter = createAdapter();
-		adapter.setTarget(target);
-		adapter.setAdapterFactory(this);
-		return adapter;
-	}
-
-	protected abstract SiDiffAdapter createAdapter();
-
 }

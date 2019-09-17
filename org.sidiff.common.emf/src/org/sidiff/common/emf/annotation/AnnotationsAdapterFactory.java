@@ -1,7 +1,6 @@
 package org.sidiff.common.emf.annotation;
 
-import org.eclipse.emf.common.notify.AdapterFactory;
-import org.sidiff.common.emf.adapters.SiDiffAdapter;
+import org.eclipse.emf.common.notify.Notifier;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
 import org.sidiff.common.emf.annotation.internal.AnnotateableElementImpl;
 
@@ -10,15 +9,14 @@ import org.sidiff.common.emf.annotation.internal.AnnotateableElementImpl;
  * @author wenzel
  *
  */
-public class AnnotationsAdapterFactory extends SiDiffAdapterFactory implements AdapterFactory {
+public class AnnotationsAdapterFactory extends SiDiffAdapterFactory {
 
 	public AnnotationsAdapterFactory() {
 		super(AnnotateableElement.class);
 	}
 
 	@Override
-	public SiDiffAdapter createAdapter() {
+	public AnnotateableElement createAdapter(Notifier target) {
 		return new AnnotateableElementImpl();
 	}
-
 }

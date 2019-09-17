@@ -2,32 +2,23 @@ package org.sidiff.common.emf.adapters;
 
 import org.eclipse.emf.common.notify.*;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.sidiff.common.emf.adapters.internal.ElementByIDAdapterImpl;
 
 /**
  * Factory for ElementByID adapters.
  * @author wenzel
- *
  */
-public class ElementByIDAdapterFactory extends SiDiffAdapterFactory implements AdapterFactory {
-
-	@Override
-	protected Adapter createAdapter(Notifier target) {
-		if (!(target instanceof Resource)) {
-			throw new UnsupportedOperationException("ElementByIDAdapterFactory can only adapt Resource objects!");
-		}
-		SiDiffAdapter adapter = new ElementByIDAdapterImpl((Resource)target);
-		adapter.setTarget(target);
-		adapter.setAdapterFactory(this);
-		return adapter;
-	}
+public class ElementByIDAdapterFactory extends SiDiffAdapterFactory {
 
 	public ElementByIDAdapterFactory() {
 		super(ElementByIDAdapter.class);
 	}
-
+	
 	@Override
-	protected SiDiffAdapter createAdapter() {
+	protected Adapter createAdapter(Notifier target) {
+		if(target instanceof Resource) {
+			return new ElementByIDAdapterImpl((Resource)target);			
+		}
 		return null;
 	}
-
 }

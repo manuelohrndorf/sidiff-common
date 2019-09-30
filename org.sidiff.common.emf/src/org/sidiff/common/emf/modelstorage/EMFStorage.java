@@ -126,7 +126,7 @@ public class EMFStorage {
 			try {
 				IFile files[] = getWorkspaceRoot().findFilesForLocationURI(new java.net.URI(uri.toString()));
 				if(files.length >= 1) {
-					return toPlatformURI(files[0]);
+					return toPlatformURI(files[0]).appendFragment(uri.fragment());
 				}
 			} catch (URISyntaxException e) {
 				// fall through
@@ -136,7 +136,7 @@ public class EMFStorage {
 				IProject project = getWorkspaceRoot().getProject(uri.segment(i));
 				if(project.exists()) {
 					String segments = IntStream.range(i+1, uri.segmentCount()).mapToObj(uri::segment).collect(Collectors.joining("/"));
-					return URI.createPlatformResourceURI("/" + project.getName() + "/" + segments, true);
+					return URI.createPlatformResourceURI("/" + project.getName() + "/" + segments, true).appendFragment(uri.fragment());
 				}
 			}
 		}
@@ -213,8 +213,7 @@ public class EMFStorage {
 			for(int i = 2; i < uri.segmentCount(); i++) {
 				result = result.appendSegment(uri.segment(i));
 			}
-			result.appendFragment(uri.fragment());
-			return result;
+			return result.appendFragment(uri.fragment());
 		} else if(uri.isPlatformPlugin() && uri.segmentCount() > 1) {
 			try {
 				URL url = FileLocator.toFileURL(new URL(uri.toString()));

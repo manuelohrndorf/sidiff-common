@@ -48,7 +48,7 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * @author Robert Müller
  * @param <T> the type of the input elements
  */
-public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> implements IWidgetValidation {
+public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> {
 
 	protected Composite contents;
 	protected TableViewer featureTableViewer;

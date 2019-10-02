@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
-public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWidget<T> implements IWidgetValidation {
+public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWidget<T> {
 
 	private TableViewer tableViewer;
 	private Button buttonAddNew;
@@ -80,8 +80,9 @@ public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWi
 	@Override
 	protected void hookSetSelection() {
 		super.hookSetSelection();
-		
-		tableViewer.refresh();
+		if(tableViewer != null) {
+			tableViewer.refresh();
+		}
 		getWidgetCallback().requestValidation();
 	}
 

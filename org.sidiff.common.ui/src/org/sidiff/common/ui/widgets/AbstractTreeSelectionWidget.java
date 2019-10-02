@@ -24,7 +24,7 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.sidiff.common.collections.UniqueQueue;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
-public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableWidget<T> implements IWidgetValidation {
+public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableWidget<T> {
 
 	private ContainerCheckedTreeViewer treeViewer;
 	private Composite buttonBar;
@@ -67,12 +67,18 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 		buttonBar = new Composite(container, SWT.NONE);
 		RowLayoutFactory.fillDefaults().type(SWT.HORIZONTAL).applyTo(buttonBar);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(buttonBar);
+
+		updateTreeViewerSelection();
+		treeViewer.refresh();
 		recreateSelectionButtons();
 
 		return container;
 	}
 
 	private void recreateSelectionButtons() {
+		if(buttonBar == null) {
+			return;
+		}
 		for(Control control : buttonBar.getChildren()) {
 	        control.dispose();
 	    }
@@ -125,22 +131,31 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 	@Override
 	protected void hookSetSelection() {
 		super.hookSetSelection();
+		if(treeViewer != null) {
+			updateTreeViewerSelection();
+		}
+		refresh();
+	}
+
+	private void updateTreeViewerSelection() {
 		// first expand everything, otherwise checking the elements may not work
 		treeViewer.expandAll();
 		treeViewer.setCheckedElements(new Object[0]);
-		for(T item : getSelection()) {
-			treeViewer.setChecked(item, true);
-		}
+		// Objects in the tree may be different instances
+		getSelectableValues().stream()
+			.filter(selectable -> getSelection().stream().anyMatch(selection -> getEqualityDelegate().test(selection, selectable)))
+			.forEach(item -> treeViewer.setChecked(item, true));
 		// now collapse everything and only expand the checked elements
 		treeViewer.collapseAll();
 		for(Object item : treeViewer.getCheckedElements()) {
 			treeViewer.expandToLevel(item, 1);
 		}
-		refresh();
 	}
 
 	public void refresh() {
-		treeViewer.refresh();
+		if(treeViewer != null) {
+			treeViewer.refresh();
+		}
 		recreateSelectionButtons();
 		getWidgetCallback().requestValidation();
 	}

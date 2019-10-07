@@ -68,7 +68,11 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		// Generic caching to improve load/save
 		options.put(XMLResource.OPTION_CONFIGURATION_CACHE, Boolean.TRUE);
 
-		options.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
+		// Attachment to resource must _not_ be deferred, or else some objects (e.g. UML Type Literals)
+		// end up without a resource when loaded.
+		// This option used to work with Ecore and UML alike, so this is likely due to a new bug in EMF or UML.
+		//options.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
+
 		options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
 		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(true));
 		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<Object, Object>());
@@ -90,7 +94,7 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		// Handle dangling references by recording them in Resource.getErrors()
 		options.put(XMLResource.OPTION_PROCESS_DANGLING_HREF, XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD);
 
-		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+		//options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
 		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
 	}
 

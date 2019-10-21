@@ -59,4 +59,8 @@ public interface IExtensionConfiguration {
 	 * @return collection of all configuration options
 	 */
 	Collection<ConfigurationOption<?>> getConfigurationOptions();
+	
+	// TODO: support serialization of option assignments using the label as key
+	String exportAssignments();
+	void importAssignments(String serializedValue);
 }

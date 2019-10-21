@@ -39,4 +39,16 @@ public class NullExtensionConfiguration implements IExtensionConfiguration {
 	public Collection<ConfigurationOption<?>> getConfigurationOptions() {
 		return Collections.emptySet();
 	}
+
+	@Override
+	public String exportAssignments() {
+		return "";
+	}
+
+	@Override
+	public void importAssignments(String serializedValue) {
+		if(!serializedValue.isEmpty()) {
+			throw new UnsupportedOperationException("This configuration cannot load any values");
+		}
+	}
 }

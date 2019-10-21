@@ -1,9 +1,11 @@
 package org.sidiff.common.extension.ui.widgets;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
@@ -53,7 +55,14 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	@SuppressWarnings("unchecked") // we explicitly check below
 	protected <T> Control createConfigurationOptionControl(Composite parent, ConfigurationOption<T> option) {
 		if(option.getSelectableValues() != null) {
-			return createChoiceControl(parent, option);
+			if(option.isMulti()) {
+				return createMultipleChoiceControl(parent, option);
+			}
+			return createSingleChoiceControl(parent, option);
+		}
+		if(option.isMulti()) {
+			// The widget only supports multi-options with fixed selectable values
+			return null;
 		}
 
 		final Class<T> type = option.getType();
@@ -113,7 +122,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return group;
 	}
 
-	protected <T> Control createChoiceControl(Composite parent, ConfigurationOption<T> option) {
+	protected <T> Control createSingleChoiceControl(Composite parent, ConfigurationOption<T> option) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
@@ -125,7 +134,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			Button button = new Button(group, SWT.RADIO);
 			button.setText(option.getLabelForValue(value));
 			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(value)));
-			if(value == option.getValue()) {
+			if(option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()))) {
 				button.setSelection(true);
 				anySelected = true;
 			}
@@ -135,6 +144,31 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		}
 		if(!anySelected && anyButton != null) {
 			anyButton.setSelection(true);
+		}
+		return group;
+	}
+
+	protected <T> Control createMultipleChoiceControl(Composite parent, ConfigurationOption<T> option) {
+		Group group = new Group(parent, SWT.NONE);
+		group.setText(option.getName());
+		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		group.setLayout(new GridLayout(1, true));
+
+		Map<Button,T> buttonToValue = new LinkedHashMap<>();
+		SelectionListener selectionListener = SelectionListener.widgetSelectedAdapter(event -> {
+			option.setValues(buttonToValue.entrySet().stream()
+				.filter(entry -> entry.getKey().getSelection())
+				.map(Map.Entry::getValue)
+				.collect(Collectors.toList()));
+		});
+
+		for(T value : option.getSelectableValues()) {
+			Button button = new Button(group, SWT.CHECK);
+			button.setText(option.getLabelForValue(value));
+			button.addSelectionListener(selectionListener);
+			button.setSelection(option.getValues().stream()
+					.anyMatch(v -> option.getLabelForValue(v).equals(option.getLabelForValue(value))));
+			buttonToValue.put(button, value);
 		}
 		return group;
 	}

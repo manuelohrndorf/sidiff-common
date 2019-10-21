@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * An abstract extension configuration that uses a map to store options.
@@ -45,5 +46,23 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 	@Override
 	public Collection<ConfigurationOption<?>> getConfigurationOptions() {
 		return Collections.unmodifiableCollection(getOptionsMap().values());
+	}
+
+	@Override
+	public String exportAssignments() {
+		return getConfigurationOptions().stream()
+			.map(ConfigurationOption::exportAssignment)
+			.collect(Collectors.joining(";"));
+	}
+
+	@Override
+	public void importAssignments(String serializedValue) {
+		Collection<ConfigurationOption<?>> options = getConfigurationOptions();
+		for(String assignment : serializedValue.split(";")) {
+			String[] keyValue = assignment.split("=");
+			options.stream()
+				.filter(option -> option.getKey().equals(keyValue[0]))
+				.findFirst().ifPresent(option -> option.importAssignment(keyValue.length > 1 ? keyValue[1] : ""));
+		}
 	}
 }

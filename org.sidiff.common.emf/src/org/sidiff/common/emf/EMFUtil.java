@@ -656,7 +656,7 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	 * reference is transient, volatile or derived, or whether is a synthetically
+	 * reference is transient, derived, or whether is a synthetically
 	 * inserted EGenericType.
 	 * @param element The element to test.
 	 * @return <code>true</code> if the element is created dynamically;
@@ -674,7 +674,7 @@ public class EMFUtil {
 	}
 
 	public static boolean isDynamic(EObject element, EReference reference) {
-		// Container [element.isContainer()] references are only dynamic if transient or derived.
+		// Container [reference.isContainer()] references are only dynamic if transient or derived.
 		// UML contains container references which are neither, so we must not exclude container references in general.
 		return reference.isTransient()
 			 || reference.isDerived()
@@ -688,6 +688,12 @@ public class EMFUtil {
 			 || attribute.isDerived();
 	}
 
+	/**
+	 * Returns whether the given {@link EGenericType} is dynamic, i.e. synthetically derived based on another feature,
+	 * and therefore irrelevant for serialization.
+	 * @param genericType the generic type
+	 * @return <code>true</code> if dynamic, <code>false</code> otherwise
+	 */
 	public static boolean isDynamic(EGenericType genericType) {
 		if(genericType.getETypeParameter() != null) {
 			// Generic types with type parameter are not dynamic,

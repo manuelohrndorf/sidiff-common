@@ -674,9 +674,10 @@ public class EMFUtil {
 	}
 
 	public static boolean isDynamic(EObject element, EReference reference) {
+		// Container [element.isContainer()] references are only dynamic if transient or derived.
+		// UML contains container references which are neither, so we must not exclude container references in general.
 		return reference.isTransient()
 			 || reference.isDerived()
-			 || reference.isContainer() // container references are always dynamic
 			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
 			 		&& reference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
 			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic

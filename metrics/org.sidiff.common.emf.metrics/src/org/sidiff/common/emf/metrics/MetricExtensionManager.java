@@ -26,7 +26,7 @@ public class MetricExtensionManager extends TypedExtensionManager<IMetric> {
 	 */
 	public List<IMetric> getAllMetrics(Set<String> documentTypes) {
 		return documentTypes.stream()
-			.map(docType -> IMetric.MANAGER.getExtensions(Collections.singleton(docType), true))
+			.map(docType -> getExtensions(Collections.singleton(docType), true))
 			.flatMap(Collection::stream)
 			.distinct()
 			.sorted(getComparator())

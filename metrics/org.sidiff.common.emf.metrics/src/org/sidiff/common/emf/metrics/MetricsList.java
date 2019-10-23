@@ -40,7 +40,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 			.filter(MetricHandle::isValuePresent)
 			.collect(Collectors.toMap(
 				h -> h.getMetric().getKey() + " : " + h.getContextLabel(),
-				h -> h.getValue()));
+				h -> h.getValues()));
 	}
 
 	/**
@@ -56,7 +56,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 					csvWriter.write(
 						handle.getMetric().getKey(),
 						handle.getContextLabel(),
-						handle.getValue());
+						handle.getValues());
 				}
 			}
 		});

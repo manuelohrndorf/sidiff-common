@@ -1,18 +1,17 @@
 package org.sidiff.common.emf.metrics;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.notify.Notifier;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.util.EcoreUtil;
 
 /**
  * A metric handle is a wrapper for a {@link IMetric} and a context {@link Notifier},
@@ -46,13 +45,15 @@ public class MetricHandle {
 
 	private final IMetric metric;
 	private final Notifier context;
-
-	private Object cachedValue = NOT_COMPUTED;
+	private final Map<Set<Object>,List<Object>> cachedValues;
 
 	MetricHandle(IMetric metric, Notifier context) {
 		Assert.isLegal(metric.getContextType().isInstance(context), "Type of metric is incompatible with context");
 		this.metric = Objects.requireNonNull(metric);
 		this.context = Objects.requireNonNull(context);
+
+		cachedValues = new HashMap<>();
+		clearCache();
 	}
 
 	/**
@@ -72,19 +73,31 @@ public class MetricHandle {
 	}
 
 	/**
-	 * Returns the cached value of metric for the context of this handle.
-	 * May also be {@link #NOT_COMPUTED} or {@link #NOT_APPLICABLE}.
+	 * Returns the cached values of metric for the context of this handle.
 	 * @return the value of the metric for the context
 	 */
-	public Object getValue() {
-		return cachedValue;
+	public Map<Set<Object>,List<Object>> getValues() {
+		Assert.isTrue(!cachedValues.isEmpty(), "cachedValues should never be empty");
+		return Collections.unmodifiableMap(cachedValues);
+	}
+
+	public boolean isUncategorized() {
+		return cachedValues.size() == 1 && cachedValues.containsKey(Collections.emptySet());
+	}
+
+	public List<Object> getUncategorizedValues() {
+		if(!isUncategorized()) {
+			throw new IllegalStateException("Handle is not uncategorized");
+		}
+		return cachedValues.get(Collections.emptySet());
 	}
 
 	/**
 	 * Clears the cached value of this handle, i.e. sets it to {@link #NOT_COMPUTED}.
 	 */
 	public void clearCache() {
-		cachedValue = NOT_COMPUTED;
+		cachedValues.clear();
+		cachedValues.put(Collections.emptySet(), Collections.singletonList(NOT_COMPUTED));
 	}
 
 	/**
@@ -92,23 +105,27 @@ public class MetricHandle {
 	 * @param monitor a monitor for progress reporting
 	 */
 	public void recompute(IProgressMonitor monitor) {
-		List<Object> values = new ArrayList<>();
-		metric.calculate(context, value -> {
-			if(value != null) {
-				values.add(value);
+		Map<Set<Object>,List<Object>> values = new HashMap<>();
+		metric.calculate(context, (keys, value) -> {
+			if(value != null && keys != null) {
+				values.computeIfAbsent(keys, unused -> new ArrayList<>()).add(value); 
 			}
 		}, monitor);
-		switch(values.size()) {
-			case 0:
-				cachedValue = NOT_APPLICABLE;
-				return;
-			case 1:
-				cachedValue = values.get(0);
-				return;
-			default:
-				cachedValue = values;
-				return;
+
+		cachedValues.clear();
+		if(values.isEmpty()) {
+			cachedValues.put(Collections.emptySet(), Collections.singletonList(NOT_APPLICABLE));
+		} else {
+			cachedValues.putAll(values);
 		}
+	}
+
+	public boolean isNotComputed() {
+		return cachedValues.getOrDefault(Collections.emptySet(), Collections.emptyList()).contains(NOT_COMPUTED);
+	}
+
+	public boolean isNotApplicable() {
+		return cachedValues.getOrDefault(Collections.emptySet(), Collections.emptyList()).contains(NOT_APPLICABLE);
 	}
 
 	/**
@@ -116,7 +133,7 @@ public class MetricHandle {
 	 * @return <code>true</code> if a value is present, <code>false</code> otherwise
 	 */
 	public boolean isValuePresent() {
-		return cachedValue != NOT_COMPUTED && cachedValue != NOT_APPLICABLE;
+		return !isNotComputed() && !isNotApplicable();
 	}
 
 	/**
@@ -129,36 +146,28 @@ public class MetricHandle {
 		if(!isValuePresent()) {
 			return true;
 		}
-		if(cachedValue instanceof Number) {
-			double doubleValue = ((Number)cachedValue).doubleValue();
-			return doubleValue == 0 || Double.isNaN(doubleValue);
+		if(!isUncategorized()) {
+			return false;
 		}
-		return false;
+		return getUncategorizedValues().stream()
+				.allMatch(value -> {
+					if(value instanceof String) {
+						return ((String)value).isEmpty();
+					} else if(value instanceof Number) {
+						double doubleValue = ((Number)value).doubleValue();
+						return doubleValue == 0 || Double.isNaN(doubleValue);
+					}
+					return false;
+				});
 	}
 
 	public String getContextLabel() {
-		return getLabelForNotifier(context);
-	}
-
-	public static String getLabelForNotifier(Notifier notifier) {
-		if(notifier == null) {
-			return "no selection";
-		} else if(notifier instanceof ResourceSet) {
-			return ((ResourceSet)notifier).getResources().stream()
-				.map(Resource::getURI)
-				.map(Object::toString)
-				.collect(Collectors.joining(", ", "ResourceSet[", "]"));
-		} else if(notifier instanceof Resource) {
-			return ((Resource)notifier).getURI().toString();
-		} else if(notifier instanceof EObject) {
-			return EcoreUtil.getURI((EObject)notifier).toString();
-		}
-		throw new AssertionError();
+		return MetricsUtil.getLabelForNotifier(context);
 	}
 
 	@Override
 	public String toString() {
-		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + cachedValue + "]";
+		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + MetricsUtil.getLabel(cachedValues) + "]";
 	}
 
 	public static Comparator<MetricHandle> getByKeyComparator() {
@@ -175,12 +184,12 @@ public class MetricHandle {
 
 	public static Comparator<MetricHandle> getByValueComparator() {
 		return Comparator.<MetricHandle>comparingInt(h -> {
-			if(h.getValue() == MetricHandle.NOT_APPLICABLE) {
+			if(h.isNotComputed()) {
 				return 1;
-			} else if(h.getValue() == MetricHandle.NOT_APPLICABLE) {
+			} else if(h.isNotApplicable()) {
 				return 2;
 			}
 			return 0;
-		}).thenComparing(h -> h.getValue().toString());
+		}).thenComparing(h -> h.getValues().toString());
 	}
 }

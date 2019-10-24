@@ -13,6 +13,15 @@
             generic
          </documentType>
       </metric>
+      <metric
+            class="org.sidiff.common.emf.metrics.defaults.impl.TypeCounting"
+            description="The meta-types of all EObjects in the resource and their usage count."
+            key="emf.TypeCounting"
+            name="Number of EObjects per Meta-Type">
+         <documentType>
+            generic
+         </documentType>
+      </metric>
    </extension>
 
 </plugin>

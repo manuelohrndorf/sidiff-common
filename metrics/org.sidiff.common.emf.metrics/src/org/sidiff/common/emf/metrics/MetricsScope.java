@@ -81,9 +81,12 @@ public class MetricsScope {
 			return Stream.empty();
 		}
 		if(includeContainedObjects) {
-			return resource.getContents().stream().flatMap(this::getEObjectContexts);
+			return Stream.of(
+					Stream.of(resource),
+					resource.getContents().stream().flatMap(this::getEObjectContexts)
+				).flatMap(s -> s);
 		}
-		return Stream.empty();
+		return Stream.of(resource);
 	}
 
 	private Stream<Notifier> getEObjectContexts(Notifier context) {

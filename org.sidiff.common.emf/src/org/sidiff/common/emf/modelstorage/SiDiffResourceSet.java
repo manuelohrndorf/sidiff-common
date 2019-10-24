@@ -74,7 +74,10 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		//options.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
 
 		options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
-		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(true));
+		
+		//We do NOT use caching due to errors in case of forward references in large resources.
+		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(false));
+		
 		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<Object, Object>());
 	}
 

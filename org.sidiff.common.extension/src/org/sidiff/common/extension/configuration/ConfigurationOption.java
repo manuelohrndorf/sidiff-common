@@ -214,9 +214,6 @@ public class ConfigurationOption<T> {
 		if(value == null) {
 			setValue(null);
 		} else if(value instanceof Collection<?>) {
-			if(!multi) {
-				throw new IllegalArgumentException("Non-multi configuration option does not support collection value");
-			}
 			setValues(((Collection<?>)value).stream().map(this::getTypedValue).collect(Collectors.toList()));
 		} else {
 			setValue(getTypedValue(value));

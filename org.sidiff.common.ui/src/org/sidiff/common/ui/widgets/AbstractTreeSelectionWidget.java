@@ -31,6 +31,8 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 
 	private int lowerBound = 1;
 	private int upperBound = Integer.MAX_VALUE;
+	
+	private int heightHint = 300;
 
 	private final Class<T> selectableElementType;
 	private final ITreeContentProvider contentProvider;
@@ -62,7 +64,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 					.collect(Collectors.toList()));
 		});
 		treeViewer.setComparator(new ViewerComparator());
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(treeViewer.getControl());
+		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, heightHint).applyTo(treeViewer.getControl());
 
 		buttonBar = new Composite(container, SWT.NONE);
 		RowLayoutFactory.fillDefaults().type(SWT.HORIZONTAL).applyTo(buttonBar);
@@ -197,6 +199,14 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 
 	public boolean isMulti() {
 		return upperBound > 1;
+	}
+	
+	public void setHeightHint(int heightHint) {
+		this.heightHint = heightHint;
+	}
+	
+	public int getHeightHint() {
+		return heightHint;
 	}
 
 	protected interface ISelectionButtonAcceptor<T> {

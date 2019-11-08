@@ -120,7 +120,7 @@ public class EMFStorage {
 			URI workspaceBase = toFileURI(getWorkspaceRoot().getLocation()).appendSegment("");
 			URI replaced = uri.replacePrefix(workspaceBase, URI.createURI("/"));
 			if(replaced != null) {
-				return URI.createPlatformResourceURI(replaced.toString(), true);
+				return replaced;
 			}
 			
 			try {
@@ -136,7 +136,7 @@ public class EMFStorage {
 				IProject project = getWorkspaceRoot().getProject(uri.segment(i));
 				if(project.exists()) {
 					String segments = IntStream.range(i+1, uri.segmentCount()).mapToObj(uri::segment).collect(Collectors.joining("/"));
-					return URI.createPlatformResourceURI("/" + project.getName() + "/" + segments, true).appendFragment(uri.fragment());
+					return URI.createPlatformResourceURI("/" + project.getName() + "/" + segments, false).appendFragment(uri.fragment());
 				}
 			}
 		}

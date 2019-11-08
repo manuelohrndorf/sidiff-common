@@ -49,7 +49,7 @@ public class ConfigurationOption<T> {
 		this.multi = multi;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
-		this.defaultValues = defaultValues == null ? null : new ArrayList<>(defaultValues);
+		this.defaultValues = new ArrayList<>(defaultValues);
 		this.selectableValues = selectableValues == null ? null : new HashSet<>(selectableValues);
 		this.onSet = onSet;
 		this.valueLabelProvider = valueLabelProvider;

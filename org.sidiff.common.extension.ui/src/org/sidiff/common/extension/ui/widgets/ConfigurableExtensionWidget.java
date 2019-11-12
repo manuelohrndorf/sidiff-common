@@ -123,27 +123,26 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	}
 
 	protected <T> Control createSingleChoiceControl(Composite parent, ConfigurationOption<T> option) {
+		if(option.getValue() == null) {
+			option.resetToDefault();
+			if(option.getValue() == null) {
+				// Preselect first value as default if no default value set
+				option.setValue(option.getSelectableValues().stream().findFirst().orElse(null));
+			}
+		}
+
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		group.setLayout(new GridLayout(1, true));
 
-		boolean anySelected = false;
-		Button anyButton = null;
 		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.RADIO);
 			button.setText(option.getLabelForValue(value));
 			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(value)));
 			if(option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()))) {
 				button.setSelection(true);
-				anySelected = true;
 			}
-			if(anyButton == null) {
-				anyButton = button;
-			}
-		}
-		if(!anySelected && anyButton != null) {
-			anyButton.setSelection(true);
 		}
 		return group;
 	}

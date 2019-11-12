@@ -120,7 +120,8 @@ public class EMFStorage {
 			URI workspaceBase = toFileURI(getWorkspaceRoot().getLocation()).appendSegment("");
 			URI replaced = uri.replacePrefix(workspaceBase, URI.createURI("/"));
 			if(replaced != null) {
-				return replaced;
+				// The replacement is missing the platform:/resource prefix; we must however not encode it twice
+				return URI.createPlatformResourceURI(replaced.toString(), false);
 			}
 			
 			try {

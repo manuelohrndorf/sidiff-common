@@ -645,7 +645,7 @@ public class EMFUtil {
 	public static String getEMapEntrySignature(BasicEMap.Entry<?,?> mapEntry) {
 		Object key = mapEntry.getKey();
 		if(key == null) {
-			return null;
+			return "[null]";
 		} if(key instanceof String) {
 			return (String)key;
 		} else if(key instanceof EObject) {

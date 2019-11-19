@@ -60,7 +60,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	protected Text patternText;
 
 	private final Class<? extends T> elementType;
-	private String title;
+	private String description;
 	private boolean ordered = true;
 	private boolean filterable = false;
 	private int lowerBound = 1;
@@ -79,6 +79,8 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		contents.setLayout(new GridLayout(3, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(contents);
 
+		createDescriptionLabel(contents);
+
 		if(isFilterable()) {
 			createFilterText(contents);			
 		}
@@ -93,6 +95,14 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 
 		hookInitSelection();
 		return contents;
+	}
+
+	protected void createDescriptionLabel(Composite contents) {
+		if(getDescription() != null) {
+			Label label = new Label(contents, SWT.NONE);
+			label.setText(getDescription());
+			label.setLayoutData(new GridData(SWT.FILL, SWT.DEFAULT, true, false, 3, 1));
+		}
 	}
 
 	protected void createFilterText(Composite contents) {
@@ -400,15 +410,13 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	public Class<? extends T> getElementType() {
 		return elementType;
 	}
-	
-	@Override
-	public String getTitle() {
-		return title;
-	}
 
-	@Override
-	public void setTitle(String title) {
-		this.title = Objects.requireNonNull(title);
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public boolean isOrdered() {

@@ -8,17 +8,21 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -28,6 +32,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.part.ISetSelectionTarget;
 import org.eclipse.ui.services.IEvaluationService;
 import org.eclipse.ui.services.IServiceLocator;
 
@@ -102,6 +107,34 @@ public class UIUtil {
 			throw new IllegalArgumentException("Part with ID " + viewId + " is not of type " + viewType);
 		}
 		return viewType.cast(part);
+	}
+
+	/**
+	 * Tries to select and reveal the given resource in the JDT Package Explorer view,
+	 * else tries the same using the Project Explorer view.
+	 * @param window the workbench window to open the view in
+	 * @param resource the resource to select and reveal
+	 * @throws ExecutionException if neither package explorer nor project explorer could be opened
+	 */
+	public static void selectRevealInExplorerView(IWorkbenchWindow window, IResource resource) throws ExecutionException {
+		IWorkbenchPage page = window.getActivePage();
+		if(page == null) {
+			throw new IllegalThreadStateException("Not called from UI thread, or no active page/window");
+		}
+		IViewPart part;
+		try {
+			// First try to open PackageExplorer
+			part = page.showView("org.eclipse.jdt.ui.PackageExplorer");
+		} catch (PartInitException e1) {
+			try {
+				// Else, fall back to project explorer
+				part = page.showView(IPageLayout.ID_PROJECT_EXPLORER);
+			} catch (PartInitException e2) {
+				e2.initCause(e1);
+				throw new ExecutionException("Could not open Package Explorer and Project Explorer views", e2);
+			}
+		}
+		((ISetSelectionTarget)part).selectReveal(new StructuredSelection(resource));
 	}
 
 	/**

@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
@@ -173,6 +174,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		choiceTableViewer.setLabelProvider(getLabelProvider());
 		choiceTableViewer.setInput(getSelectableValues().toArray());
 		choiceTableViewer.setComparator(new ViewerComparator());
+		ColumnViewerToolTipSupport.enableFor(choiceTableViewer);
 
 		choiceTableViewer.addSelectionChangedListener(e -> updateButtonStates());
 		choiceTableViewer.addDoubleClickListener(e -> {
@@ -230,6 +232,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 			// Note that this would break the move up/down buttons, which are only enabled if isOrdered() is true.
 			featureTableViewer.setComparator(new ViewerComparator());
 		}
+		ColumnViewerToolTipSupport.enableFor(featureTableViewer);
 
 		featureTableViewer.addSelectionChangedListener(e -> updateButtonStates());
 		featureTableViewer.addDoubleClickListener(e -> {

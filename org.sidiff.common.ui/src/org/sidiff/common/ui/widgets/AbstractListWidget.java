@@ -66,7 +66,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	private int lowerBound = 1;
 	private int upperBound = Integer.MAX_VALUE;
 	private int tableWidth = 150;
-	private int tableHeight = 70;
+	private int tableHeight = 50;
 
 	public AbstractListWidget(Class<? extends T> elementType) {
 		this.elementType = Objects.requireNonNull(elementType);
@@ -94,6 +94,8 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		}
 
 		hookInitSelection();
+		updateButtonStates();
+
 		return contents;
 	}
 
@@ -171,9 +173,10 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		choiceTableViewer.setLabelProvider(getLabelProvider());
 		choiceTableViewer.setInput(getSelectableValues().toArray());
 		choiceTableViewer.setComparator(new ViewerComparator());
-		
+
+		choiceTableViewer.addSelectionChangedListener(e -> updateButtonStates());
 		choiceTableViewer.addDoubleClickListener(e -> {
-			if (addButton.isEnabled()) {
+			if(addButton.isEnabled()) {
 				addButton.notifyListeners(SWT.Selection, null);
 			}
 		});
@@ -228,8 +231,9 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 			featureTableViewer.setComparator(new ViewerComparator());
 		}
 
+		featureTableViewer.addSelectionChangedListener(e -> updateButtonStates());
 		featureTableViewer.addDoubleClickListener(e -> {
-			if (removeButton.isEnabled()) {
+			if(removeButton.isEnabled()) {
 				removeButton.notifyListeners(SWT.Selection, null);
 			}
 		});
@@ -348,6 +352,22 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 			}
 		}));
 	}
+	
+	protected void updateButtonStates() {
+		if(addButton != null) {
+			addButton.setEnabled(!choiceTableViewer.getSelection().isEmpty());
+		}
+		if(removeButton != null) {
+			removeButton.setEnabled(!featureTableViewer.getSelection().isEmpty());
+		}
+		if(upButton != null) {
+			upButton.setEnabled(featureTableViewer.getTable().getSelectionIndex() > 0);
+		}
+		if(downButton != null) {
+			downButton.setEnabled(featureTableViewer.getTable().getSelectionIndex() >= 0
+					&& featureTableViewer.getTable().getSelectionIndex() < featureTableViewer.getTable().getItemCount()-1);
+		}
+	}
 
 	/**
 	 * Updates the table viewer. Subclasses must call the super implementation first
@@ -362,6 +382,9 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		if(choiceTableViewer != null) {
 			choiceTableViewer.refresh(); // update because filter depends on selection			
 		}
+		if(featureTableViewer != null && choiceTableViewer != null) {
+			updateButtonStates();			
+		}
 		getWidgetCallback().requestValidation();
 	}
 	
@@ -375,12 +398,10 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	
 	/**
 	 * Validates the lower and upper bounds.
-	 * When overriding this, the super implementation must be called
-	 * and the validation message must be set using {@link #setValidationMessage(ValidationMessage)}:
+	 * When overriding this, the super implementation must be called.
 	 * <pre>
 	 * if(...) {
-	 *   setValidationMessage(...);
-	 *   return false;
+	 *   return new ValidationMessage(...);
 	 * }
 	 * return super.validate();
 	 * </pre>

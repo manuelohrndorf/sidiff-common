@@ -110,6 +110,7 @@ public abstract class SelectResourceWidget<R extends IResource> extends Abstract
 		resourceChooseButton = new Button(modelChooseGroup, SWT.PUSH);
 		resourceChooseButton.setText("Choose Model");
 		resourceChooseButton.addSelectionListener(new SelectionAdapter() {
+			@Override
 			@SuppressWarnings("unchecked")
 			public void widgetSelected(SelectionEvent event) {
 				ContainerSelectionDialog containerSelectionDialog = new ContainerSelectionDialog(

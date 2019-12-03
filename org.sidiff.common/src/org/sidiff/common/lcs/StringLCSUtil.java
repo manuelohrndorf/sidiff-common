@@ -52,7 +52,7 @@ public class StringLCSUtil {
 			return 1.0f;
 		else {
 			float lcs = LCSUtil.compareSequenceByEqualSubsequence(stringA, stringB, new StringLCSSequenceAccessorEqualIgnoreCaseSubsequence());
-			return (float) lcs / Math.max(stringA.length(), stringB.length());
+			return lcs / Math.max(stringA.length(), stringB.length());
 		}
 	}
 	
@@ -67,12 +67,12 @@ public class StringLCSUtil {
 	{
 		@Override
 		public Character get (String sequence, int index) {
-			  return new Character (sequence.charAt(index));
+			  return sequence.charAt(index);
 		}
 		
 		@Override
 		public int size (String sequence) {
-			return ((String) sequence).length();
+			return sequence.length();
 		}
 		
 		@Override
@@ -91,12 +91,12 @@ public class StringLCSUtil {
 	{
 		@Override
 		public Character get (String sequence, int index) {
-			  return new Character (sequence.charAt(index));
+			  return sequence.charAt(index);
 		}
 		
 		@Override
 		public int size (String sequence) {
-			return ((String) sequence).length();
+			return sequence.length();
 		}
 		
 		@Override

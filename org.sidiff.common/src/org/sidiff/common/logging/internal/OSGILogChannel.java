@@ -4,7 +4,8 @@ import java.text.SimpleDateFormat;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.log.LogService;
+import org.osgi.service.log.Logger;
+import org.osgi.service.log.LoggerFactory;
 import org.sidiff.common.CommonPlugin;
 import org.sidiff.common.logging.ILogChannel;
 import org.sidiff.common.logging.LogEvent;
@@ -14,8 +15,8 @@ import org.sidiff.common.logging.LogEvent;
  */
 public class OSGILogChannel implements ILogChannel {
 
-	private BundleContext context = null;
-	private ServiceReference<?> logServiceRef = null;
+	private BundleContext context;
+	private ServiceReference<LoggerFactory> factoryServiceRef;
 	private boolean hasPrintedError = false;
 	
 	@Override
@@ -25,65 +26,62 @@ public class OSGILogChannel implements ILogChannel {
 
 	@Override
 	public void log(String message, LogEvent event) {
-		LogService logService = getLogService();
-		if (logService != null) {
-			logService.log(toOSGILogLevel(event), message);
+		LoggerFactory factory = getLoggetFactory();
+		if (factory != null) {
+			Logger logger = factory.getLogger(OSGILogChannel.class);
+			switch(event) {
+				case CONFIG:
+				case EVENT:
+				case SIGNAL:
+				case DEBUG:
+					logger.debug(message);
+					break;
+				case ERROR:
+					logger.error(message);
+					break;
+				case INFO:
+				case MESSAGE:
+				case NOTICE:
+					logger.info(message);
+					break;
+				case WARNING:
+					logger.warn(message);
+					break;
+			}
 		} else {
-			System.out.println("OSGI-LOG "+event.name()+": "+message);
+			System.out.println("OSGI-LOG " + event.name() + ": " + message);
 		}
 	}
 	
-	private LogService getLogService() {
-		
-		if(context==null){
-			if(CommonPlugin.isActivated()){
-				this.context = CommonPlugin.getBundleContext();
+	private LoggerFactory getLoggetFactory() {
+		if(context == null){
+			if(CommonPlugin.isActivated()) {
+				context = CommonPlugin.getBundleContext();
 			} else {
 				System.err.println("ERROR - OSGI LogChannel cannot get OSGI Context!");
 			}
 		}
-		
-		if(logServiceRef==null){
-			 ServiceReference<?> serviceRef = context.getServiceReference(LogService.class.getName());
-			 if(serviceRef!=null){
-				 this.logServiceRef = serviceRef;
+
+		if(factoryServiceRef == null) {
+			 ServiceReference<LoggerFactory> serviceRef = context.getServiceReference(LoggerFactory.class);
+			 if(serviceRef != null) {
+				 factoryServiceRef = serviceRef;
 			 } else if (!hasPrintedError) {
-				 System.err.println("ERROR - OSGI LogChannel cannot get OSGI Logservice!");
+				 System.err.println("ERROR - OSGI LogChannel cannot get OSGI LoggerFactory service!");
 				 hasPrintedError = true;
 			 }
 		}
 
-		try {
-			return (LogService)this.context.getService(logServiceRef);
-		} catch (Exception e) {
-			return null;
+		if(factoryServiceRef != null) {
+			try {
+				return context.getService(factoryServiceRef);
+			} catch (Exception e) {
+				System.err.println("ERROR - OSGI LogChannel cannot get OSGI LoggerFactory!");
+			}			
 		}
+		return null;
 	}
 	
-	
-	private int toOSGILogLevel(LogEvent event) {
-
-		// Map LogUtil log level to the logservice loglevel
-		switch (event) {
-		case MESSAGE:
-			return LogService.LOG_INFO;
-		case ERROR:
-			return LogService.LOG_ERROR;
-		case WARNING:
-			return LogService.LOG_WARNING;
-		case NOTICE:
-			return LogService.LOG_INFO;
-		case EVENT:
-			return LogService.LOG_DEBUG;
-		case SIGNAL:
-			return LogService.LOG_DEBUG;
-		case DEBUG:
-			return LogService.LOG_DEBUG;
-		default:
-			throw new IllegalArgumentException("Unknown Event:" + event);
-		}
-	}
-
 	@Override
 	public boolean doIndentation() {
 		return false;

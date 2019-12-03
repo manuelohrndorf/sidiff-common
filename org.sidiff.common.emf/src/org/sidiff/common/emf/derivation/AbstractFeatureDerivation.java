@@ -112,7 +112,7 @@ public abstract class AbstractFeatureDerivation {
 		Map<Integer, FeatureDeterminator<?, ?>> determinatorsForClassifier = determinatorsForPackage.get(metaObjectID);
 
 		assert (determinatorsForClassifier.containsKey(featureID)) : "No derivation for feature (" + featureID + ") of meta-object (" + metaObjectID + ") in package (" + ePackage.getNsURI() + ") registered!";
-		return (T) ((FeatureDeterminator<F, T>) determinatorsForClassifier.get(featureID)).compute(instance);
+		return ((FeatureDeterminator<F, T>) determinatorsForClassifier.get(featureID)).compute(instance);
 	}
 
 	/**

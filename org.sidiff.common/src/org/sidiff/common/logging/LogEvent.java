@@ -51,6 +51,7 @@ public enum LogEvent {
 		this.eventstring = eventstring;
 	}
 
+	@Override
 	public String toString() {
 		return eventstring;
 	}

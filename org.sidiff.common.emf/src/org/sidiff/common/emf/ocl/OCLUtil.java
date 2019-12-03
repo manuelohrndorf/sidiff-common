@@ -2,6 +2,7 @@ package org.sidiff.common.emf.ocl;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
@@ -15,7 +16,7 @@ import org.eclipse.emf.query.statements.SELECT;
 import org.eclipse.emf.query.statements.WHERE;
 import org.eclipse.ocl.ParserException;
 import org.eclipse.ocl.ecore.OCL;
-import org.sidiff.common.emf.EMFUtil;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 
 /**
@@ -34,7 +35,7 @@ public class OCLUtil {
 	 * @return
 	 */
 	public static Collection<EObject> selectFrom(Resource model, String expression, EClassifier contextClassifier) {
-		return selectFrom(EMFUtil.createListFromEAllContents(model), expression, contextClassifier);
+		return selectFrom(CollectionUtil.asStream(model.getAllContents()).collect(Collectors.toList()), expression, contextClassifier);
 	}
 	
 	/**

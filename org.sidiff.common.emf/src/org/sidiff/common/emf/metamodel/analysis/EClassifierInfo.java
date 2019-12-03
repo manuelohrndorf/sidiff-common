@@ -294,7 +294,7 @@ public class EClassifierInfo {
 		
 		for(EClass superType: ((EClass) eClassifier).getEAllSuperTypes()) {
 					
-			List<EReference> localSuperTypeReferences = ((EClass)superType).getEReferences();
+			List<EReference> localSuperTypeReferences = superType.getEReferences();
 			
 			for(EReference ref: localSuperTypeReferences) {
 				

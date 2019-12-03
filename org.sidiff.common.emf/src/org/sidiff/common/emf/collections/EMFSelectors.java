@@ -3,14 +3,12 @@ package org.sidiff.common.emf.collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.access.EMFMetaAccess;
 
 /**

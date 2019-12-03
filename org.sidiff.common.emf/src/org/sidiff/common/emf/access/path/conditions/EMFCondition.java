@@ -21,6 +21,7 @@ public abstract class EMFCondition implements Predicate<EObject> {
 	
 	public abstract void initCondition(EMFPathStepImpl step);
 	
+	@Override
 	public abstract boolean test(EObject item);
 
 }

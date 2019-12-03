@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.sidiff.common.collections.CollectionUtil;
 
 /**
  * Classifiers to be used with {@link CollectionUtil}.

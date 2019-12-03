@@ -859,8 +859,8 @@ public class EClassifierInfoManagement {
 	public Set<EClassifier> getAllConcreteSubTypes(EClassifier eClassifier) {
 		Set<EClassifier> set = new HashSet<EClassifier>();
 		
-		for(EClassifier subType: subTypeMap.get(eClassifier)) {
-			if(subType instanceof EClassifier && !((EClass)subType).isAbstract()) {
+		for(EClassifier subType : subTypeMap.get(eClassifier)) {
+			if(subType != null && !((EClass)subType).isAbstract()) {
 				set.add(subType);
 			}
 			set.addAll(getAllConcreteSubTypes(subType));			

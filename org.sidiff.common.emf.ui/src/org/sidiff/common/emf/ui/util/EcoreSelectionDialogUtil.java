@@ -328,6 +328,7 @@ public class EcoreSelectionDialogUtil {
 		 * org.eclipse.ui.dialogs.ISelectionStatusValidator#validate(java.lang
 		 * .Object[])
 		 */
+		@Override
 		public IStatus validate(Object[] selection) {
 			if (selection.length > 0) {
 				final Object obj = selection[0];

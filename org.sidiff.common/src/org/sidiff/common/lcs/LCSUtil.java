@@ -169,7 +169,7 @@ public class LCSUtil {
 
 			@Override
 			public String get(List<String> sequence, int index) {
-				return (String) sequence.get(index);
+				return sequence.get(index);
 			}
 
 			@Override
@@ -184,7 +184,7 @@ public class LCSUtil {
 
 				@Override
 				public String get(List<String> sequence, int index) {
-					return (String) sequence.get(index);
+					return sequence.get(index);
 				}
 
 				@Override

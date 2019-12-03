@@ -267,7 +267,7 @@ public class ContainmentCycleDetector {
 		
 		// create ContainmentCycle object and link it to the EClassifierInfo
 		// for first entry in the path (namely the EClassifier, which was first considered)
-		EClassifier firstConsideration = (EClassifier) path.get(0).getTargetedEClassifier();
+		EClassifier firstConsideration = path.get(0).getTargetedEClassifier();
 		ContainmentCycle cc = new ContainmentCycle(path, isInnerCircle);
 		ECM.getEClassifierInfo(firstConsideration).addContainmentCycle(cc);
 		

@@ -171,7 +171,7 @@ public class NameUtil {
 					eContainer = eContainer.eContainer();
 				}
 
-				label = String.format("%s%s (%s)", path, (String) eObject
+				label = String.format("%s%s (%s)", path, eObject
 						.eGet(attribute), eObject.eClass().getName());
 
 				return label;
@@ -190,7 +190,7 @@ public class NameUtil {
 					eContainer = eContainer.eContainer();
 				}
 				label = String.format("%s.%s", eObject.eClass().getName(),
-						(String) eObject.eGet(attribute));
+						eObject.eGet(attribute));
 				return label;
 			}
 		}

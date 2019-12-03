@@ -1,9 +1,7 @@
 package org.sidiff.common.file;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,7 +21,7 @@ import org.sidiff.common.io.IOUtil;
 /**
  * Contains utility functions to work with Zip archives.
  * This class uses {@link Path}, see {@link FileOperations}.
- * @author Robert Müller
+ * @author rmueller
  */
 public class ZipUtil {
 

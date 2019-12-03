@@ -29,7 +29,7 @@ public class ECoreTraversal {
 				StringBuffer pathClassSegment = new StringBuffer(pathSegment);
 				pathClassSegment.append(eClassifier.getName());
 
-				visitor.eClassifier((EClass) eClassifier, pathClassSegment.toString());
+				visitor.eClassifier(eClassifier, pathClassSegment.toString());
 			}
 		}
 

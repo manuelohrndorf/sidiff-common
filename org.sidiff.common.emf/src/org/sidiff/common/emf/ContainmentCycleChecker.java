@@ -3,13 +3,11 @@ package org.sidiff.common.emf;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
@@ -31,14 +29,11 @@ public class ContainmentCycleChecker {
 	private List<EReference> refCycle = new ArrayList<EReference>();
 
 	public ContainmentCycleChecker(Resource model) {
-
-		for (Iterator<EObject> iterator = model.getAllContents(); iterator
-				.hasNext();) {
-			EObject eObject = (EObject) iterator.next();
+		model.getAllContents().forEachRemaining(eObject -> {
 			if (eObject instanceof EClass) {
 				vertices.add((EClass) eObject);
 			}
-		}
+		});
 	}
 
 	public List<EReference> check() {

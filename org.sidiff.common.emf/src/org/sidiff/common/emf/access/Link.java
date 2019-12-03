@@ -1,5 +1,7 @@
 package org.sidiff.common.emf.access;
 
+import java.util.Objects;
+
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 
@@ -19,21 +21,18 @@ import org.eclipse.emf.ecore.EReference;
  */
 public class Link {
 
-	private EObject src;
-	private EObject tgt;
-	private EReference type;
+	private final EObject src;
+	private final EObject tgt;
+	private final EReference type;
 
 	public Link(EObject src, EObject tgt, EReference type) {
-		super();
-		
-		assert (src != null && tgt != null && type != null) : "Either src, tgt or type is null!";
 		// FIXME (cpietsch: 02.09.2014) getNodeNeighbors doesn't work with symbolic links
 		// (see also org.sidiff.difference.lifting.recognitionengine.matching.BasicEditRuleMatch)
 		//assert (EMFModelAccess.getNodeNeighbors(src, type).contains(tgt)) : "src doesn't reference tgt!";
 		
-		this.src = src;
-		this.tgt = tgt;
-		this.type = type;
+		this.src = Objects.requireNonNull(src);
+		this.tgt = Objects.requireNonNull(tgt);
+		this.type = Objects.requireNonNull(type);
 	}
 
 	public EObject getSrc() {
@@ -50,25 +49,23 @@ public class Link {
 
 	@Override
 	public int hashCode() {
-		String str = src.toString() + tgt.toString() + type.toString();		
-		return str.hashCode();
+		return Objects.hash(src, tgt, type);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof Link) {
-			Link other = (Link) obj;
-			return src.equals(other.src) && tgt.equals(other.tgt) && type.equals(other.type);
+		if(this == obj) {
+			return true;
 		}
-
-		return false;
+		if (!(obj instanceof Link)) {
+			return false;
+		}
+		Link other = (Link)obj;
+		return src.equals(other.src) && tgt.equals(other.tgt) && type.equals(other.type);
 	}
 
 	@Override
 	public String toString() {
-		String res = super.toString();
-		res += ": " + src.toString() + " -> " + tgt.toString() + " (" + type.getName() + ")";
-		return res;
+		return "Link[" + src + " -> " + tgt + ", " + type.getName() + "]";
 	}
-
 }

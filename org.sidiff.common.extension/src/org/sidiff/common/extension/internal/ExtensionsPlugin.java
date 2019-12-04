@@ -5,10 +5,11 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
- * Plugin activator for the extension management plugin.
- * Contains utility functions for logging.
- * @author Robert Müller
- *
+ * <p>Plugin activator for the extension management plugin.
+ * Contains utility functions for logging.</p>
+ * <p>The VM system property <code>extensionManagerLogging</code> controls the
+ * minimum logging level ("info", "warning", "error") for console log output (default is "error").</p>
+ * @author rmueller
  */
 public class ExtensionsPlugin extends Plugin {
 
@@ -16,10 +17,27 @@ public class ExtensionsPlugin extends Plugin {
 
 	private static ExtensionsPlugin instance;
 
+	private int loggingLevel;
+
 	@Override
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		instance = this;
+		
+		this.loggingLevel = parseLoggingLevel(System.getProperty("extensionManagerLogging"));
+	}
+
+	private static int parseLoggingLevel(String property) {
+		if(property == null || property.isEmpty() || property.equalsIgnoreCase("error")) {
+			return Status.ERROR;
+		}
+		if(property.equalsIgnoreCase("warning")) {
+			return Status.WARNING;
+		}
+		if(property.equalsIgnoreCase("info")) {
+			return Status.INFO;
+		}
+		return Status.ERROR;
 	}
 
 	@Override
@@ -37,7 +55,9 @@ public class ExtensionsPlugin extends Plugin {
 	//
 
 	public static void log(int severity, String message, Throwable throwable) {
-		getDefault().getLog().log(new Status(severity, PLUGIN_ID, message, throwable));
+		if(severity >= instance.loggingLevel) {
+			instance.getLog().log(new Status(severity, PLUGIN_ID, message, throwable));			
+		}
 	}
 
 	public static void logInfo(String message) {

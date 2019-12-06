@@ -6,7 +6,7 @@ import java.util.Objects;
  * <p>An ordered, immutable pair of two objects of generic types.</p>
  *  <p>An ordered pair is not equal to its inverse pair:<br>
  * <code>&lt;first, second&gt; != &lt;second, first&gt;</code>.</p>
- * @author Robert Müller
+ * @author rmueller
  *
  * @param <T> the type of the first object
  * @param <S> the type of the second object
@@ -15,6 +15,11 @@ public final class Pair<T,S> extends AbstractPair<T,S> {
 
 	private Pair(T first, S second) {
 		super(first, second);
+	}
+
+	@Override
+	public String toString() {
+		return "Pair[" + getFirst() + ", " + getSecond() + "]";
 	}
 
 	@Override

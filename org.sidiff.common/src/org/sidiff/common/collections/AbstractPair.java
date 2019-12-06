@@ -4,7 +4,7 @@ package org.sidiff.common.collections;
  * An abstract pair of two objects of generic types.
  * Subclasses must override {@link #equals(Object)} and
  * {@link #hashCode()} to specify the equality of pairs.
- * @author Robert Müller
+ * @author rmueller
  *
  * @param <T> the type of the first object
  * @param <S> the type of the second object

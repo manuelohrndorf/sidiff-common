@@ -48,8 +48,8 @@ import org.sidiff.common.emf.metrics.MetricsFacade;
 import org.sidiff.common.emf.metrics.MetricsList;
 import org.sidiff.common.emf.metrics.MetricsScope;
 import org.sidiff.common.emf.metrics.MetricsUtil;
+import org.sidiff.common.emf.metrics.jobs.RecomputeMetricsJob;
 import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
-import org.sidiff.common.emf.metrics.ui.jobs.RecomputeMetricsJob;
 import org.sidiff.common.file.CSVWriter;
 
 /**

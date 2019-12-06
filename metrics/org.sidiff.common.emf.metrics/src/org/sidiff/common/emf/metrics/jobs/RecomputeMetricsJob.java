@@ -1,4 +1,4 @@
-package org.sidiff.common.emf.metrics.ui.jobs;
+package org.sidiff.common.emf.metrics.jobs;
 
 import java.util.Collection;
 import java.util.Objects;

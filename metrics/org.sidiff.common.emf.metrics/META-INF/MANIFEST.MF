@@ -9,4 +9,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.sidiff.common.emf;visibility:=reexport,
  org.sidiff.common.extension;visibility:=reexport
 Export-Package: org.sidiff.common.emf.metrics,
- org.sidiff.common.emf.metrics.defaults
+ org.sidiff.common.emf.metrics.defaults,
+ org.sidiff.common.emf.metrics.defaults.impl;x-internal:=true,
+ org.sidiff.common.emf.metrics.jobs

@@ -237,10 +237,13 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		resource.setURI(uri);
 		saveResource(resource);
 	}
-	
+
 	@Override
 	public Resource getResource(URI uri, boolean loadOnDemand) {
 		Resource resource = super.getResource(uri, loadOnDemand);
+		if(resource == null) {
+			return null;
+		}
 		if(isLogErrors()) {
 			for(Diagnostic diag : resource.getErrors()) {
 				LogUtil.log(LogEvent.ERROR, "Loaded resource has error: " + resource.getURI(), diag);

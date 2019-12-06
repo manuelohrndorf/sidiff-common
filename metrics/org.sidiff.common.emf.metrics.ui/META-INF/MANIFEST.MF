@@ -7,7 +7,8 @@ Bundle-Activator: org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.sidiff.common.emf.metrics
+ org.sidiff.common.emf.metrics,
+ org.sidiff.common.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.emf.metrics.ui
 Bundle-ActivationPolicy: lazy

@@ -141,7 +141,7 @@ public class ExtensionManager<T extends IExtension> {
 	 * <p>Subclasses may override.</p>
 	 * @return the default extension, or empty Optional if none
 	 */
-	public Optional<T> getDefaultExtension() {
+	public Optional<? extends T> getDefaultExtension() {
 		return getExtensions().stream().findAny();
 	}
 

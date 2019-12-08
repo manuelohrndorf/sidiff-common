@@ -11,6 +11,14 @@
             name="Metrics"
             restorable="true">
       </view>
+      <view
+            category="org.sidiff.ui.category"
+            class="org.sidiff.common.emf.metrics.ui.views.MetricsDifferencesView"
+            icon="icons/metrics_differences.png"
+            id="org.sidiff.common.emf.metrics.ui.views.MetricsDifferencesView"
+            name="Metrics Differences"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

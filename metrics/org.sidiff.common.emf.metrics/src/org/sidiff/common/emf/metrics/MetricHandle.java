@@ -170,6 +170,13 @@ public class MetricHandle {
 		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + MetricsUtil.getLabel(cachedValues) + "]";
 	}
 
+	public MetricHandle createCopy() {
+		MetricHandle copy = new MetricHandle(metric, context);
+		copy.cachedValues.clear();
+		copy.cachedValues.putAll(cachedValues);
+		return copy;
+	}
+
 	public static Comparator<MetricHandle> getByKeyComparator() {
 		return Comparator.comparing(h -> h.getMetric().getKey());
 	}

@@ -22,6 +22,16 @@
             generic
          </documentType>
       </metric>
+      <metric
+            class="org.sidiff.common.emf.metrics.defaults.impl.NumberOfResourceErrors"
+            comparisonType="LOWER_IS_BETTER"
+            description="The total number of validation errors recorded in the Resource."
+            key="emf.NumberOfResourceErrors"
+            name="Number of Resource Validation-Errors">
+         <documentType>
+            generic
+         </documentType>
+      </metric>
    </extension>
 
 </plugin>

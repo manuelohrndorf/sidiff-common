@@ -1,6 +1,10 @@
 package org.sidiff.common.emf.metrics;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.sidiff.common.collections.Pair;
 
 /**
  * Provides high level access to the {@link IMetric} extension,
@@ -22,5 +26,31 @@ public class MetricsFacade {
 			.flatMap(metric -> scope.getApplicableContexts(metric.getContextType())
 				.map(notifier -> new MetricHandle(metric, notifier)))
 			.collect(Collectors.toCollection(MetricsList::new));
+	}
+
+	/**
+	 * Calculates a difference between two {@link MetricsList}s and returns a {@link MetricsListDifference},
+	 * which contains {@link MetricHandleDifference}s for each matched {@link MetricHandle} in the two lists.
+	 * @param origin the origin metrics list for comparison
+	 * @param changed the changed metrics list for comparison
+	 * @return list of individual differences handles, which can be used to compute the difference values
+	 */
+	public static MetricsListDifference calculateDifference(MetricsList origin, MetricsList changed) {
+		// Create matching between the two lists
+		Set<Pair<MetricHandle,MetricHandle>> correspondences = new HashSet<>();
+		for(MetricHandle originHandle : origin) {
+			changed.findMatching(originHandle).ifPresent(match -> correspondences.add(Pair.of(originHandle, match)));
+		}
+		for(MetricHandle changedHandle : changed) {
+			origin.findMatching(changedHandle).ifPresent(match -> correspondences.add(Pair.of(match, changedHandle)));
+		}
+
+		// Remove incomparable correspondence
+		correspondences.removeIf(correspondence -> correspondence.getFirst() == null || correspondence.getSecond() == null
+				|| correspondence.getFirst().isIrrelevant() || correspondence.getSecond().isIrrelevant());
+
+		return correspondences.stream()
+			.map(correspondence -> new MetricHandleDifference(correspondence.getFirst(), correspondence.getSecond()))
+			.collect(Collectors.toCollection(MetricsListDifference::new));
 	}
 }

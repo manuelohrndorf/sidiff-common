@@ -89,6 +89,23 @@
                </appinfo>
             </annotation>
          </attribute>
+         <attribute name="comparisonType" use="default" value="UNSPECIFIED">
+            <annotation>
+               <documentation>
+                  
+               </documentation>
+            </annotation>
+            <simpleType>
+               <restriction base="string">
+                  <enumeration value="UNSPECIFIED">
+                  </enumeration>
+                  <enumeration value="HIGHER_IS_BETTER">
+                  </enumeration>
+                  <enumeration value="LOWER_IS_BETTER">
+                  </enumeration>
+               </restriction>
+            </simpleType>
+         </attribute>
       </complexType>
    </element>
 

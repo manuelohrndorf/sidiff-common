@@ -24,6 +24,13 @@ public interface IMetric extends ITypedExtension {
 	Class<? extends Notifier> getContextType();
 
 	/**
+	 * Returns the {@link ComparisonType} of this metric, which determines how
+	 * values of this metric are compared with each other.
+	 * @return the comparison type
+	 */
+	ComparisonType getComparisonType();
+
+	/**
 	 * Calculates the value of the metric for the notifier.
 	 * @param context the context for which to compute the metric, is always an instance of {@link #getContextType()}
 	 * @param acceptor an acceptor for the resulting metric value/s

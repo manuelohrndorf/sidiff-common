@@ -26,6 +26,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -60,6 +61,12 @@ public class MetricsDifferencesView extends ViewPart {
 	private TreeViewerColumn metricContextColumn;
 	private TreeViewerColumn metricComparisonColumn;
 
+	private Image imageChangeNeutral;
+	private Image imageChangeDownBad;
+	private Image imageChangeDownGood;
+	private Image imageChangeUpBad;
+	private Image imageChangeUpGood;
+
 	private Action recomputeAction;
 	private Action recomputeAllAction;
 
@@ -68,8 +75,11 @@ public class MetricsDifferencesView extends ViewPart {
 
 	@Override
 	public void createPartControl(Composite parent) {
+		loadImages();
+
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
+
 		createOriginChangedCombos(composite);
 		createTableViewer(composite);
 
@@ -80,7 +90,15 @@ public class MetricsDifferencesView extends ViewPart {
 
 		updateMetricsDifference();
 	}
-	
+
+	private void loadImages() {
+		imageChangeNeutral = MetricsUiPlugin.getImageDescriptor("change_neutral.png").createImage();
+		imageChangeDownBad = MetricsUiPlugin.getImageDescriptor("change_down_bad.png").createImage();
+		imageChangeDownGood = MetricsUiPlugin.getImageDescriptor("change_down_good.png").createImage();
+		imageChangeUpBad = MetricsUiPlugin.getImageDescriptor("change_up_bad.png").createImage();
+		imageChangeUpGood = MetricsUiPlugin.getImageDescriptor("change_up_good.png").createImage();
+	}
+
 	private Action createRecomputeAction() {
 		Action action = new Action() {
 			@Override
@@ -239,9 +257,21 @@ public class MetricsDifferencesView extends ViewPart {
 				case UNCHANGED:
 					return treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_BLACK);
 				case GOOD:
-					return treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_GREEN);
+					return treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN);
 				case BAD:
 					return treeViewer.getTree().getDisplay().getSystemColor(SWT.COLOR_RED);
+			}
+			throw new AssertionError();
+		};
+		Function<MetricValueComparisonResult,Image> resultToImage = result -> {
+			switch(result.getChangeJudgement()) {
+				case NONE:
+				case UNCHANGED:
+					return imageChangeNeutral;
+				case GOOD:
+					return result.getNumericOffset() > 0 ? imageChangeUpGood : imageChangeDownGood;
+				case BAD:
+					return result.getNumericOffset() > 0 ? imageChangeUpBad : imageChangeDownBad;
 			}
 			throw new AssertionError();
 		};
@@ -270,13 +300,25 @@ public class MetricsDifferencesView extends ViewPart {
 			public Color getForeground(Object element) {
 				if(element instanceof MetricHandleDifference) {
 					MetricHandleDifference handle = (MetricHandleDifference)element;
-					if(handle.isUncategorized()) {
+					if(handle.hasResults() && handle.isUncategorized()) {
 						return resultToColor.apply(handle.getUncategorizedResults());
 					}
 				} else if(element instanceof MetricHandleDifferenceKeyValue) {
 					return resultToColor.apply(((MetricHandleDifferenceKeyValue)element).result);
 				}
 				return super.getForeground(element);
+			}
+			@Override
+			public Image getImage(Object element) {
+				if(element instanceof MetricHandleDifference) {
+					MetricHandleDifference handle = (MetricHandleDifference)element;
+					if(handle.hasResults() && handle.isUncategorized()) {
+						return resultToImage.apply(handle.getUncategorizedResults());
+					}
+				} else if(element instanceof MetricHandleDifferenceKeyValue) {
+					return resultToImage.apply(((MetricHandleDifferenceKeyValue)element).result);
+				}
+				return null;
 			}
 			@Override
 			public String getToolTipText(Object element) {
@@ -359,6 +401,17 @@ public class MetricsDifferencesView extends ViewPart {
 	protected void handleTabsChanged() {
 		originMetricsCombo.setItems(tabs.keySet().toArray(new String[0]));
 		changedMetricsCombo.setItems(tabs.keySet().toArray(new String[0]));
+	}
+
+	@Override
+	public void dispose() {
+		super.dispose();
+
+		imageChangeNeutral.dispose();
+		imageChangeDownBad.dispose();
+		imageChangeDownGood.dispose();
+		imageChangeUpBad.dispose();
+		imageChangeUpGood.dispose();
 	}
 
 	private static class ContentProvider implements ITreeContentProvider {

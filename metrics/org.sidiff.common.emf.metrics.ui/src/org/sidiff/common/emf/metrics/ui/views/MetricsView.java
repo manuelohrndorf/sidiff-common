@@ -105,6 +105,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 		tabs = new ArrayList<>();
 		selectionTab = new Tab(tabFolder, "Selection");
+		handleTabsChanged();
 
 		tabFolder.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> updateActionStates()));
 		updateActionStates();
@@ -184,6 +185,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 						.collect(Collectors.toCollection(MetricsList::new));
 				snapshotTab.handleMetricsChanged();
 				counter++;
+				handleTabsChanged();
 			}
 		};
 		action.setText("Take Snapshot");
@@ -332,11 +334,14 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			tabItem.setText(title);
 			tabItem.setControl(createControls(tabFolder));
 			tabs.add(this);
-			handleTabsChanged();
 		}
 
 		public String getTitle() {
 			return tabItem.getText();
+		}
+
+		public Notifier getSelectedNotifier() {
+			return selectedNotifier;
 		}
 
 		private Control createControls(Composite composite) {

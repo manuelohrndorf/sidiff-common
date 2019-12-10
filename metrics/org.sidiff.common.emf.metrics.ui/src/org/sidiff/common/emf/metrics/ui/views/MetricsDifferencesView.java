@@ -169,7 +169,7 @@ public class MetricsDifferencesView extends ViewPart {
 		rowComposite.setLayout(new GridLayout(2, false));
 
 		Label originLabel = new Label(rowComposite, SWT.WRAP);
-		originLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+		originLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		originLabel.setText("Origin");
 
 		originMetricsCombo = new Combo(rowComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
@@ -177,7 +177,7 @@ public class MetricsDifferencesView extends ViewPart {
 		originMetricsCombo.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> updateMetricsDifference()));
 
 		Label changedLabel = new Label(rowComposite, SWT.WRAP);
-		changedLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false));
+		changedLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 		changedLabel.setText("Changed");
 
 		changedMetricsCombo = new Combo(rowComposite, SWT.DROP_DOWN | SWT.READ_ONLY);
@@ -394,7 +394,9 @@ public class MetricsDifferencesView extends ViewPart {
 	}
 
 	void setMetricsTabs(List<Tab> tabs) {
-		this.tabs = tabs.stream().collect(Collectors.toMap(Tab::getTitle, Function.identity()));
+		this.tabs = tabs.stream().collect(Collectors.toMap(
+				tab -> tab.getTitle() + " - " + MetricsUtil.getLabel(tab.getSelectedNotifier()),
+				Function.identity()));
 		handleTabsChanged();
 	}
 

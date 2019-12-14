@@ -11,7 +11,7 @@ import org.sidiff.common.extension.internal.NullExtensionConfiguration;
  * default value.</p>
  * <p>{@link BasicExtensionConfiguration} is a basic implementation
  * of an extension configuration.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public interface IExtensionConfiguration {
 
@@ -59,8 +59,17 @@ public interface IExtensionConfiguration {
 	 * @return collection of all configuration options
 	 */
 	Collection<ConfigurationOption<?>> getConfigurationOptions();
-	
-	// TODO: support serialization of option assignments using the label as key
+
+	/**
+	 * Exports the configuration option assignments to a serializable format.
+	 * @return serialized option assignments
+	 */
 	String exportAssignments();
+
+	/**
+	 * Imports configuration options assignments, which have been previously
+	 * exported with {@link #exportAssignments()}.
+	 * @param serializedValue the serialized value to import
+	 */
 	void importAssignments(String serializedValue);
 }

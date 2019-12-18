@@ -387,7 +387,7 @@ public final class StatisticsUtil implements Serializable {
 	 * @param key
 	 * @param value
 	 */
-	public void putTime(String key, float value) {
+	public void putTime(String key, Long value) {
 		if (enabled) {
 			timeStatistic.put(key, value);
 		}

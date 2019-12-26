@@ -40,6 +40,10 @@ public class MetricsScope {
 		this.selectedContext = Objects.requireNonNull(selectedContext);
 	}
 
+	public Notifier getSelectedContext() {
+		return selectedContext;
+	}
+
 	public Set<String> getDocumentTypes() {
 		return EMFModelAccess.getDocumentTypes(selectedContext);
 	}
@@ -105,5 +109,29 @@ public class MetricsScope {
 				.flatMap(s -> s);
 		}
 		return Stream.of(context);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this) {
+			return true;
+		}
+		if(!(obj instanceof MetricsScope)) {
+			return false;
+		}
+		MetricsScope other = (MetricsScope)obj;
+		return this.selectedContext == other.selectedContext
+				&& this.includeParentResourceSet == other.includeParentResourceSet
+				&& this.includeParentResource == other.includeParentResource
+				&& this.includeContainedObjects == other.includeContainedObjects;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(
+				selectedContext,
+				includeParentResourceSet,
+				includeParentResource,
+				includeContainedObjects);
 	}
 }

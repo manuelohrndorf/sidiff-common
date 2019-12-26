@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -16,7 +17,6 @@ import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
@@ -126,7 +126,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		};
 		action.setText("Recompute");
 		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
-		action.setToolTipText("Recompute the value of the selected metrics");
+		action.setToolTipText("Recompute the value of the selected metrics.");
 		return action;
 	}
 
@@ -149,7 +149,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		};
 		action.setText("Copy as CSV");
 		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
-		action.setToolTipText("Copy the selected metrics to the system clipboard in CSV format");
+		action.setToolTipText("Copy the selected metrics to the system clipboard in CSV format.");
 		return action;
 	}
 
@@ -168,7 +168,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		};
 		action.setText("Copy value");
 		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("clipboard.gif"));
-		action.setToolTipText("Copy the values of the selected metrics to the system clipboard");
+		action.setToolTipText("Copy the values of the selected metrics to the system clipboard.");
 		return action;
 	}
 
@@ -179,7 +179,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			@Override
 			public void run() {
 				Tab snapshotTab = new Tab(tabFolder, "Snapshot " + counter);
-				snapshotTab.selectedNotifier = selectionTab.selectedNotifier;
+				snapshotTab.scope = selectionTab.scope;
 				snapshotTab.metrics = selectionTab.metrics.stream()
 						.map(MetricHandle::createCopy)
 						.collect(Collectors.toCollection(MetricsList::new));
@@ -199,7 +199,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			@Override
 			public void run() {
 				int selectedTabIndex = tabFolder.getSelectionIndex();
-				if(selectedTabIndex > 0) { // first tab is selection tab not removable
+				if(selectedTabIndex > 0) { // first tab is selection tab, which is not removable
 					TabItem item = tabFolder.getItem(selectedTabIndex);					
 					item.dispose();
 					tabs.removeIf(tab -> tab.tabItem == item);
@@ -225,7 +225,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		};
 		action.setText("Recompute All");
 		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("recompute.gif"));
-		action.setToolTipText("Recompute the values of all metrics");
+		action.setToolTipText("Recompute the values of all metrics.");
 		return action;
 	}
 	
@@ -233,10 +233,11 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		Action action = new Action("Expand Selection to Resource", IAction.AS_CHECK_BOX) {
 			@Override
 			public void run() {
-				// nothing to do, checked state is already changed
+				// Checked state is already changed, update the scope
+				setSelectedNotifier(getSelectedNotifier());
 			}
 		};
-		action.setToolTipText("Expand selection to containing Resource when selecting an EObject");
+		action.setToolTipText("Expand selection to containing Resource when selecting an EObject.");
 		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("arrow_out.png"));
 		action.setChecked(true);
 		return action;
@@ -277,17 +278,25 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				if(selected instanceof IFile) {
 					try {
 						Resource resource = resourceSet.getResource(EMFStorage.toPlatformURI((IFile)selected), true);
-						selectionTab.setSelectedNotifier(resource);
+						setSelectedNotifier(resource);
 					} catch(Exception e) {
 						// ignored; selection does not contain model
 					}
 				} else if(selected instanceof Notifier) {
-					selectionTab.setSelectedNotifier((Notifier)selected);
+					setSelectedNotifier((Notifier)selected);
 				}
 			}
 		}
 	}
-	
+
+	public void setSelectedNotifier(Notifier selectedNotifier) {
+		selectionTab.setSelectedNotifier(selectedNotifier);
+	}
+
+	public Notifier getSelectedNotifier() {
+		return selectionTab.getSelectedNotifier();
+	}
+
 	protected void updateActionStates() {
 		if(selectionTab == null || tabFolder == null) {
 			return;
@@ -315,7 +324,21 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	@Override
 	public void dispose() {
 		super.dispose();
+		if(clipboard != null) {
+			clipboard.dispose();
+			clipboard = null;
+		}
 		getSite().getPage().removeSelectionListener(this);
+	}
+
+	private MetricsScope createMetricsScope(Notifier selectedNotifier) {
+		if(selectedNotifier == null) {
+			return null;
+		}
+		MetricsScope scope = new MetricsScope(selectedNotifier);
+		scope.includeParentResource = expandSelectionAction.isChecked();
+		scope.includeParentResourceSet = expandSelectionAction.isChecked();
+		return scope;
 	}
 
 	class Tab {
@@ -326,10 +349,10 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		private TreeViewerColumn metricContextColumn;
 		private TreeViewerColumn metricValueColumn;
 
-		private Notifier selectedNotifier;
+		private MetricsScope scope;
 		private MetricsList metrics;
 
-		public Tab(TabFolder tabFolder, String title) {
+		Tab(TabFolder tabFolder, String title) {
 			tabItem = new TabItem(tabFolder, SWT.NONE);
 			tabItem.setText(title);
 			tabItem.setControl(createControls(tabFolder));
@@ -338,10 +361,6 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 		public String getTitle() {
 			return tabItem.getText();
-		}
-
-		public Notifier getSelectedNotifier() {
-			return selectedNotifier;
 		}
 
 		private Control createControls(Composite composite) {
@@ -463,12 +482,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		private void createContextMenu() {
 			MenuManager contextMenu = new MenuManager("#ViewerMenu");
 			contextMenu.setRemoveAllWhenShown(true);
-			contextMenu.addMenuListener(new IMenuListener() {
-				@Override
-				public void menuAboutToShow(IMenuManager menuManager) {
-					fillContextMenu(menuManager);
-				}
-			});
+			contextMenu.addMenuListener(MetricsView.this::fillContextMenu);
 			Menu menu = contextMenu.createContextMenu(treeViewer.getControl());
 			treeViewer.getControl().setMenu(menu);
 		}
@@ -509,9 +523,9 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			}
 			return handles;
 		}
-		
+
 		public void handleMetricsChanged() {
-			label.setText("Metrics: " + MetricsUtil.getLabelForNotifier(selectedNotifier));
+			label.setText("Metrics: " + MetricsUtil.getLabelForNotifier(getSelectedNotifier()));
 			treeViewer.setInput(metrics);
 			treeViewer.getTree().setSortDirection(SWT.NONE);
 			treeViewer.getTree().setSortColumn(null);
@@ -524,22 +538,19 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		}
 
 		public void setSelectedNotifier(Notifier selectedNotifier) {
-			if(!Objects.equals(selectedNotifier, this.selectedNotifier)) {
-				this.selectedNotifier = selectedNotifier;
-				if(selectedNotifier == null) {
-					metrics = null;
-				} else {
-					metrics = MetricsFacade.getMetrics(createMetricsScope());
-				}
+			MetricsScope newScope = createMetricsScope(selectedNotifier);
+			if(!Objects.equals(scope, newScope)) {
+				scope = newScope;
+				metrics = Optional.ofNullable(scope).map(MetricsFacade::getMetrics).orElse(null);
 				handleMetricsChanged();
 			}
 		}
 
-		private MetricsScope createMetricsScope() {
-			MetricsScope scope = new MetricsScope(selectedNotifier);
-			scope.includeParentResource = expandSelectionAction.isChecked();
-			scope.includeParentResourceSet = expandSelectionAction.isChecked();
-			return scope;
+		public Notifier getSelectedNotifier() {
+			if(scope == null) {
+				return null;
+			}
+			return scope.getSelectedContext();
 		}
 
 		public MetricsList getMetrics() {

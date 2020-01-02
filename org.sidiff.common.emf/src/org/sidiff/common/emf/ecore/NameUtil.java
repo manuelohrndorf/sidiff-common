@@ -11,11 +11,11 @@ import org.eclipse.emf.ecore.impl.EStringToStringMapEntryImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
 public class NameUtil {
-	
+
 	private static final Map<String, String> dict;
 
 	static {
-		dict = new HashMap<String, String>();
+		dict = new HashMap<>();
 		dict.put("SET", "Set");
 		dict.put("UNSET", "Unset");
 		dict.put("ADD", "Add");
@@ -38,33 +38,17 @@ public class NameUtil {
 	}
 
 	private static String dictionary(String input) {
-		// Translate:
-		String output = dict.get(input);
-
-		if (output == null) {
-			return input;
-		} else {
-			return output;
-		}
+		return dict.getOrDefault(input, input);
 	}
-	
+
 	public static String beautifyName(String name) {
-
-		// Remove underscore
-		name = name.replace('_', ' ');
-
-		// Remove camel-case
-		name = removeCamelCase(name);
-
-		// Make first letters upper-case
-		name = capitalizeFirstLetter(name);
-
-		// Translate special words:
-		name = translate(name);
-
-		return name;
+		return
+			translate(
+				capitalizeFirstLetter(
+					removeCamelCase(
+						name.replace('_', ' '))));
 	}
-	
+
 	public static String removeCamelCase(String name) {
 		String regex = "([a-z \\)])([A-Z \\(]+)";
 		String replacement = "$1 $2";
@@ -102,8 +86,6 @@ public class NameUtil {
 	}
 
 	public static String getName(EObject eObject) {
-
-		// FIXME[MO@06.11.13]: This isn't generic -> emf instance level
 		if (eObject instanceof EAnnotation) {
 			EAnnotation annotation = (EAnnotation) eObject;
 			String res = "Annotation: " + annotation.getSource();

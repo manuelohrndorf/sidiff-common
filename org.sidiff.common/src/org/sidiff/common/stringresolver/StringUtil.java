@@ -157,7 +157,7 @@ public class StringUtil {
 	 * @param level anzahl der whitespaces, aus denen die Einrueckung bestehen soll.
 	 * @param startWithNewLine ob die einrueckung mit einer neuen zeile begonnen werden soll.
 	 */
-	public static void appendIndentation(StringBuffer buffer,int level,boolean startWithNewLine){
+	public static void appendIndentation(StringBuilder buffer, int level, boolean startWithNewLine) {
 		assert(buffer!=null) : "Missing Buffer (null)";
 		assert(level>=0) : "Illegal indentation level:"+level;
 		

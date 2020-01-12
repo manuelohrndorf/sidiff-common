@@ -84,6 +84,20 @@ public class InputModels {
 		return Collections.unmodifiableSet(documentTypes);
 	}
 
+	public boolean haveSameFileExtension() {
+		Set<String> extensions = new HashSet<>();
+		for(IFile file : files) {
+			if(!extensions.add(file.getFileExtension()) && extensions.size() > 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public String getFileExtension() {
+		return files.stream().map(IFile::getFileExtension).findFirst().orElse(null);
+	}
+
 	public int getNumModels() {
 		return resources.size();
 	}
@@ -303,7 +317,7 @@ public class InputModels {
 
 		protected void assertValidInput() {
 			if(assertedNumModels >= 0 && models.size() != assertedNumModels) {
-				throw new IllegalArgumentException("Number of inputs models but be " + assertedNumModels + ", but is " + models.size());
+				throw new IllegalArgumentException("Number of inputs models must be " + assertedNumModels + ", but is " + models.size());
 			}
 		}
 		

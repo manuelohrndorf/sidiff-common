@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.sidiff.common.converter.ConverterUtil;
+import org.sidiff.common.extension.ExtensionManager;
+import org.sidiff.common.extension.IExtension;
+import org.sidiff.common.util.RegExUtil;
 
 /**
  * <p>A configuration option is a single option of a {@link IExtensionConfiguration},
@@ -266,6 +269,35 @@ public class ConfigurationOption<T> {
 	 */
 	public static <T> Builder<T> builder(Class<T> type) {
 		return new Builder<T>(type);
+	}
+
+	/**
+	 * Returns a new Builder for configuration options.
+	 * @param type the type of the option to be created, used to initialize default key and name
+	 * @param extensionManager extension manager which provides the selectable values
+	 * @return builder for this type which presets
+	 */
+	public static <T extends IExtension> Builder<T> builder(Class<T> type, ExtensionManager<? extends T> extensionManager) {
+		return new Builder<T>(type)
+			.key(typeToKey(type))
+			.name(typeToName(type))
+			.selectableValues(extensionManager.getSortedExtensions());
+	}
+
+	private static String typeToKey(Class<?> type) {
+		String key = type.getSimpleName();
+		if(key.startsWith("I")) {
+			key = key.substring(1);
+		}
+		return Character.toLowerCase(key.charAt(0)) + key.substring(1);
+	}
+
+	private static String typeToName(Class<?> type) {
+		String name = type.getSimpleName();
+		if(name.startsWith("I")) {
+			name = name.substring(1);
+		}
+		return RegExUtil.addSpacesToCamelCase(name);
 	}
 
 	/**

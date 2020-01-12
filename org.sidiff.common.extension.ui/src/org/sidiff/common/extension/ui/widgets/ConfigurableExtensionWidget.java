@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -19,6 +20,7 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.sidiff.common.extension.configuration.ConfigurationOption;
 import org.sidiff.common.extension.configuration.IConfigurableExtension;
+import org.sidiff.common.extension.configuration.IExtensionConfiguration;
 import org.sidiff.common.ui.widgets.AbstractContainerWidget;
 import org.sidiff.common.ui.widgets.IWidget;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
@@ -44,9 +46,13 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 	@Override
 	protected Composite createContents(Composite container) {
+		return createOptionControls(container, extension.getConfiguration());
+	}
+
+	protected Composite createOptionControls(Composite container, IExtensionConfiguration configuration) {
 		Composite composite = new Composite(container, SWT.NONE);
 		GridLayoutFactory.fillDefaults().margins(5, 5).applyTo(composite);
-		for(ConfigurationOption<?> option : extension.getConfiguration().getConfigurationOptions()) {
+		for(ConfigurationOption<?> option : configuration.getConfigurationOptions()) {
 			createConfigurationOptionControl(composite, option);
 		}
 		return composite;
@@ -136,14 +142,40 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		group.setLayout(new GridLayout(1, true));
 
+		Map<T,Composite> nestedOptions = new HashMap<>();
+		Runnable updateVisibilities = () -> {
+			nestedOptions.forEach((value, composite) -> {
+				boolean visible = option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()));
+				composite.setVisible(visible);
+				((GridData)composite.getLayoutData()).exclude = !visible;
+				composite.requestLayout();
+				getWidgetCallback().requestLayout();
+			});
+		};
+
 		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.RADIO);
 			button.setText(option.getLabelForValue(value));
-			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(value)));
+			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
+				option.setValueUnsafe(value);
+				updateVisibilities.run();
+			}));
 			if(option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()))) {
 				button.setSelection(true);
 			}
+
+			if(value instanceof IConfigurableExtension) {
+				IExtensionConfiguration configuration = ((IConfigurableExtension)value).getConfiguration();
+				if(configuration.getConfigurationOptions().stream().anyMatch(ConfigurableExtensionWidget::isOptionSupported)) {
+					Group subGroup = new Group(group, SWT.NONE);
+					subGroup.setLayout(new GridLayout());
+					subGroup.setLayoutData(new GridData());
+					createOptionControls(subGroup, configuration);
+					nestedOptions.put(value, subGroup);
+				}
+			}
 		}
+		updateVisibilities.run();
 		return group;
 	}
 
@@ -154,11 +186,23 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setLayout(new GridLayout(1, true));
 
 		Map<Button,T> buttonToValue = new LinkedHashMap<>();
+		Map<T,Composite> nestedOptions = new HashMap<>();
+		Runnable updateVisibilities = () -> {
+			nestedOptions.forEach((value, composite) -> {
+				boolean visible = option.getValues().stream()
+						.map(option::getLabelForValue).anyMatch(v -> v.equals(option.getLabelForValue(value)));
+				composite.setVisible(visible);
+				((GridData)composite.getLayoutData()).exclude = !visible;
+				composite.requestLayout();
+				getWidgetCallback().requestLayout();
+			});
+		};
 		SelectionListener selectionListener = SelectionListener.widgetSelectedAdapter(event -> {
 			option.setValues(buttonToValue.entrySet().stream()
 				.filter(entry -> entry.getKey().getSelection())
 				.map(Map.Entry::getValue)
 				.collect(Collectors.toList()));
+			updateVisibilities.run();
 		});
 
 		for(T value : option.getSelectableValues()) {
@@ -168,7 +212,19 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			button.setSelection(option.getValues().stream()
 					.anyMatch(v -> option.getLabelForValue(v).equals(option.getLabelForValue(value))));
 			buttonToValue.put(button, value);
+
+			if(value instanceof IConfigurableExtension) {
+				IExtensionConfiguration configuration = ((IConfigurableExtension)value).getConfiguration();
+				if(configuration.getConfigurationOptions().stream().anyMatch(ConfigurableExtensionWidget::isOptionSupported)) {
+					Group subGroup = new Group(group, SWT.NONE);
+					subGroup.setLayout(new GridLayout());
+					subGroup.setLayoutData(new GridData());
+					createOptionControls(subGroup, configuration);
+					nestedOptions.put(value, subGroup);
+				}
+			}
 		}
+		updateVisibilities.run();
 		return group;
 	}
 

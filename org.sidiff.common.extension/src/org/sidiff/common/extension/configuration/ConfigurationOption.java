@@ -281,6 +281,7 @@ public class ConfigurationOption<T> {
 		return new Builder<T>(type)
 			.key(typeToKey(type))
 			.name(typeToName(type))
+			.valueLabelProvider(IExtension::getName)
 			.selectableValues(extensionManager.getSortedExtensions());
 	}
 

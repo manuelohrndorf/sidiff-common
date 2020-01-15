@@ -13,12 +13,14 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.sidiff.common.converter.ConverterUtil;
 import org.sidiff.common.extension.ExtensionManager;
+import org.sidiff.common.extension.ExtensionManagerFinder;
+import org.sidiff.common.extension.ExtensionSerialization;
 import org.sidiff.common.extension.IExtension;
 import org.sidiff.common.util.RegExUtil;
+import org.sidiff.common.util.StringListSerializer;
 
 /**
  * <p>A configuration option is a single option of a {@link IExtensionConfiguration},
@@ -28,6 +30,9 @@ import org.sidiff.common.util.RegExUtil;
  * @param <T> the type of the option
  */
 public class ConfigurationOption<T> {
+
+	static final StringListSerializer EQUAL_SIGN_SERIALIZER = new StringListSerializer("=");
+	static final StringListSerializer COMMA_SIGN_SERIALIZER = new StringListSerializer(",");
 
 	private final String key;
 	private final String name;
@@ -125,6 +130,13 @@ public class ConfigurationOption<T> {
 			return "";
 		}
 		return valueLabelProvider.apply(value);
+	}
+
+	protected String getSerializableValue(T value) {
+		if(value instanceof IExtension) {
+			return ExtensionSerialization.convertToString((IExtension)value);
+		}
+		return getLabelForValue(value);
 	}
 
 	/**
@@ -229,6 +241,9 @@ public class ConfigurationOption<T> {
 		} else if(getType().isInstance(value)) {
 			return getType().cast(value);
 		} else if(value instanceof String) {
+			if(IExtension.class.isAssignableFrom(getType())) {
+				return ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(getType()), (String)value);
+			}
 			return ConverterUtil.unmarshalSafe(getType(), (String)value);
 		} else {
 			throw new ClassCastException("This value is incompatible with " + getType().getName() + ": " + value);
@@ -249,17 +264,13 @@ public class ConfigurationOption<T> {
 	}
 
 	String exportAssignment() {
-		return getKey() + "=" + values.stream().map(this::getLabelForValue).collect(Collectors.joining(","));
+		return EQUAL_SIGN_SERIALIZER.serialize(Arrays.asList(
+				getKey(),
+				COMMA_SIGN_SERIALIZER.serialize(values.stream().map(this::getSerializableValue).collect(Collectors.toList()))));
 	}
 
 	void importAssignment(String valueString) {
-		Set<String> values = Stream.of(valueString.split(",")).collect(Collectors.toSet());
-		Set<T> selectable = getSelectableValues();
-		if(selectable == null) {
-			setValueUnsafe(values);
-		} else {
-			setValues(selectable.stream().filter(s -> values.contains(getLabelForValue(s))).collect(Collectors.toList()));
-		}
+		setValueUnsafe(COMMA_SIGN_SERIALIZER.deserialize(valueString));
 	}
 
 	/**

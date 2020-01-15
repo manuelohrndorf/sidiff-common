@@ -32,7 +32,7 @@ import org.sidiff.common.ui.widgets.IWidgetModification;
  * of a {@link IConfigurableExtension}.</p>
  * <p>Use {@link #addAllForWidget} to create and add multiple widgets for all extensions
  * managed by a widget and automatically handle toggling of widget visibility.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 

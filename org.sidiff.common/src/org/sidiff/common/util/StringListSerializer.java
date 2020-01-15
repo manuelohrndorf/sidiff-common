@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
  * automatically escaped/unescaped upon serialization/deserialization.
  * Leading and trailing whitespace is removed from all items.</p>
  * <p>Instances of this class are immutable.</p>
- * @author Robert Müller
+ * @author rmueller
  *
  */
 public class StringListSerializer {

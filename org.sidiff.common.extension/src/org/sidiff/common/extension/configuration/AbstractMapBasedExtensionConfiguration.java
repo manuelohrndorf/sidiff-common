@@ -3,13 +3,16 @@ package org.sidiff.common.extension.configuration;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.sidiff.common.util.StringListSerializer;
+
 /**
  * An abstract extension configuration that uses a map to store options.
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExtensionConfiguration {
 
@@ -50,19 +53,27 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 
 	@Override
 	public String exportAssignments() {
-		return getConfigurationOptions().stream()
-			.map(ConfigurationOption::exportAssignment)
-			.collect(Collectors.joining(";"));
+		return StringListSerializer.DEFAULT.serialize(
+			getConfigurationOptions().stream()
+				.map(ConfigurationOption::exportAssignment)
+				.collect(Collectors.toList()));
 	}
 
 	@Override
 	public void importAssignments(String serializedValue) {
 		Collection<ConfigurationOption<?>> options = getConfigurationOptions();
-		for(String assignment : serializedValue.split(";")) {
-			String[] keyValue = assignment.split("=");
+		for(String assignment : StringListSerializer.DEFAULT.deserialize(serializedValue)) {
+			if(assignment.isEmpty()) {
+				continue;
+			}
+			List<String> keyValue = ConfigurationOption.EQUAL_SIGN_SERIALIZER.deserialize(assignment);
+			if(keyValue.size() > 2) {
+				throw new IllegalArgumentException(
+					"Only one equals sign in serialized configuration option entry expected. Assignment: " + assignment);
+			}
 			options.stream()
-				.filter(option -> option.getKey().equals(keyValue[0]))
-				.findFirst().ifPresent(option -> option.importAssignment(keyValue.length > 1 ? keyValue[1] : ""));
+				.filter(option -> option.getKey().equals(keyValue.get(0)))
+				.findFirst().ifPresent(option -> option.importAssignment(keyValue.size() > 1 ? keyValue.get(1) : ""));
 		}
 	}
 }

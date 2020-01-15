@@ -238,15 +238,22 @@ public class ConfigurationOption<T> {
 	private T getTypedValue(Object value) {
 		if(value == null) {
 			throw new IllegalArgumentException("Values must not contain null-elements");
-		} else if(getType().isInstance(value)) {
-			return getType().cast(value);
+		} else if(type.isInstance(value)) {
+			return type.cast(value);
 		} else if(value instanceof String) {
-			if(IExtension.class.isAssignableFrom(getType())) {
-				return ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(getType()), (String)value);
+			if(IExtension.class.isAssignableFrom(type)) {
+				return ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(type), (String)value);
 			}
-			return ConverterUtil.unmarshalSafe(getType(), (String)value);
+			if(selectableValues != null) {
+				T matchingSelectable = selectableValues.stream()
+						.filter(selectable -> getLabelForValue(selectable).equals(value)).findFirst().orElse(null);
+				if(matchingSelectable != null) {
+					return matchingSelectable;
+				}
+			}
+			return ConverterUtil.unmarshalSafe(type, (String)value);
 		} else {
-			throw new ClassCastException("This value is incompatible with " + getType().getName() + ": " + value);
+			throw new ClassCastException("This value is incompatible with " + type.getName() + ": " + value);
 		}
 	}
 

@@ -156,6 +156,30 @@ public class ConfigurationOption<T> {
 		values.forEach(this::validateValue);
 		this.values.clear();
 		this.values.addAll(values);
+
+		// For configurable extensions we must replace the selectable values with equal selected values,
+		// or else the nested configuration options work on unused extension instances.
+		List<IConfigurableExtension> configurableValues =
+			values.stream()
+				.filter(IConfigurableExtension.class::isInstance)
+				.map(IConfigurableExtension.class::cast)
+				.collect(Collectors.toList());
+		if(!configurableValues.isEmpty()) {
+			// Remove selectable extensions which have same key but not same instance
+			selectableValues.removeIf(
+				selectable -> selectable instanceof IConfigurableExtension
+				&& configurableValues.stream()
+					.anyMatch(configurable -> selectable != configurable
+							&& ((IExtension)selectable).getKey().equals(configurable.getKey())));
+			// Add the active instances of configurable extensions to selectable
+			configurableValues.stream()
+				.filter(configurable -> selectableValues.stream()
+					.noneMatch(selectable -> selectable instanceof IExtension
+							&& configurable.getKey().equals(((IExtension)selectable).getKey())))
+				.filter(type::isInstance)
+				.map(type::cast)
+				.forEach(selectableValues::add);
+		}
 	}
 
 	protected void validateValue(T value) {

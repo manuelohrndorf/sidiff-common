@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
  * of the element that specifies the executable extension, each element
  * having the name {@value #ELEMENT_DOCUMENT_TYPE} and containing as text
  * the document type URI, or the value {@value #GENERIC_TYPE}.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractTypedExtension extends AbstractExtension implements ITypedExtension {
 

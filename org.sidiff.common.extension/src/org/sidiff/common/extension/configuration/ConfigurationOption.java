@@ -25,7 +25,7 @@ import org.sidiff.common.util.StringListSerializer;
  * <p>A configuration option is a single option of a {@link IExtensionConfiguration},
  * with its key, name, type, default value, and current value.</p>
  * <p>Configuration options are instantiated using {@link #builder(Class) ConfigurationOption.builder(Class)}.</p>
- * @author Robert Müller
+ * @author rmueller
  * @param <T> the type of the option
  */
 public class ConfigurationOption<T> {

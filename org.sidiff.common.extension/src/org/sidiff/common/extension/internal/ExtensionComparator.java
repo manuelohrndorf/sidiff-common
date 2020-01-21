@@ -7,7 +7,7 @@ import org.sidiff.common.extension.IExtension;
 /**
  * Comparator for extensions, using {@link IExtension#getName()}
  * for lexicographically string comparison.
- * @author Robert Müller
+ * @author rmueller
  */
 public class ExtensionComparator<T extends IExtension> implements Comparator<T> {
 

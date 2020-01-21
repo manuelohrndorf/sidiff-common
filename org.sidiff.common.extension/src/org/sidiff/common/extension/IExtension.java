@@ -15,7 +15,7 @@ import org.sidiff.common.util.RegExUtil;
  * for which a description can be define by using {@link Description#of}.</p>
  * <p>Extensions may also implement {@link ITypedExtension}.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public interface IExtension {
 

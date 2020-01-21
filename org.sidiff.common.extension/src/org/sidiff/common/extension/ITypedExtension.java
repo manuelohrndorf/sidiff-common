@@ -7,7 +7,7 @@ import java.util.Set;
  * <p>An {@link IExtension extension} that supports only certain document types.</p>
  * <p>May also support all document types, i.e. be generic.</b>
  * <p>Parameter and return values should never be <code>null</code>.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public interface ITypedExtension extends IExtension {
 

@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 /**
  * An abstract extension configuration which implements some
  * methods which are likely to be equal in all subclasses.
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractExtensionConfiguration implements IExtensionConfiguration {
 

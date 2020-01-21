@@ -14,7 +14,7 @@ import org.sidiff.common.extension.internal.ExtensionsPlugin;
 /**
  * An extension manager storage that caches the registered extensions, such that extensions
  * are only created once when the cache is created. The contents of the cache may be modified.
- * @author Robert Müller
+ * @author rmueller
  * @param <T> type of stored extensions
  */
 public class CachingExtensionManagerStorage<T extends IExtension> implements IExtensionManagerStorage<T> {

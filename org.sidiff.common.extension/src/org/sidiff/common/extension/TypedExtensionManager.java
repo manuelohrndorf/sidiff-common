@@ -18,7 +18,7 @@ import org.sidiff.common.extension.storage.IExtensionManagerStorage;
  * which supports only certain document types.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link ITypedExtension}
- * @author Robert Müller
+ * @author rmueller
  */
 public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionManager<T> {
 

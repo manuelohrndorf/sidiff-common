@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.extension
 Export-Package: org.sidiff.common.extension,
  org.sidiff.common.extension.configuration,
+ org.sidiff.common.extension.internal;x-internal:=true,
  org.sidiff.common.extension.storage
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-Activator: org.sidiff.common.extension.internal.ExtensionsPlugin

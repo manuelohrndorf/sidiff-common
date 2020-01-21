@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 /**
  * A basic implementation of {@link IExtensionConfiguration}
  * that uses a fixed collection of {@link ConfigurationOption}s.
- * @author Robert Müller
+ * @author rmueller
  */
 public class BasicExtensionConfiguration extends AbstractMapBasedExtensionConfiguration {
 

@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.extension.ui
 Bundle-ActivationPolicy: lazy
-Export-Package: org.sidiff.common.extension.ui.labelprovider,
+Export-Package: org.sidiff.common.extension.ui.internal;x-internal:=true,
+ org.sidiff.common.extension.ui.labelprovider,
  org.sidiff.common.extension.ui.widgets

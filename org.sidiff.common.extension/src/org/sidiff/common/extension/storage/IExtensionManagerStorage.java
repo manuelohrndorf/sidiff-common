@@ -8,7 +8,7 @@ import org.sidiff.common.extension.IExtension;
 /**
  * The extension storage is used by extension managers to access and/or cache
  * the registered extensions.
- * @author Robert Müller
+ * @author rmueller
  * @param <T> type of stored extensions
  */
 public interface IExtensionManagerStorage<T extends IExtension> {

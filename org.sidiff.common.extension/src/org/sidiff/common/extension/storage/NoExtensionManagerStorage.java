@@ -11,8 +11,8 @@ import org.sidiff.common.extension.IExtension.Description;
 /**
  * An extension manager storage that does not store extensions and always recreates them based
  * on the extension description.
- * The storage cannot be modified, and the related methods throw UnsupportedOperationException.
- * @author Robert Müller
+ * The storage cannot be modified, and the related methods throw runtime exceptions.
+ * @author rmueller
  * @param <T> type of stored extensions
  */
 public class NoExtensionManagerStorage<T extends IExtension> implements IExtensionManagerStorage<T> {

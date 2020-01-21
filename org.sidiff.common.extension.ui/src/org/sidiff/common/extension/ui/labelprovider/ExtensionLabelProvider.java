@@ -8,8 +8,8 @@ import org.sidiff.common.extension.ui.internal.ExtensionsUiPlugin;
 /**
  * A {@link ColumnLabelProvider} for {@link IExtension}s,
  * using the extension's name as text, description as tooltip text,
- * and an some image.
- * @author Robert Müller
+ * and some image.
+ * @author rmueller
  */
 public class ExtensionLabelProvider extends ColumnLabelProvider {
 

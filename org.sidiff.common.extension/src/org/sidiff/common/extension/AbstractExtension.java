@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IExecutableExtension;
  * using the {@value #ATTRIBUTE_KEY} and {@value #ATTRIBUTE_NAME} attributes of the
  * extension's element, or the "ID" and "Name" attributes of the extension.</p>
  * <p>For {@link ITypedExtension}s, use {@link AbstractTypedExtension} instead.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractExtension implements IExtension, IExecutableExtension {
 

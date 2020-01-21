@@ -16,7 +16,8 @@ import org.sidiff.common.extension.internal.NullExtensionConfiguration;
 public interface IExtensionConfiguration {
 
 	/**
-	 * A singleton empty configuration.
+	 * A singleton empty configuration without options.
+	 * Trying to modify it will result in runtime exceptions.
 	 */
 	IExtensionConfiguration NULL = new NullExtensionConfiguration();
 

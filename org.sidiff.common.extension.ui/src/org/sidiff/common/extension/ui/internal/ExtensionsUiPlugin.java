@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class ExtensionsUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.sidiff.common.extension.ui"; //$NON-NLS-1$
+	public static final String ID = "org.sidiff.common.extension.ui"; //$NON-NLS-1$
 
 	// The shared instance
 	private static ExtensionsUiPlugin plugin;
@@ -51,6 +51,6 @@ public class ExtensionsUiPlugin extends AbstractUIPlugin {
 	}
 
 	public static ImageDescriptor getExtensionImageDescriptor() {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, "icons/obj16/elextension_obj.png");
+		return AbstractUIPlugin.imageDescriptorFromPlugin(ID, "icons/obj16/elextension_obj.png");
 	}
 }

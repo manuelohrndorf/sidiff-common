@@ -22,7 +22,7 @@ import org.sidiff.common.extension.storage.IExtensionManagerStorage;
  * as it provides additional functionality.</p>
  * <p>Parameter and return values should never be <code>null</code>.</p>
  * @param <T> the type of the extension, extending {@link IExtension}
- * @author Robert Müller
+ * @author rmueller
  */
 public class ExtensionManager<T extends IExtension> {
 

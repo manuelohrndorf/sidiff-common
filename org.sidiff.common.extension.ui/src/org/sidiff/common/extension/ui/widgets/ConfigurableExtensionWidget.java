@@ -39,7 +39,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 	private IConfigurableExtension extension;
 
-	public ConfigurableExtensionWidget(IConfigurableExtension extension) {
+	ConfigurableExtensionWidget(IConfigurableExtension extension) {
 		super(DefaultContainerFactory.EXPANDABLE);
 		this.extension = Objects.requireNonNull(extension);
 		setTitle(getGroupTitle(extension));

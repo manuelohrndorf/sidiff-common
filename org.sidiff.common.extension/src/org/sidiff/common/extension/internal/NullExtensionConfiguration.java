@@ -8,13 +8,15 @@ import org.sidiff.common.extension.configuration.ConfigurationOption;
 import org.sidiff.common.extension.configuration.IExtensionConfiguration;
 
 /**
- * An empty extension configuration implementation that does nothing.
- * @author Robert Müller
+ * An empty extension configuration implementation without options.
+ * Trying to add or set options results in runtime exceptions.
+ * @author rmueller
  */
 public class NullExtensionConfiguration implements IExtensionConfiguration {
 
 	@Override
 	public void setOption(String key, Object value) {
+		throw new UnsupportedOperationException("This extension has no options");
 	}
 
 	@Override
@@ -29,10 +31,14 @@ public class NullExtensionConfiguration implements IExtensionConfiguration {
 
 	@Override
 	public void setOptions(Map<String, Object> options) {
+		if(!options.isEmpty()) {
+			throw new UnsupportedOperationException("This extension cannot have options");			
+		}
 	}
 
 	@Override
 	public void resetToDefaults() {
+		// always default
 	}
 
 	@Override

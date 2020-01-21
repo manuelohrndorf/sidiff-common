@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<templates>
+<template autoinsert="false" context="java" deleted="false" description="Insert Extension Description and Manager (in interface which extends IExtension)" enabled="true" name="extdesc">
+Description&lt;${enclosing_type}&gt; DESCRIPTION = Description.of(${enclosing_type}.class, "${enclosing_project}.${extensionId:var('java.util.String')}", "${elementName:var('java.util.String')}", "${class:var('java.util.String')}");&#13;
+ExtensionManager&lt;${enclosing_type}&gt; MANAGER = new ExtensionManager&lt;&gt;(DESCRIPTION);
+</template>
+</templates>

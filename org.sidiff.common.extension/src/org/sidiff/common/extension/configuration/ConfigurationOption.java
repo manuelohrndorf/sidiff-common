@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,13 +41,11 @@ public class ConfigurationOption<T> {
 	private final T maxValue;
 	private final List<T> defaultValues;
 	private final Set<T> selectableValues;
-	private final BiFunction<ConfigurationOption<T>,List<T>,Boolean> onSet;
 	private final Function<? super T,String> valueLabelProvider;
 	private List<T> values = new ArrayList<>();
 
 	protected ConfigurationOption(String key, String name, Class<T> type, boolean multi,
 			T minValue, T maxValue, List<T> defaultValues, Collection<? extends T> selectableValues,
-			BiFunction<ConfigurationOption<T>,List<T>,Boolean> onSet,
 			Function<? super T,String> valueLabelProvider) {
 
 		this.key = key;
@@ -59,7 +56,6 @@ public class ConfigurationOption<T> {
 		this.maxValue = maxValue;
 		this.defaultValues = new ArrayList<>(defaultValues);
 		this.selectableValues = selectableValues == null ? null : new HashSet<>(selectableValues);
-		this.onSet = onSet;
 		this.valueLabelProvider = valueLabelProvider;
 		resetToDefault();
 	}
@@ -158,10 +154,8 @@ public class ConfigurationOption<T> {
 			throw new IllegalArgumentException("This configuration options does not support multiple values.");
 		}
 		values.forEach(this::validateValue);
-		if(onSet.apply(this, values)) {
-			this.values.clear();
-			this.values.addAll(values);
-		}
+		this.values.clear();
+		this.values.addAll(values);
 	}
 
 	protected void validateValue(T value) {
@@ -334,7 +328,6 @@ public class ConfigurationOption<T> {
 		private T maxValue; // must extend Number
 		private List<T> defaultValues = new ArrayList<>();
 		private Collection<? extends T> selectableValues;
-		private BiFunction<ConfigurationOption<T>,List<T>,Boolean> onSet;
 		private Function<? super T,String> valueLabelProvider;
 
 		protected Builder(Class<T> type) {
@@ -385,20 +378,6 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
-		/**
-		 * <p>Sets a callback function which is called <i>before</i> a new value is set.
-		 * The callback functions receives the ConfigurationOption and the new values
-		 * as arguments and returns a boolean value, which indicates whether the new values
-		 * should be applied (<code>true</code>) or discarded (<code>false</code>).</p>
-		 * <p>The default callback just returns <code>true</code>.</p>
-		 * @param onSet the function
-		 * @return this builder for method chaining
-		 */
-		public Builder<T> onSet(BiFunction<ConfigurationOption<T>,List<T>,Boolean> onSet) {
-			this.onSet = Objects.requireNonNull(onSet);
-			return this;
-		}
-
 		public Builder<T> valueLabelProvider(Function<? super T,String> valueLabelProvider) {
 			this.valueLabelProvider = Objects.requireNonNull(valueLabelProvider);
 			return this;
@@ -433,14 +412,11 @@ public class ConfigurationOption<T> {
 			if(type.isEnum() && selectableValues == null) {
 				selectableValues = Arrays.asList(type.getEnumConstants());
 			}
-			if(onSet == null) {
-				onSet = (option, newValue) -> true;
-			}
 			if(valueLabelProvider == null) {
 				valueLabelProvider = value -> value == null ? "No value" : value.toString();
 			}
 			return new ConfigurationOption<T>(key, name, type, multi, minValue, maxValue,
-					defaultValues, selectableValues, onSet, valueLabelProvider);
+					defaultValues, selectableValues, valueLabelProvider);
 		}
 
 		public Builder<T> selectableValues(Collection<? extends T> selectableValues) {

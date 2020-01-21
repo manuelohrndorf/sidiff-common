@@ -142,7 +142,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			text.setText(String.valueOf(option.getValue()));
 		}
 		text.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
-		text.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValueUnsafe(text.getText())));
+		text.addModifyListener(e -> option.setValueUnsafe(text.getText()));
 		GridDataFactory.fillDefaults().grab(true,  false).applyTo(text);
 		return group;
 	}

@@ -1,5 +1,6 @@
 package org.sidiff.common.extension.configuration;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,11 @@ public abstract class AbstractExtensionConfiguration implements IExtensionConfig
 	@Override
 	public void resetToDefaults() {
 		getConfigurationOptions().forEach(ConfigurationOption::resetToDefault);
+	}
+
+	@Override
+	public void setDocumentTypeFilter(Collection<String> documentTypes, boolean includeGeneric) {
+		getConfigurationOptions().forEach(option -> option.setDocumentTypeFilter(documentTypes, includeGeneric));
 	}
 
 	@Override

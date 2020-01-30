@@ -18,6 +18,8 @@ import org.sidiff.common.extension.ExtensionManager;
 import org.sidiff.common.extension.ExtensionManagerFinder;
 import org.sidiff.common.extension.ExtensionSerialization;
 import org.sidiff.common.extension.IExtension;
+import org.sidiff.common.extension.ITypedExtension;
+import org.sidiff.common.extension.TypedExtensionManager;
 import org.sidiff.common.util.RegExUtil;
 import org.sidiff.common.util.StringListSerializer;
 
@@ -43,6 +45,8 @@ public class ConfigurationOption<T> {
 	private final Set<T> selectableValues;
 	private final Function<? super T,String> valueLabelProvider;
 	private List<T> values = new ArrayList<>();
+	private Set<String> documentTypes = new HashSet<>();
+	private boolean includeGeneric = true;
 
 	protected ConfigurationOption(String key, String name, Class<T> type, boolean multi,
 			T minValue, T maxValue, List<T> defaultValues, Collection<? extends T> selectableValues,
@@ -110,15 +114,25 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
-	 * Returns the default value of this option, <code>null</code> if unset.
-	 * @return the default value, or <code>null</code>
+	 * Returns the default values of this option
+	 * @return the default values, may be empty
 	 */
 	public List<T> getDefault() {
 		return Collections.unmodifiableList(defaultValues);
 	}
-	
+
 	public Set<T> getSelectableValues() {
-		return selectableValues == null ? null : Collections.unmodifiableSet(selectableValues);
+		if(selectableValues == null) {
+			return null;
+		}
+		if(ITypedExtension.class.isAssignableFrom(type)) {
+			return selectableValues.stream()
+					.map(ITypedExtension.class::cast)
+					.filter(ext -> (includeGeneric && ext.isGeneric()) || ext.getDocumentTypes().containsAll(documentTypes))
+					.map(type::cast)
+					.collect(Collectors.toUnmodifiableSet());
+		}
+		return Collections.unmodifiableSet(selectableValues);
 	}
 
 	public String getLabelForValue(T value) {
@@ -283,6 +297,17 @@ public class ConfigurationOption<T> {
 		values.addAll(defaultValues);
 	}
 
+	/**
+	 * Filters the selectable values for the configuration option based on the given arguments.
+	 * @param documentTypes the document types, empty to allow all
+	 * @param includeGeneric whether to include generic extensions as well
+	 */
+	public void setDocumentTypeFilter(Collection<String> documentTypes, boolean includeGeneric) {
+		this.documentTypes.clear();
+		this.documentTypes.addAll(documentTypes);
+		this.includeGeneric = includeGeneric;
+	}
+
 	@Override
 	public String toString() {
 		return "ConfigurationOption[" + getKey() + ":" + getType().getSimpleName() + " = " + values + "]";
@@ -308,9 +333,9 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
-	 * Returns a new Builder for configuration options.
+	 * Returns a new Builder for configuration options for an extension manager.
 	 * @param type the type of the option to be created, used to initialize default key and name
-	 * @param extensionManager extension manager which provides the selectable values
+	 * @param extensionManager extension manager which provides the selectable values (all available extensions)
 	 * @return builder for this type which presets
 	 */
 	public static <T extends IExtension> Builder<T> builder(Class<T> type, ExtensionManager<? extends T> extensionManager) {
@@ -319,6 +344,23 @@ public class ConfigurationOption<T> {
 			.name(typeToName(type))
 			.valueLabelProvider(IExtension::getName)
 			.selectableValues(extensionManager.getSortedExtensions());
+	}
+
+	/**
+	 * Returns a new Builder for configuration options for a typed extension manager.
+	 * @param type the type of the option to be created, used to initialize default key and name
+	 * @param extensionManager typed extension manager which provides the selectable values (filtered by document type)
+	 * @param documentTypes document types which must be supported by selectable values
+	 * @param includeGeneric whether generic extensions are selectable values
+	 * @return builder for this type which presets
+	 */
+	public static <T extends ITypedExtension> Builder<T> builder(Class<T> type,
+			TypedExtensionManager<? extends T> extensionManager, Collection<String> documentTypes, boolean includeGeneric) {
+		return new Builder<T>(type)
+			.key(typeToKey(type))
+			.name(typeToName(type))
+			.valueLabelProvider(IExtension::getName)
+			.selectableValues(extensionManager.getExtensions(documentTypes, includeGeneric));
 	}
 
 	private static String typeToKey(Class<?> type) {

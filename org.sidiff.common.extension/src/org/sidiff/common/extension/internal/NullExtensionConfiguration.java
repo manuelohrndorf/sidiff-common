@@ -57,4 +57,9 @@ public class NullExtensionConfiguration implements IExtensionConfiguration {
 			throw new UnsupportedOperationException("This configuration cannot load any values");
 		}
 	}
+
+	@Override
+	public void setDocumentTypeFilter(Collection<String> documentTypes, boolean includeGeneric) {
+		// nothing selectable can be filtered
+	}
 }

@@ -73,4 +73,12 @@ public interface IExtensionConfiguration {
 	 * @param serializedValue the serialized value to import
 	 */
 	void importAssignments(String serializedValue);
+
+	/**
+	 * Filters the selectable values for all configuration options based on the given arguments.
+	 * Only applies to configuration options that support it.
+	 * @param documentTypes the document types, empty to allow all
+	 * @param includeGeneric whether to include generic extensions as well
+	 */
+	void setDocumentTypeFilter(Collection<String> documentTypes, boolean includeGeneric);
 }

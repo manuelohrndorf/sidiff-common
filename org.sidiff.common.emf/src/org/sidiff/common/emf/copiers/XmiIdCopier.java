@@ -11,6 +11,15 @@ public class XmiIdCopier extends Copier {
 
 	private static final long serialVersionUID = -7906189342176650323L;
 
+	/**
+	 * <h1>XmiIdCopier</h1>
+	 * <p>Copies XmiIds from original to copied EObjects (where present).<br>
+	 * <b>Must be called <em>after</em> adding the copies to the resource.</b>.</p>
+	 * <hr>
+	 * 
+	 * <h1>Copier</h1>
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void copyReferences() {
 		super.copyReferences();

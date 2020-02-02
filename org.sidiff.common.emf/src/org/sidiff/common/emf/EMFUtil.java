@@ -1,14 +1,9 @@
 package org.sidiff.common.emf;
 
-import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.BasicEMap;
@@ -18,7 +13,6 @@ import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EFactory;
 import org.eclipse.emf.ecore.EGenericType;
 import org.eclipse.emf.ecore.EModelElement;
 import org.eclipse.emf.ecore.EObject;
@@ -30,18 +24,13 @@ import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
 import org.eclipse.emf.ecore.util.FeatureMap;
 import org.eclipse.emf.ecore.util.FeatureMapUtil;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.exceptions.EPackageNotFoundException;
-import org.sidiff.common.emf.exceptions.UnknownAttributeException;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
-import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
 
@@ -61,7 +50,6 @@ public class EMFUtil {
 	 * @throws EPackageNotFoundException
 	 */
 	public static List<EPackage> getAllSubEPackages(EPackage ePackage) throws EPackageNotFoundException {
-
 		if (ePackage == null) {
 			throw new EPackageNotFoundException();
 		}
@@ -83,28 +71,6 @@ public class EMFUtil {
 	}
 
 	/**
-	 * Returns an Iterable that iterates over all elements contained in the given element (eAllContents()). It allows to iterate over the content in for-each loops.
-	 * 
-	 * @param element
-	 * @return
-	 * @deprecated Use <code>CollectionUtil.asIterable(element.eAllContents())</code> instead.
-	 */
-	public static Iterable<EObject> getEAllContentAsIterable(final EObject element) {
-		return CollectionUtil.asIterable(element.eAllContents());
-	}
-
-	/**
-	 * Returns an Iterable that iterates over all elements contained in the given resource (getAllContents()). It allows to iterate over the content in for-each loops.
-	 * 
-	 * @param element
-	 * @return
-	 * @deprecated Use <code>CollectionUtil.asIterable(resource.getAllContents())</code> instead.
-	 */
-	public static Iterable<EObject> getAllContentAsIterable(final Resource resource) {
-		return CollectionUtil.asIterable(resource.getAllContents());
-	}
-
-	/**
 	 * Checks whether the given EModelElement has the given marking annotation. In case of an EObject, its eClass is checked.
 	 * 
 	 * @param object
@@ -116,46 +82,6 @@ public class EMFUtil {
 			return ((EModelElement) object).getEAnnotation(annotation) != null;
 		}
 		return object.eClass().getEAnnotation(annotation) != null;
-	}
-
-	/**
-	 * Loads an Ecore model from a resource and registers the contained EPackage at the EPackage.Registry.INSTANCE.
-	 * 
-	 * @param ecoreModelName
-	 *            Name of the Ecore-File to be loaded
-	 * @deprecated Use EMFStorage and ResourceUtil directly.
-	 */
-	public static void loadEcoreModelFromResource(String ecoreModelName) {
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource ecoreResource = resourceSet.createResource(URI.createFileURI("./tmp"));
-		try {
-			ecoreResource.load(ResourceUtil.getInputStreamByResourceName(ecoreModelName), null);
-		} catch (IOException e) {
-			throw new SiDiffRuntimeException("Unable to load ecore model.", e);
-		}
-		EPackage ePackage = (EPackage) ecoreResource.getContents().get(0);
-		registerEPackage(ePackage);
-	}
-
-	/**
-	 * Registers a single EPackage at the EPackage registry of EMF.
-	 * 
-	 * @param ePackage
-	 *            the Package to be registered
-	 * @deprecated
-	 */
-	private static void registerEPackage(EPackage ePackage) {
-		EPackage.Registry.INSTANCE.put(ePackage.getNsURI(), ePackage);
-		for (EPackage subPackage : ePackage.getESubpackages()) {
-			registerEPackage(subPackage);
-		}
-	}
-
-	/**
-	 * @deprecated Use {@link #getReferenceTargets(EObject, EReference)} instead.
-	 */
-	public static List<EObject> getObjectListFromReference(EObject object, EReference reference) {
-		return getReferenceTargets(object, reference);
 	}
 
 	/**
@@ -176,84 +102,6 @@ public class EMFUtil {
 	 */
 	public static List<Object> getAttributeValues(EObject object, EAttribute attribute) {
 		return CollectionUtil.getValues(object.eGet(attribute), Object.class);
-	}
-
-	/**
-	 * Works similar to {@link getObjectListFromReference(EObject object, EReference reference)} but writes the result in the given list.
-	 * 
-	 * @param result
-	 * @param object
-	 * @param reference
-	 * @return
-	 * @deprecated Use result.addAll({@link #getReferenceTargets(EObject, EReference)}) instead.
-	 */
-	public static List<EObject> fillObjectListFromReference(List<EObject> result, EObject object, EReference reference) {
-		result.addAll(getReferenceTargets(object, reference));
-		return result;
-	}
-
-	/**
-	 * Returns the complete contents of an EObject as list.
-	 * 
-	 * @param object
-	 * @return
-	 * @deprecated
-	 */
-	public static List<EObject> createListFromEAllContents(EObject object) {
-		List<EObject> result = new LinkedList<EObject>();
-		TreeIterator<EObject> iterator = object.eAllContents();
-		while (iterator.hasNext())
-			result.add(iterator.next());
-		return Collections.unmodifiableList(result);
-	}
-
-	/**
-	 * Returns the size of the complete contents of an EObject.
-	 * 
-	 * @param object
-	 * @return
-	 * @deprecated
-	 */
-	public static int computeEAllContentsSize(EObject object) {
-		int result = 0;
-		TreeIterator<EObject> iterator = object.eAllContents();
-		while (iterator.hasNext()) {
-			result++;
-			iterator.next();
-		}
-		return result;
-	}
-
-	/**
-	 * Returns the complete contents of a Resource as list.
-	 * 
-	 * @param resource
-	 * @return
-	 * @deprecated
-	 */
-	public static List<EObject> createListFromEAllContents(Resource resource) {
-		List<EObject> result = new LinkedList<EObject>();
-		TreeIterator<EObject> iterator = resource.getAllContents();
-		while (iterator.hasNext())
-			result.add(iterator.next());
-		return Collections.unmodifiableList(result);
-	}
-
-	/**
-	 * Returns the size of the complete contents of a Resource.
-	 * 
-	 * @param resource
-	 * @return
-	 * @deprecated
-	 */
-	public static int computeEAllContentsSize(Resource resource) {
-		int result = 0;
-		TreeIterator<EObject> iterator = resource.getAllContents();
-		while (iterator.hasNext()) {
-			result++;
-			iterator.next();
-		}
-		return result;
 	}
 
 	/**
@@ -327,80 +175,6 @@ public class EMFUtil {
 	}
 
 	/**
-	 * Get the URI of a specific instance of {@link EObject}.
-	 * 
-	 * @param eobj
-	 *            The instance of {@link EObject} whose URI to retrieve.
-	 * @return The object's URI.
-	 * @deprecated Use {@link EcoreUtil#getURI(EObject)} instead.
-	 */
-	public static String getEObjectURI(EObject eobj) {
-		try {
-			return eobj.eResource().getURI() + "#" + eobj.eResource().getURIFragment(eobj);
-		} catch (NullPointerException e) {
-			if (eobj instanceof BasicEObjectImpl) {
-				URI uri = ((BasicEObjectImpl) eobj).eProxyURI();
-				if (uri != null)
-					return "" + uri;
-			}
-			if (eobj instanceof EFactory) {
-				EFactory ef = (EFactory) eobj;
-				return ef.getEPackage().getNsURI();
-			}
-			assert (LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI for ", eobj.toString(), " Reason: ", e));
-		} catch (Exception e) {
-			assert (LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI for ", eobj.toString(), " Reason: ", e));
-		}
-		return getEObjectID(eobj);
-	}
-
-	/**
-	 * Get the attribute value of a specific {@link EAttribute} of an {@link EObject}.
-	 * 
-	 * @param eobj
-	 *            The instance of {@link EObject} whose attribute value to retrieve.
-	 * @param attributeName
-	 *            The name of the attribute to retrieve.
-	 * @return The object's attribute value.
-	 * @deprecated
-	 */
-	public static Object getEObjectsAttribute(EObject eobj, String attributeName) {
-		EStructuralFeature sf = eobj.eClass().getEStructuralFeature(attributeName);
-		if (sf == null)
-			throw new UnknownAttributeException("No such attribute '" + attributeName + "' for " + eobj.eClass());
-		if (!(sf instanceof EAttribute)) {
-			throw new UnknownAttributeException("Feature is not an attribute: '" + attributeName + "' for " + eobj.eClass());
-		}
-		return eobj.eGet(sf);
-	}
-
-	
-	/**
-	 * This method returns all EObjects in a Resource (optionally filtered by EClass type).
-	 * Set type to null if no filtering is required.
-	 * 
-	 * @param 
-	 * 		type (optional EClass Type)
-	 * @param 
-	 * 		resource
-	 * @return
-	 * 		list of EObjects
-	 */
-	public static List<EObject> getAllEObjectsByType(EClass type, Resource resource) {
-		List<EObject> list = new ArrayList<EObject>();
-		
-		for(EObject eObject: CollectionUtil.asIterable(resource.getAllContents()))  {		
-			if(type==null || eObject.eClass().equals(type)) {
-				list.add(eObject);
-			}			
-		}		
-		return list;
-	}
-	
-	
-	
-	
-	/**
 	 * Computes a hash value for the given resource.
 	 * 
 	 * @param resource
@@ -457,13 +231,6 @@ public class EMFUtil {
 
 		return copyEObject;
 	}
-	
-	public static Map<EObject, EObject> copyAll(Collection<? extends EObject> eObjects){
-		Copier copier = new Copier();
-		copier.copyAll(eObjects);
-		copier.copyReferences();
-		return copier;
-	}
 
 	/**
 	 * Called to handle the copying of an attribute; this adds a list of values or sets a single value as appropriate for the multiplicity.
@@ -517,25 +284,6 @@ public class EMFUtil {
 	public static void copyProxyURI(EObject eObject, EObject copyEObject) {
 		if (eObject.eIsProxy()) {
 			((InternalEObject) copyEObject).eSetProxyURI(((InternalEObject) eObject).eProxyURI());
-		}
-	}
-
-	/**
-	 * Compares two EObjects
-	 * 
-	 * @param obj1
-	 *            the first compare object
-	 * @param obj2
-	 *            the second compare object
-	 * @return true if the objects are equal and false if they are not
-	 */
-	public static boolean equalsEObject(EObject obj1, EObject obj2) {
-		if (obj1.eIsProxy() && obj2.eIsProxy()) {
-			return EcoreUtil.getURI(obj1).equals(EcoreUtil.getURI(obj2));
-		} else if (!obj1.eIsProxy() && !obj2.eIsProxy()) {
-			return obj1.equals(obj2);
-		} else {
-			return false;
 		}
 	}
 

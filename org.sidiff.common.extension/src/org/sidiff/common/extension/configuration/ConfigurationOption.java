@@ -222,7 +222,7 @@ public class ConfigurationOption<T> {
 	/**
 	 * Returns the value of this single option.
 	 * Call {@link #getValues()} for multi options.
-	 * @return the current value of this option
+	 * @return the current value of this option, <code>null</code> if none
 	 */
 	public T getValue() {
 		if(multi) {
@@ -230,11 +230,11 @@ public class ConfigurationOption<T> {
 		}
 		return values.isEmpty() ? null : values.get(0);
 	}
-	
+
 	/**
 	 * Returns the values of this multi option.
 	 * Call {@link #getValue()} for single options.
-	 * @return the current value of this option
+	 * @return the current values of this option, may be empty
 	 */
 	public List<T> getValues() {
 		if(!multi) {
@@ -244,8 +244,8 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
-	 * Returns whether this option currently has a non-null value.
-	 * @return whether this option is set
+	 * Returns whether this option currently has a non-null/non-empty value.
+	 * @return <code>true</code> if any value present, <code>false</code> otherwise
 	 */
 	public boolean isSet() {
 		return !values.isEmpty();

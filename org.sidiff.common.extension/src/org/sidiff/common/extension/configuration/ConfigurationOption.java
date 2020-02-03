@@ -274,7 +274,15 @@ public class ConfigurationOption<T> {
 			return type.cast(value);
 		} else if(value instanceof String) {
 			if(IExtension.class.isAssignableFrom(type)) {
-				return ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(type), (String)value);
+				T ext = ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(type), (String)value);
+				if(selectableValues != null) {
+					List<T> selectable = new ArrayList<>(selectableValues);
+					selectable.replaceAll(s -> s instanceof IExtension
+							&& ((IExtension)s).getKey().equals(((IExtension)ext).getKey()) ? ext : s);
+					selectableValues.clear();
+					selectableValues.addAll(selectable);
+				}
+				return ext;
 			}
 			if(selectableValues != null) {
 				T matchingSelectable = selectableValues.stream()
@@ -306,6 +314,13 @@ public class ConfigurationOption<T> {
 		this.documentTypes.clear();
 		this.documentTypes.addAll(documentTypes);
 		this.includeGeneric = includeGeneric;
+		if(selectableValues != null) {
+			for(T selectable : selectableValues) {
+				if(selectable instanceof IConfigurableExtension) {
+					((IConfigurableExtension)selectable).getConfiguration().setDocumentTypeFilter(documentTypes, includeGeneric);
+				}
+			}
+		}
 	}
 
 	@Override

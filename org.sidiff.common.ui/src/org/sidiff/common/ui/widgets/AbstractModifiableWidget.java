@@ -38,6 +38,13 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 		List<T> newSelection = new ArrayList<>(selection);
 		List<T> selectable = getSelectableValues();
 		if(selectable != null) {
+			try {
+				// Replace selectable values by equal selected values
+				selectable.replaceAll(selItem -> newSelection.stream()
+						.filter(newItem -> newItem != selItem && equality.test(newItem, selItem)).findFirst().orElse(selItem));
+			} catch(UnsupportedOperationException e) {
+				// compatibility to widgets with unmodifiable getSelectableValues()
+			}
 			newSelection.removeIf(newItem -> selectable.stream().noneMatch(selItem -> equality.test(newItem, selItem)));
 		}
 

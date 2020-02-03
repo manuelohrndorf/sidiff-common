@@ -6,10 +6,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.BiPredicate;
 
 import org.eclipse.core.runtime.Assert;
 import org.sidiff.common.extension.IExtension.Description;
 import org.sidiff.common.extension.internal.ExtensionComparator;
+import org.sidiff.common.extension.internal.ExtensionEquality;
 import org.sidiff.common.extension.storage.CachingExtensionManagerStorage;
 import org.sidiff.common.extension.storage.IExtensionManagerStorage;
 
@@ -154,5 +156,14 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public Comparator<? super T> getComparator() {
 		return ExtensionComparator.getInstance();
+	}
+
+	/**
+	 * <p>Returns a BiPredicate to compare two extensions of this manager to determine equality.</p>
+	 * <p>The default equality is based on {@link IExtension#getKey()}.</p>
+	 * @return predicate to check equality of extensions of this manager
+	 */
+	public BiPredicate<T,T> getEquality() {
+		return ExtensionEquality.getInstance();
 	}
 }

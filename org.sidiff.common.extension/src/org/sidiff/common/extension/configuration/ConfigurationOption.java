@@ -126,11 +126,12 @@ public class ConfigurationOption<T> {
 			return null;
 		}
 		if(ITypedExtension.class.isAssignableFrom(type)) {
-			return selectableValues.stream()
+			return Collections.unmodifiableSet(
+				selectableValues.stream()
 					.map(ITypedExtension.class::cast)
 					.filter(ext -> (includeGeneric && ext.isGeneric()) || ext.getDocumentTypes().containsAll(documentTypes))
 					.map(type::cast)
-					.collect(Collectors.toUnmodifiableSet());
+					.collect(Collectors.toSet()));
 		}
 		return Collections.unmodifiableSet(selectableValues);
 	}

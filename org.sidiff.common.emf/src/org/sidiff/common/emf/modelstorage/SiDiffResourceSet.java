@@ -101,7 +101,7 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		// Handle dangling references by recording them in Resource.getErrors()
 		options.put(XMLResource.OPTION_PROCESS_DANGLING_HREF, XMLResource.OPTION_PROCESS_DANGLING_HREF_RECORD);
 
-		//options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
+		options.put(XMIResource.OPTION_SCHEMA_LOCATION, Boolean.TRUE);
 		options.put(XMIResource.OPTION_URI_HANDLER, new FileToPlatformResourceDeresolve());
 	}
 

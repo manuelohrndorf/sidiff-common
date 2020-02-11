@@ -36,7 +36,12 @@ public class EMFMetaAccess {
 		Set<EPackage> ePackages = new HashSet<>();
 		// copy to avoid concurrent modification
 		for(String nsURI : new HashSet<>(EPackage.Registry.INSTANCE.keySet())) {
+			try {				
 			ePackages.add(EPackage.Registry.INSTANCE.getEPackage(nsURI));
+			}
+			catch (Exception e) {
+				// Do nothing in case of EPackage "error", e.g., no correct uri or erroneous package
+			}
 		}
 		return ePackages;
 	}

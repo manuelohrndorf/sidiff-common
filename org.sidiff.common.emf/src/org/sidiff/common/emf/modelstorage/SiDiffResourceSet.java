@@ -79,6 +79,10 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(false));
 		
 		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<Object, Object>());
+
+		// Unknown features must be recorded, because some valid UML models cannot be loaded
+		// otherwise because of a FeatureNotFoundException "Feature 'bodyCondition' not found.".
+		options.put(XMLResource.OPTION_RECORD_UNKNOWN_FEATURE, Boolean.TRUE);
 	}
 
 	protected void initSaveOptions(Map<Object, Object> options) {

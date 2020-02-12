@@ -3,8 +3,11 @@ package org.sidiff.common.ui.widgets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.stream.IntStream;
 
@@ -25,6 +28,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
  */
 public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidget implements IWidgetModification<T>  {
 
+	private static final BiPredicate<Object,Object> DEFAULT_EQUALITY = Objects::equals;
+
 	private List<T> selection = Collections.emptyList();
 	private Collection<ModificationListener<? super T>> modificationListeners = new ArrayList<>();
 	private ILabelProvider labelProvider;
@@ -38,12 +43,24 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 		List<T> newSelection = new ArrayList<>(selection);
 		List<T> selectable = getSelectableValues();
 		if(selectable != null) {
-			try {
-				// Replace selectable values by equal selected values
-				selectable.replaceAll(selItem -> newSelection.stream()
-						.filter(newItem -> newItem != selItem && equality.test(newItem, selItem)).findFirst().orElse(selItem));
-			} catch(UnsupportedOperationException e) {
-				// compatibility to widgets with unmodifiable getSelectableValues()
+			if(equality != DEFAULT_EQUALITY && !selectable.getClass().getSimpleName().contains("Unmodifiable")) {
+				try {
+					Set<T> unmatchedNewElements = new HashSet<>(newSelection);
+					unmatchedNewElements.removeAll(this.selection);
+					// Replace selectable values by equal selected values
+					selectable.replaceAll(selItem -> {
+						for(Iterator<T> it = unmatchedNewElements.iterator(); it.hasNext(); ) {
+							T newItem = it.next();
+							if(newItem == selItem || equality.test(newItem, selItem)) {
+								it.remove();
+								return newItem;
+							}
+						}
+						return selItem;
+					});
+				} catch(UnsupportedOperationException e) {
+					// compatibility to widgets with otherwise unmodifiable getSelectableValues()
+				}
 			}
 			newSelection.removeIf(newItem -> selectable.stream().noneMatch(selItem -> equality.test(newItem, selItem)));
 		}

@@ -2,6 +2,7 @@ package org.sidiff.common.ui.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -37,6 +38,8 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 	private final Class<T> selectableElementType;
 	private final ITreeContentProvider contentProvider;
 
+	private boolean userChangedSelection = false;
+
 	public AbstractTreeSelectionWidget(Class<T> selectableElementType, ITreeContentProvider contentProvider) {
 		this.selectableElementType = Objects.requireNonNull(selectableElementType);
 		this.contentProvider = Objects.requireNonNull(contentProvider);
@@ -57,11 +60,13 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 			if(!event.getChecked()) {
 				treeViewer.collapseToLevel(element, AbstractTreeViewer.ALL_LEVELS);
 			}
+			userChangedSelection = true;
 			setSelection(
 				Stream.of(treeViewer.getCheckedElements())
 					.filter(selectableElementType::isInstance)
 					.map(selectableElementType::cast)
 					.collect(Collectors.toList()));
+			userChangedSelection = false;
 		});
 		treeViewer.setComparator(new ViewerComparator());
 		GridDataFactory.fillDefaults().grab(true, true).hint(SWT.DEFAULT, heightHint).applyTo(treeViewer.getControl());
@@ -70,9 +75,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 		RowLayoutFactory.fillDefaults().type(SWT.HORIZONTAL).applyTo(buttonBar);
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(buttonBar);
 
-		updateTreeViewerSelection();
-		treeViewer.refresh();
-		recreateSelectionButtons();
+		refresh();
 
 		return container;
 	}
@@ -127,37 +130,41 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 				objectsQueue.offer(child);
 			}
 		}
-		return values;
+		return Collections.unmodifiableList(values);
 	}
 
 	@Override
 	protected void hookSetSelection() {
 		super.hookSetSelection();
-		if(treeViewer != null) {
+		if(!userChangedSelection) {
 			updateTreeViewerSelection();
 		}
-		refresh();
+		getWidgetCallback().requestValidation();
 	}
 
 	private void updateTreeViewerSelection() {
+		if(treeViewer == null) {
+			return;			
+		}
 		// first expand everything, otherwise checking the elements may not work
 		treeViewer.expandAll();
-		treeViewer.setCheckedElements(new Object[0]);
-		// Objects in the tree may be different instances
-		getSelectableValues().stream()
-			.filter(selectable -> getSelection().stream().anyMatch(selection -> getEqualityDelegate().test(selection, selectable)))
-			.forEach(item -> treeViewer.setChecked(item, true));
+		List<T> selectable = getSelectableValues();
+		treeViewer.setCheckedElements(getSelection().stream()
+				.map(item -> selectable.stream()
+						.filter(selectableItem -> item == selectableItem || getEqualityDelegate().test(item, selectableItem))
+						.findFirst().orElse(item))
+				.collect(Collectors.toList()).toArray());
+
 		// now collapse everything and only expand the checked elements
 		treeViewer.collapseAll();
 		for(Object item : treeViewer.getCheckedElements()) {
 			treeViewer.expandToLevel(item, 1);
 		}
+		treeViewer.refresh();
 	}
 
 	public void refresh() {
-		if(treeViewer != null) {
-			treeViewer.refresh();
-		}
+		updateTreeViewerSelection();
 		recreateSelectionButtons();
 		getWidgetCallback().requestValidation();
 	}

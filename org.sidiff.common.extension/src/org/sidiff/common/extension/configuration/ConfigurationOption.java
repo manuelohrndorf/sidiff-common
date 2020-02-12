@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.core.runtime.Assert;
 import org.sidiff.common.converter.ConverterUtil;
 import org.sidiff.common.extension.ExtensionManager;
 import org.sidiff.common.extension.ExtensionManagerFinder;
@@ -458,6 +459,11 @@ public class ConfigurationOption<T> {
 			this.defaultValues.clear();
 			this.defaultValues.addAll(defaultValues);
 			return this;
+		}
+
+		public Builder<T> defaultValuesAll() {
+			Assert.isLegal(selectableValues != null, "Must call 'selectableValues' before 'defaultValuesAll'");
+			return defaultValues(new ArrayList<>(selectableValues));
 		}
 
 		public Builder<T> valueLabelProvider(Function<? super T,String> valueLabelProvider) {

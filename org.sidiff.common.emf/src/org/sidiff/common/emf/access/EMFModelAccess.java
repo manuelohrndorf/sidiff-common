@@ -106,29 +106,35 @@ public class EMFModelAccess {
 	}
 
 	/**
-	 * Returns all document types between input models. This is
-	 * the union of all resource document types.
+	 * Returns all document types between notifiers. This is
+	 * the union of all resource/resource set/EObject document types.
 	 */
-	public static Set<String> getDocumentTypes(Collection<? extends Resource> resources) {
-		final Set<String> documentTypes = new HashSet<String>();
-		for (Resource resource : resources) {
-				EMFModelAccess.traverse(resource, new TreeVisitor() {
-					@Override
-					public boolean preExecute(EObject object) {
-						documentTypes.add(getDocumentType(object));
-						//Visit all Objects
-						return true;
-					}
-					@Override
-					public void postExecute(EObject object) {
-						//Nothing to do
-					}
-				});
+	public static Set<String> getDocumentTypes(Collection<? extends Notifier> notifiers) {
+		final Set<String> documentTypes = new HashSet<>();
+		TreeVisitor visitor = new TreeVisitor() {
+			@Override
+			public boolean preExecute(EObject object) {
+				documentTypes.add(getDocumentType(object));
+				//Visit all Objects
+				return true;
+			}
+			@Override
+			public void postExecute(EObject object) {
+				//Nothing to do
+			}
+		};
+		for (Notifier notifier : notifiers) {
+			if(notifier instanceof ResourceSet) {
+				documentTypes.addAll(getDocumentTypes(notifier));
+			} else if(notifier instanceof Resource) {
+				EMFModelAccess.traverse((Resource)notifier, visitor);
+			} else if(notifier instanceof EObject) {
+				EMFModelAccess.traverse((EObject)notifier, visitor);
+			}
 		}
 		return documentTypes;
 	}
-	
-	
+
 	/**
 	 * Method returns a list of all children connected by a specific {@link EReference} type.
 	 * 
@@ -537,14 +543,19 @@ public class EMFModelAccess {
 		}
 		return getDocumentTypes(Collections.singleton(modelResource));
 	}
-	
+
 	public static Set<String> getDocumentTypes(Notifier context) {
 		if(context instanceof ResourceSet) {
 			return getDocumentTypes(((ResourceSet)context).getResources());
 		} else if(context instanceof Resource) {
 			return getDocumentTypes(Collections.singleton((Resource)context));
 		} else if(context instanceof EObject) {
-			return getDocumentTypes(((EObject)context).eResource());			
+			EObject eObj = (EObject)context;
+			Resource resource = eObj.eResource();
+			if(resource == null) {
+				return getDocumentTypes(Collections.singleton(eObj));
+			}
+			return getDocumentTypes(Collections.singleton(resource));			
 		}
 		throw new AssertionError();
 	}

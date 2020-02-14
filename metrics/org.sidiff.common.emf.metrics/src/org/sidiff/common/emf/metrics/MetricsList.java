@@ -53,12 +53,13 @@ public class MetricsList extends ArrayList<MetricHandle> {
 
 	/**
 	 * Exports the metrics in this list in CSV format, as
-	 * "<code>metric-key,resource-uri,metric-value</code>".
+	 * "<code>metric-key;resource-uri;metric-value</code>".
 	 * Only metrics which have been computed before will be exported.
 	 * @return metrics in CSV format
 	 */
 	public String exportAsCsv() {
 		return CSVWriter.writeToString(csvWriter -> {
+			csvWriter.setColumnSeparator(";");
 			for(MetricHandle handle : this) {
 				if(handle.isValuePresent()) {
 					csvWriter.write(

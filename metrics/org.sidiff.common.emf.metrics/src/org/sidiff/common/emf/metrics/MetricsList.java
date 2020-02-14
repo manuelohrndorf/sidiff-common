@@ -65,7 +65,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 					csvWriter.write(
 						handle.getMetric().getKey(),
 						handle.getContextLabel(),
-						handle.getValues());
+						MetricsUtil.getLabel(handle.getValues()));
 				}
 			}
 		});

@@ -378,6 +378,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	 */
 	@Override
 	protected void hookSetSelection() {
+		super.hookSetSelection();
 		if(featureTableViewer != null) {
 			featureTableViewer.setInput(getSelection().toArray());
 			featureTableViewer.refresh();			

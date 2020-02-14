@@ -68,6 +68,7 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 
 	@Override
 	protected void hookSetSelection() {
+		super.hookSetSelection();
 		if(values != null && buttons != null) {
 			Set<Button> remainingButtons = new HashSet<>(values.keySet());
 			for(T value : getSelection()) {

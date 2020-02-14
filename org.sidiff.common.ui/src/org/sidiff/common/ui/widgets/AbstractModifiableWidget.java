@@ -81,10 +81,10 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	 * Use {@link #getSelection()} to get the current selection.
 	 * <u>Do not</u> call {@link #setSelection(List)} from this method.<p>
 	 * <p>Override to implement custom handling for new selections.
-	 * The default implementation does nothing.</p>
+	 * The default implementation updates the enabled state of dependent widgets.</p>
 	 */
 	protected void hookSetSelection() {
-		// default implementation does nothing
+		propagateEnabledState();
 	}
 
 	@Override
@@ -145,5 +145,10 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	
 	public void setEqualityDelegate(BiPredicate<T, T> equalityDelegate) {
 		this.equalityDelegate = Objects.requireNonNull(equalityDelegate);
+	}
+
+	@Override
+	public boolean areDependentsEnabled() {
+		return super.areDependentsEnabled() && !getSelection().isEmpty();
 	}
 }

@@ -715,7 +715,7 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	 * reference is transient, volatile or derived, or whether is a synthetically
+	 * reference is transient, volatile, derived or non-changeable, or whether is a synthetically
 	 * inserted EGenericType.
 	 * @param element The element to test.
 	 * @return <code>true</code> if the element is created dynamically;
@@ -732,18 +732,23 @@ public class EMFUtil {
 		return false;
 	}
 
-	public static boolean isDynamic(EObject element, EReference reference) {
-		return reference.isTransient()
-			 || reference.isDerived()
-			 || reference.isContainer() // container references are always dynamic
-			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
-			 		&& reference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
-			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
+	public static boolean isDynamic(EReference eReference) {
+		return eReference.isDerived() || eReference.isTransient() || eReference.isVolatile() || !eReference.isChangeable();
+	}
+	
+	public static boolean isDynamic(EObject element, EReference eReference) {
+		return isDynamic(eReference)
+			 || (eReference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
+			 		&& eReference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
+			 		&& getReferenceTargets(element, eReference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
 	}
 
-	public static boolean isDynamic(EObject element, EAttribute attribute) {
-		return attribute.isTransient()
-			 || attribute.isDerived();
+	public static boolean isDynamic(EAttribute eAttribute) {
+		return eAttribute.isDerived() || eAttribute.isTransient() || eAttribute.isVolatile() || !eAttribute.isChangeable();
+	}
+	
+	public static boolean isDynamic(EObject element, EAttribute eAttribute) {
+		return isDynamic(eAttribute);
 	}
 
 	public static boolean isDynamic(EGenericType genericType) {

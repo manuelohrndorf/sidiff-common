@@ -715,7 +715,7 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	 * reference is transient, volatile, derived or non-changeable, or whether is a synthetically
+	 * reference is transient, derived or non-changeable, or whether is a synthetically
 	 * inserted EGenericType.
 	 * @param element The element to test.
 	 * @return <code>true</code> if the element is created dynamically;
@@ -732,10 +732,21 @@ public class EMFUtil {
 		return false;
 	}
 
+	/**
+	 * TODO doc
+	 * @param eReference
+	 * @return
+	 */
 	public static boolean isDynamic(EReference eReference) {
-		return eReference.isDerived() || eReference.isTransient() || eReference.isVolatile() || !eReference.isChangeable();
+		return eReference.isDerived() || eReference.isTransient() || !eReference.isChangeable();
 	}
 	
+	/**
+	 * TODO doc
+	 * @param element
+	 * @param eReference
+	 * @return
+	 */
 	public static boolean isDynamic(EObject element, EReference eReference) {
 		return isDynamic(eReference)
 			 || (eReference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
@@ -743,14 +754,30 @@ public class EMFUtil {
 			 		&& getReferenceTargets(element, eReference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
 	}
 
+	/**
+	 * TODO doc
+	 * @param eAttribute
+	 * @return
+	 */
 	public static boolean isDynamic(EAttribute eAttribute) {
-		return eAttribute.isDerived() || eAttribute.isTransient() || eAttribute.isVolatile() || !eAttribute.isChangeable();
+		return eAttribute.isDerived() || eAttribute.isTransient() || !eAttribute.isChangeable();
 	}
 	
+	/**
+	 * TODO doc
+	 * @param element
+	 * @param eAttribute
+	 * @return
+	 */
 	public static boolean isDynamic(EObject element, EAttribute eAttribute) {
 		return isDynamic(eAttribute);
 	}
 
+	/**
+	 * TODO doc
+	 * @param genericType
+	 * @return
+	 */
 	public static boolean isDynamic(EGenericType genericType) {
 		if(genericType.getETypeParameter() != null) {
 			// Generic types with type parameter are not dynamic,

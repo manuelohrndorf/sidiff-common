@@ -5,16 +5,20 @@ Bundle-SymbolicName: org.sidiff.common;singleton:=true
 Bundle-Description: This plugin contains various utility functions used all over the SiDiff project.
 Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Export-Package: org.sidiff.common.app,
+Export-Package: org.sidiff.common,
+ org.sidiff.common.app,
  org.sidiff.common.collections,
  org.sidiff.common.converter,
+ org.sidiff.common.converter.internal;x-internal:=true,
  org.sidiff.common.exceptions,
  org.sidiff.common.file,
  org.sidiff.common.io,
  org.sidiff.common.lcs,
  org.sidiff.common.logging,
+ org.sidiff.common.logging.internal;x-internal:=true,
  org.sidiff.common.reflection,
  org.sidiff.common.stringresolver,
+ org.sidiff.common.stringresolver.internal;x-internal:=true,
  org.sidiff.common.util
 Require-Bundle: org.eclipse.core.runtime
 Bundle-Activator: org.sidiff.common.CommonPlugin

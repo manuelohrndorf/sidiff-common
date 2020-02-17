@@ -404,7 +404,7 @@ public class EMFUtil {
 	
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
-	 * reference is transient, derived, or whether is a synthetically
+	 * reference is transient, derived or non-changeable, or whether is a synthetically
 	 * inserted EGenericType.
 	 * @param element The element to test.
 	 * @return <code>true</code> if the element is created dynamically;
@@ -421,19 +421,45 @@ public class EMFUtil {
 		return false;
 	}
 
-	public static boolean isDynamic(EObject element, EReference reference) {
-		// Container [reference.isContainer()] references are only dynamic if transient or derived.
-		// UML contains container references which are neither, so we must not exclude container references in general.
-		return reference.isTransient()
-			 || reference.isDerived()
-			 || (reference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
-			 		&& reference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
-			 		&& getReferenceTargets(element, reference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
+	/**
+	 * TODO doc
+	 * @param eReference
+	 * @return
+	 */
+	public static boolean isDynamic(EReference eReference) {
+		return eReference.isDerived() || eReference.isTransient() || !eReference.isChangeable();
 	}
 
-	public static boolean isDynamic(EObject element, EAttribute attribute) {
-		return attribute.isTransient()
-			 || attribute.isDerived();
+	/**
+	 * TODO doc
+	 * @param element
+	 * @param eReference
+	 * @return
+	 */
+	public static boolean isDynamic(EObject element, EReference eReference) {
+		return isDynamic(eReference)
+			 || (eReference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
+			 		&& eReference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
+			 		&& getReferenceTargets(element, eReference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
+	}
+
+	/**
+	 * TODO doc
+	 * @param eAttribute
+	 * @return
+	 */
+	public static boolean isDynamic(EAttribute eAttribute) {
+		return eAttribute.isDerived() || eAttribute.isTransient() || !eAttribute.isChangeable();
+	}
+
+	/**
+	 * TODO doc
+	 * @param element
+	 * @param eAttribute
+	 * @return
+	 */
+	public static boolean isDynamic(EObject element, EAttribute eAttribute) {
+		return isDynamic(eAttribute);
 	}
 
 	/**

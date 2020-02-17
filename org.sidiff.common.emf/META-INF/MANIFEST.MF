@@ -16,23 +16,30 @@ Require-Bundle: org.eclipse.core.runtime;visibility:=reexport,
  org.sidiff.common.xml
 Export-Package: org.sidiff.common.emf,
  org.sidiff.common.emf.access,
+ org.sidiff.common.emf.access.impl,
  org.sidiff.common.emf.access.path,
  org.sidiff.common.emf.access.path.axis,
  org.sidiff.common.emf.access.path.conditions,
+ org.sidiff.common.emf.access.path.impl,
  org.sidiff.common.emf.access.tree,
  org.sidiff.common.emf.access.value,
+ org.sidiff.common.emf.access.value.impl,
  org.sidiff.common.emf.adapters,
+ org.sidiff.common.emf.adapters.internal;x-internal:=true,
  org.sidiff.common.emf.annotation,
+ org.sidiff.common.emf.annotation.internal;x-internal:=true,
  org.sidiff.common.emf.collections,
  org.sidiff.common.emf.copiers,
  org.sidiff.common.emf.derivation,
  org.sidiff.common.emf.diagnostic,
  org.sidiff.common.emf.ecore,
  org.sidiff.common.emf.exceptions,
+ org.sidiff.common.emf.internal;x-internal:=true,
  org.sidiff.common.emf.metamodel.analysis,
  org.sidiff.common.emf.modelstorage,
  org.sidiff.common.emf.ocl,
- org.sidiff.common.emf.provider
+ org.sidiff.common.emf.provider,
+ org.sidiff.common.emf.stringresolver.internal;x-internal:=true
 Bundle-Activator: org.sidiff.common.emf.internal.Activator
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Bundle-ClassPath: .

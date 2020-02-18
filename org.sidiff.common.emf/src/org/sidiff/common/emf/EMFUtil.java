@@ -332,11 +332,22 @@ public class EMFUtil {
 			return getEMapEntrySignature((BasicEMap.Entry<?,?>)eObject);
 		}
 
+		// try "signature" feature
+		EStructuralFeature signatureFeature = eObject.eClass().getEStructuralFeature("signature");
+		if(signatureFeature instanceof EAttribute
+				&& !signatureFeature.isMany()
+				&& signatureFeature.getEType() == EcorePackage.Literals.ESTRING) {
+			String signature = (String)eObject.eGet(signatureFeature);
+			if(signature != null && !signature.isEmpty()) {
+				return signature;
+			}
+		}
+		// try "name" feature
 		String name = EMFUtil.getEObjectName(eObject);
-		if(name != null) {
+		if(name != null && !name.isEmpty()) {
 			return name;
 		}
-		return "[" + eObject.getClass().getName() + "]";
+		return "[" + eObject.eClass().getName() + "]";
 	}
 
 	/**

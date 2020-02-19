@@ -19,7 +19,6 @@ import org.sidiff.common.ui.widgets.IWidget;
 import org.sidiff.common.ui.widgets.IWidgetCallback;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
 import org.sidiff.common.ui.widgets.IWidgetDisposable;
-import org.sidiff.common.ui.widgets.IWidgetSelection;
 import org.sidiff.common.ui.widgets.IWidgetValidation;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
@@ -203,15 +202,6 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 		// Add widget:
 		widgets.add(widget);
-
-		// Add validation:
-		if (widget instanceof IWidgetSelection) {
-			// If the widget uses the widget callback, a selection listener to validate the
-			// widget is not required, as the widget will request the validation when needed
-			if(!(widget instanceof IWidgetCallback)) {
-				((IWidgetSelection) widget).addSelectionListener(validationListener);
-			}
-		}
 
 		// Update the enabled state of the widget now that the control has been created:
 		if (widget instanceof IWidgetDependence) {

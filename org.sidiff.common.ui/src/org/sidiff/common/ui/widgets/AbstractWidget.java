@@ -42,20 +42,6 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 	}
 
 	//
-	// IWidget
-
-	/**
-	 * <p>Sets the widget's layout data.</p>
-	 * <p>The default implementation provided by this abstract class sets the layout data
-	 * of the widget returned by {@link IWidget#getWidget()}.</p>
-	 * <p>Subclasses may override to customize this behavior.</p>
-	 */
-	@Override
-	public void setLayoutData(Object layoutData) {
-		getWidget().setLayoutData(layoutData);
-	}
-
-	//
 	// IWidgetDependency
 
 	@Override

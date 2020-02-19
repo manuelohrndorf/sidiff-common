@@ -17,10 +17,4 @@ public interface IWidget {
 	 * @return The top level container or <code>null</code> if has not yet been created.
 	 */
 	Composite getWidget();
-
-	/**
-	 * Set the widget layout data.
-	 * @param layoutData The layout of the top level container.
-	 */
-	void setLayoutData(Object layoutData);
 }

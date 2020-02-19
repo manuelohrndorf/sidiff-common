@@ -6,6 +6,8 @@ import java.util.List;
 import org.eclipse.jface.dialogs.IPageChangeProvider;
 import org.eclipse.jface.dialogs.IPageChangedListener;
 import org.eclipse.jface.dialogs.PageChangedEvent;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.jface.wizard.WizardPage;
@@ -13,8 +15,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.events.IExpansionListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.sidiff.common.ui.widgets.IWidget;
 import org.sidiff.common.ui.widgets.IWidgetCallback;
 import org.sidiff.common.ui.widgets.IWidgetDependence;
@@ -28,7 +32,7 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * <p>Override {@link #createWidgets()} and add them
  * using {@link #addWidget(Composite, IWidget)}.</p>
  * @author cpietsch
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractWizardPage extends WizardPage implements
 		IPageChangedListener, IWidgetCallback.Callback {
@@ -64,7 +68,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	/**
 	 * A list of {@link IWidget} which are contained by {@link #container}
 	 */
-	protected List<IWidget> widgets;
+	private List<IWidget> widgets;
 
 	// ---------- Constructor ----------
 
@@ -84,27 +88,13 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 	@Override
 	public void createControl(Composite parent) {
-		// Add scrolling to this page
-		Composite wrapper = new Composite(parent, SWT.NONE);
-		{
-			GridLayout gl_wrapper = new GridLayout(1, false);
-			gl_wrapper.marginWidth = 0;
-			gl_wrapper.marginHeight = 0;
-			wrapper.setLayout(gl_wrapper);
-		}
-
-		scrolledComposite = new ScrolledComposite(wrapper, SWT.H_SCROLL | SWT.V_SCROLL);
+		scrolledComposite = new ScrolledComposite(parent, SWT.H_SCROLL | SWT.V_SCROLL);
 		scrolledComposite.setExpandHorizontal(true);
 		scrolledComposite.setExpandVertical(true);
-		scrolledComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridDataFactory.fillDefaults().applyTo(scrolledComposite);
 
 		container = new Composite(scrolledComposite, SWT.NONE);
-		{
-			GridLayout gl_container = new GridLayout(NUM_COLUMNS, true);
-			gl_container.marginWidth = 10;
-			gl_container.marginHeight = 10;
-			container.setLayout(gl_container);
-		}
+		GridLayoutFactory.fillDefaults().equalWidth(true).numColumns(NUM_COLUMNS).margins(10, 10).applyTo(container);
 		scrolledComposite.setContent(container);
 
 		// Create widgets for this page:
@@ -112,7 +102,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 		requestLayout();
 
-		setControl(wrapper);
+		setControl(scrolledComposite);
 
 		requestValidation();
 		
@@ -173,7 +163,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 * @param parent the {@link Composite} to that the widget is added
 	 * @param widget the {@link IWidget} that is added
 	 */
-	protected void addWidget(Composite parent, IWidget widget) {
+	protected final void addWidget(Composite parent, IWidget widget) {
 		addWidget(parent, widget, NUM_COLUMNS);
 	}
 	
@@ -185,20 +175,15 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	 * @param widget the {@link IWidget} that is added
 	 * @param numColumns how many columns of the row this widget takes up, the total are {@link #NUM_COLUMNS}
 	 */
-	protected void addWidget(Composite parent, IWidget widget, int numColumns) {
+	protected final void addWidget(Composite parent, IWidget widget, int numColumns) {
 		// Set callbacks:
 		if (widget instanceof IWidgetCallback) {
 			((IWidgetCallback) widget).setWidgetCallback(this);
 		}
 
 		// Create controls:
-		widget.createControl(parent);
-		{
-			// Set layout data and minimum size
-			GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-			gridData.horizontalSpan = numColumns;
-			widget.setLayoutData(gridData);
-		}
+		Composite widgetControl = widget.createControl(parent);
+		initChildLayout(widgetControl, numColumns);
 
 		// Add widget:
 		widgets.add(widget);
@@ -208,6 +193,36 @@ public abstract class AbstractWizardPage extends WizardPage implements
 			final IWidgetDependence widgetDependence = (IWidgetDependence) widget;
 			widgetDependence.setEnabled(widgetDependence.isEnabled());
 		}
+	}
+
+	protected final Composite addExpandableComposite(Composite parent, String title) {
+		return addExpandableComposite(parent, title, NUM_COLUMNS);
+	}
+
+	protected final Composite addExpandableComposite(Composite parent, String title, int numColumns) {
+		ExpandableComposite expandable = new ExpandableComposite(parent, SWT.BORDER);
+		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(expandable);
+		initChildLayout(expandable, numColumns);
+		expandable.setText(title);
+		Composite child = new Composite(expandable, SWT.NONE);
+		GridLayoutFactory.fillDefaults().equalWidth(true).numColumns(NUM_COLUMNS).margins(2, 2).applyTo(child);
+		expandable.setClient(child);
+		expandable.addExpansionListener(new IExpansionListener() {
+			@Override
+			public void expansionStateChanging(ExpansionEvent e) {
+			}
+			@Override
+			public void expansionStateChanged(ExpansionEvent e) {
+				requestLayout();
+			}
+		});
+		return child;
+	}
+
+	private void initChildLayout(Composite child, int numColumns) {
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.horizontalSpan = numColumns;
+		child.setLayoutData(gridData);
 	}
 
 	/**

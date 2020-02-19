@@ -32,7 +32,7 @@ import org.sidiff.common.logging.LogUtil;
  * <p>The default load options include performance optimizations. The default
  * save options do as well, in addition to deresolving URIs to platform URIs if possible,
  * and recording dangling references instead of throwing exceptions.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public class SiDiffResourceSet extends ResourceSetImpl {
 
@@ -197,11 +197,16 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 	}
 
 	/**
-	 * Saves all resources of this resource set.
+	 * Saves all resources of this resource set, except empty resources with errors,
+	 * which are the result of having proxy references to deleted resources. 
 	 */
 	public void saveAllResources() {
 		for(Resource resource : getResources()) {
-			saveResource(resource);
+			if(!resource.getContents().isEmpty() || resource.getErrors().isEmpty()) {
+				// Ignore empty resources with errors. Those usually remain after deleting a resource externally.
+				// Subsequent fixing of proxy references leaves an empty resource with a "File does not exist" error in the set.
+				saveResource(resource);
+			}
 		}
 	}
 

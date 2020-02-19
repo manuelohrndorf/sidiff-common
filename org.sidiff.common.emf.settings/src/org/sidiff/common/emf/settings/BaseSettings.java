@@ -36,15 +36,10 @@ public class BaseSettings extends AbstractSettings {
 		if(scope == null) {
 			scope = getDefaultScope(documentTypes);			
 		}
-		this.validate = getDefaultValidate(documentTypes);
 	}
 
 	protected Scope getDefaultScope(Set<String> documentTypes) {
 		return Scope.RESOURCE;
-	}
-
-	protected boolean getDefaultValidate(Set<String> documentTypes) {
-		return false;
 	}
 
 	@Override

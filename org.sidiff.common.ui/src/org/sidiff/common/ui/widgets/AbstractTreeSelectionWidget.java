@@ -153,7 +153,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 				.map(item -> selectable.stream()
 						.filter(selectableItem -> item == selectableItem || getEqualityDelegate().test(item, selectableItem))
 						.findFirst().orElse(item))
-				.collect(Collectors.toList()).toArray());
+				.toArray());
 
 		// now collapse everything and only expand the checked elements
 		treeViewer.collapseAll();

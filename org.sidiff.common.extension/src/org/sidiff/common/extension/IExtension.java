@@ -36,10 +36,8 @@ public interface IExtension {
 	 * @return readable name
 	 */
 	default String getName() {
-		if(getClass().isAnonymousClass()) {
-			return RegExUtil.addSpacesToCamelCase(getClass().getName());
-		}
-		return RegExUtil.addSpacesToCamelCase(getClass().getSimpleName());
+		String className = getClass().isAnonymousClass() ? getClass().getName() : getClass().getSimpleName();
+		return RegExUtil.addSpacesToCamelCase(className);
 	}
 
 	/**
@@ -97,8 +95,25 @@ public interface IExtension {
 			return new ExtensionDescription<T>(extensionClass, extensionPointId, elementName, classAttribute);
 		}
 
+		/**
+		 * Returns a Stream of the {@link IConfigurationElement}s of the extension {@link #getExtensionPointId()}
+		 * with the name {@link #getElementName()}.
+		 * @return stream of XML elements corresponding to individual extensions
+		 */
 		Stream<IConfigurationElement> getRegisteredExtensions();
+
+		/**
+		 * 
+		 * @return
+		 */
 		Stream<T> createRegisteredExtensions();
-		T createExecutableExtension(IConfigurationElement element);
+
+		/**
+		 * Creates the executable extension instance for the given configuration element.
+		 * Catches and logs any errors during initialization.
+		 * @param element the configuration element, must be one of the {@link #getRegisteredExtensions() registered extensions}
+		 * @return executable extension of the given extension class, empty on failure
+		 */
+		Optional<T> createExecutableExtension(IConfigurationElement element);
 	}
 }

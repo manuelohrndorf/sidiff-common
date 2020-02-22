@@ -16,13 +16,15 @@ public class ExtensionManagerFinder {
 		throw new AssertionError();
 	}
 
-	@SuppressWarnings("unchecked") // checked by exception
+	@SuppressWarnings("unchecked")
 	public static <T extends IExtension> ExtensionManager<? extends T> findManager(Class<? super T> extensionClass) {
 		try {
 			Field mgrField = extensionClass.getDeclaredField("MANAGER");
 			Object mgrObject = mgrField.get(null);
 			if(mgrObject instanceof ExtensionManager) {
-				return (ExtensionManager<? extends T>)mgrObject;						
+				// There could be more checks here. The generic type is unchecked, but
+				// by convention IFooBar.MANAGER should always extend ExtensionManager<IFooBar>.
+				return (ExtensionManager<? extends T>)mgrObject;
 			}
 			throw new IllegalArgumentException("MANAGER member is not an instance of ExtensionManager: " + mgrObject);
 		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException | ClassCastException e) {

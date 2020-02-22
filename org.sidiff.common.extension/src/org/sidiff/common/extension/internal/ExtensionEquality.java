@@ -6,6 +6,7 @@ import java.util.function.BiPredicate;
 import org.sidiff.common.extension.IExtension;
 
 /**
+ * Defines default extension equality by equality of {@link IExtension#getKey()}.
  * @author rmueller
  */
 public class ExtensionEquality<T extends IExtension> implements BiPredicate<T,T> {

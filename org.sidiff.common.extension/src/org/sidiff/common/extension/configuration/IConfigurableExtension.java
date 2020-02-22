@@ -6,7 +6,6 @@ import org.sidiff.common.extension.IExtension;
  * A configurable extension is a {@link IExtension} that
  * has a {@link IExtensionConfiguration}.
  * @author rmueller
- *
  */
 public interface IConfigurableExtension extends IExtension {
 

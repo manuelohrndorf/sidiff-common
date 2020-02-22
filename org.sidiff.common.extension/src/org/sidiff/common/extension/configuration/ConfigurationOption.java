@@ -45,8 +45,9 @@ public class ConfigurationOption<T> {
 	private final List<T> defaultValues;
 	private final Set<T> selectableValues;
 	private final Function<? super T,String> valueLabelProvider;
-	private List<T> values = new ArrayList<>();
-	private Set<String> documentTypes = new HashSet<>();
+
+	private final List<T> values = new ArrayList<>();
+	private final Set<String> documentTypes = new HashSet<>();
 	private boolean includeGeneric = true;
 
 	protected ConfigurationOption(String key, String name, Class<T> type, boolean multi,
@@ -276,7 +277,11 @@ public class ConfigurationOption<T> {
 			return type.cast(value);
 		} else if(value instanceof String) {
 			if(IExtension.class.isAssignableFrom(type)) {
-				T ext = ExtensionSerialization.createExtension(ExtensionManagerFinder.findManager(type), (String)value);
+				ExtensionManager<? extends T> manager = ExtensionManagerFinder.findManager(type);
+				if(manager == null) {
+					throw new IllegalStateException("The type is IExtension but no ExtensionManager was found");
+				}
+				T ext = ExtensionSerialization.createExtension(manager, (String)value);
 				if(selectableValues != null) {
 					List<T> selectable = new ArrayList<>(selectableValues);
 					selectable.replaceAll(s -> s instanceof IExtension
@@ -398,10 +403,13 @@ public class ConfigurationOption<T> {
 
 	/**
 	 * The builder is used to create configuration options.
-	 * @author Robert Müller
+	 * @author rmueller
 	 * @param <T> the type of configuration option this builder creates
 	 */
 	public static class Builder<T> {
+
+		private static final Function<Object, String> DEFAULT_LABEL_PROVIDER =
+				value -> value == null ? "No value" : value.toString();
 
 		private final Class<T> type;
 		private String key;
@@ -427,6 +435,11 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
+		/**
+		 * Call iff this configuration option supports multiple values.
+		 * Must be called before all other builders methods, directly after creating it.
+		 * @return this builder, for method chaining
+		 */
 		public Builder<T> multi() {
 			this.multi = true;
 			return this;
@@ -439,7 +452,7 @@ public class ConfigurationOption<T> {
 			this.minValue = minValue;
 			return this;
 		}
-		
+
 		public Builder<T> maxValue(T maxValue) {
 			if(!(maxValue instanceof Number)) {
 				throw new IllegalArgumentException("Maximum value only supported for subclasses of Number");
@@ -471,15 +484,22 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
+		public Builder<T> selectableValues(Collection<? extends T> selectableValues) {
+			this.selectableValues = Objects.requireNonNull(selectableValues);
+			return this;
+		}
+
 		public ConfigurationOption<T> build() {
 			if(key == null) {
 				throw new IllegalStateException("ConfigurationOption requires a key");
 			}
+			// Ensure minValue < maxValue
 			if(minValue != null && maxValue != null) {
 				if(compareValues((Number)minValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
 					throw new IllegalStateException("Minimum value is greater than maximum value");
 				}
 			}
+			// Ensure minValue <= each default value <= maxValue
 			for(T defaultValue : defaultValues) {
 				if(defaultValue instanceof Number) {
 					if(minValue != null) {
@@ -494,22 +514,19 @@ public class ConfigurationOption<T> {
 					}
 				}
 			}
+			// Default name is the key
 			if(name == null) {
 				name = key;
 			}
+			// Default selectable values for Enum classes
 			if(type.isEnum() && selectableValues == null) {
 				selectableValues = Arrays.asList(type.getEnumConstants());
 			}
 			if(valueLabelProvider == null) {
-				valueLabelProvider = value -> value == null ? "No value" : value.toString();
+				valueLabelProvider = DEFAULT_LABEL_PROVIDER;
 			}
 			return new ConfigurationOption<T>(key, name, type, multi, minValue, maxValue,
 					defaultValues, selectableValues, valueLabelProvider);
-		}
-
-		public Builder<T> selectableValues(Collection<? extends T> selectableValues) {
-			this.selectableValues = Objects.requireNonNull(selectableValues);
-			return this;
 		}
 	}
 }

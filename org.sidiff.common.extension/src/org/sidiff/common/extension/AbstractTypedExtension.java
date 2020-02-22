@@ -43,6 +43,7 @@ public abstract class AbstractTypedExtension extends AbstractExtension implement
 	protected Set<String> doGetDocumentTypes(IConfigurationElement config) {
 		return Arrays.stream(config.getChildren(ELEMENT_DOCUMENT_TYPE))
 			.map(IConfigurationElement::getValue)
+			.map(String::trim)
 			.collect(Collectors.toSet());
 	}
 

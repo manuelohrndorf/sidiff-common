@@ -7,13 +7,19 @@ import org.osgi.framework.BundleContext;
 /**
  * <p>Plugin activator for the extension management plugin.
  * Contains utility functions for logging.</p>
- * <p>The VM system property <code>extensionManagerLogging</code> controls the
- * minimum logging level ("info", "warning", "error") for console log output (default is "error").</p>
+ * <p>The VM system property {@value #PROP_EXTENSION_MANAGER_LOGGING} controls the
+ * minimum logging level ({@value #LOGGING_LEVEL_ERROR}, {@value #LOGGING_LEVEL_WARNING},
+ * {@value #LOGGING_LEVEL_INFO}) for console log output (default is {@value #LOGGING_LEVEL_ERROR}).</p>
  * @author rmueller
  */
 public class ExtensionsPlugin extends Plugin {
 
-	public static final String PLUGIN_ID = "org.sidiff.common.extension";
+	public static final String ID = "org.sidiff.common.extension";
+
+	public static final String PROP_EXTENSION_MANAGER_LOGGING = "extensionManagerLogging";
+	public static final String LOGGING_LEVEL_ERROR = "error";
+	public static final String LOGGING_LEVEL_WARNING = "warning";
+	public static final String LOGGING_LEVEL_INFO = "info";
 
 	private static ExtensionsPlugin instance;
 
@@ -23,18 +29,17 @@ public class ExtensionsPlugin extends Plugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		instance = this;
-		
-		this.loggingLevel = parseLoggingLevel(System.getProperty("extensionManagerLogging"));
+		this.loggingLevel = parseLoggingLevel(System.getProperty(PROP_EXTENSION_MANAGER_LOGGING));
 	}
 
 	private static int parseLoggingLevel(String property) {
-		if(property == null || property.isEmpty() || property.equalsIgnoreCase("error")) {
+		if(property == null || property.isEmpty() || property.equalsIgnoreCase(LOGGING_LEVEL_ERROR)) {
 			return Status.ERROR;
 		}
-		if(property.equalsIgnoreCase("warning")) {
+		if(property.equalsIgnoreCase(LOGGING_LEVEL_WARNING)) {
 			return Status.WARNING;
 		}
-		if(property.equalsIgnoreCase("info")) {
+		if(property.equalsIgnoreCase(LOGGING_LEVEL_INFO)) {
 			return Status.INFO;
 		}
 		return Status.ERROR;
@@ -56,7 +61,7 @@ public class ExtensionsPlugin extends Plugin {
 
 	public static void log(int severity, String message, Throwable throwable) {
 		if(severity >= instance.loggingLevel) {
-			instance.getLog().log(new Status(severity, PLUGIN_ID, message, throwable));			
+			instance.getLog().log(new Status(severity, ID, message, throwable));			
 		}
 	}
 

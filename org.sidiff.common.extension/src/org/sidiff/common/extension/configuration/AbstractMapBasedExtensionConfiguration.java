@@ -30,20 +30,12 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 
 	@Override
 	public void setOption(String key, Object value) {
-		ConfigurationOption<?> option = getOptionsMap().get(key);
-		if(option == null) {
-			throw new IllegalArgumentException("No option with key '" + key + "' exists in " + this);
-		}
-		option.setValueUnsafe(value);
+		getOptionOrThrow(key).setValueUnsafe(value);
 	}
 
 	@Override
 	public Object getOption(String key) {
-		ConfigurationOption<?> option = getOptionsMap().get(key);
-		if(option == null) {
-			throw new IllegalArgumentException("No option with key '" + key + "' exists in " + this);
-		}
-		return option.getValue();
+		return getOptionOrThrow(key).getValue();
 	}
 
 	@Override
@@ -75,5 +67,13 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 				.filter(option -> option.getKey().equals(keyValue.get(0)))
 				.findFirst().ifPresent(option -> option.importAssignment(keyValue.size() > 1 ? keyValue.get(1) : ""));
 		}
+	}
+
+	private ConfigurationOption<?> getOptionOrThrow(String key) {
+		ConfigurationOption<?> option = getOptionsMap().get(key);
+		if(option == null) {
+			throw new IllegalArgumentException("No option with key '" + key + "' exists in " + this);
+		}
+		return option;
 	}
 }

@@ -51,7 +51,8 @@ public class ExtensionSerialization {
 					"Only one colon sign in serialized extension configuration expected. Data: " + data);
 		}
 		T extension = manager.getExtension(splitData.get(0))
-				.orElseThrow(() -> new IllegalArgumentException("Could not find extension " + splitData.get(0) + " in manager " + manager));
+				.orElseThrow(() -> new IllegalArgumentException(
+						"Could not find extension " + splitData.get(0) + " in manager " + manager));
 		if(extension instanceof IConfigurableExtension && splitData.size() > 1) {
 			((IConfigurableExtension)extension).getConfiguration().importAssignments(splitData.get(1));
 		}

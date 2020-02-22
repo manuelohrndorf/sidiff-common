@@ -66,6 +66,7 @@ public abstract class AbstractExtension implements IExtension, IExecutableExtens
 		return suppliers
 			.map(supplier -> supplier.get())
 			.filter(Objects::nonNull)
+			.map(String::trim)
 			.filter(s -> !s.isEmpty())
 			.findFirst()
 			.orElseThrow(() -> new NoSuchElementException("No useable value found, suppliers should always return a default"));

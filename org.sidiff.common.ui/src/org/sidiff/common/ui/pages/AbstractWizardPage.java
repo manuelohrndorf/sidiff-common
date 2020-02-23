@@ -237,12 +237,6 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		validationMessage = null;
 		for (int i = widgets.size()-1; i >= 0 ; i--) {
 			IWidget widget = widgets.get(i);
-			// widgets that are disabled are not validated
-			if(widget instanceof IWidgetDependence) {
-				if(!((IWidgetDependence)widget).isEnabled()) {
-					continue;
-				}
-			}
 			if(widget instanceof IWidgetValidation) {
 				validateWidget((IWidgetValidation) widgets.get(i));
 			}

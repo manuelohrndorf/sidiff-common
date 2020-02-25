@@ -129,7 +129,7 @@ public class EMFStorage {
 				if(files.length >= 1) {
 					return toPlatformURI(files[0]).appendFragment(uri.fragment());
 				}
-			} catch (URISyntaxException e) {
+			} catch (URISyntaxException | IllegalArgumentException e) {
 				// fall through
 			}
 			

@@ -1,16 +1,14 @@
 package org.sidiff.common.emf.access;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.eclipse.emf.codegen.ecore.genmodel.GenModel;
+import org.eclipse.emf.codegen.ecore.genmodel.GenPackage;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
-import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.resource.ResourceSet;
-import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
 
 /**
  * 
@@ -18,27 +16,30 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
  *
  */
 public class EMFGenModelAccess {
-	
-	private static final Map<String, URI> NS_URI_MAP = EcorePlugin.getEPackageNsURIToGenModelLocationMap(false);
-	
-	public static GenModel getGenModelFromDocumentType(String documentType) {
-		
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource genModelResource = resourceSet.getResource(NS_URI_MAP.get(documentType), true);
-		if(genModelResource != null) {
-			GenModel genModel = (GenModel) genModelResource.getContents().iterator().next();
-			return genModel;
+
+	/**
+	 * Returns all resource file extensions for a given set of document types.
+	 * 
+	 * @param nsURI
+	 *            The namespace URI(s) representing the document type(s) of a
+	 *            resource
+	 * @return file extensions for the given document type
+	 */
+	public static Set<String> getFileExtensions(Set<String> nsURIs) {
+		Set<String> fileExtensions = new HashSet<>();
+		SiDiffResourceSet resourceSet = SiDiffResourceSet.create();
+		Map<String, URI> nsURIMap = EcorePlugin.getEPackageNsURIToGenModelLocationMap(false);
+		for (String nsURI : nsURIs) {
+			URI uriGenModel = nsURIMap.get(nsURI);
+			if (uriGenModel != null) {
+				GenModel genModel = resourceSet.loadEObject(uriGenModel, GenModel.class);
+				if (genModel != null) {
+					for (GenPackage genPackage : genModel.getGenPackages()) {
+						fileExtensions.addAll(genPackage.getFileExtensionList());
+					}
+				}
+			}
 		}
-		return null;
-	}
-	
-	public static Set<String> getFileExtensionFromDocumentType(String documentType) {
-		GenModel genModel = getGenModelFromDocumentType(documentType);
-		if(genModel != null) {
-			
-			return genModel.getGenPackages().stream().filter(genPackage -> genPackage.getNSURI().equals(documentType))
-					.flatMap(genPackage -> genPackage.getFileExtensionList().stream()).collect(Collectors.toSet());
-		}
-		return Collections.emptySet();
+		return fileExtensions;
 	}
 }

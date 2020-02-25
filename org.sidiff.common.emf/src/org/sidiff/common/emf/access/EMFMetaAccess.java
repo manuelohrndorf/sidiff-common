@@ -517,11 +517,11 @@ public class EMFMetaAccess {
 		
 		}
 	
-	//more than one common supertype (emf supports multi-inheritance) 	
-	if (supertypes.size() > 1) return new EcoreFactoryImpl().createEObject().eClass();
-		
-	//otherwise return first element
-	return supertypes.get(0);
+		//more than one common supertype (emf supports multi-inheritance) 	
+		if (supertypes.size() > 1) return new EcoreFactoryImpl().createEObject().eClass();
+			
+		//otherwise return first element
+		return supertypes.get(0);
 	}
 	
 	/**
@@ -534,22 +534,16 @@ public class EMFMetaAccess {
 	 *         comparison; <code>false</code> otherwise;
 	 */
 	public static boolean isUnconsideredStructualFeature(EStructuralFeature structualFeatureType) {
-		if ((structualFeatureType.isChangeable() == false)
-				|| (structualFeatureType.isDerived() == true)
-				|| (structualFeatureType.isTransient() == true)) {
-			return true;
-		} else {
-			return false;
-		}
+		return !structualFeatureType.isChangeable()
+				|| structualFeatureType.isDerived()
+				|| structualFeatureType.isTransient();
 	}
 	
 	/**
 	 * Is class A assignable to class B.
 	 * 
-	 * @param a
-	 *            From class A.
-	 * @param b
-	 *            To class B.
+	 * @param a From class A.
+	 * @param b To class B.
 	 * @return <code>true</code> if A is assignable to B; <code>false</code> otherwise.
 	 */
 	public static boolean isAssignableTo(EClass a, EClass b) {

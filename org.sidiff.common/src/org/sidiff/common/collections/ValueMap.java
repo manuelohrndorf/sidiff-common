@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -33,7 +34,7 @@ public class ValueMap<V, O> implements Serializable {
 
 	private static final long serialVersionUID = 9218742371689724674L;
 
-	private Map<V, Collection<O>> value2objects = null;
+	private Map<V, List<O>> value2objects = null;
 	private Map<O, V> objects2value = null;
 
 	/**
@@ -41,11 +42,10 @@ public class ValueMap<V, O> implements Serializable {
 	 *  ein Komparator wird nicht benoetigt und verwendet.
 	 */
 	public ValueMap() {
-		this.objects2value = new HashMap<O, V>();
-		this.value2objects = new HashMap<V, Collection<O>>();
+		this.objects2value = new HashMap<>();
+		this.value2objects = new HashMap<>();
 	}
 
-	
 	/**
 	 * Konstruktor mit der Moeglichkeit Comperatoren{@link Comparator} fuer Value und
 	 * Object zu uebergeben.
@@ -54,8 +54,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param objectComperator Comperator fuer Objects des Typs O
 	 */
 	public ValueMap(Comparator<V> valueComparator,Comparator<O> objectComperator) {
-		this.objects2value = new TreeMap<O, V>(objectComperator);
-		this.value2objects = new TreeMap<V, Collection<O>>(valueComparator);
+		this.objects2value = new TreeMap<>(objectComperator);
+		this.value2objects = new TreeMap<>(valueComparator);
 	}	
 
 	/**
@@ -65,9 +65,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param objectComperator Comperator fuer Objects des Typs O
 	 */
 	public ValueMap(Comparator<O> objectComperator) {
-		
-			this.objects2value = new TreeMap<O, V>(objectComperator);
-			this.value2objects = new TreeMap<V, Collection<O>>();
+		this.objects2value = new TreeMap<>(objectComperator);
+		this.value2objects = new TreeMap<>();
 	}
 	
 	/**
@@ -76,7 +75,6 @@ public class ValueMap<V, O> implements Serializable {
 	 * @return Menge aller aktuellen Werte
 	 */
 	public Set<V> getValues() {
-		
 		return value2objects.keySet();
 	}
 
@@ -87,7 +85,6 @@ public class ValueMap<V, O> implements Serializable {
 	 * @return Wert fuer das uebergebene Objekt!
 	 */
 	public V getValue(O object) {
-
 		return objects2value.get(object);
 	}
 
@@ -97,8 +94,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param value 
 	 * @return Objekte der Map mit Wert value
 	 */
-	public Collection<O> getObjects(V value) {
-		return Collections.unmodifiableCollection(
+	public List<O> getObjects(V value) {
+		return Collections.unmodifiableList(
 				value2objects.getOrDefault(value, Collections.emptyList()));
 	}
 
@@ -108,17 +105,15 @@ public class ValueMap<V, O> implements Serializable {
 
 	public boolean isUnique(V value) {
 		Collection<O> objects = value2objects.get(value);
-		return (objects != null && objects.size() == 1);
+		return objects != null && objects.size() == 1;
 	}
-	
+
 	public boolean containsValue(V value){
-		
-		return this.value2objects.containsKey(value);
+		return value2objects.containsKey(value);
 	}
-	
+
 	public boolean containsObject(O object){
-		
-		return this.objects2value.containsKey(object);
+		return objects2value.containsKey(object);
 	}
 
 	/**
@@ -128,10 +123,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param value Der Wert, auf den das Objekt abgebildet werden soll.
 	 */
 	public void put(O object, V value) {
-
-		value2objects.computeIfAbsent(value, (v) -> new ArrayList<>()).add(object);
-
-		if (objects2value.put(object, value)!=null) {
+		value2objects.computeIfAbsent(value, v -> new ArrayList<>()).add(object);
+		if (objects2value.put(object, value) != null) {
 			throw new IllegalArgumentException(object + " already has a value! (old="+objects2value.get(object)+", new="+value);
 		}
 	}
@@ -142,9 +135,8 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param value Zu entfernender Wert
 	 */
 	public void remove(V value) {
-		
 		Collection<O> objects = value2objects.remove(value);
-		if(objects!=null){
+		if(objects != null) {
 			for (O object : objects) {
 				objects2value.remove(object);
 			}
@@ -158,13 +150,11 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param value Zu entfernender Wert
 	 */
 	public void removeObject(O object) {
-		
-		V value = this.objects2value.remove(object);
-		
-		Collection<O> objects = this.value2objects.get(value);
+		V value = objects2value.remove(object);
+		Collection<O> objects = value2objects.get(value);
 		objects.remove(object);
 		if(objects.isEmpty()){
-			this.value2objects.remove(value);
+			value2objects.remove(value);
 		}
 	}
 
@@ -174,7 +164,6 @@ public class ValueMap<V, O> implements Serializable {
 	 * @param otherMap ValueMap deren Inhalt hinzugef�gt werden soll.
 	 */
 	public void insert(ValueMap<V, O> otherMap) {
-		
 		for (O otherNode : otherMap.objects2value.keySet()) {
 			put(otherNode, otherMap.objects2value.get(otherNode));
 		}

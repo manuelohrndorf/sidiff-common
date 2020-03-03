@@ -177,7 +177,7 @@ public class InputModels {
 				IContainer parent = parents.get(i);
 				if (parent != null) {
 					noParents = false;
-					labels.set(i, parent.getName() + File.pathSeparator + labels.get(i));
+					labels.set(i, parent.getName() + File.separator + labels.get(i));
 					parents.set(i, parent.getParent());
 				}
 			}

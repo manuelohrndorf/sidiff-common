@@ -384,7 +384,8 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 			featureTableViewer.refresh();			
 		}
 		if(choiceTableViewer != null) {
-			choiceTableViewer.refresh(); // update because filter depends on selection			
+			choiceTableViewer.setInput(getSelectableValues().toArray());
+			choiceTableViewer.refresh(); // update because filter depends on selection
 		}
 		if(featureTableViewer != null && choiceTableViewer != null) {
 			updateButtonStates();			

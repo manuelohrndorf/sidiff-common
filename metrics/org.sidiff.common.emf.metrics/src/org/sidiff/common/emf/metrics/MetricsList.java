@@ -106,7 +106,11 @@ public class MetricsList extends ArrayList<MetricHandle> {
 			return stream().filter(metricFilter)
 					.filter(handle -> handle.getContext() instanceof Resource
 							&& contextUri.equals(((Resource)handle.getContext()).getURI()))
-					.findFirst();
+					.findFirst() // Then match based on only the file name if nothing found
+						.or(() -> stream().filter(metricFilter)
+						.filter(handle -> handle.getContext() instanceof Resource
+								&& contextUri.lastSegment().equals(((Resource)handle.getContext()).getURI().lastSegment()))
+						.findFirst());
 		} else if(context instanceof ResourceSet) {
 			// Match Resource Set because there is only a single one
 			return stream().filter(metricFilter)

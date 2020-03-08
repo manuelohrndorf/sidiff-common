@@ -9,29 +9,20 @@ public class EMFResourceUtil {
 
 	public static EObjectLocation locate(Resource model, EObject eObject) {
 		// RESOURCE_INTERNAL..?
-		if (contains(model, eObject)) {
+		if (eObject.eResource() == model) {
 			return EObjectLocation.RESOURCE_INTERNAL;
 		}
 
 		// RESOURCE_SET_INTERNAL..?
 		for (Resource r : model.getResourceSet().getResources()) {
-			if (r == model) {
-				continue;
-			}
-			if (contains(r, eObject)) {
+			if (r == eObject.eResource()) { // r != model
 				return EObjectLocation.RESOURCE_SET_INTERNAL;
 			}
 		}
 
 		// Must be found in PACKAGE_REGISTRY
 		assert (EPackage.Registry.INSTANCE.containsValue(eObject.eClass().getEPackage())) : "" + eObject;
-		
-		return EObjectLocation.PACKAGE_REGISTRY;
-	}
 
-	private static boolean contains(Resource resource, EObject eObject) {
-		if(eObject.eResource() == null)
-			return false;
-		return eObject.eResource().equals(resource);
+		return EObjectLocation.PACKAGE_REGISTRY;
 	}
 }

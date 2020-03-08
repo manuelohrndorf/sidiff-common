@@ -1,5 +1,7 @@
 package org.sidiff.common.emf.access;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,34 +36,34 @@ public class ExternalReferenceContainer {
 	 */
 	private Set<Resource> referencedResourceSetModels;
 
-	public ExternalReferenceContainer(List<ExternalReference> registryReferences,
+	public ExternalReferenceContainer(
+			List<ExternalReference> registryReferences,
 			List<ExternalReference> resourceSetReferences) {
-		super();
 
-		this.registryReferences = registryReferences;
-		this.resourceSetReferences = resourceSetReferences;
+		this.registryReferences = new ArrayList<>(registryReferences);
+		this.resourceSetReferences = new ArrayList<>(resourceSetReferences);
 
-		this.referencedRegistryModels = new HashSet<Resource>();
+		this.referencedRegistryModels = new HashSet<>();
 		findResources(referencedRegistryModels, registryReferences);
 
-		this.referencedResourceSetModels = new HashSet<Resource>();
+		this.referencedResourceSetModels = new HashSet<>();
 		findResources(referencedResourceSetModels, resourceSetReferences);
 	}
 
 	public List<ExternalReference> getRegistryReferences() {
-		return registryReferences;
+		return Collections.unmodifiableList(registryReferences);
 	}
 
 	public List<ExternalReference> getResourceSetReferences() {
-		return resourceSetReferences;
+		return Collections.unmodifiableList(resourceSetReferences);
 	}
 
 	public Set<Resource> getReferencedRegistryModels() {
-		return referencedRegistryModels;
+		return Collections.unmodifiableSet(referencedRegistryModels);
 	}
 
 	public Set<Resource> getReferencedResourceSetModels() {
-		return referencedResourceSetModels;
+		return Collections.unmodifiableSet(referencedResourceSetModels);
 	}
 
 	/**
@@ -71,7 +73,7 @@ public class ExternalReferenceContainer {
 	 * @param importedModels
 	 * @param externalReferences
 	 */
-	private void findResources(Set<Resource> importedModels, List<ExternalReference> externalReferences) {
+	private static void findResources(Set<Resource> importedModels, List<ExternalReference> externalReferences) {
 		for (ExternalReference externalReference : externalReferences) {
 			Resource resource = externalReference.getExternalResource();
 			if (resource != null) {

@@ -18,10 +18,11 @@ public class EMFValidate {
 	private static int minimumSeverity = Diagnostic.WARNING;
 
 	public static void validateObject(EObject... eObjects) throws InvalidModelException {
-		String message = null;
 		LogUtil.log(LogEvent.NOTICE, "------------------------------------------------------------");
 		LogUtil.log(LogEvent.NOTICE, "-------------------------- Validate ------------------------");
 		LogUtil.log(LogEvent.NOTICE, "------------------------------------------------------------");
+
+		StringBuilder builder = new StringBuilder();
 		for (EObject eObject : eObjects) {
 			List<String> errors = new ArrayList<>();
 			List<String> warnings = new ArrayList<>();
@@ -31,15 +32,11 @@ public class EMFValidate {
 
 			LogUtil.log(LogEvent.NOTICE, "Validating: " + eObject);
 			Diagnostic diagnostic = Diagnostician.INSTANCE.validate(eObject);
-			if (diagnostic.getSeverity() == Diagnostic.ERROR && minimumSeverity <= Diagnostic.ERROR
-					|| diagnostic.getSeverity() == Diagnostic.WARNING && minimumSeverity <= Diagnostic.WARNING
-					|| diagnostic.getSeverity() == Diagnostic.INFO && minimumSeverity <= Diagnostic.INFO) {
-
-				if (message == null) {
-					message = name + ": ;";	
-				} else {
-					message += " ;" + name + ": ;";
+			if (diagnostic.getSeverity() >= minimumSeverity) {
+				if (builder.length() > 0) {
+					builder.append(" ;");
 				}
+				builder.append(name).append(": ;");
 
 				LogUtil.log(LogEvent.MESSAGE, diagnostic.getMessage());
 				for (Diagnostic childDiagnostic : diagnostic.getChildren()) {
@@ -59,21 +56,21 @@ public class EMFValidate {
 					}
 				}
 				if (!warnings.isEmpty()) {
-					message += "- - - - - - - - - - WARNINGS - - - - - - - - - -;"
-							+ warnings.stream().collect(Collectors.joining(";"));
+					builder.append("- - - - - - - - - - WARNINGS - - - - - - - - - -;")
+							.append(warnings.stream().collect(Collectors.joining(";")));
 				}
 				if (!errors.isEmpty()) {
-					message += "- - - - - - - - - - ERRORS - - - - - - - - - - - -;"
-							+ errors.stream().collect(Collectors.joining(";"));
+					builder.append("- - - - - - - - - - ERRORS - - - - - - - - - - - -;")
+						.append(errors.stream().collect(Collectors.joining(";")));
 				}
 				if (!infos.isEmpty()) {
-					message += "- - - - - - - - - - INFOS - - - - - - - - - - - -;"
-							+ infos.stream().collect(Collectors.joining(";"));
+					builder.append("- - - - - - - - - - INFOS - - - - - - - - - - - -;")
+						.append(infos.stream().collect(Collectors.joining(";")));
 				}
 			}
 		}
-		if (message != null) {
-			throw new InvalidModelException(message);
+		if (builder.length() > 0) {
+			throw new InvalidModelException(builder.toString());
 		}
 		LogUtil.log(LogEvent.NOTICE, "Validation successful [Min. Severity: " + minimumSeverity + "]");
 	}

@@ -2,6 +2,7 @@ package org.sidiff.common.collections;
 
 import java.util.AbstractQueue;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -17,7 +18,7 @@ import java.util.Set;
  * at the end of the queue. Note that iterating over the queue
  * also dequeues the elements, however the queue will remember
  * all previously enqueued elements and not accept them again.</p>
- * @author Robert Müller
+ * @author rmueller
  * @param <T> the type of the elements
  */
 public class UniqueQueue<T> extends AbstractQueue<T> {
@@ -102,6 +103,15 @@ public class UniqueQueue<T> extends AbstractQueue<T> {
 	@Override
 	public int size() {
 		return queue.size();
+	}
+
+	/**
+	 * Returns an unmodifiable set of all elements with have been
+	 * added to this queue an cannot be offered again.
+	 * @return unmodifiable set of already seen elements
+	 */
+	public Set<T> getSeenElements() {
+		return Collections.unmodifiableSet(set);
 	}
 
 	private class UniqueQueueIterator implements Iterator<T> {

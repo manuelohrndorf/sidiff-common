@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.common.util.BasicEList;
 import org.eclipse.emf.common.util.EList;
@@ -18,6 +19,7 @@ import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.emf.ecore.EcorePackage;
 import org.eclipse.emf.ecore.impl.EcoreFactoryImpl;
+import org.sidiff.common.collections.UniqueQueue;
 import org.sidiff.common.emf.EMFUtil;
 import org.sidiff.common.emf.access.path.EMFPath;
 import org.sidiff.common.emf.access.value.RemoteAttribute;
@@ -206,6 +208,19 @@ public class EMFMetaAccess {
 		for (EPackage sub : ePackage.getESubpackages())
 			result.addAll(getAllMetaClassesForPackage(sub));
 		return result;
+	}
+
+	public static Set<EClass> getAllEClasses(Collection<EPackage> ePackages) {
+		UniqueQueue<EPackage> queue = new UniqueQueue<>(ePackages);
+		for(EPackage ePackage : queue) {
+			queue.offerAll(ePackage.getESubpackages());
+		}
+		return queue.getSeenElements().stream()
+				.map(EPackage::getEClassifiers)
+				.flatMap(Collection::stream)
+				.filter(EClass.class::isInstance)
+				.map(EClass.class::cast)
+				.collect(Collectors.toSet());
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class TopologicalSorter<T> {
 	}
 
 	protected void visit(T vertex) {
-		if(visited.contains(vertex) || sortedSet.contains(vertex)) {
+		if(visited.contains(vertex) || sortedSet.contains(vertex)||!vertices.contains(vertex)) {
 			return;
 		}
 

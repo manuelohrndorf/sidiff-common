@@ -9,5 +9,17 @@ package org.sidiff.common.emf.access;
  */
 public enum Scope {
 
-	RESOURCE, RESOURCE_SET
+	RESOURCE {
+		@Override
+		public String toString() {
+			return "Resource";
+		}
+	},
+
+	RESOURCE_SET {
+		@Override
+		public String toString() {
+			return "Resource Set";
+		}
+	}
 }

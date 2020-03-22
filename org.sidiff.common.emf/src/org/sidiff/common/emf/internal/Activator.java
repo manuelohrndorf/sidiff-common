@@ -8,10 +8,8 @@ import org.sidiff.common.emf.adapters.ElementByIDAdapterFactory;
 import org.sidiff.common.emf.adapters.SiDiffAdapterFactory;
 import org.sidiff.common.emf.annotation.AnnotationsAdapterFactory;
 import org.sidiff.common.emf.stringresolver.internal.EObjectStringResolver;
-import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.stringresolver.StringResolver;
 import org.sidiff.common.stringresolver.StringUtil;
-import org.sidiff.common.xml.XMLResolver;
 
 public class Activator implements BundleActivator {
 
@@ -29,10 +27,6 @@ public class Activator implements BundleActivator {
 		StringUtil.addStringResolver(eObjectStringResolver);
 
 		ConverterUtil.registerConverter(new GenericEObjectConverter());
-
-		ResourceUtil.registerClassLoader(this.getClass().getClassLoader());
-		XMLResolver.getInstance().includeMapping(ResourceUtil.getInputStreamByResourceName("org.sidiff.common.emf.dtdmap.xml"));
-
 	}
 
 	@Override
@@ -41,7 +35,5 @@ public class Activator implements BundleActivator {
 		EMFAdapter.INSTANCE.removeAdapterFactory(elementByIDAdapterFactory);
 
 		StringUtil.removeStringResolver(eObjectStringResolver);
-
-		ResourceUtil.unregisterClassLoader(this.getClass().getClassLoader());
 	}
 }

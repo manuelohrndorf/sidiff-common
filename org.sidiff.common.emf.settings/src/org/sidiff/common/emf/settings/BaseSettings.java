@@ -1,6 +1,8 @@
 package org.sidiff.common.emf.settings;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
@@ -23,9 +25,16 @@ public class BaseSettings extends AbstractSettings {
 	 */
 	private boolean validate;
 
+	/**
+	 * Default constructor to create mostly empty settings.
+	 * Call initDefaults last, after calling the necessary setters.
+	 */
 	public BaseSettings() {
 	}
-	
+
+	/**
+	 * @deprecated Use the empty constructor and initDefaults instead.
+	 */
 	public BaseSettings(Scope scope, boolean validate) {
 		this.scope = scope;
 		this.validate = validate;
@@ -34,7 +43,7 @@ public class BaseSettings extends AbstractSettings {
 	@Override
 	public void initDefaults(Set<String> documentTypes) {
 		if(scope == null) {
-			scope = getDefaultScope(documentTypes);			
+			setScope(getDefaultScope(documentTypes));
 		}
 	}
 
@@ -51,7 +60,27 @@ public class BaseSettings extends AbstractSettings {
 
 	@Override
 	public String toString() {
-		return "BaseSettings[" + "Scope: " + getScope() + ", " + "Validate input models: " + isValidate() + "]";
+		return "BaseSettings["
+				+ "Scope: " + getScope() + ", "
+				+ "Validate input models: " + isValidate() + "]";
+	}
+
+	protected String toString(Object object) {
+		if(object == null) {
+			return "<unset>";
+		}
+		if(object instanceof Collection<?>) {
+			Collection<?> collection = (Collection<?>)object;
+			if(collection.isEmpty()) {
+				return "<none>";
+			}
+			return collection.stream().map(this::toString).collect(Collectors.joining(", ", "[", "]"));
+		}
+		return toStringImpl(object);
+	}
+
+	protected String toStringImpl(Object object) {
+		return object.toString();
 	}
 
 	// ---------- Getter and Setter Methods----------

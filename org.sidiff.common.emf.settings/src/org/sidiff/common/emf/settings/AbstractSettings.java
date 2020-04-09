@@ -1,11 +1,10 @@
 package org.sidiff.common.emf.settings;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
@@ -23,7 +22,7 @@ public abstract class AbstractSettings implements ISettings {
 	/**
 	 * All listeners of this Setting-Object.
 	 */
-	private final List<ISettingsChangedListener> listeners = new ArrayList<>();
+	private final ListenerList<ISettingsChangedListener> listeners = new ListenerList<>();
 
 	/**
 	 * Cached status describing the validity of this Settings-Object.
@@ -32,14 +31,12 @@ public abstract class AbstractSettings implements ISettings {
 
 	@Override
 	public void addSettingsChangedListener(ISettingsChangedListener listener) {
-		if (!this.listeners.contains(listener)) {
-			this.listeners.add(listener);
-		}
+		listeners.add(listener);
 	}
 
 	@Override
 	public void removeSettingsChangedListener(ISettingsChangedListener listener) {
-		this.listeners.remove(listener);
+		listeners.remove(listener);
 	}
 
 	/**

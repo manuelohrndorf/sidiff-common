@@ -351,7 +351,7 @@ public class ConfigurationOption<T> {
 	 * @return builder for this type
 	 */
 	public static <T> Builder<T> builder(Class<T> type) {
-		return new Builder<T>(type);
+		return new Builder<>(type);
 	}
 
 	/**
@@ -361,7 +361,7 @@ public class ConfigurationOption<T> {
 	 * @return builder for this type which presets
 	 */
 	public static <T extends IExtension> Builder<T> builder(Class<T> type, ExtensionManager<? extends T> extensionManager) {
-		return new Builder<T>(type)
+		return new Builder<>(type)
 			.key(typeToKey(type))
 			.name(typeToName(type))
 			.valueLabelProvider(IExtension::getName)
@@ -378,7 +378,7 @@ public class ConfigurationOption<T> {
 	 */
 	public static <T extends ITypedExtension> Builder<T> builder(Class<T> type,
 			TypedExtensionManager<? extends T> extensionManager, Collection<String> documentTypes, boolean includeGeneric) {
-		return new Builder<T>(type)
+		return new Builder<>(type)
 			.key(typeToKey(type))
 			.name(typeToName(type))
 			.valueLabelProvider(IExtension::getName)
@@ -525,7 +525,7 @@ public class ConfigurationOption<T> {
 			if(valueLabelProvider == null) {
 				valueLabelProvider = DEFAULT_LABEL_PROVIDER;
 			}
-			return new ConfigurationOption<T>(key, name, type, multi, minValue, maxValue,
+			return new ConfigurationOption<>(key, name, type, multi, minValue, maxValue,
 					defaultValues, selectableValues, valueLabelProvider);
 		}
 	}

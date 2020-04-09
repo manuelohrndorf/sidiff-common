@@ -15,7 +15,7 @@ import org.sidiff.common.converter.internal.StringConverter;
 
 public class ConverterUtil {
 
-	private static Map<Class<?>, ObjectConverter<?>> converters = new HashMap<Class<?>, ObjectConverter<?>>();
+	private static Map<Class<?>, ObjectConverter<?>> converters = new HashMap<>();
 
 	static {
 		registerConverter(new BooleanConverter());

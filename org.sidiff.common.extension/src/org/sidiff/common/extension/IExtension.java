@@ -92,7 +92,7 @@ public interface IExtension {
 		 */
 		static <T extends IExtension> Description<T> of(Class<? extends T> extensionClass,
 				String extensionPointId, String elementName, String classAttribute) {
-			return new ExtensionDescription<T>(extensionClass, extensionPointId, elementName, classAttribute);
+			return new ExtensionDescription<>(extensionClass, extensionPointId, elementName, classAttribute);
 		}
 
 		/**

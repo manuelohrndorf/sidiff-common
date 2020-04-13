@@ -12,7 +12,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.sidiff.common.emf.input.InputModels;
-import org.sidiff.common.emf.input.ui.internal.Activator;
+import org.sidiff.common.emf.input.ui.internal.EmfInputUiPlugin;
 import org.sidiff.common.ui.widgets.AbstractContainerWidget;
 
 public class InputModelsWidget extends AbstractContainerWidget {
@@ -50,8 +50,8 @@ public class InputModelsWidget extends AbstractContainerWidget {
 		GridDataFactory.fillDefaults().span(2, 1).grab(true, true).applyTo(radioA);
 
 		// Arrow:
-		final Image arrowUp = Activator.getImage(Activator.IMAGE_ARROW_UP);
-		final Image arrowDown = Activator.getImage(Activator.IMAGE_ARROW_DOWN);
+		final Image arrowUp = EmfInputUiPlugin.getImage(EmfInputUiPlugin.IMAGE_ARROW_UP);
+		final Image arrowDown = EmfInputUiPlugin.getImage(EmfInputUiPlugin.IMAGE_ARROW_DOWN);
 
 		final Label arrowImage = new Label(gridContainer, SWT.NONE);
 		arrowImage.setImage(inverseDirection ? arrowUp : arrowDown);

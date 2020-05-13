@@ -91,7 +91,10 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 
 		// Lookup cache to improves performance when saving multiple documents with the same type
 		options.put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE, new ArrayList<Object>());
-
+		
+		// Only save resource if changed
+		options.put(XMLResource.OPTION_SAVE_ONLY_IF_CHANGED, XMLResource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
+		
 		// The ExtendedMetaData must be set when using the Cached Lookup Table and/or Configuration Cache,
 		// else this cache might store Lookup tables which do not have their respective ExtendedMetaData set,
 		// resulting in a NullPointerException in XMLSaveImpl$Lookup.getDocumentRoot(XMLSaveImpl.java:2801)

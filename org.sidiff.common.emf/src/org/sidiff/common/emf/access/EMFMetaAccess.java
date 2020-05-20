@@ -69,13 +69,11 @@ public class EMFMetaAccess {
 			throw new UnknownDocumentTypeException(packageNS);
 		if (type.indexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR) == -1)
 			return ePackage.getEClassifier(type);
-		else {
-			String subpackage = type.substring(0, type.lastIndexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR));
-			ePackage = getSubpackageByName(packageNS, subpackage);
-			if (ePackage == null)
-				return null;
-			return ePackage.getEClassifier(type.substring(type.lastIndexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR) + 1));
-		}
+		String subpackage = type.substring(0, type.lastIndexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR));
+		ePackage = getSubpackageByName(packageNS, subpackage);
+		if (ePackage == null)
+			return null;
+		return ePackage.getEClassifier(type.substring(type.lastIndexOf(EMFMetaAccess.PACKAGE_DELIMITER_CHAR) + 1));
 	}
 	
 	/**
@@ -553,7 +551,7 @@ public class EMFMetaAccess {
 				|| structualFeatureType.isDerived()
 				|| structualFeatureType.isTransient();
 	}
-	
+
 	/**
 	 * Is class A assignable to class B.
 	 * 
@@ -562,10 +560,9 @@ public class EMFMetaAccess {
 	 * @return <code>true</code> if A is assignable to B; <code>false</code> otherwise.
 	 */
 	public static boolean isAssignableTo(EClass a, EClass b) {
-		return a.getEAllSuperTypes().contains(b) || a.equals(b) || b.equals(EcorePackage.eINSTANCE.getEObject());
+		return a == b || a.getEAllSuperTypes().contains(b) || b == EcorePackage.eINSTANCE.getEObject();
 	}
-	
-	
+
 	/**
 	 * Is class A assignable to class B or vice versa.
 	 * 

@@ -1,23 +1,21 @@
 package org.sidiff.common.io;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 
-import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.*;
+import org.sidiff.common.CommonPlugin;
 
 /**
  * Contains utility functions to work with input and
  * output streams. {@link Files} also contains further
  * utility functions.
- * @author Robert Müller
+ * @author rmueller
  */
 public class IOUtil {
 
@@ -55,6 +53,41 @@ public class IOUtil {
         while((length = in.read(buffer)) > 0) {
         	out.write(buffer, 0, length);
         }
+	}
+
+	/**
+	 * Creates the given folder and its parents in the workspace.
+	 * @param folder the folder to create
+	 * @param monitor progress monitor
+	 * @throws CoreException if the folder could not be created
+	 */
+	public static void createFolders(IFolder folder, IProgressMonitor monitor) throws CoreException {
+		if(!folder.exists()) {
+			SubMonitor progress = SubMonitor.convert(monitor, 2);
+			if(folder.getParent() instanceof IFolder) {
+				createFolders((IFolder)folder.getParent(), progress.split(1));				
+			}
+			folder.create(true, true, progress.split(1));
+		}
+	}
+
+	/**
+	 * Writes a string to a file in the workspace.
+	 * @param string the string to write
+	 * @param file the platform file
+	 * @throws CoreException if writing to the file failed for any reason
+	 */
+	public static void writeStringToFile(String string, IFile file) throws CoreException {
+		try(InputStream byteStream = new ByteArrayInputStream(string.getBytes())) {
+			if(file.exists()) {
+				file.setContents(byteStream, true, true, null);
+			} else {
+				file.create(byteStream, true, null);
+			}
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR, CommonPlugin.ID,
+					"Failed to write text to file", e));
+		}
 	}
 
 	/**

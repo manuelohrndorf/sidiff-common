@@ -72,6 +72,25 @@ public class IOUtil {
 	}
 
 	/**
+	 * Deletes a folder with all its contents.
+	 * @param folder the folder
+	 */
+	public static void deleteFolder(File folder) {
+		Assert.isLegal(folder.isDirectory(), "Not a folder: " + folder);
+		File[] files = folder.listFiles();
+		if (files != null) { // some JVMs return null for empty dirs
+			for (File file : files) {
+				if (file.isDirectory()) {
+					deleteFolder(file);
+				} else {
+					file.delete();
+				}
+			}
+		}
+		folder.delete();
+	}
+
+	/**
 	 * Writes a string to a file in the workspace.
 	 * @param string the string to write
 	 * @param file the platform file

@@ -78,7 +78,17 @@ public class IOUtil {
 	 * @throws CoreException if writing to the file failed for any reason
 	 */
 	public static void writeStringToFile(String string, IFile file) throws CoreException {
-		try(InputStream byteStream = new ByteArrayInputStream(string.getBytes())) {
+		writeBytesToFile(string.getBytes(), file);
+	}
+
+	/**
+	 * Writes a byte array to a file in the workspace.
+	 * @param byteArray the bytes to write
+	 * @param file the platform file
+	 * @throws CoreException if writing to the file failed for any reason
+	 */
+	public static void writeBytesToFile(byte byteArray[], IFile file) throws CoreException {
+		try(InputStream byteStream = new ByteArrayInputStream(byteArray)) {
 			if(file.exists()) {
 				file.setContents(byteStream, true, true, null);
 			} else {

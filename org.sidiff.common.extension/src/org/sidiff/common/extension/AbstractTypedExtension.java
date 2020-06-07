@@ -1,9 +1,9 @@
 package org.sidiff.common.extension;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -36,12 +36,12 @@ public abstract class AbstractTypedExtension extends AbstractExtension implement
 	public void setInitializationData(IConfigurationElement config,
 			String propertyName, Object data) throws CoreException {
 		super.setInitializationData(config, propertyName, data);
-		documentTypes = doGetDocumentTypes(config);
+		documentTypes = doGetChildElements(config, ELEMENT_DOCUMENT_TYPE);
 		generic = doGetGeneric(config);
 	}
 
-	protected Set<String> doGetDocumentTypes(IConfigurationElement config) {
-		return Arrays.stream(config.getChildren(ELEMENT_DOCUMENT_TYPE))
+	protected Set<String> doGetChildElements(IConfigurationElement config, String elementName) {
+		return Stream.of(config.getChildren(elementName))
 			.map(IConfigurationElement::getValue)
 			.map(String::trim)
 			.collect(Collectors.toSet());

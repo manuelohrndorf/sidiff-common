@@ -3,12 +3,12 @@ Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common EMF - Input
 Bundle-SymbolicName: org.sidiff.common.emf.input;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.core.resources,
- org.sidiff.common.emf,
- org.sidiff.common.emf.doctype
+Require-Bundle: org.eclipse.ui;visibility:=reexport,
+ org.sidiff.common.emf;visibility:=reexport,
+ org.sidiff.common.emf.doctype,
+ org.sidiff.common.extension;visibility:=reexport
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.emf.input
-Export-Package: org.sidiff.common.emf.input
+Export-Package: org.sidiff.common.emf.input,
+ org.sidiff.common.emf.input.adapter
 Bundle-Vendor: Software Engineering Group, University of Siegen

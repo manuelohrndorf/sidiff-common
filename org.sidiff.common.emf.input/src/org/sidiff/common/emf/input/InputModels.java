@@ -1,32 +1,32 @@
 package org.sidiff.common.emf.input;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.sidiff.common.emf.EMFValidate;
 import org.sidiff.common.emf.doctype.util.EMFDocumentTypeUtil;
+import org.sidiff.common.emf.exceptions.InvalidModelException;
+import org.sidiff.common.emf.input.adapter.IModelAdapter;
 import org.sidiff.common.emf.modelstorage.EMFStorage;
 import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
 
 /**
- * A list of input models represented by {@link IFile} and {@link Resource}.
+ * A list of input models represented by corresponding {@link IFile} and {@link Resource}.
+ * Use the {@link #builder()} to create instances of this class. Use the specific builder
+ * of subclasses to create instances of subclasses when available, or use {@link #builder(Factory)}.
  */
 public class InputModels {
 
@@ -47,7 +47,6 @@ public class InputModels {
 	protected InputModels(SiDiffResourceSet resourceSet, List<Resource> resources) {
 		this.resources = resources;
 		this.resourceSet = resourceSet;
-		
 		this.files = new ArrayList<>();
 		for(Resource resource : resources) {
 			Assert.isLegal(resource.getResourceSet() == resourceSet, "Resource must be contained in given resource set");
@@ -66,7 +65,7 @@ public class InputModels {
 	public boolean haveSameDocumentType() {
 		Set<Set<String>> documentTypes = new HashSet<>();
 		for (Resource resource : resources) {
-			documentTypes.add(new HashSet<String>(EMFDocumentTypeUtil.resolve(resource)));
+			documentTypes.add(new HashSet<>(EMFDocumentTypeUtil.resolve(resource)));
 		}
 		return documentTypes.size() == 1;
 	}
@@ -101,7 +100,7 @@ public class InputModels {
 	public int getNumModels() {
 		return resources.size();
 	}
-	
+
 	/**
 	 * @return unmodifiable list of the resources
 	 */
@@ -154,7 +153,7 @@ public class InputModels {
 		Assert.isLegal(resources.size() == 2, "There must be exactly two input models to swap them.");
 		swap(0, 1);
 	}
-	
+
 	public void swap(int index1, int index2) {
 		Collections.swap(resources, index1, index2);
 		Collections.swap(files, index1, index2);
@@ -163,14 +162,14 @@ public class InputModels {
 
 	protected void initLabels() {
 		labels = new ArrayList<>();
-		List<IContainer> parents = new ArrayList<IContainer>(files.size());
+		List<IContainer> parents = new ArrayList<>(files.size());
 		for (IFile file : files) {
 			labels.add(file.getName());
 			parents.add(file.getParent());
 		}
 
 		// by creating a set, we can check for duplicate labels
-		while (new HashSet<String>(labels).size() < labels.size()) {
+		while (new HashSet<>(labels).size() < labels.size()) {
 			// update each label by prepending the parent's name
 			boolean noParents = true;
 			for (int i = 0; i < parents.size(); i++) {
@@ -216,15 +215,18 @@ public class InputModels {
 	}
 
 	public static <T extends InputModels> Builder<T> builder(Factory<T> factory) {
-		return new Builder<T>(factory);
+		return new Builder<>(factory);
 	}
 
 	public static class Builder<T extends InputModels> {
 
 		private final Factory<T> factory;
 		private SiDiffResourceSet resourceSet;
+		private IModelAdapter modelAdapter;
 		private List<Object> models = new ArrayList<>(); // may be URI, Resource, IFile or File
-		private int assertedNumModels = -1;
+		private int minValidateSeverity = Diagnostic.CANCEL;
+		private int assertedMinNumModels = 0;
+		private int assertedMaxNumModels = Integer.MAX_VALUE;
 		private boolean assertSameDocumentType = false;
 
 		protected Builder(Factory<T> factory) {
@@ -235,26 +237,64 @@ public class InputModels {
 			this.resourceSet = Objects.requireNonNull(resourceSet);
 			return this;
 		}
-		
+
 		protected SiDiffResourceSet getResourceSet() {
 			return resourceSet;
 		}
 
-		/**
-		 * When building, asserts that exactly the given number of input models have been added.
-		 * Any negative number will be ignored.
-		 * @param assertedNumModels the asserted number of models, negative if no assertion
-		 * @return this builder
-		 */
-		public Builder<T> assertNumModels(int assertedNumModels) {
-			this.assertedNumModels = assertedNumModels;
+		public Builder<T> setModelAdapter(IModelAdapter modelAdapter) {
+			this.modelAdapter = Objects.requireNonNull(modelAdapter);
 			return this;
 		}
-		
-		protected int getAssertedNumModels() {
-			return assertedNumModels;
+
+		protected IModelAdapter getModelAdapter() {
+			return modelAdapter;
 		}
-		
+
+		/**
+		 * When loading models, validate them using {@link EMFValidate} with the given minimum severity.
+		 * The value {@link Diagnostic#CANCEL} represents disabled validation.
+		 * @param minValidateSeverity minimum severity
+		 * @return this builder
+		 */
+		public Builder<T> validate(int minValidateSeverity) {
+			this.minValidateSeverity = minValidateSeverity;
+			return this;
+		}
+
+		protected int getMinValidateSeverity() {
+			return minValidateSeverity;
+		}
+
+		/**
+		 * When building, asserts that exactly the given number of input models have been added.
+		 * @param exactNum the asserted number of models
+		 * @return this builder
+		 */
+		public Builder<T> assertNumModels(int exactNum) {
+			return assertNumModels(exactNum, exactNum);
+		}
+
+		/**
+		 * When building, asserts that exactly the given number of input models have been added.
+		 * @param min minimum number of models (inclusive)
+		 * @param max maximum number of models (inclusive)
+		 * @return this builder
+		 */
+		public Builder<T> assertNumModels(int min, int max) {
+			this.assertedMinNumModels = min;
+			this.assertedMaxNumModels = max;
+			return this;
+		}
+
+		protected int getAssertedMinNumModels() {
+			return assertedMinNumModels;
+		}
+
+		protected int getAssertedMaxNumModels() {
+			return assertedMaxNumModels;
+		}
+
 		/**
 		 * Sets that when building, it is asserted that alle input models have the same document type.
 		 * @param assertSameDocumentType <code>true</code> to assert, <code>false</code> otherwise
@@ -289,6 +329,26 @@ public class InputModels {
 			return this;
 		}
 
+		public Builder<T> addModels(IContainer container, Predicate<IResource> resourceSelector) throws InputModelsException {
+			if(!container.exists()) {
+				throw new InputModelsException("The container does not exist: " + container);
+			}
+			try {
+				for(IResource member : container.members()) {
+					if(resourceSelector.test(member)) {
+						if(member instanceof IFolder) {
+							addModels((IFolder)member, resourceSelector);
+						} else if(member instanceof IFile) {
+							addModel((IFile)member);
+						}
+					}
+				}
+				return this;
+			} catch (CoreException e) {
+				throw new InputModelsException("Failed to list members of container: " + container, e);
+			}
+		}
+
 		public Builder<T> addModels(ISelection selection) {
 			if (selection instanceof IStructuredSelection) {
 				Stream.of(((IStructuredSelection)selection).toArray())
@@ -298,11 +358,15 @@ public class InputModels {
 			return this;
 		}
 
-		public T build() {
+		public T build() throws InputModelsException {
 			initDefaults();
 			assertValidInput();
 
-			List<Resource> resources = models.stream().map(this::deriveResource).collect(Collectors.toList());
+			List<Resource> resources = models.stream()
+				.map(this::deriveResource)
+				.filter(Objects::nonNull)
+				.peek(this::validateResource)
+				.collect(Collectors.toList());
 			T inputModels = factory.createInputModels(resourceSet, resources);
 
 			assertValidResult(inputModels);
@@ -315,21 +379,27 @@ public class InputModels {
 			}
 		}
 
-		protected void assertValidInput() {
-			if(assertedNumModels >= 0 && models.size() != assertedNumModels) {
-				throw new IllegalArgumentException("Number of inputs models must be " + assertedNumModels + ", but is " + models.size());
+		protected void assertValidInput() throws InputModelsException {
+			int numModels = models.size();
+			if(numModels < assertedMinNumModels) {
+				throw new InputModelsException("At least " + assertedMinNumModels
+						+ " input models are required, but " + numModels + " given.");
+			}
+			if(numModels > assertedMaxNumModels) {
+				throw new InputModelsException("At most " + assertedMaxNumModels
+						+ " input models are supported, but " + numModels + " given.");
 			}
 		}
-		
-		protected void assertValidResult(InputModels inputModels) {
+
+		protected void assertValidResult(InputModels inputModels) throws InputModelsException {
 			if(assertSameDocumentType) {
 				if(!inputModels.haveSameDocumentType()) {
-					throw new IllegalArgumentException("The input models must have the same document types.");
+					throw new InputModelsException("The input models must have the same document types.");
 				}
 			}
 		}
 
-		protected Resource deriveResource(Object model) {
+		protected Resource deriveResource(Object model) throws InputModelsException {
 			if (model instanceof Resource) {
 				Resource resource = (Resource)model;
 				if(!resourceSet.getResources().contains(model)) {
@@ -337,13 +407,37 @@ public class InputModels {
 				}
 				return resource;
 			} else if (model instanceof URI) {
-				return resourceSet.getResource((URI)model, true);
+				try {
+					URI uri = (URI)model;
+					if(modelAdapter != null) {
+						if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
+							return modelAdapter.toModel(EMFStorage.toIFile(uri), resourceSet, uri.trimSegments(1));							
+						}
+						if(modelAdapter.getModelFileExtensions().contains(uri.fileExtension())) {
+							return null; // ignore derived model files here
+						}
+					}
+					return resourceSet.getResource(uri, true);
+				} catch(Exception e) {
+					throw new InputModelsException("Could not load model from: " + model, e);
+				}
 			} else if (model instanceof IFile) {
 				return deriveResource(EMFStorage.toPlatformURI((IFile)model));
 			} else if (model instanceof File) {
 				return deriveResource(EMFStorage.toFileURI((File)model));
 			}
-			throw new IllegalArgumentException("Model is neither URI nor Resource nor IFile");
+			throw new InputModelsException("Model is neither URI nor Resource nor IFile");
+		}
+
+		protected void validateResource(Resource model) throws InputModelsException {
+			if(minValidateSeverity >= Diagnostic.WARNING && minValidateSeverity <= Diagnostic.ERROR) {
+				EMFValidate.setMinimumSeverity(minValidateSeverity);
+				try {
+					EMFValidate.validateModel(model);
+				} catch (InvalidModelException e) {
+					throw new InputModelsException("The model is invalid: " + model, e);
+				}
+			}
 		}
 	}
 	

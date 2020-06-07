@@ -8,10 +8,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.sidiff.common.ui,
  org.sidiff.common.emf.input;visibility:=reexport,
- org.eclipse.core.resources
+ org.eclipse.core.resources,
+ org.sidiff.common.extension.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.emf.input.ui
 Bundle-ActivationPolicy: lazy
-Export-Package: org.sidiff.common.emf.input.ui,
+Export-Package: org.sidiff.common.emf.input.adapter.ui,
+ org.sidiff.common.emf.input.ui,
  org.sidiff.common.emf.input.ui.internal;x-internal:=true
 Bundle-Vendor: Software Engineering Group, University of Siegen

@@ -223,6 +223,7 @@ public class InputModels {
 		private final Factory<T> factory;
 		private SiDiffResourceSet resourceSet;
 		private IModelAdapter modelAdapter;
+		private boolean saveAdaptedModels = false;
 		private List<Object> models = new ArrayList<>(); // may be URI, Resource, IFile or File
 		private int minValidateSeverity = Diagnostic.CANCEL;
 		private int assertedMinNumModels = 0;
@@ -242,8 +243,9 @@ public class InputModels {
 			return resourceSet;
 		}
 
-		public Builder<T> setModelAdapter(IModelAdapter modelAdapter) {
+		public Builder<T> setModelAdapter(IModelAdapter modelAdapter, boolean saveAdaptedModels) {
 			this.modelAdapter = Objects.requireNonNull(modelAdapter);
+			this.saveAdaptedModels = saveAdaptedModels;
 			return this;
 		}
 
@@ -411,7 +413,11 @@ public class InputModels {
 					URI uri = (URI)model;
 					if(modelAdapter != null) {
 						if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
-							return modelAdapter.toModel(EMFStorage.toIFile(uri), resourceSet, uri.trimSegments(1));							
+							Resource adaptedModel = modelAdapter.toModel(EMFStorage.toIFile(uri), resourceSet, uri.trimSegments(1));
+							if(saveAdaptedModels) {
+								resourceSet.saveResource(adaptedModel);								
+							}
+							return adaptedModel;
 						}
 						if(modelAdapter.getModelFileExtensions().contains(uri.fileExtension())) {
 							return null; // ignore derived model files here

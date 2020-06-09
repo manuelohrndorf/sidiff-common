@@ -465,6 +465,17 @@ public class ConfigurationOption<T> {
 			return defaultValues(defaultValue == null ? Collections.emptyList() : Collections.singletonList(defaultValue));
 		}
 
+		/**
+		 * Uses the first selectable value as a default value.
+		 * @return this builder
+		 */
+		public Builder<T> defaultValueAny() {
+			Assert.isLegal(selectableValues != null, "Must call 'selectableValues' before 'defaultValuesAny'");
+			return defaultValues(selectableValues.isEmpty()
+				? Collections.emptyList()
+				: Collections.singletonList(selectableValues.iterator().next()));
+		}
+
 		public Builder<T> defaultValues(List<T> defaultValues) {
 			if(defaultValues.size() > 1 && !multi) {
 				throw new IllegalArgumentException("Must be a multi option if using multiple default values");
@@ -474,6 +485,11 @@ public class ConfigurationOption<T> {
 			return this;
 		}
 
+		/**
+		 * For multi-options, this sets the default values to all selectable values.
+		 * Not applicable to single-options.
+		 * @return this builder
+		 */
 		public Builder<T> defaultValuesAll() {
 			Assert.isLegal(selectableValues != null, "Must call 'selectableValues' before 'defaultValuesAll'");
 			return defaultValues(new ArrayList<>(selectableValues));

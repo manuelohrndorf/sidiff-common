@@ -9,12 +9,13 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.sidiff.common.extension.ITypedExtension;
+import org.sidiff.common.extension.configuration.IConfigurableExtension;
 
 /**
  * A model adapter converts between a proprietary file format and an EMF model based one.
  * @author rmueller
  */
-public interface IModelAdapter extends ITypedExtension {
+public interface IModelAdapter extends ITypedExtension, IConfigurableExtension {
 
 	Description<IModelAdapter> DESCRIPTION = Description.of(IModelAdapter.class,
 			"org.sidiff.common.emf.input.modelAdapters", "modelAdapter", "class");

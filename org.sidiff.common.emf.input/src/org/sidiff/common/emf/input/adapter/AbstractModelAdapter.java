@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.sidiff.common.extension.AbstractTypedExtension;
+import org.sidiff.common.extension.configuration.IExtensionConfiguration;
 
 public abstract class AbstractModelAdapter extends AbstractTypedExtension implements IModelAdapter {
 
@@ -62,5 +63,10 @@ public abstract class AbstractModelAdapter extends AbstractTypedExtension implem
 		Resource outputModel = outputResourceSet.createResource(uri);
 		toModel(inputFile, outputModel);
 		return outputModel;
+	}
+
+	@Override
+	public IExtensionConfiguration getConfiguration() {
+		return IExtensionConfiguration.NULL;
 	}
 }

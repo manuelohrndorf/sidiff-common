@@ -244,7 +244,7 @@ public class InputModels {
 		}
 
 		public Builder<T> setModelAdapter(IModelAdapter modelAdapter, boolean saveAdaptedModels) {
-			this.modelAdapter = Objects.requireNonNull(modelAdapter);
+			this.modelAdapter = modelAdapter; // null allowed for convenience
 			this.saveAdaptedModels = saveAdaptedModels;
 			return this;
 		}

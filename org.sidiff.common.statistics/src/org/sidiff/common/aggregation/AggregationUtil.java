@@ -17,7 +17,7 @@ import org.sidiff.common.statistics.StatisticsUtil.StatisticType;
  * The class <code>AggregationUtil</code> provides utility methods for aggregating statistics
  * contained in {@link StatisticsUtil} and runs contained in {@link ExperimentalUtil}
  * by using an {@link Aggregation}.
- * @author Robert Müller
+ * @author rmueller
  * @see Aggregation
  */
 public final class AggregationUtil {
@@ -143,31 +143,28 @@ public final class AggregationUtil {
 
 		// aggregate values for every key and store results in another StatisticUtil
 		StatisticsUtil aggregate = StatisticsUtil.createStatisticsUtil();
-		for(StatisticType type : StatisticType.values()) {
-			aggregateEntries(collections.get(type), aggregate.getStatistic(type), aggregation);
-		}
+		aggregateEntries(collections, aggregate, aggregation);
 		return aggregate;
 	}
 
 	//
 	// internal methods
 
-	static void collectValues(Map<String, Object> entryStatistics,
+	static void collectValues(Map<String, ?> entryStatistics,
 			Map<String, Collection<Number>> collection, int size) {
 
-		for(Map.Entry<String, Object> entry : entryStatistics.entrySet()) {
+		for(Map.Entry<String, ?> entry : entryStatistics.entrySet()) {
 			if(!collection.containsKey(entry.getKey())) {
 				collection.put(entry.getKey(), new ArrayList<>(size));
 			}
-			//If value is already a number 
+			//If value is already a number
 			if(entry.getValue() instanceof Number) {
 				collection.get(entry.getKey()).add((Number)entry.getValue());
 			}
 			//Otherwise we try to convert the value
 			else if(entry.getValue() instanceof String) {
 				try {
-					Number numberValue = Double.parseDouble((String) entry.getValue());
-					collection.get(entry.getKey()).add(numberValue);
+					collection.get(entry.getKey()).add(Double.parseDouble((String) entry.getValue()));
 				} catch (NumberFormatException e) {
 					//Nothing to do if not convertible
 				}
@@ -175,18 +172,22 @@ public final class AggregationUtil {
 		}
 	}
 
-	static void aggregateEntries(Map<String, Collection<Number>> collection,
-			Map<String, Object> aggregate, Aggregation aggregation) {
+	static void aggregateEntries(
+			Map<StatisticType, Map<String, Collection<Number>>> collections,
+			StatisticsUtil aggregate,
+			Aggregation aggregation) {
 
-		for(Map.Entry<String, Collection<Number>> entry : collection.entrySet()) {
-			double values[] = new double[entry.getValue().size()];
-			int i = 0;
-			for(Number value : entry.getValue()) {
-				values[i] = value.doubleValue();
-				i++;
+		for(StatisticType type : StatisticType.values()) {
+			for(Map.Entry<String, Collection<Number>> entry : collections.get(type).entrySet()) {
+				double values[] = new double[entry.getValue().size()];
+				int i = 0;
+				for(Number value : entry.getValue()) {
+					values[i] = value.doubleValue();
+					i++;
+				}
+
+				aggregate.put(entry.getKey(), aggregation.aggregate(values));
 			}
-
-			aggregate.put(entry.getKey(), aggregation.aggregate(values));
 		}
 	}
 }

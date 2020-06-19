@@ -11,7 +11,7 @@ import org.sidiff.common.statistics.StatisticsUtil;
  * An object input stream used for compatibility with old serialized instances
  * of the {@link StatisticsUtil} and {@link ExperimentalUtil}. This correctly
  * resolves the classes of old serialized instances of statistics.
- * @author Robert Müller
+ * @author rmueller
  */
 public final class StatisticsCompatObjectInputStream extends ObjectInputStream {
 

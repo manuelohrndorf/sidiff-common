@@ -29,7 +29,7 @@ import org.sidiff.common.statistics.StatisticsUtil;
  * Utility class for data management of {@link StatisticsUtil}s. Is can be used for
  * experiments in conjunction with the {@link StatisticsUtil} and the {@link ChartsUtil}
  * @author dreuling
- * @author Robert Müller
+ * @author rmueller
  */
 public final class ExperimentalUtil implements Serializable {
 
@@ -40,17 +40,12 @@ public final class ExperimentalUtil implements Serializable {
 
 	private static final long serialVersionUID = 4920634384535018404L;
 
-	private static final String LINESEP = System.getProperty("line.separator");
 
 	/**
 	 * Column separator.
 	 */
 	private static final String COL = ";";
-
-	/**
-	 * Row separator.
-	 */
-	private static final String ROW = LINESEP;
+	private static final String LINESEP = System.getProperty("line.separator");
 
 	private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
 
@@ -76,7 +71,7 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param experimentName
 	 *            name of the experiment
 	 */
@@ -88,7 +83,7 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Helper method for getting the current date
-	 * 
+	 *
 	 * @return today's date as formatted String
 	 */
 	private String getTodayDateFormatted() {
@@ -143,13 +138,13 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Start an experimental run
-	 * 
+	 *
 	 * @param experimentRun
 	 *            name of the run to start
 	 */
 	public void startRun(String experimentRun) {
 
-		assert (experimentRuns.get(experimentRun) == null) : "ExperimentRun " + experimentRun + " already started!";
+		assert experimentRuns.get(experimentRun) == null : "ExperimentRun " + experimentRun + " already started!";
 		StatisticsUtil.getInstance().reset();
 		experimentRuns.put(experimentRun, StatisticsUtil.getInstance());
 
@@ -157,13 +152,13 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Stops an previously started experimental run
-	 * 
+	 *
 	 * @param experimentRun
 	 *            name of the run to stop
 	 */
 	public void stopRun(String experimentRun) {
 
-		assert (experimentRuns.get(experimentRun) != null) : "ExperimentRun " + experimentRun
+		assert experimentRuns.get(experimentRun) != null : "ExperimentRun " + experimentRun
 				+ " has not been started!";
 
 		// Clone StatisticsUtil and reset it afterwards
@@ -172,7 +167,7 @@ public final class ExperimentalUtil implements Serializable {
 	}
 
 	public void loadRun(String experimentRun) {
-		assert (experimentRuns.get(experimentRun) != null) : "ExperimentRun " + experimentRun + " not found!";
+		assert experimentRuns.get(experimentRun) != null : "ExperimentRun " + experimentRun + " not found!";
 		StatisticsUtil statUtil = experimentRuns.get(experimentRun);
 		StatisticsUtil.setInstance(statUtil);
 	}
@@ -180,7 +175,7 @@ public final class ExperimentalUtil implements Serializable {
 	/**
 	 * Generates a chart with axes using many default values for a more clean
 	 * execution and less parameters to configure
-	 * 
+	 *
 	 * @param xAxisLabel
 	 *            label of x axis
 	 * @param threeD
@@ -286,7 +281,7 @@ public final class ExperimentalUtil implements Serializable {
 	/**
 	 * Generates a chart with axes. Can be more fine tuned than the other method
 	 * name equally.
-	 * 
+	 *
 	 * @param xAxisLabel
 	 *            label of x axis
 	 * @param threeD
@@ -444,7 +439,7 @@ public final class ExperimentalUtil implements Serializable {
 */
 	/**
 	 * Generates a chart without axes.
-	 * 
+	 *
 	 * @param experimentRun
 	 *            Name of experiment run to use for chart
 	 * @param st
@@ -492,7 +487,7 @@ public final class ExperimentalUtil implements Serializable {
 	/**
 	 * Method for saving current experiment, including - name - experiment runs
 	 * (with all statistics included)
-	 * 
+	 *
 	 * @param filePath
 	 *            path to save the experiment under
 	 * @throws IOException
@@ -505,7 +500,7 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Method for loading an experiment.
-	 * 
+	 *
 	 * @param filename
 	 *            file to load as experiment
 	 * @return instantiated experiment loaded
@@ -539,8 +534,8 @@ public final class ExperimentalUtil implements Serializable {
 		}
 		if (currentType == null || currentType.equals(name)) {
 			return name;
-		} else if (("Integer".equals(currentType) && "Decimal".equals(name))
-				|| ("Decimal".equals(currentType) && "Integer".equals(name))) {
+		} else if ("Integer".equals(currentType) && "Decimal".equals(name)
+				|| "Decimal".equals(currentType) && "Integer".equals(name)) {
 			return "Decimal";
 		} else {
 			return "String";
@@ -558,7 +553,7 @@ public final class ExperimentalUtil implements Serializable {
 	public void writeToCSV(String filename) throws IOException{
 		Map<String, String> types= new HashMap<>();
 		Set<String> cols = new HashSet<>();
-		
+
 		/* Spalten und deren Typ ermitteln */
 		for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()){
 			for (Map.Entry<String, Object> stat : run.getValue().getUnifiedStatistics().entrySet()){
@@ -575,13 +570,13 @@ public final class ExperimentalUtil implements Serializable {
 		Path csvPath = Paths.get(filename);
 		Files.deleteIfExists(csvPath);
 		try (BufferedWriter writer = Files.newBufferedWriter(csvPath, StandardCharsets.UTF_8, StandardOpenOption.CREATE)) {
-			
+
 			/* Namen-Zeile schreiben */
 			writer.append("Run");
 			for (String col : colList){
 				writer.append(COL+col);
 			}
-			
+
 			/* Datentypen-Zeile schreiben */
 			/*
 			sb.append(ROW+"String");
@@ -590,7 +585,7 @@ public final class ExperimentalUtil implements Serializable {
 			}*/
 			/* Experiemnt-Zeile schreiben */
 			for (Map.Entry<String, StatisticsUtil> run : experimentRuns.entrySet()){
-				writer.append(ROW);
+				writer.append(LINESEP);
 				writer.append(run.getKey());
 				Map<String, Object> stats = run.getValue().getUnifiedStatistics();
 				for (String col : colList){
@@ -603,7 +598,7 @@ public final class ExperimentalUtil implements Serializable {
 
 	/**
 	 * Dumps the current experiment with its statistics
-	 * 
+	 *
 	 * @return string dumped
 	 */
 	public String dump() {

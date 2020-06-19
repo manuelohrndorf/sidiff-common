@@ -6,7 +6,7 @@ import java.util.Arrays;
  * <p>An <code>Aggregation</code> aggregates a sample of input values.</p>
  * <p>The following aggregations are supported: {@link #MIN}, {@link #MAX},
  * {@link #SUM}, {@link #AVG}, {@link #MEDIAN}, {@link #VARIANCE}, {@link #STDDEV}.</p>
- * @author Robert Müller
+ * @author rmueller
  * @see AggregationUtil
  */
 public enum Aggregation {
@@ -97,28 +97,28 @@ public enum Aggregation {
 	VARIANCE {
 		@Override
 		public double aggregate(double[] values) {
-			
+
 			final double avg = AVG.aggregate(values);
 			double[] squaredDiffs = new double[values.length];
 			for(int i = 0; i < values.length; i++) {
 				double squaredDiff = Math.pow(values[i] - avg, 2);
 				squaredDiffs[i] = squaredDiff;
 			}
-		
+
 			return AVG.aggregate(squaredDiffs);
 		}
 	},
-	
+
 	/**
 	 * <p>This {@link Aggregation} calculates the coeffecient of varation</p>.
 	 */
 	CV {
 		@Override
 		public double aggregate(double[] values) {
-			
+
 			final double stddev = STDDEV.aggregate(values);
 			final double avg = AVG.aggregate(values);
-			
+
 			double cv = stddev / avg;
 			if(Double.isNaN(cv)) {
 				cv = 0.0;

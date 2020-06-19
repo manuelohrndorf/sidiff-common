@@ -1,4 +1,4 @@
-package org.sidiff.common.ui;
+package org.sidiff.common.ui.internal;
 
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -7,18 +7,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Activator extends AbstractUIPlugin {
+public class CommonUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.sidiff.common.ui"; //$NON-NLS-1$
 
 	// The shared instance
-	private static Activator plugin;
+	private static CommonUiPlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public Activator() {
+	public CommonUiPlugin() {
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class Activator extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Activator getDefault() {
+	public static CommonUiPlugin getDefault() {
 		return plugin;
 	}
 
@@ -54,7 +54,7 @@ public class Activator extends AbstractUIPlugin {
 	//
 
 	public static void log(int severity, String message, Throwable throwable) {
-		getDefault().getLog().log(new Status(severity, Activator.PLUGIN_ID, message, throwable));
+		getDefault().getLog().log(new Status(severity, CommonUiPlugin.PLUGIN_ID, message, throwable));
 	}
 
 	public static void logError(String message, Throwable throwable) {

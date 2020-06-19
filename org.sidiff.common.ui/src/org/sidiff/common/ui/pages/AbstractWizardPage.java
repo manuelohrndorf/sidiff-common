@@ -78,7 +78,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		this.widgets = new ArrayList<>();
 		this.validationListener = SelectionListener.widgetSelectedAdapter(e -> requestValidation());
 	}
-	
+
 	public AbstractWizardPage(String pageName, String title, ImageDescriptor titleImage) {
 		this(pageName, title);
 		this.setImageDescriptor(titleImage);
@@ -105,7 +105,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		setControl(scrolledComposite);
 
 		requestValidation();
-		
+
 		IWizard wizard = getWizard();
 		if(wizard != null) {
 			if(wizard.getContainer() instanceof IPageChangeProvider) {
@@ -166,11 +166,11 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	protected final void addWidget(Composite parent, IWidget widget) {
 		addWidget(parent, widget, NUM_COLUMNS);
 	}
-	
+
 	/**
 	 * <p>This methods adds a widget to the list {@link #widgets}, adds a listener
 	 * to the widget and sets the layout of the respective widget.</p>
-	 * 
+	 *
 	 * @param parent the {@link Composite} to that the widget is added
 	 * @param widget the {@link IWidget} that is added
 	 * @param numColumns how many columns of the row this widget takes up, the total are {@link #NUM_COLUMNS}
@@ -183,7 +183,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 		// Create controls:
 		Composite widgetControl = widget.createControl(parent);
-		initChildLayout(widgetControl, numColumns);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.horizontalSpan = numColumns;
+		widgetControl.setLayoutData(gridData);
 
 		// Add widget:
 		widgets.add(widget);
@@ -202,7 +204,9 @@ public abstract class AbstractWizardPage extends WizardPage implements
 	protected final Composite addExpandableComposite(Composite parent, String title, int numColumns) {
 		ExpandableComposite expandable = new ExpandableComposite(parent, SWT.BORDER);
 		GridLayoutFactory.fillDefaults().margins(2, 2).applyTo(expandable);
-		initChildLayout(expandable, numColumns);
+		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gridData.horizontalSpan = numColumns;
+		expandable.setLayoutData(gridData);
 		expandable.setText(title);
 		Composite child = new Composite(expandable, SWT.NONE);
 		GridLayoutFactory.fillDefaults().equalWidth(true).numColumns(NUM_COLUMNS).margins(2, 2).applyTo(child);
@@ -210,6 +214,7 @@ public abstract class AbstractWizardPage extends WizardPage implements
 		expandable.addExpansionListener(new IExpansionListener() {
 			@Override
 			public void expansionStateChanging(ExpansionEvent e) {
+				//
 			}
 			@Override
 			public void expansionStateChanged(ExpansionEvent e) {
@@ -217,12 +222,6 @@ public abstract class AbstractWizardPage extends WizardPage implements
 			}
 		});
 		return child;
-	}
-
-	private void initChildLayout(Composite child, int numColumns) {
-		GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gridData.horizontalSpan = numColumns;
-		child.setLayoutData(gridData);
 	}
 
 	/**
@@ -245,20 +244,20 @@ public abstract class AbstractWizardPage extends WizardPage implements
 
 	/**
 	 * This method validates a widget and sets the respective page message.
-	 * 
+	 *
 	 * @param widget the widget
 	 */
 	protected void validateWidget(IWidgetValidation widget) {
 		ValidationMessage message = widget.validate();
 		if(message.getType() == ValidationType.ERROR) {
-			setPageComplete(false);			
+			setPageComplete(false);
 		}
 		setValidationMessage(message);
 	}
 
 	protected void setValidationMessage(ValidationMessage message) {
 		if(message.getType() == ValidationType.OK
-				|| (validationMessage != null && validationMessage.getType().ordinal() > message.getType().ordinal())) {
+				|| validationMessage != null && validationMessage.getType().ordinal() > message.getType().ordinal()) {
 			// we have a more important message to show
 			return;
 		}

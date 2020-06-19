@@ -19,82 +19,82 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
 /**
- * 
+ *
  * @author cpietsch
  *
  */
 public abstract class SelectResourceWidget<R extends IResource> extends AbstractWidget {
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected R resource;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected IContainer iContainer;
-	
+
 	/**
-	 * 
+	 *
 	 */
 	protected String resourceType;
 
 	// ---------- UI Elements ----------
-	
+
 	/**
 	 * The {@link Composite} containing all widgets
 	 */
 	protected Composite container;
-	
+
 	/**
 	 * The {@link Group} containing a subset of all widgets
 	 */
 	protected Group modelChooseGroup;
-	
-	
+
+
 	/**
-	 * 
+	 *
 	 */
 	protected Text resourcePathText;
-	
+
 	/**
 	 * The {@link Button} for choosing a file not contained in {@link #fileCombo}
 	 */
 	protected Button resourceChooseButton;
-	
+
 	// ---------- Constructor ----------
-	
+
 	public SelectResourceWidget(String resourceType) {
 		this.resourceType = resourceType;
 	}
 
 	// ---------- IWidget ----------
-	
+
 	@Override
 	public Composite createControl(Composite parent) {
 		container = new Composite(parent, SWT.NONE);
-		
+
 		GridLayout gl_container = new GridLayout(1, false);
 		gl_container.marginWidth = 0;
 		gl_container.marginHeight = 0;
 		container.setLayout(gl_container);
-	
+
 		modelChooseGroup = new Group(container, SWT.NONE);
-		
+
 		GridLayout gl_group = new GridLayout(2, false);
 		gl_group.marginWidth = 10;
 		gl_group.marginHeight = 10;
 		modelChooseGroup.setLayout(gl_group);
-		
+
 		modelChooseGroup.setLayoutData(new GridData(GridData.FILL_BOTH));
-	
+
 		modelChooseGroup.setText(this.resourceType);
-		 
+
 		resourcePathText = new Text(modelChooseGroup, SWT.BORDER);
 		resourcePathText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 		resourcePathText.addModifyListener(new ModifyListener() {
-			
+
 			@SuppressWarnings("unchecked")
 			@Override
 			public void modifyText(ModifyEvent e) {
@@ -106,7 +106,7 @@ public abstract class SelectResourceWidget<R extends IResource> extends Abstract
 				}
 			}
 		});
-		
+
 		resourceChooseButton = new Button(modelChooseGroup, SWT.PUSH);
 		resourceChooseButton.setText("Choose Model");
 		resourceChooseButton.addSelectionListener(new SelectionAdapter() {
@@ -131,9 +131,9 @@ public abstract class SelectResourceWidget<R extends IResource> extends Abstract
 
 		return container;
 	}
-	
+
 	public abstract void selectionHook();
-	
+
 	@Override
 	public Composite getWidget() {
 		return container;
@@ -145,14 +145,13 @@ public abstract class SelectResourceWidget<R extends IResource> extends Abstract
 	protected ValidationMessage doValidate() {
 		if (resource != null) {
 			return ValidationMessage.OK;
-		} else {
-			return new ValidationMessage(ValidationType.ERROR, "Please select a resource");
 		}
+		return new ValidationMessage(ValidationType.ERROR, "Please select a resource");
 	}
-	
-	
-	// ---------- Getter- and Setter-Methods ---------- 
-	
+
+
+	// ---------- Getter- and Setter-Methods ----------
+
 	public R getResource() {
 		return resource;
 	}

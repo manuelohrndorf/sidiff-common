@@ -76,11 +76,11 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-	
+
 	public IContainerFactory getContainerFactory() {
 		return containerFactory;
 	}
-	
+
 	public void setContainerFactory(IContainerFactory containerFactory) {
 		this.containerFactory = containerFactory;
 	}
@@ -135,6 +135,7 @@ public abstract class AbstractContainerWidget extends AbstractWidget {
 			expandable.addExpansionListener(new IExpansionListener() {
 				@Override
 				public void expansionStateChanging(ExpansionEvent e) {
+					//
 				}
 				@Override
 				public void expansionStateChanged(ExpansionEvent e) {

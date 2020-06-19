@@ -2,19 +2,14 @@ package org.sidiff.common.ui.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.*;
+import org.eclipse.core.commands.common.CommandException;
 import org.eclipse.core.filesystem.EFS;
 import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -22,14 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.*;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ISetSelectionTarget;
@@ -54,7 +42,7 @@ public class UIUtil {
 	public static IWorkbenchWindow getActiveWindow() {
 		return PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 	}
-	
+
 	/**
 	 * Returns the active workbench page.
 	 * @return the active page, <code>null</code> if none
@@ -63,7 +51,7 @@ public class UIUtil {
 		IWorkbenchWindow win = getActiveWindow();
 		return win != null ? win.getActivePage() : null;
 	}
-	
+
 	/**
 	 * Returns the active workbench part.
 	 * @return the active part, <code>null</code> if none
@@ -72,7 +60,7 @@ public class UIUtil {
 		IWorkbenchPage page = getActivePage();
 		return page != null ? page.getActivePart() : null;
 	}
-	
+
 	/**
 	 * Shows the perspective with the given ID.
 	 * @param perspectiveId the ID of the perspective
@@ -142,28 +130,17 @@ public class UIUtil {
 	 *
 	 * @param commandID The command ID.
 	 */
-	public static void callCommand(String commandID, Map<String, String> paramters) {
+	public static void callCommand(String commandID, Map<String, String> parameters) throws CommandException {
 		IServiceLocator serviceLocator = PlatformUI.getWorkbench();
 		ICommandService commandService = serviceLocator.getService(ICommandService.class);
 		IEvaluationService evaluationService = serviceLocator.getService(IEvaluationService.class);
-
-		if (paramters == null) {
-			paramters = new HashMap<>();
-		}
-
-		try {
-			Command theCommand = commandService.getCommand(commandID);
-			ExecutionEvent event = new ExecutionEvent(
-					theCommand,
-					paramters,
-					null,
-					evaluationService.getCurrentState());
-
-			theCommand.executeWithChecks(event);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		Command theCommand = commandService.getCommand(commandID);
+		ExecutionEvent event = new ExecutionEvent(
+			theCommand,
+			parameters,
+			null,
+			evaluationService.getCurrentState());
+		theCommand.executeWithChecks(event);
 	}
 
 	/**
@@ -171,7 +148,7 @@ public class UIUtil {
 	 *
 	 * @param osFile file on the file system.
 	 * @throws FileNotFoundException
-	 * @throws PartInitException 
+	 * @throws PartInitException
 	 */
 	public static void openEditor(File osFile) throws FileNotFoundException, PartInitException {
 		if(!osFile.exists() || !osFile.isFile()) {
@@ -196,27 +173,17 @@ public class UIUtil {
 			IDE.openEditorOnFileStore(page, fileStore);
 		}
 	}
-	
+
 	public static void showMessage(final String message) {
-		Display.getDefault().asyncExec(new Runnable() {
-		    @Override
-		    public void run() {
-				MessageDialog.openInformation(getActiveShell(), 
-						getActivePart().getTitle(),
-						message);
-		    }
-		});
+		Display.getDefault().asyncExec(() -> MessageDialog.openInformation(getActiveShell(),
+				getActivePart().getTitle(),
+				message));
 	}
-	
+
 	public static void showError(final String message) {
-		Display.getDefault().asyncExec(new Runnable() {
-		    @Override
-		    public void run() {
-				MessageDialog.openError(getActiveShell(), 
-						getActivePart().getTitle(),
-						message);
-		    }
-		});
+		Display.getDefault().asyncExec(() -> MessageDialog.openError(getActiveShell(),
+				getActivePart().getTitle(),
+				message));
 	}
 
 	/**
@@ -227,7 +194,7 @@ public class UIUtil {
 	 * @return the result of type T
 	 */
 	public static <T> T syncExecWithResult(RunnableWithResult<T> runnable) {
-		AtomicReference<T> reference = new AtomicReference<T>(null);
+		AtomicReference<T> reference = new AtomicReference<>(null);
 		Display.getDefault().syncExec(() -> {
 			reference.set(runnable.run());
 		});

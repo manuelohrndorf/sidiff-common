@@ -77,17 +77,8 @@ public final class ExperimentalUtil implements Serializable {
 	 */
 	private ExperimentalUtil(String experimentName) {
 		this.experimentName = experimentName;
-		this.date = getTodayDateFormatted();
+		this.date = DATE_FORMAT.format(new Date());
 		this.experimentRuns = new HashMap<>();
-	}
-
-	/**
-	 * Helper method for getting the current date
-	 *
-	 * @return today's date as formatted String
-	 */
-	private String getTodayDateFormatted() {
-		return DATE_FORMAT.format(new Date());
 	}
 
 	/**
@@ -521,7 +512,7 @@ public final class ExperimentalUtil implements Serializable {
 	 * @param currentType Anderer BIRT-Typ oder null
 	 * @return Gemeinsamer Typ (allgemeinster ist String)
 	 */
-	private String getBirtType(Object o, String currentType) {
+	private static String getBirtType(Object o, String currentType) {
 		String name = o.getClass().getSimpleName();
 		if ("Long".equals(name) || "Integer".equals(name)) {
 			name = "Integer";

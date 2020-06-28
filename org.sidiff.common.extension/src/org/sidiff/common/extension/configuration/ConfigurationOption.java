@@ -73,7 +73,7 @@ public class ConfigurationOption<T> {
 	public String getKey() {
 		return key;
 	}
-	
+
 	/**
 	 * Returns the readable name of this option.
 	 * @return option's readable name
@@ -92,7 +92,7 @@ public class ConfigurationOption<T> {
 
 	/**
 	 * Returns whether this configuration options supports multiple values.
-	 * 
+	 *
 	 * @return <code>true</code> if multiple values supported, <code>false</code> if single value
 	 */
 	public boolean isMulti() {
@@ -131,7 +131,7 @@ public class ConfigurationOption<T> {
 			return Collections.unmodifiableSet(
 				selectableValues.stream()
 					.map(ITypedExtension.class::cast)
-					.filter(ext -> (includeGeneric && ext.isGeneric()) || ext.getDocumentTypes().containsAll(documentTypes))
+					.filter(ext -> includeGeneric && ext.isGeneric() || ext.getDocumentTypes().containsAll(documentTypes))
 					.map(type::cast)
 					.collect(Collectors.toSet()));
 		}
@@ -216,7 +216,7 @@ public class ConfigurationOption<T> {
 
 	protected static Optional<Integer> compareValues(Number lhs, Number rhs) {
 		try {
-			return Optional.of(new BigDecimal(lhs.toString()).compareTo(new BigDecimal(rhs.toString())));							
+			return Optional.of(new BigDecimal(lhs.toString()).compareTo(new BigDecimal(rhs.toString())));
 		} catch(NumberFormatException e) {
 			return Optional.empty();
 		}
@@ -347,11 +347,13 @@ public class ConfigurationOption<T> {
 
 	/**
 	 * Returns a new Builder for configuration options.
-	 * @param type the type of the option to be created
+	 * Key and Name are initialized to defaults using given type.
+	 * The selectable values for enums are set to all enum constants per default.
+	 * @param type the type of the option to be created, used to initialize default key and name
 	 * @return builder for this type
 	 */
 	public static <T> Builder<T> builder(Class<T> type) {
-		return new Builder<>(type);
+		return applyEnumDefaults(applyDefaults(new Builder<>(type)));
 	}
 
 	/**
@@ -361,9 +363,7 @@ public class ConfigurationOption<T> {
 	 * @return builder for this type which presets
 	 */
 	public static <T extends IExtension> Builder<T> builder(Class<T> type, ExtensionManager<? extends T> extensionManager) {
-		return new Builder<>(type)
-			.key(typeToKey(type))
-			.name(typeToName(type))
+		return applyDefaults(new Builder<>(type))
 			.valueLabelProvider(IExtension::getName)
 			.selectableValues(extensionManager.getSortedExtensions());
 	}
@@ -378,11 +378,22 @@ public class ConfigurationOption<T> {
 	 */
 	public static <T extends ITypedExtension> Builder<T> builder(Class<T> type,
 			TypedExtensionManager<? extends T> extensionManager, Collection<String> documentTypes, boolean includeGeneric) {
-		return new Builder<>(type)
-			.key(typeToKey(type))
-			.name(typeToName(type))
+		return applyDefaults(new Builder<>(type))
 			.valueLabelProvider(IExtension::getName)
 			.selectableValues(extensionManager.getExtensions(documentTypes, includeGeneric));
+	}
+
+	private static <T> Builder<T> applyDefaults(Builder<T> builder) {
+		return builder
+			.key(typeToKey(builder.type))
+			.name(typeToName(builder.type));
+	}
+
+	private static <T> Builder<T> applyEnumDefaults(Builder<T> builder) {
+		if (builder.type.isEnum()) {
+			return builder.selectableValues(Arrays.asList(builder.type.getEnumConstants()));
+		}
+		return builder;
 	}
 
 	private static String typeToKey(Class<?> type) {
@@ -533,10 +544,6 @@ public class ConfigurationOption<T> {
 			// Default name is the key
 			if(name == null) {
 				name = key;
-			}
-			// Default selectable values for Enum classes
-			if(type.isEnum() && selectableValues == null) {
-				selectableValues = Arrays.asList(type.getEnumConstants());
 			}
 			if(valueLabelProvider == null) {
 				valueLabelProvider = DEFAULT_LABEL_PROVIDER;

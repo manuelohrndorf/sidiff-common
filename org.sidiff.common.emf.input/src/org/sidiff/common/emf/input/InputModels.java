@@ -3,12 +3,10 @@ package org.sidiff.common.emf.input;
 import java.io.File;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.Diagnostic;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -40,7 +38,7 @@ public class InputModels {
 	/**
 	 * Constructor for internal use. Use the {@link #builder()} to create
 	 * InputModels.
-	 * 
+	 *
 	 * @param resourceSet
 	 * @param resources
 	 */
@@ -58,7 +56,7 @@ public class InputModels {
 
 	/**
 	 * Returns whether the resources have the same document types.
-	 * 
+	 *
 	 * @return <code>true</code> if all resources have the same set of document
 	 *         types, <code>false</code> otherwise
 	 */
@@ -73,7 +71,7 @@ public class InputModels {
 	/**
 	 * Returns all document types between input models. This is the union of all
 	 * resource document types.
-	 * 
+	 *
 	 * @return unmodifiable set of the document types of all input models
 	 */
 	public Set<String> getDocumentTypes() {
@@ -119,7 +117,7 @@ public class InputModels {
 	 * Returns labels to be displayed for all files. The label of a file is it's
 	 * name. If multiple labels are equal, they are made unique by prepending the
 	 * file's parent's name.
-	 * 
+	 *
 	 * @return labels for the files
 	 */
 	public List<String> getLabels() {
@@ -132,7 +130,7 @@ public class InputModels {
 	/**
 	 * Returns the {@link IProject} that contains the input files. If the files are
 	 * not in the same project, this the project of the first file is returned.
-	 * 
+	 *
 	 * @return project, <code>null</code> if resolution failed
 	 */
 	public IProject getProject() {
@@ -208,7 +206,7 @@ public class InputModels {
 		}
 		return project;
 	}
-	
+
 
 	public static Builder<InputModels> builder() {
 		return builder(InputModels::new);
@@ -306,7 +304,7 @@ public class InputModels {
 			this.assertSameDocumentType = assertSameDocumentType;
 			return this;
 		}
-		
+
 		protected boolean isAssertSameDocumentType() {
 			return assertSameDocumentType;
 		}
@@ -360,19 +358,31 @@ public class InputModels {
 			return this;
 		}
 
-		public T build() throws InputModelsException {
+		public T build(IProgressMonitor monitor) throws InputModelsException {
+			SubMonitor progress = SubMonitor.convert(monitor, models.size()+1+1);
+
 			initDefaults();
 			assertValidInput();
+			progress.worked(1);
 
-			List<Resource> resources = models.stream()
-				.map(this::deriveResource)
-				.filter(Objects::nonNull)
-				.peek(this::validateResource)
-				.collect(Collectors.toList());
+			List<Resource> resources = new ArrayList<>(models.size());
+			for (Object model : models) {
+				Resource resource = deriveResource(model);
+				if (resource != null) {
+					validateResource(resource);
+					resources.add(resource);
+				}
+				progress.worked(1);
+			}
+
 			T inputModels = factory.createInputModels(resourceSet, resources);
-
 			assertValidResult(inputModels);
+			progress.worked(1);
 			return inputModels;
+		}
+
+		public T build() throws InputModelsException {
+			return build(new NullProgressMonitor());
 		}
 
 		protected void initDefaults() {
@@ -415,7 +425,7 @@ public class InputModels {
 						if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
 							Resource adaptedModel = modelAdapter.toModel(EMFStorage.toIFile(uri), resourceSet, uri.trimSegments(1));
 							if(saveAdaptedModels) {
-								resourceSet.saveResource(adaptedModel);								
+								resourceSet.saveResource(adaptedModel);
 							}
 							return adaptedModel;
 						}
@@ -446,7 +456,7 @@ public class InputModels {
 			}
 		}
 	}
-	
+
 	@FunctionalInterface
 	public interface Factory<T extends InputModels> {
 		T createInputModels(SiDiffResourceSet resourceSet, List<Resource> resources);

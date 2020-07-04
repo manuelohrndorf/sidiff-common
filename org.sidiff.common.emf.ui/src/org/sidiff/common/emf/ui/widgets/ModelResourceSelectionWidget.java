@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.sidiff.common.emf.modelstorage.EMFStorage;
 import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
-import org.sidiff.common.emf.ui.widgets.FileSelectionWidget;
 
 public class ModelResourceSelectionWidget extends FileSelectionWidget<Resource> {
 

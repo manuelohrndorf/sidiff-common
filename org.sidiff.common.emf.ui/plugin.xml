@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Add XMI-IDs to all EObjects in the selected resource which do not have any."
+            id="org.sidiff.common.emf.ui.AddXmiIdsCommand"
+            name="Add XMI-IDs">
+      </command>
+      <command
+            description="Removes all XMI-IDs from the EObjects in the selected resource."
+            id="org.sidiff.common.emf.ui.RemoveXmiIdsCommand"
+            name="Remove XMI-IDs">
+      </command>
+      <command
+            description="Generate new XMI-IDs for all EObjects in the selected resource."
+            id="org.sidiff.common.emf.ui.GenerateXmiIdsCommand"
+            name="Generate XMI-IDs">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.sidiff.common.emf.ui.handlers.AddXmiIdsHandler"
+            commandId="org.sidiff.common.emf.ui.AddXmiIdsCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="org.sidiff.common.emf.ui.definition.singleResource">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.sidiff.common.emf.ui.handlers.RemoveXmiIdsHandler"
+            commandId="org.sidiff.common.emf.ui.RemoveXmiIdsCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="org.sidiff.common.emf.ui.definition.singleResource">
+            </reference>
+         </enabledWhen>
+      </handler>
+      <handler
+            class="org.sidiff.common.emf.ui.handlers.GenerateXmiIdsHandler"
+            commandId="org.sidiff.common.emf.ui.GenerateXmiIdsCommand">
+         <enabledWhen>
+            <reference
+                  definitionId="org.sidiff.common.emf.ui.definition.singleResource">
+            </reference>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <menu
+               id="org.sidiff.common.emf.ui.menus.emftools"
+               label="SiDiff EMF Tools">
+            <command
+                  commandId="org.sidiff.common.emf.ui.AddXmiIdsCommand"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.sidiff.common.emf.ui.RemoveXmiIdsCommand"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+            <command
+                  commandId="org.sidiff.common.emf.ui.GenerateXmiIdsCommand"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="true">
+               </visibleWhen>
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.core.expressions.definitions">
+      <definition
+            id="org.sidiff.common.emf.ui.definition.singleResource">
+         <with
+               variable="selection">
+            <count
+                  value="1">
+            </count>
+            <iterate>
+               <adapt
+                     type="org.eclipse.emf.ecore.resource.Resource">
+               </adapt>
+            </iterate>
+         </with>
+      </definition>
+   </extension>
+
+</plugin>

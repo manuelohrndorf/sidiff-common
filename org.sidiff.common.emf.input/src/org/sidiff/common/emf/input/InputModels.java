@@ -219,10 +219,12 @@ public class InputModels {
 	public static class Builder<T extends InputModels> {
 
 		private final Factory<T> factory;
+		private final List<Object> models = new ArrayList<>(); // may be URI, Resource, IFile or File
 		private SiDiffResourceSet resourceSet;
+
 		private IModelAdapter modelAdapter;
-		private boolean saveAdaptedModels = false;
-		private List<Object> models = new ArrayList<>(); // may be URI, Resource, IFile or File
+		private IFolder outputFolder; // null if adapter models should not be saved
+
 		private int minValidateSeverity = Diagnostic.CANCEL;
 		private int assertedMinNumModels = 0;
 		private int assertedMaxNumModels = Integer.MAX_VALUE;
@@ -241,9 +243,15 @@ public class InputModels {
 			return resourceSet;
 		}
 
-		public Builder<T> setModelAdapter(IModelAdapter modelAdapter, boolean saveAdaptedModels) {
+		/**
+		 * Sets the {@link IModelAdapter} for this builder.
+		 * @param modelAdapter the model adapter, <code>null</code> to disable (default)
+		 * @param outputFolder folder for model adapter output, <code>null</code> to disable saving adapted models
+		 * @return this builder
+		 */
+		public Builder<T> setModelAdapter(IModelAdapter modelAdapter, IFolder outputFolder) {
 			this.modelAdapter = modelAdapter; // null allowed for convenience
-			this.saveAdaptedModels = saveAdaptedModels;
+			this.outputFolder = modelAdapter == null ? null : outputFolder;
 			return this;
 		}
 
@@ -423,8 +431,12 @@ public class InputModels {
 					URI uri = (URI)model;
 					if(modelAdapter != null) {
 						if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
-							Resource adaptedModel = modelAdapter.toModel(EMFStorage.toIFile(uri), resourceSet, uri.trimSegments(1));
-							if(saveAdaptedModels) {
+							Resource adaptedModel =
+								modelAdapter.toModel(
+									EMFStorage.toIFile(uri),
+									resourceSet,
+									outputFolder == null ? uri.trimSegments(1) : EMFStorage.toPlatformURI(outputFolder));
+							if(outputFolder != null) {
 								resourceSet.saveResource(adaptedModel);
 							}
 							return adaptedModel;

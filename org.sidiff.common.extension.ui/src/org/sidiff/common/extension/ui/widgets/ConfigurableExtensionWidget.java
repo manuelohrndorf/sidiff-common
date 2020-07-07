@@ -1,9 +1,6 @@
 package org.sidiff.common.extension.ui.widgets;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -13,19 +10,10 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Spinner;
-import org.eclipse.swt.widgets.Text;
-import org.sidiff.common.extension.configuration.ConfigurationOption;
-import org.sidiff.common.extension.configuration.IConfigurableExtension;
-import org.sidiff.common.extension.configuration.IExtensionConfiguration;
-import org.sidiff.common.ui.widgets.AbstractContainerWidget;
-import org.sidiff.common.ui.widgets.IWidget;
-import org.sidiff.common.ui.widgets.IWidgetDependence;
-import org.sidiff.common.ui.widgets.IWidgetModification;
+import org.eclipse.swt.widgets.*;
+import org.sidiff.common.extension.IExtension;
+import org.sidiff.common.extension.configuration.*;
+import org.sidiff.common.ui.widgets.*;
 
 /**
  * <p>A widget which provides suitable inputs for the various options of the
@@ -63,13 +51,18 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return composite;
 	}
 
-	// also creates expandable composite around createOptionControls, returns null if no configuration option has UI support
-	protected Composite createNestedOptionControls(Composite container, IConfigurableExtension extension) {
-		if(!extension.getConfiguration().getConfigurationOptions().stream().anyMatch(ConfigurableExtensionWidget::isOptionSupported)) {
-			return null;			
+	// also creates expandable composite around createOptionControls, returns empty optional if no configuration option has UI support
+	protected Optional<Composite> createNestedOptionControls(Composite container, IConfigurableExtension extension) {
+		if(!extension.getConfiguration().getConfigurationOptions().stream()
+				.anyMatch(ConfigurableExtensionWidget::isOptionSupported)) {
+			return Optional.empty();
 		}
-		return DefaultContainerFactory.EXPANDABLE.createContainer(
-				container, getGroupTitle(extension), getWidgetCallback(), composite -> createOptionControls(composite, extension.getConfiguration()));
+		return Optional.of(
+				DefaultContainerFactory.EXPANDABLE.createContainer(
+					container,
+					getGroupTitle(extension),
+					getWidgetCallback(),
+					composite -> createOptionControls(composite, extension.getConfiguration())));
 	}
 
 	@SuppressWarnings("unchecked") // we explicitly check below
@@ -113,7 +106,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setText(option.getName());
 		group.setLayout(new GridLayout(1, true));
 		GridDataFactory.fillDefaults().grab(true,  false).applyTo(group);
-		
+
 		Spinner spinner = new Spinner(group, SWT.NONE);
 		spinner.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		if(option.isSet()) {
@@ -122,7 +115,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		spinner.addSelectionListener(SelectionListener.widgetSelectedAdapter(
 				e -> option.setValueUnsafe(String.valueOf(spinner.getSelection()))));
 		if(option.getMinValue() != null) {
-			spinner.setMinimum(option.getMinValue().intValue());			
+			spinner.setMinimum(option.getMinValue().intValue());
 		}
 		if(option.getMaxValue() != null) {
 			spinner.setMaximum(option.getMaxValue().intValue());
@@ -183,11 +176,12 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 				button.setSelection(true);
 			}
 			GridDataFactory.fillDefaults().grab(true,  false).applyTo(button);
-
-			if(value instanceof IConfigurableExtension) {
-				Composite subComposite = createNestedOptionControls(group, (IConfigurableExtension)value);
-				if(subComposite != null) {
-					nestedOptions.put(button, subComposite);						
+			if(value instanceof IExtension) {
+				((IExtension)value).getDescription()
+					.ifPresent(description -> button.setToolTipText(description));
+				if(value instanceof IConfigurableExtension) {
+					createNestedOptionControls(group, (IConfigurableExtension)value)
+						.ifPresent(subComposite -> nestedOptions.put(button, subComposite));
 				}
 			}
 		}
@@ -227,10 +221,12 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 					.anyMatch(v -> option.getLabelForValue(v).equals(option.getLabelForValue(value))));
 			buttonToValue.put(button, value);
 
-			if(value instanceof IConfigurableExtension) {
-				Composite subComposite = createNestedOptionControls(group, (IConfigurableExtension)value);
-				if(subComposite != null) {
-					nestedOptions.put(button, subComposite);						
+			if(value instanceof IExtension) {
+				((IExtension)value).getDescription()
+					.ifPresent(description -> button.setToolTipText(description));
+				if(value instanceof IConfigurableExtension) {
+					createNestedOptionControls(group, (IConfigurableExtension)value)
+						.ifPresent(subComposite -> nestedOptions.put(button, subComposite));
 				}
 			}
 		}

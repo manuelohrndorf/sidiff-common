@@ -1,4 +1,4 @@
-package org.sidiff.common.ui.widgets.impl;
+package org.sidiff.common.ui.widgets;
 
 import java.util.*;
 import java.util.stream.Collectors;

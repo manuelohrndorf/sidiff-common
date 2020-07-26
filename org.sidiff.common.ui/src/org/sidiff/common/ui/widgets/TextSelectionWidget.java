@@ -1,4 +1,4 @@
-package org.sidiff.common.ui.widgets.impl;
+package org.sidiff.common.ui.widgets;
 
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +7,6 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.sidiff.common.ui.widgets.AbstractModifiableWidget;
 
 /**
  * Generic text selection widget.

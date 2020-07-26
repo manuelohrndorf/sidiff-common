@@ -1,9 +1,9 @@
-package org.sidiff.common.ui.widgets.impl;
+package org.sidiff.common.ui.widgets;
 
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
+import org.sidiff.common.ui.widgets.TextSelectionWidget;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
-import org.sidiff.common.ui.widgets.impl.TextSelectionWidget;
 
 /**
  * @author rmueller

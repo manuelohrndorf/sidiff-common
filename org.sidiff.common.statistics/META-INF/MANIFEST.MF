@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common - Statistics Utilities
-Bundle-SymbolicName: org.sidiff.common.statistics
+Bundle-SymbolicName: org.sidiff.common.statistics;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Automatic-Module-Name: org.sidiff.common.statistics
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

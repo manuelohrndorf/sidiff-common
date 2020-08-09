@@ -19,15 +19,14 @@ import java.util.stream.StreamSupport;
 /**
  * <p>Contains various utility functions to work with collections.</p>
  * <p>Most of these methods are short and can be used as templates
- * on how to use the {@link Stream} API. If you further use the 
+ * on how to use the {@link Stream} API. If you further use the
  * collection returned by any of these methods with Streams or
  * with this methods of this class, you should instead combine
  * the underlying stream operations to improve performance,
  * as each of these methods creates a new collection.</p>
  * <p>This utility class replaces the deprecated ClassificationUtil,
  * FilterUtil, ViewUtil and CollectionView.</p>
- * @author Robert Müller
- *
+ * @author rmueller
  */
 public class CollectionUtil {
 
@@ -174,7 +173,7 @@ public class CollectionUtil {
 	 * @return iterable with the given iterator
 	 */
 	public static <T> Iterable<T> asIterable(Iterator<T> iterator) {
-		return (Iterable<T>)(() -> iterator);
+		return (Iterable<T>)() -> iterator;
 	}
 
 	/**
@@ -183,7 +182,7 @@ public class CollectionUtil {
 	 * @return iterable with an iterator for the given enumeration
 	 */
 	public static <T> Iterable<T> asIterable(Enumeration<T> enumeration) {
-		return asIterable(new EnumerationIterable<T>(enumeration));
+		return asIterable(new EnumerationIterable<>(enumeration));
 	}
 
 	/**
@@ -225,7 +224,7 @@ public class CollectionUtil {
 		}
 		throw new IllegalArgumentException(
 			"Value is neither null, nor instance of type, nor a collection: "
-				+ featureValue + " (" + featureValue.getClass() + ")");
+				+ featureValue + " (" + featureValue.getClass() + ") (wanted: " + type + ")");
 	}
 
 	private static final class EnumerationIterable<T> implements Iterator<T> {

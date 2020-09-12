@@ -9,11 +9,14 @@ import org.sidiff.common.extension.IExtension;
 import org.sidiff.common.extension.IExtension.Description;
 
 /**
- * An extension manager storage that does not store extensions and always recreates them based
- * on the extension description.
- * The storage cannot be modified, and the related methods throw runtime exceptions.
+ * <p>An extension manager storage that does not store extensions and always recreates them based
+ * on the extension description.</p>
+ * <p>This storage implementation must be used if any of the extensions can have any kind of
+ * stored state. This ensures that extension instances are used exclusively without any interference.</p>
+ * <p>The storage cannot be modified and the related methods throw runtime exceptions.</p>
  * @author rmueller
  * @param <T> type of stored extensions
+ * @see CachingExtensionManagerStorage CachingExtensionManagerStorage: to be used for singleton extensions without stored state
  */
 public class NoExtensionManagerStorage<T extends IExtension> implements IExtensionManagerStorage<T> {
 
@@ -35,7 +38,7 @@ public class NoExtensionManagerStorage<T extends IExtension> implements IExtensi
 
 	@Override
 	public void clearExtensions() {
-		throw new UnsupportedOperationException();		
+		throw new UnsupportedOperationException();
 	}
 
 	@Override

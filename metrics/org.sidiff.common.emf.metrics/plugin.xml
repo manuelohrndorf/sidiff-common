@@ -32,6 +32,16 @@
             generic
          </documentType>
       </metric>
+      <metric
+            class="org.sidiff.common.emf.metrics.defaults.ElementCountingMetric"
+            comparisonType="UNSPECIFIED"
+            description="Number of all EObjects in the resource"
+            key="emf.ElementCountingMetric"
+            name="Number of EObjects">
+         <documentType>
+            generic
+         </documentType>
+      </metric>
    </extension>
 
 </plugin>

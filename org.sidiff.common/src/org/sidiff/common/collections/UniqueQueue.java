@@ -114,6 +114,11 @@ public class UniqueQueue<T> extends AbstractQueue<T> {
 		return Collections.unmodifiableSet(set);
 	}
 
+	@Override
+	public String toString() {
+		return UniqueQueue.class.getSimpleName() + "[queue=" + queue + ", seen=" + set + "]";
+	}
+
 	private class UniqueQueueIterator implements Iterator<T> {
 
 		@Override

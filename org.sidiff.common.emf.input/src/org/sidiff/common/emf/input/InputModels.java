@@ -459,9 +459,8 @@ public class InputModels {
 
 		protected void validateResource(Resource model) throws InputModelsException {
 			if(minValidateSeverity >= Diagnostic.WARNING && minValidateSeverity <= Diagnostic.ERROR) {
-				EMFValidate.setMinimumSeverity(minValidateSeverity);
 				try {
-					EMFValidate.validateModel(model);
+					new EMFValidate(minValidateSeverity).validateModel(model);
 				} catch (InvalidModelException e) {
 					throw new InputModelsException("The model is invalid: " + model, e);
 				}

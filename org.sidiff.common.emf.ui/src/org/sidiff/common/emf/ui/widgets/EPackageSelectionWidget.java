@@ -1,7 +1,7 @@
 package org.sidiff.common.emf.ui.widgets;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import org.eclipse.emf.ecore.EPackage;
 import org.sidiff.common.emf.access.EMFMetaAccess;
@@ -11,7 +11,7 @@ import org.sidiff.common.ui.widgets.AbstractListWidget;
 /**
  * A widget to select a set of {@link EPackage}s from the {@link EPackage.Registry#INSTANCE}.
  * Title and lower/upper bounds can be adjusted, see {@link AbstractListWidget}.
- * @author Robert Müller
+ * @author rmueller
  */
 public class EPackageSelectionWidget extends AbstractListWidget<EPackage> {
 
@@ -26,6 +26,7 @@ public class EPackageSelectionWidget extends AbstractListWidget<EPackage> {
 		setOrdered(false);
 		setFilterable(true);
 		setLabelProvider(new EPackageLabelProvider());
+		setTitle("Document Types");
 	}
 
 	@Override
@@ -35,5 +36,17 @@ public class EPackageSelectionWidget extends AbstractListWidget<EPackage> {
 			ePackages = new ArrayList<>(EMFMetaAccess.getAllRegisteredEPackages());
 		}
 		return ePackages;
+	}
+
+	public Set<String> getDocumentTypes() {
+		return getSelection().stream()
+				.map(EPackage::getNsURI)
+				.collect(Collectors.toSet());
+	}
+
+	public void setDocumentTypes(Collection<? extends String> documentTypes) {
+		setSelection(getSelectableValues().stream()
+				.filter(p -> documentTypes.contains(p.getNsURI()))
+				.collect(Collectors.toList()));
 	}
 }

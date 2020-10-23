@@ -35,6 +35,7 @@ public class NameUtil {
 		dict.put("Id", "ID");
 		dict.put("TGT", "Target");
 		dict.put("SRC", "Source");
+		dict.put("AND", "And");
 	}
 
 	private static String dictionary(String input) {
@@ -42,15 +43,15 @@ public class NameUtil {
 	}
 
 	public static String beautifyName(String name) {
-		return
-			translate(
-				capitalizeFirstLetter(
-					removeCamelCase(
-						name.replace('_', ' '))));
+		if (name.matches("^[a-zA-Z]*$")) {
+			return translate(capitalizeFirstLetter(removeCamelCase(name.replace('_', ' '))));
+		} else {
+			return translate(capitalizeFirstLetter(name.replace('_', ' ')));
+		}
 	}
 
 	public static String removeCamelCase(String name) {
-		String regex = "([a-z \\)])([A-Z \\(]+)";
+		String regex = "([a-z])([A-Z]+)";
 		String replacement = "$1 $2";
 		return  name.replaceAll(regex, replacement);
 	}

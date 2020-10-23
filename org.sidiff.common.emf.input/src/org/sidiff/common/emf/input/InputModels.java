@@ -304,7 +304,7 @@ public class InputModels {
 		}
 
 		/**
-		 * Sets that when building, it is asserted that alle input models have the same document type.
+		 * Sets that when building, it is asserted that all input models have the same document type.
 		 * @param assertSameDocumentType <code>true</code> to assert, <code>false</code> otherwise
 		 * @return this builder
 		 */

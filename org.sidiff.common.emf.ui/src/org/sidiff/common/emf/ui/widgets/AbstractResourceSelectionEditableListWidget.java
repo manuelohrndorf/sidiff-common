@@ -17,9 +17,6 @@ public abstract class AbstractResourceSelectionEditableListWidget<T> extends Abs
 
 	private List<ViewerFilter> viewerFilters;
 
-	public AbstractResourceSelectionEditableListWidget() {
-	}
-
 	public void setInitialSelection(IResource initialSelection) {
 		this.initialSelection = initialSelection;
 	}
@@ -32,7 +29,7 @@ public abstract class AbstractResourceSelectionEditableListWidget<T> extends Abs
 		if(viewerFilters == null || viewerFilters.isEmpty()) {
 			this.viewerFilters = null;
 		} else {
-			this.viewerFilters = new ArrayList<>(viewerFilters);			
+			this.viewerFilters = new ArrayList<>(viewerFilters);
 		}
 	}
 

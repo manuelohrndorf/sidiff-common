@@ -23,8 +23,8 @@ import org.eclipse.jface.viewers.ILabelProvider;
  * <p>Has a label provider which is used by subclasses to get label and icon for
  * the values of the type T. The default label provider is <code>null</code>,
  * which uses {@link Object#toString()}. </p>
+ * @author rmueller
  * @param <T> the type of the input elements
- * @author Robert Müller
  */
 public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidget implements IWidgetModification<T>  {
 
@@ -91,7 +91,7 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 	public List<T> getSelection() {
 		return Collections.unmodifiableList(selection);
 	}
-	
+
 	@Override
 	public void addModificationListener(ModificationListener<? super T> listener) {
 		modificationListeners.add(listener);
@@ -142,7 +142,7 @@ public abstract class AbstractModifiableWidget<T> extends AbstractContainerWidge
 		}
 		return equalityDelegate;
 	}
-	
+
 	public void setEqualityDelegate(BiPredicate<T, T> equalityDelegate) {
 		this.equalityDelegate = Objects.requireNonNull(equalityDelegate);
 	}

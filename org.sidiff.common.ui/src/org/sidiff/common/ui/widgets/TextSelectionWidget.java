@@ -25,13 +25,9 @@ public class TextSelectionWidget extends AbstractModifiableWidget<String> {
 	@Override
 	protected Composite createContents(Composite container) {
 		text = new Text(container, SWT.SINGLE);
-		text.addModifyListener(event -> {
-			if(text.getText().isEmpty()) {
-				setSelection(Collections.emptyList());
-			} else {
-				setSelection(text.getText());
-			}
-		});
+		text.setText(getSelection().isEmpty() ? "" : getSelection().get(0));
+		text.addModifyListener(event -> setSelection(
+				text.getText().isEmpty() ? Collections.emptyList() : Collections.singletonList(text.getText())));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
 		return container;
 	}
@@ -39,11 +35,13 @@ public class TextSelectionWidget extends AbstractModifiableWidget<String> {
 	@Override
 	protected void hookSetSelection() {
 		super.hookSetSelection();
-		List<String> selection = getSelection();
-		String newText = selection.isEmpty() ? "" : selection.get(0);
-		if(!text.getText().equals(newText)) {
-			text.setText(newText);
+		if (text != null) {
+			List<String> selection = getSelection();
+			String newText = selection.isEmpty() ? "" : selection.get(0);
+			if(!text.getText().equals(newText)) {
+				text.setText(newText);
+			}
+			getWidgetCallback().requestValidation();
 		}
-		getWidgetCallback().requestValidation();
 	}
 }

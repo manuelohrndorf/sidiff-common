@@ -7,7 +7,7 @@ import java.util.List;
  * Widgets implementing {@link IWidgetModification} manage a selection
  * of generic type as well as {@link ModificationListener}s,
  * which are notified when the value of the widget changes.
- * @author Robert Müller
+ * @author rmueller
  * @param <T> the type of value this widget broadcasts to its listeners
  */
 public interface IWidgetModification<T> {
@@ -21,6 +21,20 @@ public interface IWidgetModification<T> {
 	 * @return the selection
 	 */
 	List<T> getSelection();
+
+	/**
+	 * <p>Returns the first element of the selection of this widget, or <code>null</code> if the selection is empty.</p>
+	 * <p>This method may only be used when there can only be 0 or 1 selected element.</p>
+	 * @return selected element, or <code>null</code> if none
+	 */
+	default T getSingleSelection() {
+		List<T> selection = getSelection();
+		switch(selection.size()) {
+			case 0: return null;
+			case 1: return selection.get(0);
+			default: throw new IllegalStateException("Selection may not contain multiple elements when using this method");
+		}
+	}
 
 	/**
 	 * <p>Sets the selection of the widget.</p>
@@ -68,7 +82,7 @@ public interface IWidgetModification<T> {
 
 	/**
 	 * A modification listener is notified by a widget after its value changes.
-	 * @author Robert Müller
+	 * @author rmueller
 	 * @param <T> the type of value
 	 */
 	interface ModificationListener<T> {

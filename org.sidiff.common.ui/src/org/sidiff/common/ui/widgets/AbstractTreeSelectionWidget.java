@@ -25,6 +25,10 @@ import org.eclipse.ui.dialogs.ContainerCheckedTreeViewer;
 import org.sidiff.common.collections.UniqueQueue;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
+/**
+ * @author rmueller
+ * @param <T> the type of input elements
+ */
 public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableWidget<T> {
 
 	private ContainerCheckedTreeViewer treeViewer;
@@ -32,7 +36,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 
 	private int lowerBound = 1;
 	private int upperBound = Integer.MAX_VALUE;
-	
+
 	private int heightHint = 300;
 
 	private final Class<T> selectableElementType;
@@ -54,7 +58,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 		treeViewer.addCheckStateListener(event -> {
 			Object element = event.getElement();
 			if(event.getChecked()) {
-				treeViewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);				
+				treeViewer.expandToLevel(element, AbstractTreeViewer.ALL_LEVELS);
 			}
 			treeViewer.setSubtreeChecked(element, event.getChecked());
 			if(!event.getChecked()) {
@@ -144,7 +148,7 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 
 	private void updateTreeViewerSelection() {
 		if(treeViewer == null) {
-			return;			
+			return;
 		}
 		// first expand everything, otherwise checking the elements may not work
 		treeViewer.expandAll();
@@ -207,11 +211,11 @@ public abstract class AbstractTreeSelectionWidget<T> extends AbstractModifiableW
 	public boolean isMulti() {
 		return upperBound > 1;
 	}
-	
+
 	public void setHeightHint(int heightHint) {
 		this.heightHint = heightHint;
 	}
-	
+
 	public int getHeightHint() {
 		return heightHint;
 	}

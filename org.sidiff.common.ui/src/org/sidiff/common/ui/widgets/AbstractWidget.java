@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Composite;
  * and provides default implementations for widgets dependency management and widget callbacks.</p>
  * <p>Implements widget validation, storing the validation message provided by {@link #doValidate()}.
  * The widget is responsible for requesting validation, when its value changes, using the callbacks.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWidgetCallback, IWidgetValidation {
 
@@ -30,7 +30,7 @@ public abstract class AbstractWidget implements IWidget, IWidgetDependence, IWid
 	 * Initially a Null-Implementation for compatibility with widget pages that do not set the callbacks.
 	 */
 	private IWidgetCallback.Callback callback = IWidgetCallback.Callback.NULL;
-	
+
 	/**
 	 * The cached validation message result of {@link #doValidate()}.
 	 */

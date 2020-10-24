@@ -46,7 +46,7 @@ import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.Validati
  * <li>Table width: 150</li>
  * <li>Table height: 70</li>
  * </ul>
- * @author Robert Müller
+ * @author rmueller
  * @param <T> the type of the input elements
  */
 public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> {
@@ -83,15 +83,15 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		createDescriptionLabel(contents);
 
 		if(isFilterable()) {
-			createFilterText(contents);			
+			createFilterText(contents);
 		}
 
 		createFeatureTable(contents);
 		createControlButtons(contents);
 		createChoiceTable(contents);
-		
+
 		if(isFilterable()) {
-			attachFilterListener();			
+			attachFilterListener();
 		}
 
 		hookInitSelection();
@@ -120,7 +120,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		patternText = new Text(filterGroupComposite, SWT.BORDER);
 		patternText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 	}
-	
+
 	protected void attachFilterListener() {
 		final PatternFilter filter = new PatternFilter() {
 			@Override
@@ -288,7 +288,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 					.filter(elementType::isInstance)
 					.map(elementType::cast)
 					.forEach(selection::add);
-				setSelection(selection);				
+				setSelection(selection);
 			}
 		}));
 	}
@@ -328,7 +328,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 				for (int index : featureTableViewer.getTable().getSelectionIndices()) {
 					Collections.swap(selection, index, Math.max(index - 1, 0));
 				}
-				setSelection(selection);				
+				setSelection(selection);
 			}
 		}));
 	}
@@ -351,11 +351,11 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 					int index = indices[i];
 					Collections.swap(selection, index, Math.min(index + 1, selection.size() - 1));
 				}
-				setSelection(selection);				
+				setSelection(selection);
 			}
 		}));
 	}
-	
+
 	protected void updateButtonStates() {
 		if(addButton != null) {
 			addButton.setEnabled(!choiceTableViewer.getSelection().isEmpty());
@@ -381,18 +381,18 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		super.hookSetSelection();
 		if(featureTableViewer != null) {
 			featureTableViewer.setInput(getSelection().toArray());
-			featureTableViewer.refresh();			
+			featureTableViewer.refresh();
 		}
 		if(choiceTableViewer != null) {
 			choiceTableViewer.setInput(getSelectableValues().toArray());
 			choiceTableViewer.refresh(); // update because filter depends on selection
 		}
 		if(featureTableViewer != null && choiceTableViewer != null) {
-			updateButtonStates();			
+			updateButtonStates();
 		}
 		getWidgetCallback().requestValidation();
 	}
-	
+
 	/**
 	 * Hook method called after the widget's controls have been created
 	 * to initialize the selection with default values.
@@ -400,7 +400,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	protected void hookInitSelection() {
 		// default implementation does nothing
 	}
-	
+
 	/**
 	 * Validates the lower and upper bounds.
 	 * When overriding this, the super implementation must be called.
@@ -440,7 +440,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -468,7 +468,7 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 	public int getUpperBound() {
 		return upperBound;
 	}
-	
+
 	public boolean isMulti() {
 		return upperBound > 1;
 	}
@@ -479,19 +479,19 @@ public abstract class AbstractListWidget<T> extends AbstractModifiableWidget<T> 
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;
 	}
-	
+
 	public int getTableWidth() {
 		return tableWidth;
 	}
-	
+
 	public void setTableWidth(int tableWidth) {
 		this.tableWidth = tableWidth;
 	}
-	
+
 	public int getTableHeight() {
 		return tableHeight;
 	}
-	
+
 	public void setTableHeight(int tableHeight) {
 		this.tableHeight = tableHeight;
 	}

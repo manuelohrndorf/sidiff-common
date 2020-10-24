@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Composite;
  * An abstract modifiable widget which shows, for each selectable
  * value, a check/radio button.
  * Use {@link AbstractCheckboxWidget} or {@link AbstractRadioWidget} instead.
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T> {
 
@@ -34,7 +34,7 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 	});
 
 	/**
-	 * @param buttonStyle the {@link Button} style 
+	 * @param buttonStyle the {@link Button} style
 	 */
 	public AbstractButtonWidget(int buttonStyle) {
 		this.buttonStyle = buttonStyle;
@@ -80,7 +80,7 @@ public abstract class AbstractButtonWidget<T> extends AbstractModifiableWidget<T
 			}
 			for(Button button : remainingButtons) {
 				button.setSelection(false);
-			}			
+			}
 		}
 	}
 

@@ -19,7 +19,7 @@ import org.eclipse.ui.forms.widgets.ExpandableComposite;
  * {@link DefaultContainerFactory} contains default container factory implementations.</p>
  * <p>Instead of overriding {@link #createControl(Composite)}, the method {@link #createContents(Composite)}
  * must be overridden instead when implementing this class.</p>
- * @author Robert Müller
+ * @author rmueller
  */
 public abstract class AbstractContainerWidget extends AbstractWidget {
 

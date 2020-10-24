@@ -18,6 +18,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.sidiff.common.ui.widgets.IWidgetValidation.ValidationMessage.ValidationType;
 
+/**
+ * @author rmueller
+ * @param <T> the type of input elements
+ */
 public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWidget<T> {
 
 	private TableViewer tableViewer;
@@ -28,19 +32,11 @@ public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWi
 	private int upperBound = Integer.MAX_VALUE;
 	private String addNewLabel = "Add new";
 
-	public AbstractEditableListWidget() {
-	}
-
 	@Override
 	protected Composite createContents(Composite container) {
 		tableViewer = new TableViewer(container);
 		tableViewer.setLabelProvider(getLabelProvider());
-		tableViewer.setContentProvider(new IStructuredContentProvider() {
-			@Override
-			public Object[] getElements(Object inputElement) {
-				return ((List<?>)((Supplier<?>)inputElement).get()).toArray();
-			}
-		});
+		tableViewer.setContentProvider((IStructuredContentProvider)inputElement -> ((List<?>)((Supplier<?>)inputElement).get()).toArray());
 		tableViewer.setInput((Supplier<List<?>>)this::getSelection);
 		tableViewer.addSelectionChangedListener(event -> refreshButtonStates());
 		tableViewer.setComparator(new ViewerComparator());
@@ -65,7 +61,7 @@ public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWi
 			newSelection.removeAll(selection.toList());
 			setSelection(newSelection);
 		}));
-		
+
 		refreshButtonStates();
 
 		return container;
@@ -129,11 +125,11 @@ public abstract class AbstractEditableListWidget<T> extends AbstractModifiableWi
 	public boolean isMulti() {
 		return upperBound > 1;
 	}
-	
+
 	public void setAddNewLabel(String addNewLabel) {
 		this.addNewLabel = Objects.requireNonNull(addNewLabel);
 	}
-	
+
 	public String getAddNewLabel() {
 		return addNewLabel;
 	}

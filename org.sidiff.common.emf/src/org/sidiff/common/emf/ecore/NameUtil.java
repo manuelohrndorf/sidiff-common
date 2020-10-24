@@ -64,7 +64,7 @@ public class NameUtil {
 			if (i > 0) {
 				result.append(" ");
 			}
-			
+
 			if (words[i].length() > 1) {
 				result.append(Character.toUpperCase(words[i].charAt(0))).append(words[i].substring(1));
 			}
@@ -87,6 +87,9 @@ public class NameUtil {
 	}
 
 	public static String getName(EObject eObject) {
+		if (eObject == null) {
+			return "null";
+		}
 		if (eObject instanceof EAnnotation) {
 			EAnnotation annotation = (EAnnotation) eObject;
 			String res = "Annotation: " + annotation.getSource();
@@ -99,7 +102,7 @@ public class NameUtil {
 			if (entryImpl.eContainer() != null){
 				res += " in \"" + getName(entryImpl.eContainer()) + "\"";
 			}
-			
+
 			return res;
 		}
 
@@ -119,7 +122,7 @@ public class NameUtil {
 			return name;
 		}
 	}
-	
+
 	public static String getQualifiedArgumentName(EObject eObject){
 		String label = "";
 		EObject eContainer = eObject.eContainer();
@@ -189,7 +192,7 @@ public class NameUtil {
 			label = eObject.eClass().getName();
 		}
 
-		
+
 		return label;
 	}
 

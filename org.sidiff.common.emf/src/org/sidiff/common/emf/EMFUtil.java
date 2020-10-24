@@ -36,15 +36,15 @@ import org.sidiff.common.logging.LogUtil;
 
 /**
  * Utility class which provides shortcut functions to several EMF related operations.
- * 
+ *
  * @author wenzel, mrindt
- * 
+ *
  */
 public class EMFUtil {
 
 	/**
 	 * This method delivers all sub EPackages of an EPackage.
-	 * 
+	 *
 	 * @param ePackage
 	 * @return
 	 * @throws EPackageNotFoundException
@@ -54,7 +54,7 @@ public class EMFUtil {
 			throw new EPackageNotFoundException();
 		}
 
-		ArrayList<EPackage> list = new ArrayList<EPackage>();
+		List<EPackage> list = new ArrayList<>();
 
 		for (EPackage sub : ePackage.getESubpackages()) {
 			if (!list.contains(sub)) {
@@ -72,7 +72,7 @@ public class EMFUtil {
 
 	/**
 	 * Checks whether the given EModelElement has the given marking annotation. In case of an EObject, its eClass is checked.
-	 * 
+	 *
 	 * @param object
 	 * @param annotation
 	 * @return
@@ -123,7 +123,7 @@ public class EMFUtil {
 
 	/**
 	 * Get the root package (i.e. the meta model) that contains the given classifier.
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -137,7 +137,7 @@ public class EMFUtil {
 
 	/**
 	 * Get the ID (local URI fragment) of a specific instance of {@link EObject}.
-	 * 
+	 *
 	 * @param eobj
 	 *            The instance of {@link EObject} whose ID to retrieve.
 	 * @return The object's ID.
@@ -148,10 +148,12 @@ public class EMFUtil {
 		}
 		if (eobj instanceof BasicEObjectImpl) {
 			URI uri = ((BasicEObjectImpl) eobj).eProxyURI();
-			if (uri != null)
-				return "" + uri;
+			if (uri != null) {
+				return uri.toString();
+			}
 		}
-		LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI fragment for ", eobj.toString(), " Reason: " + eobj + " is not contained in a resource.");
+		LogUtil.log(LogEvent.DEBUG, "Unable to resolve URI fragment for ", eobj.toString(),
+				" Reason: " + eobj + " is not contained in a resource.");
 		return "Anonymous_" + EMFUtil.getModelRelativeName(eobj.eClass());
 	}
 
@@ -176,7 +178,7 @@ public class EMFUtil {
 
 	/**
 	 * Computes a hash value for the given resource.
-	 * 
+	 *
 	 * @param resource
 	 * @return
 	 */
@@ -206,7 +208,7 @@ public class EMFUtil {
 
 	/**
 	 * Returns a copy of the given eObject but not copies the EReferences.
-	 * 
+	 *
 	 * @param eObject
 	 *            the object to copy.
 	 * @return the copy.
@@ -234,7 +236,7 @@ public class EMFUtil {
 
 	/**
 	 * Called to handle the copying of an attribute; this adds a list of values or sets a single value as appropriate for the multiplicity.
-	 * 
+	 *
 	 * @param eAttribute
 	 *            the attribute to copy.
 	 * @param eObject
@@ -275,7 +277,7 @@ public class EMFUtil {
 
 	/**
 	 * Copies the proxy URI from the original to the copy, if present.
-	 * 
+	 *
 	 * @param eObject
 	 *            the object being copied.
 	 * @param copyEObject
@@ -291,24 +293,29 @@ public class EMFUtil {
 	 * Returns the xmi:id attribute value for the given eObject as a <tt>String</tt>. Returns <b>null</b> in case there's no containing resource or the eObject simply didn't have a xmi:id attribute.
 	 */
 	public static String getXmiId(EObject eObject) {
-		String objectID = null;
-		if (eObject != null && eObject.eResource() instanceof XMIResource) {
-			objectID = ((XMIResource) eObject.eResource()).getID(eObject);
+		if (eObject != null) {
+			Resource resource = eObject.eResource();
+			if (resource instanceof XMIResource) {
+				return ((XMIResource)resource).getID(eObject);
+			}
 		}
-		return objectID;
+		return null;
 	}
-	
+
 	/**
 	 * Sets the xmi:id attribute value for the given eObject
-	 * 
+	 *
 	 * @param eObject
 	 * 				the object for that the id is set
 	 * @param id
 	 * 				the id that is set
 	 */
 	public static void setXmiId(EObject eObject, String id){
-		if (eObject.eResource() instanceof XMIResource) {
-			((XMIResource) eObject.eResource()).setID(eObject, id);
+		if (eObject != null) {
+			Resource resource = eObject.eResource();
+			if (resource instanceof XMIResource) {
+				((XMIResource)resource).setID(eObject, id);
+			}
 		}
 	}
 
@@ -412,7 +419,7 @@ public class EMFUtil {
 		}
 		return "[" + key.toString() + "]";
 	}
-	
+
 	/**
 	 * Check if the element is created dynamically, i.e. the containment
 	 * reference is transient, derived or non-changeable, or whether is a synthetically
@@ -425,7 +432,7 @@ public class EMFUtil {
 		if(element instanceof EGenericType) {
 			return isDynamic((EGenericType)element);
 		}
-		EReference containment = element.eContainmentFeature();		
+		EReference containment = element.eContainmentFeature();
 		if (containment != null) {
 			return isDynamic(element.eContainer(), containment);
 		}
@@ -449,9 +456,9 @@ public class EMFUtil {
 	 */
 	public static boolean isDynamic(EObject element, EReference eReference) {
 		return isDynamic(eReference)
-			 || (eReference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
+			 || eReference.getEType() == EcorePackage.eINSTANCE.getEGenericType() // special case for references referencing generic types
 			 		&& eReference.getEContainingClass().isSuperTypeOf(element.eClass()) // prevent exceptions because of undefined features
-			 		&& getReferenceTargets(element, eReference).stream().allMatch(EMFUtil::isDynamic)); // dynamic if all targets are dynamic
+			 		&& getReferenceTargets(element, eReference).stream().allMatch(EMFUtil::isDynamic); // dynamic if all targets are dynamic
 	}
 
 	/**

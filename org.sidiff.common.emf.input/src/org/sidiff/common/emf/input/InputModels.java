@@ -223,7 +223,7 @@ public class InputModels {
 		private SiDiffResourceSet resourceSet;
 
 		private IModelAdapter modelAdapter;
-		private IFolder outputFolder; // null if adapter models should not be saved
+		private IFolder outputFolder; // null if adapted models should not be saved
 
 		private int minValidateSeverity = Diagnostic.CANCEL;
 		private int assertedMinNumModels = 0;
@@ -427,10 +427,10 @@ public class InputModels {
 				}
 				return resource;
 			} else if (model instanceof URI) {
-				try {
-					URI uri = (URI)model;
-					if(modelAdapter != null) {
-						if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
+				URI uri = (URI)model;
+				if(modelAdapter != null) {
+					if(modelAdapter.getProprietaryFileExtensions().contains(uri.fileExtension())) {
+						try {
 							Resource adaptedModel =
 								modelAdapter.toModel(
 									EMFStorage.toIFile(uri),
@@ -440,21 +440,25 @@ public class InputModels {
 								resourceSet.saveResource(adaptedModel);
 							}
 							return adaptedModel;
-						}
-						if(modelAdapter.getModelFileExtensions().contains(uri.fileExtension())) {
-							return null; // ignore derived model files here
+						} catch(Exception e) {
+							throw new InputModelsException("Failed to load model '" + model + "' using " + modelAdapter.getName(), e);
 						}
 					}
+					if(modelAdapter.getModelFileExtensions().contains(uri.fileExtension())) {
+						return null; // ignore derived model files here
+					}
+				}
+				try {
 					return resourceSet.getResource(uri, true);
 				} catch(Exception e) {
-					throw new InputModelsException("Could not load model from: " + model, e);
+					throw new InputModelsException("Failed to load model '" + model + "'", e);
 				}
 			} else if (model instanceof IFile) {
 				return deriveResource(EMFStorage.toPlatformURI((IFile)model));
 			} else if (model instanceof File) {
 				return deriveResource(EMFStorage.toFileURI((File)model));
 			}
-			throw new InputModelsException("Model is neither URI nor Resource nor IFile");
+			throw new InputModelsException("Model type not supported: " + model);
 		}
 
 		protected void validateResource(Resource model) throws InputModelsException {

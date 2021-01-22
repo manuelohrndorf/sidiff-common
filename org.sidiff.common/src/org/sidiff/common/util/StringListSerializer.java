@@ -3,6 +3,8 @@ package org.sidiff.common.util;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * <p>A <code>StringListSerializer</code> serializes a list of strings
@@ -82,17 +84,12 @@ public class StringListSerializer {
 		if(list.isEmpty()) {
 			return "";
 		}
-		StringBuilder builder = new StringBuilder();
-		for(String item : list) {
-			final String escapedItem = escapeDelimiter(escapeEscape(item.trim()));
-			if(!escapedItem.isEmpty()) {
-				if(builder.length() > 0) {
-					builder.append(DELIMITER);
-				}
-				builder.append(escapedItem);
-			}
-		}
-		return builder.toString();
+		return list.stream()
+				.map(String::trim)
+				.map(this::escapeEscape)
+				.map(this::escapeDelimiter)
+				.filter(s -> !s.isEmpty())
+				.collect(Collectors.joining(DELIMITER));
 	}
 
 	/**
@@ -106,14 +103,12 @@ public class StringListSerializer {
 		if(string.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<String> items = new ArrayList<String>();
-		for(String item : DESERIALIZE_PATTERN.split(string)) {
-			final String unescapedItem = unescapeEscape(unescapeDelimiter(item.trim()));
-			if(!unescapedItem.isEmpty()) {
-				items.add(unescapedItem);
-			}
-		}
-		return items;
+		return Stream.of(DESERIALIZE_PATTERN.split(string))
+					.map(String::trim)
+					.map(this::unescapeDelimiter)
+					.map(this::unescapeEscape)
+					.filter(s -> !s.isEmpty())
+					.collect(Collectors.toList());
 	}
 
 	private String escapeDelimiter(String string) {

@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -16,14 +18,17 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.plugin.EcorePlugin;
 import org.eclipse.emf.ecore.resource.Resource;
 
 /**
- * Contains utility functions to convert (platform/file) {@link URI}, {@link IResource}/{@link IFile}/...,
- * {@link File} into one another.
+ * Contains utility functions to convert between
+ * <ul>
+ * <li>platform/file {@link URI}</li>
+ * <li>{@link IResource} ({@link IFile}, {@link IFolder})</li>
+ * <li>{@link File} / {@link Path}</li>
+ * </ul>
  */
 public class EMFStorage {
 
@@ -44,26 +49,6 @@ public class EMFStorage {
 			return resource.getResourceSet().getURIConverter().normalize(resource.getURI());
 		}
 		return resource.getURI();
-	}
-
-	/**
-	 * Converts a file path to an platform resource URI.
-	 * @param path The path to convert.
-	 * @return The given path as platform resource URI.
-	 * @deprecated Use URIs directly, or <code>EMFStorage.{@link #toPlatformURI(File) toPlatformURI}(new File(path))</code> instead.
-	 */
-	public static URI pathToUri(String path) {
-		return toPlatformURI(new File(path));
-	}
-
-	/**
-	 * Converts a URI to an absolute file path.
-	 * @param uri The URI to convert.
-	 * @return The given URI as absolute file path
-	 * @deprecated Use URIs directly, or <code>EMFStorage.{@link #toFile(URI)}.getAbsolutePath()</code> instead.
-	 */
-	public static String uriToPath(URI uri) {
-		return toFile(uri).getAbsolutePath();
 	}
 
 	/**
@@ -98,6 +83,16 @@ public class EMFStorage {
 	}
 
 	/**
+	 * <p>Tries to convert the {@link Path} in the local file system to a platform URI.</p>
+	 * <p>This is a convenience method equivalent to <code>toPlatformURI(toFileURI(path))</code>.</p>
+	 * @param path a path specifying a file in the local file system
+	 * @return platform URI of the file
+	 */
+	public static URI toPlatformURI(Path path) {
+		return toPlatformURI(toFileURI(path));
+	}
+
+	/**
 	 * Tries to convert an URI to platform URI. If the URI already is a platform
 	 * URI or cannot be converted, it is returned as is. URIs are deresolved
 	 * against the workspace root to form platform resource URIs.
@@ -123,7 +118,7 @@ public class EMFStorage {
 				// The replacement is missing the platform:/resource prefix; we must however not encode it twice
 				return URI.createPlatformResourceURI(replaced.toString(), false);
 			}
-			
+
 			try {
 				IFile files[] = getWorkspaceRoot().findFilesForLocationURI(new java.net.URI(uri.toString()));
 				if(files.length >= 1) {
@@ -132,7 +127,7 @@ public class EMFStorage {
 			} catch (URISyntaxException | IllegalArgumentException e) {
 				// fall through
 			}
-			
+
 			for(int i = 0; i < uri.segmentCount(); i++) {
 				IProject project = getWorkspaceRoot().getProject(uri.segment(i));
 				if(project.exists()) {
@@ -178,6 +173,16 @@ public class EMFStorage {
 	public static URI toFileURI(File file) {
 		Objects.requireNonNull(file, "file must not be null");
 		return URI.createFileURI(file.getAbsolutePath());
+	}
+
+	/**
+	 * Returns a file URI for the absolute path of the given {@link Path}.
+	 * @param path the path
+	 * @return file URI for absolute path specified by path
+	 */
+	public static URI toFileURI(Path path) {
+		Objects.requireNonNull(path, "path must not be null");
+		return URI.createFileURI(path.toAbsolutePath().toString());
 	}
 
 	/**
@@ -227,6 +232,30 @@ public class EMFStorage {
 	}
 
 	/**
+	 * Tries to convert the URI to a file URI and returns a {@link Path} in the local file system.
+	 * If the URI cannot be converted to a file URI, <code>null</code> is returned.
+	 * @param uri the URI
+	 * @return path of file in the local file system for the given URI, <code>null</code> if not convertible to a file URI
+	 */
+	public static Path toPath(URI uri) {
+		URI fileURI = toFileURI(uri);
+		if(fileURI.isFile()) {
+			return Paths.get(fileURI.toFileString());
+		}
+		return null;
+	}
+
+	/**
+	 * Tries to convert the URI to a file URI and returns a {@link Path} in the local file system.
+	 * If the URI cannot be converted to a file URI, <code>null</code> is returned.
+	 * @param uri the URI
+	 * @return path of file in the local file system for the given URI, <code>null</code> if not convertible to a file URI
+	 */
+	public static Path toPath(IFile file) {
+		return toPath(toFileURI(file));
+	}
+
+	/**
 	 * Tries to convert the URI to a file URI and returns the corresponding {@link File} in the local file system.
 	 * The returned File is a resource handle and may or may not actually exist.
 	 * If the URI cannot be converted to a file URI, <code>null</code> is returned.
@@ -248,7 +277,7 @@ public class EMFStorage {
 	 * @return corresponding file in the local file system, <code>null</code> if none
 	 */
 	public static File toFile(IFile file) {
-		return toFile(toPlatformURI(file));
+		return toFile(toFileURI(file));
 	}
 
 	/**
@@ -262,12 +291,22 @@ public class EMFStorage {
 	public static IFile toIFile(URI uri) {
 		URI platformURI = toPlatformURI(uri);
 		if(platformURI.isPlatform()) {
-			return getWorkspaceRoot().getFile(new Path(platformURI.toPlatformString(true)));
+			return getWorkspaceRoot().getFile(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		if(platformURI.isArchive() && platformURI.authority().startsWith("platform:")) {
 			return toIFile(URI.createURI(platformURI.authority().substring(0, platformURI.authority().length()-1)));
 		}
 		return null;
+	}
+
+	/**
+	 * <p>Tries to convert the {@link Path} in the local file system to a {@link IFile} in the workspace</p>
+	 * <p>This is a convenience method equivalent to <code>toIFile(toFileURI(path))</code>.</p>
+	 * @param path a path of a file in the local file system
+	 * @return corresponding file in the workspace, <code>null</code> if none
+	 */
+	public static IFile toIFile(IPath path) {
+		return toIFile(toFileURI(path));
 	}
 
 	/**
@@ -281,6 +320,16 @@ public class EMFStorage {
 	}
 
 	/**
+	 * <p>Tries to convert the {@link Path} in the local file system to a {@link IFile} in the workspace</p>
+	 * <p>This is a convenience method equivalent to <code>toIFile(toFileURI(path))</code>.</p>
+	 * @param path a path of a file in the local file system
+	 * @return corresponding file in the workspace, <code>null</code> if none
+	 */
+	public static IFile toIFile(Path path) {
+		return toIFile(toFileURI(path));
+	}
+
+	/**
 	 * Tries to convert the URI to a platform URI and returns the corresponding {@link IFolder} in the workspace.
 	 * The returned IFolder is a resource handle and may or may not actually exist.
 	 * If the URI cannot be converted to a platform URI, <code>null</code> is returned.
@@ -290,7 +339,7 @@ public class EMFStorage {
 	public static IFolder toIFolder(URI uri) {
 		URI platformURI = toPlatformURI(uri);
 		if(platformURI.isPlatform()) {
-			return getWorkspaceRoot().getFolder(new Path(platformURI.toPlatformString(true)));
+			return getWorkspaceRoot().getFolder(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		return null;
 	}
@@ -303,6 +352,16 @@ public class EMFStorage {
 	 */
 	public static IFolder toIFolder(File file) {
 		return toIFolder(toFileURI(file));
+	}
+
+	/**
+	 * <p>Tries to convert the {@link Path} in the local file system to a {@link IFolder} in the workspace</p>
+	 * <p>This is a convenience method equivalent to <code>toIFolder(toFileURI(path))</code>.</p>
+	 * @param path a path of a file in the local file system
+	 * @return corresponding folder in the workspace, <code>null</code> if none
+	 */
+	public static IFolder toIFolder(Path path) {
+		return toIFolder(toFileURI(path));
 	}
 
 	protected static IWorkspaceRoot getWorkspaceRoot() {

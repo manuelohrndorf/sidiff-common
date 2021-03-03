@@ -174,6 +174,16 @@ public class UIUtil {
 		}
 	}
 
+	/**
+	 * Opens a read-only default text editor with the given name and text input
+	 * @param name the name/title of the editor input
+	 * @param input the input (can contain line breaks)
+	 * @throws PartInitException if opening the editor failed
+	 */
+	public static void openTextEditor(String name, String input) throws PartInitException {
+		IDE.openEditor(getActivePage(), new StringEditorInput(name, input), "org.eclipse.ui.DefaultTextEditor");
+	}
+
 	public static void showMessage(final String message) {
 		Display.getDefault().asyncExec(() -> MessageDialog.openInformation(getActiveShell(),
 				getActivePart().getTitle(),

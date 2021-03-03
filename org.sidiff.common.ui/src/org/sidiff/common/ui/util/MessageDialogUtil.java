@@ -12,7 +12,8 @@ import org.sidiff.common.exceptions.ExceptionUtil;
 /**
  * A class that provides static methods to create {@link MessageDialog}s for
  * errors, messages and runnables with progress.
- * @author Adrian Bingener, Robert M�ller
+ * @author Adrian Bingener
+ * @author rmueller
  */
 public final class MessageDialogUtil {
 

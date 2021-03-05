@@ -38,7 +38,7 @@ public class MetricsList extends ArrayList<MetricHandle> {
 	}
 
 	/**
-	 * Exports the metrics in this list as a map of "<i>metric-key</i> : <i>resource-uri</i>" to 
+	 * Exports the metrics in this list as a map of "<i>metric-key</i> : <i>resource-uri</i>" to
 	 * the value of the metric. Only metrics which have been computed before will be exported.
 	 * The map is suitable to use with <code>StatisticsUtil.createStatisticsUtil(Map)</code>.
 	 * @return map of "<i>metric-key</i> : <i>resource-uri</i>" -> <i>metric-value</i>
@@ -101,21 +101,23 @@ public class MetricsList extends ArrayList<MetricHandle> {
 
 		Notifier context = needle.getContext();
 		if(context instanceof Resource) {
-			// Match Resources based on URI
 			URI contextUri = ((Resource)context).getURI();
-			Optional<MetricHandle> handleForResource =
+			// 1. Match Resources based on URI
+			return
 				stream().filter(metricFilter)
 					.filter(handle -> handle.getContext() instanceof Resource
 							&& contextUri.equals(((Resource)handle.getContext()).getURI()))
-					.findFirst();
-			if(handleForResource.isPresent()) {
-				return handleForResource;
-			}
-			// Then match based on only the file name if nothing found
-			return stream().filter(metricFilter)
-				.filter(handle -> handle.getContext() instanceof Resource
-						&& contextUri.lastSegment().equals(((Resource)handle.getContext()).getURI().lastSegment()))
-				.findFirst();
+					.findFirst()
+			.or(() -> // 2. Match based on file name (last URI segment)
+				stream().filter(metricFilter)
+					.filter(handle -> handle.getContext() instanceof Resource
+							&& contextUri.lastSegment().equals(((Resource)handle.getContext()).getURI().lastSegment()))
+					.findFirst()
+			).or(() -> // 3. Match any resources with any other resources
+				stream().filter(metricFilter)
+					.filter(handle -> handle.getContext() instanceof Resource)
+					.findFirst()
+			);
 		} else if(context instanceof ResourceSet) {
 			// Match Resource Set because there is only a single one
 			return stream().filter(metricFilter)

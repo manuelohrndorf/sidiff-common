@@ -1,63 +1,33 @@
 package org.sidiff.common.emf.metrics.ui.views;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.action.*;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.*;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.TabFolder;
-import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.ISelectionListener;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.swt.widgets.*;
+import org.eclipse.ui.*;
 import org.eclipse.ui.part.ViewPart;
-import org.sidiff.common.emf.metrics.MetricHandle;
-import org.sidiff.common.emf.metrics.MetricsFacade;
-import org.sidiff.common.emf.metrics.MetricsList;
-import org.sidiff.common.emf.metrics.MetricsScope;
-import org.sidiff.common.emf.metrics.MetricsUtil;
+import org.eclipse.ui.statushandlers.StatusManager;
+import org.sidiff.common.emf.metrics.*;
 import org.sidiff.common.emf.metrics.jobs.RecomputeMetricsJob;
 import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
 import org.sidiff.common.emf.modelstorage.EMFStorage;
 import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
 import org.sidiff.common.file.CSVWriter;
+import org.sidiff.common.ui.util.UIUtil;
 
 /**
  * @author cpietsch
@@ -80,6 +50,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	private Action takeSnapshotAction;
 	private Action removeSnapshotAction;
 	private Action expandSelectionAction;
+	private Action showDifferencesViewAction;
 
 	private SiDiffResourceSet resourceSet;
 
@@ -98,6 +69,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		takeSnapshotAction = createTakeSnapshotAction();
 		removeSnapshotAction = createRemoveSnapshotAction();
 		expandSelectionAction = createExpandSelectionAction();
+		showDifferencesViewAction = createShowDifferencesViewAction();
 		createToolBarMenu();
 
 		tabFolder = new TabFolder(composite, SWT.NONE);
@@ -120,7 +92,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				Set<MetricHandle> handles = selectionTab.getSelectedHandles();
 				if(!handles.isEmpty()) {
 					new RecomputeMetricsJob(handles,
-							() -> selectionTab.refreshHandles(handles)).schedule();					
+							() -> selectionTab.refreshHandles(handles)).schedule();
 				}
 			}
 		};
@@ -138,11 +110,11 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				if(!handles.isEmpty()) {
 					String csv = CSVWriter.writeToString(csvWriter -> {
 						for(MetricHandle handle : handles) {
-							csvWriter.write(handle.getMetric().getKey(), handle.getContextLabel(), MetricsUtil.getLabel(handle.getValues()));							
+							csvWriter.write(handle.getMetric().getKey(), handle.getContextLabel(), MetricsUtil.getLabel(handle.getValues()));
 						}
 					});
 					if(!csv.isEmpty()) {
-						clipboard.setContents(new Object[] { csv }, new Transfer[] { TextTransfer.getInstance() });					
+						clipboard.setContents(new Object[] { csv }, new Transfer[] { TextTransfer.getInstance() });
 					}
 				}
 			}
@@ -162,7 +134,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 					.map(MetricsUtil::getLabel)
 					.collect(Collectors.joining(" "));
 				if(!values.isEmpty()) {
-					clipboard.setContents(new Object[] { values }, new Transfer[] { TextTransfer.getInstance() });					
+					clipboard.setContents(new Object[] { values }, new Transfer[] { TextTransfer.getInstance() });
 				}
 			}
 		};
@@ -193,14 +165,14 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		action.setToolTipText("Take a snapshot of the current selection and metrics to compare it with others.");
 		return action;
 	}
-	
+
 	private Action createRemoveSnapshotAction() {
 		Action action = new Action() {
 			@Override
 			public void run() {
 				int selectedTabIndex = tabFolder.getSelectionIndex();
 				if(selectedTabIndex > 0) { // first tab is selection tab, which is not removable
-					TabItem item = tabFolder.getItem(selectedTabIndex);					
+					TabItem item = tabFolder.getItem(selectedTabIndex);
 					item.dispose();
 					tabs.removeIf(tab -> tab.tabItem == item);
 					handleTabsChanged();
@@ -228,7 +200,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		action.setToolTipText("Recompute the values of all metrics.");
 		return action;
 	}
-	
+
 	private Action createExpandSelectionAction() {
 		Action action = new Action("Expand Selection to Resource", IAction.AS_CHECK_BOX) {
 			@Override
@@ -243,6 +215,23 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		return action;
 	}
 
+	private Action createShowDifferencesViewAction() {
+		Action action = new Action() {
+			@Override
+			public void run() {
+				try {
+					UIUtil.showView(MetricsDifferencesView.class, MetricsDifferencesView.ID);
+				} catch (PartInitException e) {
+					StatusManager.getManager().handle(e, MetricsUiPlugin.ID);
+				}
+			}
+		};
+		action.setText("Show Differences View");
+		action.setImageDescriptor(MetricsUiPlugin.getImageDescriptor("metrics_differences.png"));
+		action.setToolTipText("Open the view that calculates differences between metrics snapshots.");
+		return action;
+	}
+
 	private void createToolBarMenu() {
 		IActionBars actionBars = getViewSite().getActionBars();
 		fillDropDownMenu(actionBars.getMenuManager());
@@ -254,6 +243,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		toolBar.add(takeSnapshotAction);
 		toolBar.add(removeSnapshotAction);
 		toolBar.add(expandSelectionAction);
+		toolBar.add(showDifferencesViewAction);
 	}
 
 	protected void fillDropDownMenu(IMenuManager dropDownMenu) {
@@ -261,6 +251,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		dropDownMenu.add(takeSnapshotAction);
 		dropDownMenu.add(removeSnapshotAction);
 		dropDownMenu.add(expandSelectionAction);
+		dropDownMenu.add(showDifferencesViewAction);
 	}
 
 	protected void fillContextMenu(IMenuManager menuManager) {
@@ -309,7 +300,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		expandSelectionAction.setEnabled(selectionTabSelected);
 	}
 
-	protected void handleTabsChanged() {
+	void handleTabsChanged() {
 		MetricsDifferencesView differencesView = (MetricsDifferencesView)getSite().getPage().findView(MetricsDifferencesView.ID);
 		if(differencesView != null) {
 			differencesView.setMetricsTabs(tabs);
@@ -410,7 +401,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				@Override
 				public String getToolTipText(Object element) {
 					if(element instanceof MetricHandle) {
-						return ((MetricHandle)element).getMetric().getDescription().orElse(null);					
+						return ((MetricHandle)element).getMetric().getDescription().orElse(null);
 					}
 					return null;
 				}
@@ -464,7 +455,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 						if(handle.isUncategorized()) {
 							return MetricsUtil.getLabel(handle.getUncategorizedValues());
 						}
-						return "<categorized value>";					
+						return "<categorized value>";
 					} else if(element instanceof MetricHandleKeyValue) {
 						return MetricsUtil.getLabel(((MetricHandleKeyValue)element).values);
 					}
@@ -506,7 +497,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				metrics.sort(comparatorFactory.get().reversed());
 				treeViewer.getTree().setSortDirection(SWT.UP);
 			} else {
-				metrics.sort(comparatorFactory.get());				
+				metrics.sort(comparatorFactory.get());
 				treeViewer.getTree().setSortDirection(SWT.DOWN);
 			}
 			treeViewer.getTree().setSortColumn(column);

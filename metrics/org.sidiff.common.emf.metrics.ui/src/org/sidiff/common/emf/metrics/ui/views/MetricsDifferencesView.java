@@ -11,11 +11,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -47,7 +43,6 @@ import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
 import org.sidiff.common.emf.metrics.ui.views.MetricsView.Tab;
 
 /**
- * 
  * @author rmueller
  */
 public class MetricsDifferencesView extends ViewPart {
@@ -89,6 +84,13 @@ public class MetricsDifferencesView extends ViewPart {
 		createContextMenu();
 
 		updateMetricsDifference();
+
+		// Normally, the metrics view pushes updates to the difference view.
+		// Request push manually when first opening, as metrics view may already be open.
+		MetricsView metricsView = (MetricsView)getSite().getPage().findView(MetricsView.ID);
+		if(metricsView != null) {
+			metricsView.handleTabsChanged();
+		}
 	}
 
 	private void loadImages() {
@@ -141,12 +143,7 @@ public class MetricsDifferencesView extends ViewPart {
 	private void createContextMenu() {
 		MenuManager contextMenu = new MenuManager("#ViewerMenu");
 	    contextMenu.setRemoveAllWhenShown(true);
-	    contextMenu.addMenuListener(new IMenuListener() {
-	        @Override
-	        public void menuAboutToShow(IMenuManager menuManager) {
-	            fillContextMenu(menuManager);
-	        }
-	    });
+	    contextMenu.addMenuListener(menuManager -> fillContextMenu(menuManager));
 	    Menu menu = contextMenu.createContextMenu(treeViewer.getControl());
 	    treeViewer.getControl().setMenu(menu);
 	}
@@ -201,7 +198,7 @@ public class MetricsDifferencesView extends ViewPart {
 
 		treeViewer.addDoubleClickListener(event -> recomputeAction.run());
 	}
-	
+
 	private void createNameColumn() {
 		metricNameColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
 		metricNameColumn.getColumn().setText("Name");
@@ -210,7 +207,7 @@ public class MetricsDifferencesView extends ViewPart {
 			@Override
 			public String getToolTipText(Object element) {
 				if(element instanceof MetricHandleDifference) {
-					return ((MetricHandleDifference)element).getMetric().getDescription().orElse(null);					
+					return ((MetricHandleDifference)element).getMetric().getDescription().orElse(null);
 				}
 				return null;
 			}
@@ -290,7 +287,7 @@ public class MetricsDifferencesView extends ViewPart {
 					if(handle.isUncategorized()) {
 						return handle.getUncategorizedResults().getNumericOffsetAsString();
 					}
-					return "<categorized result>";					
+					return "<categorized result>";
 				} else if(element instanceof MetricHandleDifferenceKeyValue) {
 					return ((MetricHandleDifferenceKeyValue)element).result.getNumericOffsetAsString();
 				}
@@ -326,7 +323,7 @@ public class MetricsDifferencesView extends ViewPart {
 			}
 		});
 	}
-	
+
 	private void handleColumnSelection(SelectionEvent event) {
 		if(event.widget == metricNameColumn.getColumn()) {
 			sortColumn(metricNameColumn.getColumn(), MetricHandleDifference::getByNameComparator);
@@ -344,12 +341,12 @@ public class MetricsDifferencesView extends ViewPart {
 			metricsDifference.sort(comparatorFactory.get().reversed());
 			treeViewer.getTree().setSortDirection(SWT.UP);
 		} else {
-			metricsDifference.sort(comparatorFactory.get());				
+			metricsDifference.sort(comparatorFactory.get());
 			treeViewer.getTree().setSortDirection(SWT.DOWN);
 		}
 		treeViewer.getTree().setSortColumn(column);
 	}
-	
+
 	private Set<MetricHandleDifference> getSelectedHandlesDifferences() {
 		Set<MetricHandleDifference> handles = new HashSet<>();
 		for(Object selected : treeViewer.getStructuredSelection().toList()) {

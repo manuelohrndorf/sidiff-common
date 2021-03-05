@@ -12,6 +12,11 @@ import java.util.Set;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 
+/**
+ * Represents the difference between two {@link MetricHandle}s,
+ * by representing the compared values as {@link MetricValueComparisonResult}s.
+ * @author rmueller
+ */
 public class MetricHandleDifference {
 
 	private final IMetric metric;
@@ -52,7 +57,7 @@ public class MetricHandleDifference {
 			results.put(key, result);
 		}
 	}
-	
+
 	public Map<Set<Object>, MetricValueComparisonResult> getResults() {
 		return Collections.unmodifiableMap(results);
 	}
@@ -68,7 +73,7 @@ public class MetricHandleDifference {
 	public MetricHandle getChanged() {
 		return changed;
 	}
-	
+
 	public boolean hasResults() {
 		return !results.isEmpty();
 	}
@@ -86,7 +91,7 @@ public class MetricHandleDifference {
 
 	@Override
 	public String toString() {
-		return "MetricHandleDifference[origin=" + origin + ", changed=" + changed + ", results=" + MetricsUtil.getLabel(results) + "]";
+		return "MetricHandleDifference[origin=" + origin + ", changed=" + changed + ", results=" + MetricsLabelUtil.getLabel(results) + "]";
 	}
 
 	public static Comparator<MetricHandleDifference> getByKeyComparator() {

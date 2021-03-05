@@ -1,5 +1,9 @@
 package org.sidiff.common.emf.metrics;
 
+/**
+ * Defines how to compare the value of metrics and which kind of value is "better".
+ * @author rmueller
+ */
 public enum ComparisonType {
 
 	/**

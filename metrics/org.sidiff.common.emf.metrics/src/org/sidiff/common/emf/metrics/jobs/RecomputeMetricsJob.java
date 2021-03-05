@@ -10,6 +10,10 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.sidiff.common.emf.metrics.MetricHandle;
 
+/**
+ * A job which recomputes specific {@link MetricHandle}s and calls a callback on finish.
+ * @author rmueller
+ */
 public class RecomputeMetricsJob extends Job {
 
 	private final Collection<? extends MetricHandle> handles;

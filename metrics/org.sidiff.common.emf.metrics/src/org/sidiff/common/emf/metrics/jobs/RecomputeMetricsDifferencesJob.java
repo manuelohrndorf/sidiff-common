@@ -10,6 +10,10 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.sidiff.common.emf.metrics.MetricHandleDifference;
 
+/**
+ * A job which recomputes specified {@link MetricHandleDifference}s and calls a callback on finish.
+ * @author rmueller
+ */
 public class RecomputeMetricsDifferencesJob extends Job {
 
 	private final Collection<? extends MetricHandleDifference> handleDifferences;

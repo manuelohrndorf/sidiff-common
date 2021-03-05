@@ -37,7 +37,7 @@ import org.sidiff.common.emf.metrics.MetricHandleDifference;
 import org.sidiff.common.emf.metrics.MetricValueComparisonResult;
 import org.sidiff.common.emf.metrics.MetricsFacade;
 import org.sidiff.common.emf.metrics.MetricsListDifference;
-import org.sidiff.common.emf.metrics.MetricsUtil;
+import org.sidiff.common.emf.metrics.MetricsLabelUtil;
 import org.sidiff.common.emf.metrics.jobs.RecomputeMetricsDifferencesJob;
 import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
 import org.sidiff.common.emf.metrics.ui.views.MetricsView.Tab;
@@ -216,7 +216,7 @@ public class MetricsDifferencesView extends ViewPart {
 				if(element instanceof MetricHandleDifference) {
 					return ((MetricHandleDifference)element).getMetric().getName();
 				} else if(element instanceof MetricHandleDifferenceKeyValue) {
-					return MetricsUtil.getLabel(((MetricHandleDifferenceKeyValue)element).keys);
+					return MetricsLabelUtil.getLabel(((MetricHandleDifferenceKeyValue)element).keys);
 				}
 				return null;
 			}
@@ -392,7 +392,7 @@ public class MetricsDifferencesView extends ViewPart {
 
 	void setMetricsTabs(List<Tab> tabs) {
 		this.tabs = tabs.stream().collect(Collectors.toMap(
-				tab -> tab.getTitle() + " - " + MetricsUtil.getLabel(tab.getSelectedNotifier()),
+				tab -> tab.getTitle() + " - " + MetricsLabelUtil.getLabel(tab.getSelectedNotifier()),
 				Function.identity()));
 		handleTabsChanged();
 	}

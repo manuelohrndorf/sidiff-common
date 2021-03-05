@@ -7,6 +7,11 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.sidiff.common.file.CSVWriter;
 
+/**
+ * Represents the difference between two {@link MetricsList}s as
+ * a list of {@link MetricHandleDifference}s.
+ * @author rmueller
+ */
 public class MetricsListDifference extends ArrayList<MetricHandleDifference> {
 
 	private static final long serialVersionUID = 3153386032148717312L;
@@ -46,7 +51,7 @@ public class MetricsListDifference extends ArrayList<MetricHandleDifference> {
 						handle.getMetric().getKey(),
 						handle.getOrigin().getContextLabel(),
 						handle.getChanged().getContextLabel(),
-						MetricsUtil.getLabel(handle.getResults()));
+						MetricsLabelUtil.getLabel(handle.getResults()));
 				}
 			}
 		});

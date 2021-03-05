@@ -11,6 +11,9 @@ import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.emf.metrics.IMetricValueAcceptor;
 import org.sidiff.common.emf.metrics.defaults.AbstractResourceMetric;
 
+/**
+ * @author rmueller
+ */
 public class TypeCounting extends AbstractResourceMetric {
 
 	@Override

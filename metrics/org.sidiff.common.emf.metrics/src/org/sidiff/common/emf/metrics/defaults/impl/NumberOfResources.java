@@ -5,6 +5,9 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.sidiff.common.emf.metrics.IMetricValueAcceptor;
 import org.sidiff.common.emf.metrics.defaults.AbstractResourceSetMetric;
 
+/**
+ * @author rmueller
+ */
 public class NumberOfResources extends AbstractResourceSetMetric {
 
 	@Override

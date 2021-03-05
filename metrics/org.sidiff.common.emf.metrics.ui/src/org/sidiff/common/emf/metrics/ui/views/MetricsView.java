@@ -110,7 +110,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				if(!handles.isEmpty()) {
 					String csv = CSVWriter.writeToString(csvWriter -> {
 						for(MetricHandle handle : handles) {
-							csvWriter.write(handle.getMetric().getKey(), handle.getContextLabel(), MetricsUtil.getLabel(handle.getValues()));
+							csvWriter.write(handle.getMetric().getKey(), handle.getContextLabel(), MetricsLabelUtil.getLabel(handle.getValues()));
 						}
 					});
 					if(!csv.isEmpty()) {
@@ -131,7 +131,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			public void run() {
 				String values = selectionTab.getSelectedHandles().stream()
 					.map(MetricHandle::getValues)
-					.map(MetricsUtil::getLabel)
+					.map(MetricsLabelUtil::getLabel)
 					.collect(Collectors.joining(" "));
 				if(!values.isEmpty()) {
 					clipboard.setContents(new Object[] { values }, new Transfer[] { TextTransfer.getInstance() });
@@ -410,7 +410,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 					if(element instanceof MetricHandle) {
 						return ((MetricHandle)element).getMetric().getName();
 					} else if(element instanceof MetricHandleKeyValue) {
-						return MetricsUtil.getLabel(((MetricHandleKeyValue)element).keys);
+						return MetricsLabelUtil.getLabel(((MetricHandleKeyValue)element).keys);
 					}
 					return null;
 				}
@@ -453,11 +453,11 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 					if(element instanceof MetricHandle) {
 						MetricHandle handle = (MetricHandle)element;
 						if(handle.isUncategorized()) {
-							return MetricsUtil.getLabel(handle.getUncategorizedValues());
+							return MetricsLabelUtil.getLabel(handle.getUncategorizedValues());
 						}
 						return "<categorized value>";
 					} else if(element instanceof MetricHandleKeyValue) {
-						return MetricsUtil.getLabel(((MetricHandleKeyValue)element).values);
+						return MetricsLabelUtil.getLabel(((MetricHandleKeyValue)element).values);
 					}
 					return null;
 				}
@@ -516,7 +516,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		}
 
 		public void handleMetricsChanged() {
-			label.setText("Metrics: " + MetricsUtil.getLabelForNotifier(getSelectedNotifier()));
+			label.setText("Metrics: " + MetricsLabelUtil.getLabelForNotifier(getSelectedNotifier()));
 			treeViewer.setInput(metrics);
 			treeViewer.getTree().setSortDirection(SWT.NONE);
 			treeViewer.getTree().setSortColumn(null);

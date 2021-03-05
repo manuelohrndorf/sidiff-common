@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Represents the difference between two values with the
+ * same key of different {@link MetricHandle}s.
+ * @author rmueller
+ */
 public class MetricValueComparisonResult {
 
 	private final List<Object> originObjects;
@@ -63,7 +68,7 @@ public class MetricValueComparisonResult {
 		if(numericOffset > 0) {
 			return "+" + numericOffset;
 		} else if(numericOffset < 0) {
-			return "" + numericOffset;				
+			return "" + numericOffset;
 		}
 		return "± 0.0";
 	}
@@ -74,8 +79,8 @@ public class MetricValueComparisonResult {
 
 	@Override
 	public String toString() {
-		return "ComparisonResult[origin=" + MetricsUtil.getLabel(originObjects)
-			+ ", changed=" + MetricsUtil.getLabel(changedObjects)
+		return "ComparisonResult[origin=" + MetricsLabelUtil.getLabel(originObjects)
+			+ ", changed=" + MetricsLabelUtil.getLabel(changedObjects)
 			+ ", numericOffset=" + getNumericOffset()
 			+ ", judgement=" + getChangeJudgement() + "]";
 	}

@@ -162,12 +162,12 @@ public class MetricHandle {
 	}
 
 	public String getContextLabel() {
-		return MetricsUtil.getLabelForNotifier(context);
+		return MetricsLabelUtil.getLabelForNotifier(context);
 	}
 
 	@Override
 	public String toString() {
-		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + MetricsUtil.getLabel(cachedValues) + "]";
+		return "[" + metric.getKey() + " : " + getContextLabel() + " : " + MetricsLabelUtil.getLabel(cachedValues) + "]";
 	}
 
 	public MetricHandle createCopy() {

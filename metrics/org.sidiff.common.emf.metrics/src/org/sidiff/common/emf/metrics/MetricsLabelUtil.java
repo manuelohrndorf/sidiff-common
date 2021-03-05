@@ -11,12 +11,16 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 
-public class MetricsUtil {
+/**
+ * Utility methods to create string label representations for metric and values.
+ * @author rmueller
+ */
+public class MetricsLabelUtil {
 
-	public MetricsUtil() {
+	public MetricsLabelUtil() {
 		throw new AssertionError();
 	}
-	
+
 	public static String getLabelForNotifier(Notifier notifier) {
 		if(notifier == null) {
 			return "no selection";
@@ -52,9 +56,9 @@ public class MetricsUtil {
 		if(object instanceof Collection<?>) {
 			Collection<?> collection = (Collection<?>)object;
 			if(collection.size() <= 1) {
-				return collection.stream().findFirst().map(MetricsUtil::getLabel).orElse("<empty>");
+				return collection.stream().findFirst().map(MetricsLabelUtil::getLabel).orElse("<empty>");
 			}
-			return collection.stream().map(MetricsUtil::getLabel).collect(Collectors.joining(", ", "[", "]"));
+			return collection.stream().map(MetricsLabelUtil::getLabel).collect(Collectors.joining(", ", "[", "]"));
 		}
 		if(object instanceof Notifier) {
 			return getLabelForNotifier((Notifier)object);

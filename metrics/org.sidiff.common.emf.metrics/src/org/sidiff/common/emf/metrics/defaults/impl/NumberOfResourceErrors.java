@@ -5,6 +5,9 @@ import org.eclipse.emf.ecore.resource.Resource;
 import org.sidiff.common.emf.metrics.IMetricValueAcceptor;
 import org.sidiff.common.emf.metrics.defaults.AbstractResourceMetric;
 
+/**
+ * @author rmueller
+ */
 public class NumberOfResourceErrors extends AbstractResourceMetric {
 
 	@Override

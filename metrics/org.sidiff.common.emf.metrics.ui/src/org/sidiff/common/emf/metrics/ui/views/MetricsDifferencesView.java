@@ -1,22 +1,13 @@
 package org.sidiff.common.emf.metrics.ui.views;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.jface.action.*;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.TreeViewerColumn;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -25,19 +16,10 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.ViewPart;
-import org.sidiff.common.emf.metrics.MetricHandleDifference;
-import org.sidiff.common.emf.metrics.MetricValueComparisonResult;
-import org.sidiff.common.emf.metrics.MetricsFacade;
-import org.sidiff.common.emf.metrics.MetricsListDifference;
-import org.sidiff.common.emf.metrics.MetricsLabelUtil;
+import org.sidiff.common.emf.metrics.*;
 import org.sidiff.common.emf.metrics.jobs.RecomputeMetricsDifferencesJob;
 import org.sidiff.common.emf.metrics.ui.internal.MetricsUiPlugin;
 import org.sidiff.common.emf.metrics.ui.views.MetricsView.Tab;
@@ -55,6 +37,8 @@ public class MetricsDifferencesView extends ViewPart {
 	private TreeViewerColumn metricNameColumn;
 	private TreeViewerColumn metricContextColumn;
 	private TreeViewerColumn metricComparisonColumn;
+	private TreeViewerColumn metricOriginValueColumn;
+	private TreeViewerColumn metricChangedValueColumn;
 
 	private Image imageChangeNeutral;
 	private Image imageChangeDownBad;
@@ -193,6 +177,8 @@ public class MetricsDifferencesView extends ViewPart {
 		createNameColumn();
 		createContextColumn();
 		createComparisonColumn();
+		createOriginValueColumn();
+		createChangedValueColumn();
 
 		ColumnViewerToolTipSupport.enableFor(treeViewer, ToolTip.NO_RECREATE);
 
@@ -322,6 +308,50 @@ public class MetricsDifferencesView extends ViewPart {
 				return "Double click to recompute.";
 			}
 		});
+	}
+
+	private void createOriginValueColumn() {
+		metricOriginValueColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
+		metricOriginValueColumn.getColumn().setText("Value (Origin)");
+		metricOriginValueColumn.getColumn().setWidth(100);
+		metricOriginValueColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if(element instanceof MetricHandleDifference) {
+					MetricHandle handle = ((MetricHandleDifference)element).getOrigin();
+					if(handle.isUncategorized()) {
+						return MetricsLabelUtil.getLabel(handle.getUncategorizedValues());
+					}
+					return "<categorized value>";
+				} else if(element instanceof MetricHandleDifferenceKeyValue) {
+					return MetricsLabelUtil.getLabel(((MetricHandleDifferenceKeyValue)element).result.getOriginObjects());
+				}
+				return null;
+			}
+		});
+		metricOriginValueColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
+	}
+
+	private void createChangedValueColumn() {
+		metricChangedValueColumn = new TreeViewerColumn(treeViewer, SWT.NONE);
+		metricChangedValueColumn.getColumn().setText("Value (Changed)");
+		metricChangedValueColumn.getColumn().setWidth(100);
+		metricChangedValueColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if(element instanceof MetricHandleDifference) {
+					MetricHandle handle = ((MetricHandleDifference)element).getChanged();
+					if(handle.isUncategorized()) {
+						return MetricsLabelUtil.getLabel(handle.getUncategorizedValues());
+					}
+					return "<categorized value>";
+				} else if(element instanceof MetricHandleDifferenceKeyValue) {
+					return MetricsLabelUtil.getLabel(((MetricHandleDifferenceKeyValue)element).result.getChangedObjects());
+				}
+				return null;
+			}
+		});
+		metricChangedValueColumn.getColumn().addSelectionListener(SelectionListener.widgetSelectedAdapter(this::handleColumnSelection));
 	}
 
 	private void handleColumnSelection(SelectionEvent event) {

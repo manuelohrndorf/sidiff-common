@@ -52,15 +52,12 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 	private Action expandSelectionAction;
 	private Action showDifferencesViewAction;
 
-	private SiDiffResourceSet resourceSet;
-
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout());
 
 		clipboard = new Clipboard(Display.getCurrent());
-		resourceSet = SiDiffResourceSet.create();
 
 		recomputeAction = createRecomputeAction();
 		copyValueAction = createCopyValueAction();
@@ -268,7 +265,7 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 				Object selected = structuredSelection.getFirstElement();
 				if(selected instanceof IFile) {
 					try {
-						Resource resource = resourceSet.getResource(EMFStorage.toPlatformURI((IFile)selected), true);
+						Resource resource = SiDiffResourceSet.create().getResource(EMFStorage.toPlatformURI((IFile)selected), true);
 						setSelectedNotifier(resource);
 					} catch(Exception e) {
 						// ignored; selection does not contain model

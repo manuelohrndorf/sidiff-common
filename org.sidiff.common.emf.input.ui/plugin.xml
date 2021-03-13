@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            description="Use a model adapter to convert between a proprietary and a model file format."
+            id="org.sidiff.common.emf.input.ui.UseModelAdapter"
+            name="Model Adapter">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.sidiff.common.emf.input.adapter.ui.UseModelAdapterHandler"
+            commandId="org.sidiff.common.emf.input.ui.UseModelAdapter">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <iterate
+                     ifEmpty="false"
+                     operator="or">
+                  <or>
+                     <adapt
+                           type="org.eclipse.core.resources.IFile">
+                     </adapt>
+                     <adapt
+                           type="org.eclipse.core.resources.IFolder">
+                     </adapt>
+                  </or>
+               </iterate>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any">
+         <command
+               commandId="org.sidiff.common.emf.input.ui.UseModelAdapter"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

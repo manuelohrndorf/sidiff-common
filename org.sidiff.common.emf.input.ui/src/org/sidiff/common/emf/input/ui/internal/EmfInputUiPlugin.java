@@ -11,7 +11,7 @@ import org.osgi.framework.BundleContext;
 public class EmfInputUiPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.sidiff.common.emf.input.ui"; //$NON-NLS-1$
+	public static final String ID = "org.sidiff.common.emf.input.ui"; //$NON-NLS-1$
 	
 	public static final String IMAGE_ARROW_UP = "arrowup";
 	public static final String IMAGE_ARROW_DOWN = "arrowdown";
@@ -56,8 +56,8 @@ public class EmfInputUiPlugin extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		reg.put(IMAGE_ARROW_UP, imageDescriptorFromPlugin(PLUGIN_ID, "icons/arrow_up.png"));
-		reg.put(IMAGE_ARROW_DOWN, imageDescriptorFromPlugin(PLUGIN_ID, "icons/arrow_down.png"));
+		reg.put(IMAGE_ARROW_UP, imageDescriptorFromPlugin(ID, "icons/arrow_up.png"));
+		reg.put(IMAGE_ARROW_DOWN, imageDescriptorFromPlugin(ID, "icons/arrow_down.png"));
 	}
 	
 	public static Image getImage(String key) {

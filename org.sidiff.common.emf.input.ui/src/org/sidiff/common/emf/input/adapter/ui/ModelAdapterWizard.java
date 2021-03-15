@@ -50,12 +50,13 @@ public class ModelAdapterWizard extends Wizard {
 			return false;
 		}
 
-		new Job("Adapting files") {
+		new Job("Adapting: " + modelAdapterWizardPage.getModelAdapterDirection()) {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				MultiStatus result = new MultiStatus(EmfInputUiPlugin.ID, 0, "See details below.");
 				SubMonitor progress = SubMonitor.convert(monitor, filesToAdapt.size());
 				for(IFile file : filesToAdapt) {
+					progress.subTask(file.getFullPath().toString());
 					if(modelAdapterWizardPage.getModelAdapterDirection() == Direction.ModelToProprietary) {
 						try {
 							modelAdapter.toProprietary(

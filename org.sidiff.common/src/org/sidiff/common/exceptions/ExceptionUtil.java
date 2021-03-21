@@ -25,7 +25,7 @@ public final class ExceptionUtil {
 	 * <li>If the exception is an {@link OperationCanceledException},
 	 * the {@link Status#CANCEL_STATUS Cancel-status} is returned.</li>
 	 * <li>Else, the message will be a generic error message. If the exception
-	 * is a {@link CoreException}, it's severity will be used, else the severity 
+	 * is a {@link CoreException}, it's severity will be used, else the severity
 	 * is always {@link IStatus#ERROR}</li>
 	 * </ul>
 	 * @param e the exception
@@ -48,6 +48,9 @@ public final class ExceptionUtil {
 	}
 
 	private static String getPluginId(Throwable e) {
+		if(e instanceof CoreException) {
+			return ((CoreException)e).getStatus().getPlugin();
+		}
 		final String UNKNOWN_ID = "unknown";
 		try {
 			Bundle bundle = FrameworkUtil.getBundle(Class.forName(e.getStackTrace()[0].getClassName()));

@@ -11,7 +11,7 @@ public class LCSUtil {
 	/**
 	 * Berechnet die laengste gemeinsame Subsequenz zwischen den Objekten a und b. Der Parameter util stellt eine Hilfsklasse zur Verfuegung, welche die Methoden int size(Object seq) und Object get(Object seq, int index) fuer die Parameter a und b
 	 * implementiert Algorithmus nach "The Greedy LCS/SES Algorithm" aus "An O(ND) Difference Algorithm and Ist Variations" von Eugene W. Myers, Seite 6.
-	 * 
+	 *
 	 * @param sequenceA
 	 *            The sequence A
 	 * @param sequenceB
@@ -36,7 +36,7 @@ public class LCSUtil {
 			for (int k = -d; k <= d; k = k + 2) {
 				int x;
 				int y;
-				if (k == -d || (k != d && v[(k - 1) + max] < v[k + 1 + max])) {
+				if (k == -d || k != d && v[k - 1 + max] < v[k + 1 + max]) {
 					// nach unten gehen
 					x = v[k + 1 + max];
 				} else {
@@ -65,7 +65,7 @@ public class LCSUtil {
 
 	/**
 	 * Works like <code>compareSequenceByEqualSubsequence</code> with the difference that not the equality of the longest subsequence is necessary. In this case a similarity about the given threshold is sufficient.
-	 * 
+	 *
 	 * @param sequenceA
 	 *            The sequence A
 	 * @param sequenceB
@@ -84,7 +84,7 @@ public class LCSUtil {
 		int max = m + n;
 		List<X>[] commonSubSeq = new ArrayList[2 * max + 1];
 		for (int i = 0; i < commonSubSeq.length; i++) {
-			commonSubSeq[i] = new ArrayList<X>();
+			commonSubSeq[i] = new ArrayList<>();
 		}
 		// enthält den jeweiligen am weitesten reichenden Endpunkt für die Diagonale
 		// und wird dynamisch berechnet
@@ -98,7 +98,7 @@ public class LCSUtil {
 				int oldDiag = 0;
 				int x;
 				int y;
-				if (k == -d || (k != d && v[(k - 1) + max] < v[k + 1 + max])) {
+				if (k == -d || k != d && v[k - 1 + max] < v[k + 1 + max]) {
 					// nach unten gehen
 					oldDiag = k + 1;
 					x = v[k + 1 + max];
@@ -110,7 +110,7 @@ public class LCSUtil {
 				// y lässt sich aus x und k berechnen
 				y = x - k;
 				// Die Diagonale wir weitmöglichst durchlaufen (wird auch Snake genannt)
-				ArrayList<X> snake = new ArrayList<X>();
+				ArrayList<X> snake = new ArrayList<>();
 				while (x < n && y < m && accessor.getSimilarity(accessor.get(sequenceA, x), accessor.get(sequenceB, y)) >= threshold) {
 					snake.add(accessor.get(sequenceA, x));
 					snake.add(accessor.get(sequenceB, y));
@@ -152,13 +152,13 @@ public class LCSUtil {
 		String[] stringsA = { "A", "A", "A" };
 		String[] stringsB = { "A", "A", "a" };
 
-		List<String> listA = new ArrayList<String>();
-		List<String> listB = new ArrayList<String>();
-		for (int i = 0; i < stringsA.length; i++) {
-			listA.add(stringsA[i]);
+		List<String> listA = new ArrayList<>();
+		List<String> listB = new ArrayList<>();
+		for (String element : stringsA) {
+			listA.add(element);
 		}
-		for (int i = 0; i < stringsB.length; i++) {
-			listB.add(stringsB[i]);
+		for (String element : stringsB) {
+			listB.add(element);
 		}
 
 		float lcs_1 = compareSequenceByEqualSubsequence(listA, listB, new LCSSequenceAccessorEqualSubsequence<List<String>, String>() {

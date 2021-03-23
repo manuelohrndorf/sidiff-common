@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 /**
  * A topological sorter sorts a collection according to a function
  * which returns, for each element, which elements proceed/succeed it.
- * @author Robert Müller
+ * @author rmueller
  * @param <T> the type of the elements
  */
 public class TopologicalSorter<T> {
@@ -39,7 +39,7 @@ public class TopologicalSorter<T> {
 	}
 
 	public List<T> sort() {
-		this.sorted = new LinkedList<T>();
+		this.sorted = new LinkedList<>();
 		this.visited = new HashSet<>();
 		this.sortedSet = new HashSet<>();
 		while(!vertices.isEmpty()) {

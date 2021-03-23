@@ -19,7 +19,7 @@ import java.util.stream.Stream;
  * 	csvWriter.write(1, 2);
  * });
  * </pre>
- * @author Robert Müller
+ * @author rmueller
  */
 public class CSVWriter implements AutoCloseable {
 

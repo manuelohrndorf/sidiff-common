@@ -28,9 +28,10 @@ public class SiDiffException extends Exception {
 	public SiDiffException(String message, String shortMessage, Throwable exception) {
 		super(message, exception);
 		if(shortMessage == null) {
-			shortMessage = "An error occurred";
+			this.shortMessage = "An error occurred";
+		} else {
+			this.shortMessage = shortMessage;
 		}
-		this.shortMessage = shortMessage;
 	}
 
 	public String getShortMessage() {

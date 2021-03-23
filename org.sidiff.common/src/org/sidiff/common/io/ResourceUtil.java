@@ -15,12 +15,12 @@ import org.sidiff.common.logging.LogUtil;
  */
 public class ResourceUtil {
 
-	private static ArrayList<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
+	private static ArrayList<ClassLoader> classLoaders = new ArrayList<>();
 
 	static {
 		classLoaders.add(ResourceUtil.class.getClassLoader());
 	}
-	
+
 	/**
 	 * Returns all class loaders that are registered.
 	 * @return
@@ -34,19 +34,19 @@ public class ResourceUtil {
 	 * @param classLoader
 	 */
 	public static void registerClassLoader(ClassLoader classLoader) {
-		
+
 		if (!classLoaders.contains(classLoader)) {
 			synchronized (classLoaders) {
 				classLoaders.add(classLoader);
 			}
-			assert(LogUtil.log(LogEvent.DEBUG, "Added ClassLoader to the system: " + classLoader.toString()));
+			assert LogUtil.log(LogEvent.DEBUG, "Added ClassLoader to the system: " + classLoader.toString());
 		} else {
-			assert(LogUtil.log(LogEvent.DEBUG, "Already registered ClassLoader: " + classLoader.toString()));
+			assert LogUtil.log(LogEvent.DEBUG, "Already registered ClassLoader: " + classLoader.toString());
 		}
-		
-		
+
+
 	}
-	
+
 	/**
 	 * Unregisters a class loader.
 	 * @param classLoader
@@ -56,7 +56,7 @@ public class ResourceUtil {
 			synchronized (classLoaders) {
 				classLoaders.remove(classLoader);
 			}
-			assert(LogUtil.log(LogEvent.DEBUG, "ClassLoader removed from system: " + classLoader.toString()));
+			assert LogUtil.log(LogEvent.DEBUG, "ClassLoader removed from system: " + classLoader.toString());
 		} else {
 			LogUtil.log(LogEvent.WARNING, "Cannot remove non present ClassLoader: " +classLoader.toString());
 		}
@@ -95,7 +95,7 @@ public class ResourceUtil {
 					if (stream != null) {
 						loader = currentLoader;
 						break;
-					}					
+					}
 				} catch (IOException e) {
 					throw new SiDiffRuntimeException("Exception while closing stream", e);
 				}
@@ -110,18 +110,17 @@ public class ResourceUtil {
 	 * @return
 	 */
 	public static ClassLoader getClassLoaderByClassName(String name) {
-		ClassLoader loader = null;
 		synchronized (classLoaders) {
 			for (ClassLoader currentLoader : classLoaders) {
 				try {
 					currentLoader.loadClass(name);
-					loader = currentLoader;
-					break;
+					return currentLoader;
 				} catch (ClassNotFoundException e) {
+					// ignored
 				}
 			}
 		}
-		return loader;
+		return null;
 	}
 
 }

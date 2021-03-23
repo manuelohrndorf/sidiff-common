@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.Assert;
 /**
  * An input stream which read a maximum number of bytes,
  * after which it returns EOF.
- * @author Robert Müller
+ * @author rmueller
  */
 public class BoundedInputStream extends InputStream {
 

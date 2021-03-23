@@ -16,49 +16,49 @@ import org.sidiff.common.stringresolver.StringUtil;
 
 /**
  * Class for generating log messages.
- * 
+ *
  * <b>-DLOGEVENTS=x</b> Defines Log-EVENTs, default: message,error,warning.
  * <b>-DLOGMODULES=x</b> Defines Log-Modules, default: all
  * <b>-DLOGCHANNEL=x</b> Defines the outputchannel to use.
- * 
+ *
  * @author Maik Schmidt
  */
 public class LogUtil {
 
 	private static boolean IS_RELEASE = true;
-	
+
 	private static boolean LOGGING_ENABLED = true;
 
 	// ***** External Constants *****
 	private static final String PROPERTY_NAME_LOGCHANNEL= "LOGCHANNEL";
 	private static final String PROPERTY_NAME_MODULES   = "LOGMODULES";
 	private static final String PROPERTY_NAME_EVENTS    = "LOGEVENTS";
-	
+
 	private static final String OPTION_SEPARATOR = ",";
 	private static final String WILDCARD = "*";
-	
-	//***** Internal Constants ****** 
+
+	//***** Internal Constants ******
 	private static final int MODULE_INDEX = 3;
 	//private static final int MODULE_DEPTH = 1;
 
 	private final static String CHANNEL_PREFIX = "org.sidiff.common.logging.internal.";
 	private final static String DEFAULT_OUTPUT_CHANNEL = "ConsoleLogChannel";
 	private final static String DEFAULT_OUTPUT_CHANNEL_OSGI = "OSGILogChannel";
-	
+
 	private final static String DEFAULTLOGEVENTS = "MESSAGE,WARNING,ERROR,NOTICE";
 
 	// Attributes
 	private static ILogChannel channel = null;
 	private static SimpleDateFormat sdf = null;
-	
+
 	private static EnumSet<LogEvent> logevents = null; // null means do not log any event
 	private static Set<String> logmodules = null;
 
-	// Static Initializer 
+	// Static Initializer
 	static {
 		// Disable release-flag -> Additional information will be provided
-		assert(disableRelease());
-		
+		assert disableRelease();
+
 		// Initialize Events to LogUtil
 		String logeventsstr = System.getProperty(PROPERTY_NAME_EVENTS);
 		if(logeventsstr!=null&&!logeventsstr.equals("")){
@@ -85,14 +85,14 @@ public class LogUtil {
 				LogUtil.setLogChannel(DEFAULT_OUTPUT_CHANNEL);
 			}
 		}
-		
+
 		if(!IS_RELEASE){
 			String intro = 	"----------------------------------------------------------\n" +
 							"LogUtil configured\n" +
 							"Waiting for " + logevents + "\n" +
-							"Listening on " + ((logmodules == null) ? "All Modules" : StringUtil.resolve(logmodules.toArray()))+"\n"+
+							"Listening on " + (logmodules == null ? "All Modules" : StringUtil.resolve(logmodules.toArray()))+"\n"+
 							"----------------------------------------------------------";
-		
+
 			log(LogEvent.NOTICE, intro);
 		}
 
@@ -101,7 +101,7 @@ public class LogUtil {
 	public static String getLogEvents() {
 		return LogUtil.logevents.toString().replace("[", "").replace("]", "").replace(" ", "");
 	}
-	
+
 	public static void setLogEvents(String logeventsstr) {
 
 		if (logeventsstr==null) {
@@ -111,13 +111,13 @@ public class LogUtil {
 			LogUtil.logevents = null;
 			return;
 		}
-			
+
 		String[] logeventcmds = logeventsstr.split(OPTION_SEPARATOR);
 
 		if (logeventcmds.length == 1 && logeventcmds[0].equalsIgnoreCase(WILDCARD)) {
 				LogUtil.logevents = EnumSet.allOf(LogEvent.class);
 		} else {
-			Set<LogEvent> logevents = new HashSet<LogEvent>();
+			Set<LogEvent> logevents = new HashSet<>();
 			for (String cmd : logeventcmds) {
 				boolean match = false;
 				for (LogEvent event : LogEvent.values()) {
@@ -137,16 +137,16 @@ public class LogUtil {
 
 	private static void setLogModules(String logmodulesstr) {
 
-		assert(logmodulesstr!=null) : "Illegal Null Argument!" ;
-		//assert(logmodulesstr.equals("")) : "Empty module String?"; 
-		
+		assert logmodulesstr!=null : "Illegal Null Argument!" ;
+		//assert(logmodulesstr.equals("")) : "Empty module String?";
+
 		// We have event specific args
 		String[] logmodulecmds = logmodulesstr.split(OPTION_SEPARATOR);
-		
+
 		if (logmodulecmds.length == 1 && logmodulecmds[0].equals(WILDCARD)) {
 			LogUtil.logmodules = null; // Null dedicates all Modules have to be logged
 		} else {
-			Set<String> logmodules = new HashSet<String>();
+			Set<String> logmodules = new HashSet<>();
 			for(String cmd : logmodulecmds) {
 				if(!cmd.equals(WILDCARD)) {
 					logmodules.add(cmd);
@@ -160,19 +160,20 @@ public class LogUtil {
 
 	public static void setLogChannel(String channelName) {
 		try {
-			if (channelName.indexOf(".")==-1)
+			if (channelName.indexOf(".")==-1) {
 				channelName = CHANNEL_PREFIX + channelName;
+			}
 			Class<?> channelClass = ReflectionUtil.loadClass(channelName);
 			LogUtil.channel = (ILogChannel)channelClass.getConstructor().newInstance();
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Cannot get output Channel:" + channelName, e);
 		}
-		
+
 		LogUtil.sdf= channel.createDateFormat();
 	}
 
 	private static boolean doLogModule(String module) {
-		
+
 		if (module == null){
 			// module name not determined, do not log
 			return false;
@@ -182,7 +183,9 @@ public class LogUtil {
 		} else {
 			// Look for matching module name pattern
 			for (String mod : logmodules) {
-				if (module.matches(mod)) return true;
+				if (module.matches(mod)) {
+					return true;
+				}
 			}
 			// Do not log at all
 			return false;
@@ -190,52 +193,51 @@ public class LogUtil {
 	}
 
 	private static boolean doLogEvent(LogEvent event){
-		return (logevents!=null && logevents.contains(event));
+		return logevents!=null && logevents.contains(event);
 	}
-	
+
 	private static String getModuleName(String callerNSTokens[]){
 		// Compute module name
 		if (callerNSTokens.length > MODULE_INDEX) {
 			return callerNSTokens[MODULE_INDEX];
-		} else {
-			return "DEFAULT";
 		}
+		return "DEFAULT";
 	}
-	
+
 	private static String getCallerName(String callerNSTokens[]){
-		// Compute caller name 
+		// Compute caller name
 		return callerNSTokens[callerNSTokens.length-1];
 	}
-	
+
 	private static void printInternal(String fqCallerClassName, LogEvent event, Object... message) {
 
-			
-			String callerNSTokens[] = fqCallerClassName.split("\\.");		
+
+			String callerNSTokens[] = fqCallerClassName.split("\\.");
 			if(doLogModule(getModuleName(callerNSTokens))){
 				// We have to log - Create message
 				StringBuffer logentry = new StringBuffer();
-				
-				// Include timestamp into message 
+
+				// Include timestamp into message
 				if(!IS_RELEASE&&channel.includeTimeStamp()){
 					logentry.append(sdf.format(Calendar.getInstance().getTime()));
 				}
-				
+
 				// Include event into message
 				if(!IS_RELEASE&&channel.includeLogEvent()){
 					logentry.append(event);
 					logentry.append(" ");
 				}
-				
+
 				if(!IS_RELEASE){
 					// Include Module name into message
 					logentry.append("[");
 					logentry.append(getModuleName(callerNSTokens));
 					logentry.append("] ");
-					
+
 					// Include Caller Classname into message
 					logentry.append("<");
 					logentry.append(getCallerName(callerNSTokens));
-					// Include invocation-thread 
+					// Include invocation-thread
 					if (!(Thread.currentThread().getName().equals("") || Thread.currentThread().getName().equals("main"))) {
 						logentry.append("~");
 						logentry.append(Thread.currentThread().getName());
@@ -249,7 +251,7 @@ public class LogUtil {
 					for (int i = 0; i < logentry.length(); i++) {
 						tab.append(" ");
 					}
-					
+
 					// Format output
 					messageStr = messageStr.replaceAll("\n", "\n" + tab);
 				}
@@ -258,10 +260,10 @@ public class LogUtil {
 				channel.log(logentry.toString(), event);
 			}
 	}
-	
+
 	/**
-	 * Push out a log message. 
-	 * 
+	 * Push out a log message.
+	 *
 	 * @param event Classification of the delivered Message.
 	 * @param message Sequence of Objects/Messages
 	 * @return always true for use with asserts
@@ -277,10 +279,10 @@ public class LogUtil {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Lazily push out a log message. 
-	 * 
+	 * Lazily push out a log message.
+	 *
 	 * @param event Classification of the delivered Message.
 	 * @param messageSupplier Supplier of Objects/Messages
 	 * @return always true for use with asserts

@@ -1,19 +1,14 @@
 package org.sidiff.common.file;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Collection;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.io.IOUtil;
@@ -68,7 +63,9 @@ public class ZipUtil {
 				Path path = outputDirectory.resolve(entry.getName());
 				Files.createDirectories(path);
 				if(!entry.isDirectory()) {
-					Files.copy(zip.getInputStream(entry), path, StandardCopyOption.REPLACE_EXISTING);
+					try (InputStream inStream = zip.getInputStream(entry)) {
+						Files.copy(inStream, path, StandardCopyOption.REPLACE_EXISTING);
+					}
 				}
 			}
 		}
@@ -90,7 +87,9 @@ public class ZipUtil {
 			if(entry == null) {
 				throw new IllegalArgumentException("Zip entry not found: " + entryName);
 			}
-			return IOUtil.toString(zip.getInputStream(entry), charset);
+			try (InputStream inStream = zip.getInputStream(entry)) {
+				return IOUtil.toString(inStream, charset);
+			}
 		}
 	}
 

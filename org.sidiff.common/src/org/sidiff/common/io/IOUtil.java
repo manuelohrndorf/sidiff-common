@@ -65,7 +65,7 @@ public class IOUtil {
 		if(!folder.exists()) {
 			SubMonitor progress = SubMonitor.convert(monitor, 2);
 			if(folder.getParent() instanceof IFolder) {
-				createFolders((IFolder)folder.getParent(), progress.split(1));				
+				createFolders((IFolder)folder.getParent(), progress.split(1));
 			}
 			folder.create(true, true, progress.split(1));
 		}
@@ -144,7 +144,7 @@ public class IOUtil {
 
 	private static URL locatePluginFile(String pluginId, String path) throws FileNotFoundException, MalformedURLException {
 		if(!path.startsWith("/")) {
-			path = "/" + path;
+			return locatePluginFile(pluginId, "/" + path);
 		}
 		URL url = FileLocator.find(new URL("platform:/plugin/" + pluginId + path));
 		if(url == null) {

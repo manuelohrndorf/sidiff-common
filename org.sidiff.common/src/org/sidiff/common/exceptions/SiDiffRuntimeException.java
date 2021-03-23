@@ -20,7 +20,7 @@ public class SiDiffRuntimeException extends RuntimeException {
 	public SiDiffRuntimeException(Throwable exception) {
 		this(exception.getMessage(), null, exception);
 	}
-	
+
 	public SiDiffRuntimeException(String message, String shortMessage) {
 		this(message, shortMessage, null);
 	}
@@ -28,9 +28,10 @@ public class SiDiffRuntimeException extends RuntimeException {
 	public SiDiffRuntimeException(String message, String shortMessage, Throwable exception) {
 		super(message, exception);
 		if(shortMessage == null) {
-			shortMessage = "A runtime error occurred";
+			this.shortMessage = "A runtime error occurred";
+		} else {
+			this.shortMessage = shortMessage;
 		}
-		this.shortMessage = shortMessage;
 	}
 
 	public String getShortMessage() {

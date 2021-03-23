@@ -40,7 +40,7 @@ import java.nio.file.attribute.BasicFileAttributes;
  *   <td><code>Files.walk(directoryPath).filter(Files::isRegularFile).forEach(System.out::println);</code></td>
  * </tr>
  * </table>
- * @author Robert Müller
+ * @author rmueller
  * @see <a href="https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html">Path Operations - Tutorial</a>
  */
 public class FileOperations {
@@ -80,7 +80,7 @@ public class FileOperations {
 	 * @throws IOException if some I/O exception occurred during the search
 	 */
 	public static boolean existsFolder(Path directoryPath, Path dirName) throws IOException {
-		boolean folderExists[] = new boolean [] { false }; 
+		boolean folderExists[] = new boolean [] { false };
 		Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {

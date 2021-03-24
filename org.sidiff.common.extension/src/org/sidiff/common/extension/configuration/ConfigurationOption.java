@@ -342,7 +342,16 @@ public class ConfigurationOption<T> {
 	}
 
 	void importAssignment(String valueString) {
-		setValueUnsafe(COMMA_SIGN_SERIALIZER.deserialize(valueString));
+		if (valueString.isEmpty() && type == String.class && !multi) {
+			// If this is a ConfigurationOption<String> and the value is empty,
+			// unpacking it with the StringListSerializer will yield an empty list,
+			// which would set the value of a non-multi option to null, meaning unset.
+			// There is no difference between unset and empty string in the serialized
+			// form, but assuming empty string here makes other code cleaner.
+			setValueUnsafe("");
+		} else {
+			setValueUnsafe(COMMA_SIGN_SERIALIZER.deserialize(valueString));
+		}
 	}
 
 	/**

@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.notify.Notifier;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.jface.action.*;
@@ -28,6 +29,9 @@ import org.sidiff.common.emf.modelstorage.EMFStorage;
 import org.sidiff.common.emf.modelstorage.SiDiffResourceSet;
 import org.sidiff.common.file.CSVWriter;
 import org.sidiff.common.ui.util.UIUtil;
+
+import static org.eclipse.ui.SelectionListenerFactory.*;
+import static org.eclipse.ui.SelectionListenerFactory.Predicates.*;
 
 /**
  * @author cpietsch
@@ -79,7 +83,10 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 		tabFolder.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> updateActionStates()));
 		updateActionStates();
 
-		getSite().getPage().addSelectionListener(this);
+		getSite().getPage().addSelectionListener(
+				createVisibleSelfMutedListener(this, this,
+						selectionSize(1)
+							.and(selectionType(IStructuredSelection.class))));
 	}
 
 	private Action createRecomputeAction() {
@@ -259,21 +266,18 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 
 	@Override
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection)selection;
-			if (structuredSelection.size() == 1) {
-				Object selected = structuredSelection.getFirstElement();
-				if(selected instanceof IFile) {
-					try {
-						Resource resource = SiDiffResourceSet.create().getResource(EMFStorage.toPlatformURI((IFile)selected), true);
-						setSelectedNotifier(resource);
-					} catch(Exception e) {
-						// ignored; selection does not contain model
-					}
-				} else if(selected instanceof Notifier) {
-					setSelectedNotifier((Notifier)selected);
-				}
+		IStructuredSelection structuredSelection = (IStructuredSelection)selection;
+		Assert.isLegal(structuredSelection.size() == 1);
+		Object selected = structuredSelection.getFirstElement();
+		if(selected instanceof IFile) {
+			try {
+				Resource resource = SiDiffResourceSet.create().getResource(EMFStorage.toPlatformURI((IFile)selected), true);
+				setSelectedNotifier(resource);
+			} catch(Exception e) {
+				// ignored; selection does not contain model
 			}
+		} else if(selected instanceof Notifier) {
+			setSelectedNotifier((Notifier)selected);
 		}
 	}
 
@@ -316,7 +320,6 @@ public class MetricsView extends ViewPart implements ISelectionListener {
 			clipboard.dispose();
 			clipboard = null;
 		}
-		getSite().getPage().removeSelectionListener(this);
 	}
 
 	private MetricsScope createMetricsScope(Notifier selectedNotifier) {

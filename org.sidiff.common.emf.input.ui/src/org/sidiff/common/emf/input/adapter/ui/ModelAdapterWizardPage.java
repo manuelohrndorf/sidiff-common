@@ -20,6 +20,7 @@ public class ModelAdapterWizardPage extends AbstractWizardPage {
 	protected void createWidgets() {
 		modelAdapterWidget = new ModelAdapterSelectionWidget();
 		modelAdapterWidget.setLowerUpperBounds(1, 1);
+		modelAdapterWidget.getSelectableValues().stream().findFirst().ifPresent(modelAdapterWidget::setSelection);
 		addWidget(container, modelAdapterWidget);
 
 		ConfigurableExtensionWidget.addAllForWidget(container, modelAdapterWidget, this::addWidget);

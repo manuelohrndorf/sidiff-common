@@ -1,17 +1,8 @@
 package org.sidiff.common.converter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import org.sidiff.common.converter.internal.BooleanConverter;
-import org.sidiff.common.converter.internal.ByteConverter;
-import org.sidiff.common.converter.internal.CharacterConverter;
-import org.sidiff.common.converter.internal.DoubleConverter;
-import org.sidiff.common.converter.internal.FloatConverter;
-import org.sidiff.common.converter.internal.IntegerConverter;
-import org.sidiff.common.converter.internal.LongConverter;
-import org.sidiff.common.converter.internal.StringConverter;
+import org.sidiff.common.converter.internal.*;
 
 public class ConverterUtil {
 
@@ -20,14 +11,15 @@ public class ConverterUtil {
 	static {
 		registerConverter(new BooleanConverter());
 		registerConverter(new ByteConverter());
-		registerConverter(new CharacterConverter());
-		registerConverter(new DoubleConverter());
-		registerConverter(new FloatConverter());
+		registerConverter(new ShortConverter());
 		registerConverter(new IntegerConverter());
 		registerConverter(new LongConverter());
+		registerConverter(new FloatConverter());
+		registerConverter(new DoubleConverter());
+		registerConverter(new CharacterConverter());
 		registerConverter(new StringConverter());
 	}
-	
+
 	public static <T> void registerConverter(ObjectConverter<T> converter) {
 		converters.put(converter.getType(), converter);
 	}
@@ -38,15 +30,17 @@ public class ConverterUtil {
 
 	@SuppressWarnings("unchecked")
 	public static <T> String marshal(T object) {
-		return getConverter((Class<T>)object.getClass()).map(c -> c.marshal(object))
+		return getConverter((Class<T>)object.getClass())
+				.map(c -> c.marshal(object))
 				.orElseThrow(() -> new IllegalArgumentException("No converter found for type " + object.getClass().getName()));
 	}
 
 	public static <T> T unmarshal(Class<T> type, String string) {
-		return getConverter(type).map(c -> c.unmarshal(string))
+		return getConverter(type)
+				.map(c -> c.unmarshal(string))
 				.orElseThrow(() -> new IllegalArgumentException("No converter found for type " + type.getName()));
 	}
-	
+
 	public static <T> T unmarshalSafe(Class<T> type, String string) {
 		return getConverter(type).map(c -> {
 				try {

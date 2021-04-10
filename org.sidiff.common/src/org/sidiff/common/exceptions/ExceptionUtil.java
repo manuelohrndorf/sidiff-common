@@ -69,8 +69,8 @@ public final class ExceptionUtil {
 	 */
 	public static CoreException asCoreException(Throwable e) {
 		if(e instanceof Error) {
-			// errors should be thrown as they are, but we don't want to declare them here
-			sneakyThrow(e);
+			// errors should be thrown as they are
+			throw (Error)e;
 		} else if(e instanceof CoreException) {
 			return (CoreException)e;
 		}

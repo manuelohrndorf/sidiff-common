@@ -497,9 +497,7 @@ public class ConfigurationOption<T> {
 		}
 
 		public Builder<T> defaultValues(List<T> defaultValues) {
-			if(defaultValues.size() > 1 && !multi) {
-				throw new IllegalArgumentException("Must be a multi option if using multiple default values");
-			}
+			Assert.isLegal(defaultValues.size() <= 1 || multi, "Must be a multi option if using multiple default values");
 			this.defaultValues.clear();
 			this.defaultValues.addAll(defaultValues);
 			return this;

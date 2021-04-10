@@ -97,7 +97,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			check.setSelection(option.getValue());
 		}
 		check.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> option.setValue(check.getSelection())));
-		GridDataFactory.fillDefaults().grab(true,  false).applyTo(check);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(check);
 		return check;
 	}
 
@@ -105,7 +105,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setLayout(new GridLayout(1, true));
-		GridDataFactory.fillDefaults().grab(true,  false).applyTo(group);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 
 		Spinner spinner = new Spinner(group, SWT.NONE);
 		spinner.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
@@ -120,7 +120,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		if(option.getMaxValue() != null) {
 			spinner.setMaximum(option.getMaxValue().intValue());
 		}
-		GridDataFactory.fillDefaults().grab(true,  false).applyTo(spinner);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(spinner);
 		return group;
 	}
 
@@ -136,7 +136,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		}
 		text.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		text.addModifyListener(e -> option.setValueUnsafe(text.getText()));
-		GridDataFactory.fillDefaults().grab(true,  false).applyTo(text);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
 		return group;
 	}
 
@@ -145,7 +145,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			option.resetToDefault();
 			if(option.getValue() == null) {
 				// Preselect first value as default if no default value set
-				option.setValue(option.getSelectableValues().stream().findFirst().orElse(null));
+				option.getSelectableValues().stream().findFirst().ifPresent(option::setValue);
 			}
 		}
 
@@ -153,7 +153,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		group.setText(option.getName());
 		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
 		group.setLayout(new GridLayout(1, true));
-		GridDataFactory.fillDefaults().grab(true,  false).applyTo(group);
+		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 
 		Map<Button,Composite> nestedOptions = new HashMap<>();
 		Runnable updateVisibilities = () -> {
@@ -169,13 +169,13 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 			Button button = new Button(group, SWT.RADIO);
 			button.setText(option.getLabelForValue(value));
 			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
-				option.setValueUnsafe(value);
+				option.setValue(value);
 				updateVisibilities.run();
 			}));
 			if(option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()))) {
 				button.setSelection(true);
 			}
-			GridDataFactory.fillDefaults().grab(true,  false).applyTo(button);
+			GridDataFactory.fillDefaults().grab(true, false).applyTo(button);
 			if(value instanceof IExtension) {
 				((IExtension)value).getDescription()
 					.ifPresent(description -> button.setToolTipText(description));
@@ -252,9 +252,10 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	 * @param parent the parent composite
 	 * @param widget the widget for which to create new configuration widgets
 	 * @param addWidget the function to add a widget to the wizard page
+	 * @param <W> The type of the widget for which to create new configuration widgets
 	 */
 	public static <W extends IWidgetDependence & IWidgetModification<? extends IConfigurableExtension>>
-		void addAllForWidget(Composite parent, W widget, BiConsumer<Composite,IWidget> addWidget) {
+			void addAllForWidget(Composite parent, W widget, BiConsumer<Composite,IWidget> addWidget) {
 
 		Map<IConfigurableExtension,ConfigurableExtensionWidget> extensionWidgets = new HashMap<>();
 		for(IConfigurableExtension extension : widget.getSelectableValues()) {

@@ -38,7 +38,9 @@ public class ModelAdapterWizard extends Wizard {
 	@Override
 	public boolean performFinish() {
 		final IModelAdapter modelAdapter = modelAdapterWizardPage.getModelAdapter();
-		Set<String> fileExtToAdapt = modelAdapterWizardPage.getModelAdapterDirection() == Direction.ModelToProprietary
+		final Direction adapterDirection = modelAdapterWizardPage.getModelAdapterDirection();
+		final IFolder outputFolder = modelAdapterWizardPage.getOutputFolder();
+		Set<String> fileExtToAdapt = adapterDirection == Direction.ModelToProprietary
 				? modelAdapter.getModelFileExtensions() : modelAdapter.getProprietaryFileExtensions();
 		Set<IFile> filesToAdapt = findFilesToAdapt(fileExtToAdapt);
 
@@ -61,7 +63,9 @@ public class ModelAdapterWizard extends Wizard {
 						try {
 							modelAdapter.toProprietary(
 								SiDiffResourceSet.create().getResource(EMFStorage.toPlatformURI(file), true),
-								(IFolder)file.getParent());
+								outputFolder == null
+									? (IFolder)file.getParent()
+									: outputFolder);
 						} catch (Exception e) {
 							result.add(new Status(IStatus.ERROR, EmfInputUiPlugin.ID,
 									"Failed to adapt model to proprietary", e));
@@ -73,7 +77,9 @@ public class ModelAdapterWizard extends Wizard {
 								modelAdapter.toModel(
 									file,
 									resourceSet,
-									EMFStorage.toPlatformURI(file).trimSegments(1)));
+									outputFolder == null
+										? EMFStorage.toPlatformURI(file).trimSegments(1)
+										: EMFStorage.toPlatformURI(outputFolder)));
 						} catch (Exception e) {
 							result.add(new Status(IStatus.ERROR, EmfInputUiPlugin.ID,
 									"Failed to adapt proprietary to model", e));

@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.ui,
  org.sidiff.common.ui,
  org.sidiff.common.emf.input;visibility:=reexport,
  org.eclipse.core.resources,
- org.sidiff.common.extension.ui
+ org.sidiff.common.extension.ui,
+ org.sidiff.common.emf.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.emf.input.ui
 Bundle-ActivationPolicy: lazy

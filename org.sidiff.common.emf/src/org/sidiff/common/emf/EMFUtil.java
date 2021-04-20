@@ -9,19 +9,7 @@ import java.util.stream.Collectors;
 import org.eclipse.emf.common.util.BasicEMap;
 import org.eclipse.emf.common.util.TreeIterator;
 import org.eclipse.emf.common.util.URI;
-import org.eclipse.emf.ecore.EAnnotation;
-import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EClassifier;
-import org.eclipse.emf.ecore.EGenericType;
-import org.eclipse.emf.ecore.EModelElement;
-import org.eclipse.emf.ecore.EObject;
-import org.eclipse.emf.ecore.EPackage;
-import org.eclipse.emf.ecore.EReference;
-import org.eclipse.emf.ecore.EStructuralFeature;
-import org.eclipse.emf.ecore.ETypeParameter;
-import org.eclipse.emf.ecore.EcorePackage;
-import org.eclipse.emf.ecore.InternalEObject;
+import org.eclipse.emf.ecore.*;
 import org.eclipse.emf.ecore.impl.BasicEObjectImpl;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -516,5 +504,23 @@ public class EMFUtil {
 		// but no type arguments or parameters, and it is not part
 		// of another type that needs it.
 		return true;
+	}
+
+
+	/**
+	 * Returns the first annotation with the specified source on the given model element,
+	 * adding a new annotation with this source if it does not exist.
+	 * @param element the model element
+	 * @param source the source of the annotation
+	 * @return existing or added annotation with the given source
+	 */
+	public static EAnnotation getOrCreateAnnotation(EModelElement element, String source) {
+		EAnnotation annotation = element.getEAnnotation(source);
+		if (annotation == null) {
+			annotation = EcoreFactory.eINSTANCE.createEAnnotation();
+			annotation.setSource(source);
+			element.getEAnnotations().add(annotation);
+		}
+		return annotation;
 	}
 }

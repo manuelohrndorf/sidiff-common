@@ -4,9 +4,7 @@ Bundle-Name: SiDiff Common - EMF Document Type Resolver
 Bundle-SymbolicName: org.sidiff.common.emf.doctype;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.emf.ecore,
- org.sidiff.common.emf,
+Require-Bundle: org.sidiff.common.emf,
  org.sidiff.common.extension;visibility:=reexport
 Export-Package: org.sidiff.common.emf.doctype,
  org.sidiff.common.emf.doctype.util

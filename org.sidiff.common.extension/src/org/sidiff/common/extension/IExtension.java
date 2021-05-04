@@ -21,6 +21,7 @@ public interface IExtension {
 
 	/**
 	 * <p>Returns a key that uniquely identifies this extension.</p>
+	 * <p>The key should only contain characters in the group <code>[A-Za-z0-9_-]</code>.</p>
 	 * <p>The default implementation returns <code>getClass().getName()</code>.</p>
 	 * @return unique key / identifier
 	 */
@@ -103,7 +104,7 @@ public interface IExtension {
 		Stream<IConfigurationElement> getRegisteredExtensions();
 
 		/**
-		 * 
+		 *
 		 * @return
 		 */
 		Stream<T> createRegisteredExtensions();

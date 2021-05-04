@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * methods which are likely to be equal in all subclasses.
  * @author rmueller
  */
-public abstract class AbstractExtensionConfiguration implements IExtensionConfiguration {
+public abstract class AbstractExtensionConfiguration implements IExtensionConfiguration, IExtensionConfiguration.Internal {
 
 	@Override
 	public Map<String, Object> getOptions() {

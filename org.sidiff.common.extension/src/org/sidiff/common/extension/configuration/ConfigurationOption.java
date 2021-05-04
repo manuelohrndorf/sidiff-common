@@ -1,28 +1,18 @@
 package org.sidiff.common.extension.configuration;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.Assert;
+import org.sidiff.common.collections.CollectionUtil;
 import org.sidiff.common.converter.ConverterUtil;
-import org.sidiff.common.extension.ExtensionManager;
-import org.sidiff.common.extension.ExtensionManagerFinder;
-import org.sidiff.common.extension.ExtensionSerialization;
-import org.sidiff.common.extension.IExtension;
-import org.sidiff.common.extension.ITypedExtension;
-import org.sidiff.common.extension.TypedExtensionManager;
+import org.sidiff.common.extension.*;
 import org.sidiff.common.util.RegExUtil;
 import org.sidiff.common.util.StringListSerializer;
+
+import com.eclipsesource.json.*;
 
 /**
  * <p>A configuration option is a single option of a {@link IExtensionConfiguration},
@@ -33,7 +23,6 @@ import org.sidiff.common.util.StringListSerializer;
  */
 public class ConfigurationOption<T> {
 
-	static final StringListSerializer EQUAL_SIGN_SERIALIZER = new StringListSerializer("=");
 	static final StringListSerializer COMMA_SIGN_SERIALIZER = new StringListSerializer(",");
 
 	private final String key;
@@ -143,13 +132,6 @@ public class ConfigurationOption<T> {
 			return "";
 		}
 		return valueLabelProvider.apply(value);
-	}
-
-	protected String getSerializableValue(T value) {
-		if(value instanceof IExtension) {
-			return ExtensionSerialization.convertToString((IExtension)value);
-		}
-		return getLabelForValue(value);
 	}
 
 	/**
@@ -335,12 +317,43 @@ public class ConfigurationOption<T> {
 		return "ConfigurationOption[" + getKey() + ":" + getType().getSimpleName() + " = " + values + "]";
 	}
 
-	String exportAssignment() {
-		return EQUAL_SIGN_SERIALIZER.serialize(Arrays.asList(
-				getKey(),
-				COMMA_SIGN_SERIALIZER.serialize(values.stream().map(this::getSerializableValue).collect(Collectors.toList()))));
+	void exportAssignment(JsonObject result) {
+		JsonValue value;
+		if(isMulti()) {
+			JsonArray array = Json.array();
+			getValues().stream().map(this::getSerializableValue).forEach(array::add);
+			value = array;
+		} else if(isSet()) {
+			value = getSerializableValue(getValue());
+		} else {
+			value = Json.NULL;
+		}
+		result.add(getKey(), value);
 	}
 
+	private JsonValue getSerializableValue(T value) {
+		if(value == null) {
+			return Json.NULL;
+		} else if(value instanceof IExtension) {
+			String extensionValue = ExtensionSerialization.convertToString((IExtension)value);
+			return extensionValue.isEmpty() ? Json.NULL : Json.parse(extensionValue);
+		}
+		return Json.value(getLabelForValue(value));
+	}
+
+	void importAssignment(JsonValue jsonValue) {
+		if(jsonValue.isNull()) {
+			setValueUnsafe(null);
+		} else if(jsonValue.isArray()) {
+			setValueUnsafe(CollectionUtil.asStream(jsonValue.asArray().iterator()).collect(Collectors.toList()));
+		} else if(jsonValue.isString()) {
+			setValueUnsafe(jsonValue.asString());
+		} else {
+			setValueUnsafe(jsonValue.toString());
+		}
+	}
+
+	// Legacy import
 	void importAssignment(String valueString) {
 		if (valueString.isEmpty() && type == String.class && !multi) {
 			// If this is a ConfigurationOption<String> and the value is empty,
@@ -353,6 +366,7 @@ public class ConfigurationOption<T> {
 			setValueUnsafe(COMMA_SIGN_SERIALIZER.deserialize(valueString));
 		}
 	}
+
 
 	/**
 	 * Returns a new Builder for configuration options.

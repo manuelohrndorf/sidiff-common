@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * @author rmueller
+ */
 public final class ExceptionUtil {
 
 	private ExceptionUtil() {

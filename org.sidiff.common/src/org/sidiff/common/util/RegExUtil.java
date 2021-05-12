@@ -4,7 +4,7 @@ import java.util.regex.Pattern;
 
 /**
  * Utility class for working with regular expressions.
- * @author Robert Müller
+ * @author rmueller
  * @see Patterns
  */
 public class RegExUtil {

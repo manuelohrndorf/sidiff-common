@@ -25,28 +25,24 @@ import org.sidiff.common.ui.widgets.*;
  */
 public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
-	private IConfigurableExtension extension;
+	private IConfigurableExtension rootExtension;
 
 	ConfigurableExtensionWidget(IConfigurableExtension extension) {
 		super(DefaultContainerFactory.EXPANDABLE);
-		this.extension = Objects.requireNonNull(extension);
+		this.rootExtension = Objects.requireNonNull(extension);
 		setTitle(getGroupTitle(extension));
-	}
-
-	private static String getGroupTitle(IConfigurableExtension extension) {
-		return "Configuration Options: " + extension.getName();
 	}
 
 	@Override
 	protected Composite createContents(Composite container) {
-		return createOptionControls(container, extension.getConfiguration());
+		return createOptionControls(container, rootExtension);
 	}
 
-	protected Composite createOptionControls(Composite container, IExtensionConfiguration configuration) {
+	protected Composite createOptionControls(Composite container, IConfigurableExtension extension) {
 		Composite composite = new Composite(container, SWT.NONE);
 		GridLayoutFactory.fillDefaults().margins(5, 5).applyTo(composite);
-		for(ConfigurationOption<?> option : configuration.getConfigurationOptions()) {
-			createConfigurationOptionControl(composite, option);
+		for(ConfigurationOption<?> option : extension.getConfiguration().getConfigurationOptions()) {
+			createConfigurationOptionControl(composite, option, extension);
 		}
 		return composite;
 	}
@@ -62,16 +58,16 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 					container,
 					getGroupTitle(extension),
 					getWidgetCallback(),
-					composite -> createOptionControls(composite, extension.getConfiguration())));
+					composite -> createOptionControls(composite, extension)));
 	}
 
 	@SuppressWarnings("unchecked") // we explicitly check below
-	protected <T> Control createConfigurationOptionControl(Composite parent, ConfigurationOption<T> option) {
+	protected <T> Control createConfigurationOptionControl(Composite parent, ConfigurationOption<T> option, IConfigurableExtension extension) {
 		if(option.getSelectableValues() != null) {
 			if(option.isMulti()) {
-				return createMultipleChoiceControl(parent, option);
+				return createMultipleChoiceControl(parent, option, extension);
 			}
-			return createSingleChoiceControl(parent, option);
+			return createSingleChoiceControl(parent, option, extension);
 		}
 		if(option.isMulti()) {
 			// The widget only supports multi-options with fixed selectable values
@@ -80,19 +76,19 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		final Class<T> type = option.getType();
 		if(type == Boolean.class) {
-			return createCheckboxControl(parent, (ConfigurationOption<Boolean>)option);
+			return createCheckboxControl(parent, (ConfigurationOption<Boolean>)option, extension);
 		} else if(type == Short.class || type == Byte.class || type == Integer.class) {
-			return createNumberControl(parent, (ConfigurationOption<? extends Number>)option);
+			return createNumberControl(parent, (ConfigurationOption<? extends Number>)option, extension);
 		} else if(type == String.class || type == Float.class || type == Double.class || type == Long.class) {
-			return createTextControl(parent, option);
+			return createTextControl(parent, option, extension);
 		}
 		return null;
 	}
 
-	protected Control createCheckboxControl(Composite parent, ConfigurationOption<Boolean> option) {
+	protected Control createCheckboxControl(Composite parent, ConfigurationOption<Boolean> option, IConfigurableExtension extension) {
 		Button check = new Button(parent, SWT.CHECK);
 		check.setText(option.getName());
-		check.setToolTipText("Option '" + option.getKey() + "' of '" + extension.getKey() + "'");
+		check.setToolTipText(getOptionToolTipText(option, extension));
 		if(option.isSet()) {
 			check.setSelection(option.getValue());
 		}
@@ -101,14 +97,14 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return check;
 	}
 
-	protected Control createNumberControl(Composite parent, ConfigurationOption<? extends Number> option) {
+	protected Control createNumberControl(Composite parent, ConfigurationOption<? extends Number> option, IConfigurableExtension extension) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setLayout(new GridLayout(1, true));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 
 		Spinner spinner = new Spinner(group, SWT.NONE);
-		spinner.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		spinner.setToolTipText(getOptionToolTipText(option, extension));
 		if(option.isSet()) {
 			spinner.setSelection(option.getValue().intValue());
 		}
@@ -124,7 +120,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return group;
 	}
 
-	protected Control createTextControl(Composite parent, ConfigurationOption<?> option) {
+	protected Control createTextControl(Composite parent, ConfigurationOption<?> option, IConfigurableExtension extension) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
 		group.setLayout(new GridLayout(1, true));
@@ -134,13 +130,13 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		if(option.isSet()) {
 			text.setText(String.valueOf(option.getValue()));
 		}
-		text.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		text.setToolTipText(getOptionToolTipText(option, extension));
 		text.addModifyListener(e -> option.setValueUnsafe(text.getText()));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(text);
 		return group;
 	}
 
-	protected <T> Control createSingleChoiceControl(Composite parent, ConfigurationOption<T> option) {
+	protected <T> Control createSingleChoiceControl(Composite parent, ConfigurationOption<T> option, IConfigurableExtension extension) {
 		if(option.getValue() == null) {
 			option.resetToDefault();
 			if(option.getValue() == null) {
@@ -151,7 +147,7 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
-		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		group.setToolTipText(getOptionToolTipText(option, extension));
 		group.setLayout(new GridLayout(1, true));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(group);
 
@@ -189,10 +185,10 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		return group;
 	}
 
-	protected <T> Control createMultipleChoiceControl(Composite parent, ConfigurationOption<T> option) {
+	protected <T> Control createMultipleChoiceControl(Composite parent, ConfigurationOption<T> option, IConfigurableExtension extension) {
 		Group group = new Group(parent, SWT.NONE);
 		group.setText(option.getName());
-		group.setToolTipText("Option '" + option.getKey() + "' (" + option.getType().getSimpleName() + ") of '" + extension.getKey() + "'");
+		group.setToolTipText(getOptionToolTipText(option, extension));
 		group.setLayout(new GridLayout(1, true));
 
 		Map<Button,T> buttonToValue = new LinkedHashMap<>();
@@ -270,5 +266,15 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		widget.addModificationListener((oldValues, newValues) ->
 			extensionWidgets.forEach((key, value) -> value.setVisible(newValues.contains(key))));
+	}
+
+	private static String getGroupTitle(IConfigurableExtension extension) {
+		return "Configuration Options: " + extension.getName();
+	}
+
+	private static <T> String getOptionToolTipText(ConfigurationOption<T> option, IConfigurableExtension extension) {
+		return "Option '" + option.getKey() + "' "
+				+ (option.getType() == Boolean.class ? "" : "(" + option.getType().getSimpleName() + ") ")
+				+ "of '" + extension.getKey() + "'";
 	}
 }

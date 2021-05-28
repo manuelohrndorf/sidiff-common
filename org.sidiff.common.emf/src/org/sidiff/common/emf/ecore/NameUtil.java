@@ -43,24 +43,23 @@ public class NameUtil {
 	}
 
 	public static String beautifyName(String name) {
-		if (name.matches("^[a-zA-Z]*$")) {
-			return translate(capitalizeFirstLetter(removeCamelCase(name.replace('_', ' '))));
-		} else {
-			return translate(capitalizeFirstLetter(name.replace('_', ' ')));
-		}
+		return translate(capitalizeFirstLetter(removeCamelCase(name.replace('_', ' '))));
 	}
 
 	public static String removeCamelCase(String name) {
+		if (!name.matches("^[a-zA-Z]*$")) {
+			return name;
+		}
 		String regex = "([a-z])([A-Z]+)";
 		String replacement = "$1 $2";
-		return  name.replaceAll(regex, replacement);
+		return name.replaceAll(regex, replacement);
 	}
 
 	private static String capitalizeFirstLetter(String input) {
 		StringBuilder result = new StringBuilder(input.length());
 		String[] words = input.split("\\s");
 
-		for (int i = 0, l = words.length; i < l; ++i) {
+		for (int i = 0; i < words.length; ++i) {
 			if (i > 0) {
 				result.append(" ");
 			}
@@ -76,12 +75,11 @@ public class NameUtil {
 		StringBuilder result = new StringBuilder(input.length());
 		String[] words = input.split("\\s");
 
-		for (int i = 0, l = words.length; i < l; ++i) {
+		for (int i = 0; i < words.length; ++i) {
 			if (i > 0) {
 				result.append(" ");
 			}
 			result.append(dictionary(words[i]));
-
 		}
 		return result.toString();
 	}

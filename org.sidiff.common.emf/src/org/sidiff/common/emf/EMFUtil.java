@@ -428,19 +428,23 @@ public class EMFUtil {
 	}
 
 	/**
-	 * TODO doc
-	 * @param eReference
-	 * @return
+	 * Returns whether the given {@link EReference} is dynamic, i.e. synthetically derived based on another feature,
+	 * and therefore irrelevant for serialization.
+	 * @param eReference the reference
+	 * @return <code>true</code> if dynamic, <code>false</code> otherwise
 	 */
 	public static boolean isDynamic(EReference eReference) {
-		return eReference.isDerived() || eReference.isTransient() || !eReference.isChangeable();
+		return eReference.isDerived()
+				|| eReference.isTransient()
+				|| !eReference.isChangeable();
 	}
 
 	/**
-	 * TODO doc
-	 * @param element
-	 * @param eReference
-	 * @return
+	 * Returns whether the given {@link EReference} is dynamic, i.e. synthetically derived based on another feature,
+	 * and therefore irrelevant for serialization.
+	 * @param element the element owning the reference
+	 * @param eReference the reference
+	 * @return <code>true</code> if dynamic, <code>false</code> otherwise
 	 */
 	public static boolean isDynamic(EObject element, EReference eReference) {
 		return isDynamic(eReference)
@@ -450,19 +454,23 @@ public class EMFUtil {
 	}
 
 	/**
-	 * TODO doc
-	 * @param eAttribute
-	 * @return
+	 * Returns whether the given {@link EAttribute} is dynamic, i.e. synthetically derived based on another feature,
+	 * and therefore irrelevant for serialization.
+	 * @param eAttribute the attribute
+	 * @return <code>true</code> if dynamic, <code>false</code> otherwise
 	 */
 	public static boolean isDynamic(EAttribute eAttribute) {
-		return eAttribute.isDerived() || eAttribute.isTransient() || !eAttribute.isChangeable();
+		return eAttribute.isDerived()
+				|| eAttribute.isTransient()
+				|| !eAttribute.isChangeable();
 	}
 
 	/**
-	 * TODO doc
-	 * @param element
-	 * @param eAttribute
-	 * @return
+	 * Returns whether the given {@link EAttribute} is dynamic, i.e. synthetically derived based on another feature,
+	 * and therefore irrelevant for serialization.
+	 * @param element the element owning the attribute
+	 * @param eAttribute the attribute
+	 * @return <code>true</code> if dynamic, <code>false</code> otherwise
 	 */
 	public static boolean isDynamic(EObject element, EAttribute eAttribute) {
 		return isDynamic(eAttribute);

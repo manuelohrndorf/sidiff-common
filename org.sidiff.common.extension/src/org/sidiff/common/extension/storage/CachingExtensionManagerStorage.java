@@ -1,10 +1,6 @@
 package org.sidiff.common.extension.storage;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import org.eclipse.core.runtime.Assert;
 import org.sidiff.common.extension.IExtension;
@@ -54,7 +50,7 @@ public class CachingExtensionManagerStorage<T extends IExtension> implements IEx
 
 	@Override
 	public Collection<T> getExtensions() {
-		return Collections.unmodifiableCollection(extensions.values());
+		return Collections.unmodifiableCollection(new ArrayList<>(extensions.values()));
 	}
 
 	@Override

@@ -55,14 +55,6 @@ public class ExtensionDescription<T extends IExtension> implements IExtension.De
 	}
 
 	@Override
-	public Stream<T> createRegisteredExtensions() {
-		return getRegisteredExtensions()
-				.map(this::createExecutableExtension)
-				.filter(Optional::isPresent)
-				.map(Optional::get);
-	}
-
-	@Override
 	public Optional<T> createExecutableExtension(IConfigurationElement element) {
 		try {
 			final Object rawExtension = element.createExecutableExtension(getClassAttribute());

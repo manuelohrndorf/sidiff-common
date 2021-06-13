@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SiDiff Common - Model String Resolver
 Bundle-SymbolicName: org.sidiff.common.emf.stringresolver;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.2.1.qualifier
 Require-Bundle: org.sidiff.common.emf;visibility:=reexport,
  org.sidiff.common.extension;visibility:=reexport
 Export-Package: org.sidiff.common.emf.stringresolver,

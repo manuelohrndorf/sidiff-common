@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.sidiff.common.emf.metrics;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Automatic-Module-Name: org.sidiff.common.emf.metrics
-Bundle-RequiredExecutionEnvironment: JavaSE-12
+Bundle-RequiredExecutionEnvironment: JavaSE-14
 Require-Bundle: org.sidiff.common.emf;visibility:=reexport,
  org.sidiff.common.extension;visibility:=reexport
 Export-Package: org.sidiff.common.emf.metrics,

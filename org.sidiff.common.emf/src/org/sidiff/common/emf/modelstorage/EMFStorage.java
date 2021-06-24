@@ -284,7 +284,7 @@ public class EMFStorage {
 	 */
 	public static IFile toIFile(URI uri) {
 		URI platformURI = toPlatformURI(uri);
-		if(platformURI.isPlatform()) {
+		if(platformURI.isPlatformResource()) {
 			return getWorkspaceRoot().getFile(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		if(platformURI.isArchive() && platformURI.authority().startsWith("platform:")) {
@@ -332,7 +332,7 @@ public class EMFStorage {
 	 */
 	public static IFolder toIFolder(URI uri) {
 		URI platformURI = toPlatformURI(uri);
-		if(platformURI.isPlatform()) {
+		if(platformURI.isPlatformResource()) {
 			return getWorkspaceRoot().getFolder(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		return null;

@@ -2,6 +2,7 @@ package org.sidiff.common.emf.input.adapter.ui;
 
 import org.eclipse.core.resources.IFolder;
 import org.sidiff.common.emf.input.adapter.IModelAdapter;
+import org.sidiff.common.emf.input.adapter.ModelAdapterJob.Direction;
 import org.sidiff.common.emf.ui.widgets.FolderSelectionWidget;
 import org.sidiff.common.extension.ui.widgets.ConfigurableExtensionWidget;
 import org.sidiff.common.ui.pages.AbstractWizardPage;
@@ -46,7 +47,7 @@ public class ModelAdapterWizardPage extends AbstractWizardPage {
 		return modelAdapterWidget.getSingleSelection();
 	}
 
-	public ModelAdapterDirectionWidget.Direction getModelAdapterDirection() {
+	public Direction getModelAdapterDirection() {
 		return directionWidget.getSingleSelection();
 	}
 

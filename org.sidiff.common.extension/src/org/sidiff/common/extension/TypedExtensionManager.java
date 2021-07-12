@@ -1,8 +1,6 @@
 package org.sidiff.common.extension;
 
-import java.util.Collection;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,7 +36,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	public TypedExtensionManager(final Description<? extends T> description) {
 		super(description);
 	}
-	
+
 	/**
 	 * Creates a new typed extension manager that uses the given storage implementation.
 	 * @param storage the storage implementation
@@ -103,6 +101,18 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	}
 
 	/**
+	 * <p>Returns a default extension of this manager that supports all of the given document types.</p>
+	 * <p>Throws a runtime exception if no default extension was found</p>
+	 * @param documentTypes the document types, may contain {@link ITypedExtension#GENERIC_TYPE}
+	 * @return the default extension for this document type, never null
+	 * @implSpec delegates to {@link #getDefaultExtension(Collection)}
+	 */
+	public final T requireDefaultExtension(final Collection<String> documentTypes) {
+		return getDefaultExtension(documentTypes)
+				.orElseThrow(() -> new NoSuchElementException("No default extension found for document types " + documentTypes));
+	}
+
+	/**
 	 * Returns a set of all document types that are supported by this manager's extensions.
 	 * @return set of document types, may contain {@link ITypedExtension#GENERIC_TYPE}
 	 */
@@ -115,7 +125,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 
 	private static boolean extensionSupportsType(final ITypedExtension ext,
 			final Collection<String> documentTypes, final boolean includeGeneric) {
-		return (includeGeneric && ext.isGeneric())
+		return includeGeneric && ext.isGeneric()
 				|| ext.getDocumentTypes().containsAll(documentTypes);
 	}
 }

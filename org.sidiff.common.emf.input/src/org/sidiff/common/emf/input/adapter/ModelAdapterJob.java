@@ -56,7 +56,7 @@ public class ModelAdapterJob extends Job {
 			return new Status(IStatus.ERROR, InputModels.PLUGIN_ID,
 				"No files to adapt have been found in the selection. "
 				+ "The " + modelAdapter.getName() + " adapts files with the following extensions "
-				+ "in direction " + adapterDirection + ": " + fileExtToAdapt.stream().collect(Collectors.joining(",")) + ".");
+				+ "in direction " + adapterDirection + ": " + fileExtToAdapt.stream().collect(Collectors.joining(", ")) + ".");
 		}
 
 		MultiStatus result = new MultiStatus(InputModels.PLUGIN_ID, 0, "See details below.");
@@ -82,7 +82,7 @@ public class ModelAdapterJob extends Job {
 				}
 			} catch (Exception e) {
 				result.add(new Status(IStatus.ERROR, InputModels.PLUGIN_ID,
-						"Failed to adapt " + adapterDirection, e));
+						"Failed to adapt " + adapterDirection + ": " + file.getFullPath(), e));
 			}
 			progress.worked(1);
 		}

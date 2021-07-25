@@ -21,6 +21,7 @@ public interface IExtension {
 
 	/**
 	 * <p>Returns a key that uniquely identifies this extension.</p>
+	 * <p>The key should only contain characters in the group <code>[A-Za-z0-9_-]</code>.</p>
 	 * <p>The default implementation returns <code>getClass().getName()</code>.</p>
 	 * @return unique key / identifier
 	 */
@@ -103,10 +104,16 @@ public interface IExtension {
 		Stream<IConfigurationElement> getRegisteredExtensions();
 
 		/**
-		 * 
-		 * @return
+		 * Convenience method that converts the stream of extension configuration elements
+		 * returned by {@link #getRegisteredExtensions()} into a stream of executable extensions.
+		 * @return stream of executable extensions
 		 */
-		Stream<T> createRegisteredExtensions();
+		default Stream<T> createRegisteredExtensions() {
+			return getRegisteredExtensions()
+					.map(this::createExecutableExtension)
+					.filter(Optional::isPresent)
+					.map(Optional::get);
+		}
 
 		/**
 		 * Creates the executable extension instance for the given configuration element.

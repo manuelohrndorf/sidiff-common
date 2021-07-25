@@ -73,11 +73,11 @@ public class StringUtil {
 		StringResolver bestMatch = null;
 		int bestInheritanceDistance = Integer.MAX_VALUE;
 		for(StringResolver resolver : resolvers.values()){
-			if(resolver.dedicatedClass().isAssignableFrom(objectClass)){
+			if(resolver.dedicatedClass().isAssignableFrom(objectClass)) {
 				int currentInheritanceDistance = ReflectionUtil.computeInheritanceDistance(resolver.dedicatedClass(), objectClass);
-				if(currentInheritanceDistance<bestInheritanceDistance){
-					bestInheritanceDistance=currentInheritanceDistance;
-					bestMatch=resolver;
+				if(currentInheritanceDistance < bestInheritanceDistance) {
+					bestInheritanceDistance = currentInheritanceDistance;
+					bestMatch = resolver;
 				}
 			}
 		}

@@ -1,39 +1,32 @@
 package org.sidiff.common.emf.ui.widgets;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.sidiff.common.ui.widgets.AbstractEditableListWidget;
 
+/**
+ * @author rmueller
+ * @param <T> the type of input elements
+ */
 public abstract class AbstractResourceSelectionEditableListWidget<T> extends AbstractEditableListWidget<T> {
 
+	private final List<IResource> initialSelection = new ArrayList<>();
+	private final List<ViewerFilter> viewerFilters = new ArrayList<>();
+
 	/**
-	 * The initially selected resource in the selection dialog, <code>null</code> if none.
+	 * @return Modifiable list of the initially selected resources in the selection dialog, empty if none. Initially empty.
 	 */
-	private IResource initialSelection;
-
-	private List<ViewerFilter> viewerFilters;
-
-	public void setInitialSelection(IResource initialSelection) {
-		this.initialSelection = initialSelection;
-	}
-
-	public IResource getInitialSelection() {
+	public List<IResource> getInitialSelection() {
 		return initialSelection;
 	}
 
-	public void setViewerFilters(List<ViewerFilter> viewerFilters) {
-		if(viewerFilters == null || viewerFilters.isEmpty()) {
-			this.viewerFilters = null;
-		} else {
-			this.viewerFilters = new ArrayList<>(viewerFilters);
-		}
-	}
-
+	/**
+	 * @return Modifiable list of viewer filters, empty if none. Initially empty.
+	 */
 	public List<ViewerFilter> getViewerFilters() {
-		return viewerFilters == null ? null : Collections.unmodifiableList(viewerFilters);
+		return viewerFilters;
 	}
 }

@@ -10,12 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.resources.*;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.emf.common.util.URI;
@@ -246,13 +241,12 @@ public class EMFStorage {
 	}
 
 	/**
-	 * Tries to convert the URI to a file URI and returns a {@link Path} in the local file system.
-	 * If the URI cannot be converted to a file URI, <code>null</code> is returned.
-	 * @param uri the URI
-	 * @return path of file in the local file system for the given URI, <code>null</code> if not convertible to a file URI
+	 * <p>Tries to convert the {@link IResource} in the workspace to a {@link Path} in the local file system.</p>
+	 * @param resource the workspace resource
+	 * @return path of in the local file system, <code>null</code> if not convertible
 	 */
-	public static Path toPath(IFile file) {
-		return toPath(toFileURI(file));
+	public static Path toPath(IResource resource) {
+		return toPath(toFileURI(resource));
 	}
 
 	/**
@@ -271,13 +265,13 @@ public class EMFStorage {
 	}
 
 	/**
-	 * <p>Tries to convert the {@link IFile} in the workspace to a {@link File} in the local file system.</p>
-	 * <p>This is a convenience method equivalent to <code>toFile(toPlatformURI(file))</code>.</p>
-	 * @param file the file in the workspace
+	 * <p>Tries to convert the {@link IResource} in the workspace to a {@link File} in the local file system.</p>
+	 * <p>This is a convenience method equivalent to <code>toFile(toFileURI(file))</code>.</p>
+	 * @param resource the resource in the workspace
 	 * @return corresponding file in the local file system, <code>null</code> if none
 	 */
-	public static File toFile(IFile file) {
-		return toFile(toFileURI(file));
+	public static File toFile(IResource resource) {
+		return toFile(toFileURI(resource));
 	}
 
 	/**
@@ -290,7 +284,7 @@ public class EMFStorage {
 	 */
 	public static IFile toIFile(URI uri) {
 		URI platformURI = toPlatformURI(uri);
-		if(platformURI.isPlatform()) {
+		if(platformURI.isPlatformResource()) {
 			return getWorkspaceRoot().getFile(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		if(platformURI.isArchive() && platformURI.authority().startsWith("platform:")) {
@@ -338,7 +332,7 @@ public class EMFStorage {
 	 */
 	public static IFolder toIFolder(URI uri) {
 		URI platformURI = toPlatformURI(uri);
-		if(platformURI.isPlatform()) {
+		if(platformURI.isPlatformResource()) {
 			return getWorkspaceRoot().getFolder(new org.eclipse.core.runtime.Path(platformURI.toPlatformString(true)));
 		}
 		return null;

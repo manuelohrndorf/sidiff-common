@@ -9,6 +9,9 @@ import org.eclipse.core.runtime.Status;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
+/**
+ * @author rmueller
+ */
 public final class ExceptionUtil {
 
 	private ExceptionUtil() {
@@ -69,8 +72,8 @@ public final class ExceptionUtil {
 	 */
 	public static CoreException asCoreException(Throwable e) {
 		if(e instanceof Error) {
-			// errors should be thrown as they are, but we don't want to declare them here
-			sneakyThrow(e);
+			// errors should be thrown as they are
+			throw (Error)e;
 		} else if(e instanceof CoreException) {
 			return (CoreException)e;
 		}

@@ -28,6 +28,8 @@ import org.sidiff.common.logging.LogUtil;
  */
 public class InputModels {
 
+	public static final String PLUGIN_ID = "org.sidiff.common.emf.input";
+
 	private List<Resource> resources;
 	private List<IFile> files;
 	private List<String> labels;

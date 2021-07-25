@@ -1,11 +1,6 @@
 package org.sidiff.common.extension;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiPredicate;
 
 import org.eclipse.core.runtime.Assert;
@@ -110,8 +105,8 @@ public class ExtensionManager<T extends IExtension> {
 	}
 
 	/**
-	 * Returns the extension with the given ID.
-	 * The returned Optional is empty if no extension with this ID exists.
+	 * <p>Returns the extension with the given ID.</p>
+	 * <p>The returned Optional is empty if no extension with this ID exists.</p>
 	 * @param id the extension's ID
 	 * @return {@link Optional} containing the extension with the id, or empty Optional if none
 	 */
@@ -123,8 +118,20 @@ public class ExtensionManager<T extends IExtension> {
 	}
 
 	/**
-	 * Returns the first extension with the given class.
-	 * The returned Optional is empty if no extension with this class exists.
+	 * <p>Returns the extension with the given ID.</p>
+	 * <p>Throws a runtime exception if no extension with that ID is found.</p>
+	 * @param id the extension's ID
+	 * @return the extension with the id, never <code>null</code>
+	 * @implSpec delegates to {@link #getExtension(String)}
+	 */
+	public final T requireExtension(final String id) {
+		return getExtension(id)
+				.orElseThrow(() -> new NoSuchElementException("No extension with key '" + id + "' was found"));
+	}
+
+	/**
+	 * <p>Returns the first extension with the given class.</p>
+	 * <p>The returned Optional is empty if no extension with this class exists.</p>
 	 * @param extensionClass the extension's class
 	 * @return {@link Optional} containing the extension with the class, or empty Optional if none
 	 */
@@ -134,6 +141,18 @@ public class ExtensionManager<T extends IExtension> {
 				.filter(extensionClass::isInstance)
 				.map(extensionClass::cast)
 				.findFirst();
+	}
+
+	/**
+	 * <p>Returns the first extension with the given class.</p>
+	 * <p>Throws a runtime exception if no extension with that class is found.</p>
+	 * @param extensionClass the extension's class
+	 * @return the extension with the class, never <code>null</code>
+	 * @implSpec delegates to {@link #getExtension(Class)}
+	 */
+	public final <S extends T> S requireExtension(final Class<S> extensionClass) {
+		return getExtension(extensionClass)
+				.orElseThrow(() -> new NoSuchElementException("No extension with type '" + extensionClass + "' was found"));
 	}
 
 	/**
@@ -148,6 +167,17 @@ public class ExtensionManager<T extends IExtension> {
 	}
 
 	/**
+	 * <p>Returns the default extension of this manager.</p>
+	 * <p>Throws a runtime exception if no default extension is available.</p>
+	 * @return the default extension, never <code>null</code>
+	 * @implSpec delegates to {@link #getDefaultExtension()}
+	 */
+	public final T requireDefaultExtension() {
+		return getDefaultExtension()
+				.orElseThrow(() -> new NoSuchElementException("No default extension is available"));
+	}
+
+	/**
 	 * <p>Returns a comparator for the extensions of this manager.</p>
 	 * <p>The default comparator compares extensions lexicographically
 	 * using {@link IExtension#getName()}.</p>
@@ -159,7 +189,7 @@ public class ExtensionManager<T extends IExtension> {
 	}
 
 	/**
-	 * <p>Returns a BiPredicate to compare two extensions of this manager to determine equality.</p>
+	 * <p>Returns a {@link BiPredicate} to compare two extensions of this manager to determine equality.</p>
 	 * <p>The default equality is based on {@link IExtension#getKey()}.</p>
 	 * @return predicate to check equality of extensions of this manager
 	 */

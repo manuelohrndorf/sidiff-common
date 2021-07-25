@@ -1,18 +1,18 @@
 package org.sidiff.common.extension.internal;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 import org.sidiff.common.extension.configuration.ConfigurationOption;
 import org.sidiff.common.extension.configuration.IExtensionConfiguration;
+
+import com.eclipsesource.json.*;
 
 /**
  * An empty extension configuration implementation without options.
  * Trying to add or set options results in runtime exceptions.
  * @author rmueller
  */
-public class NullExtensionConfiguration implements IExtensionConfiguration {
+public class NullExtensionConfiguration implements IExtensionConfiguration, IExtensionConfiguration.Internal {
 
 	@Override
 	public void setOption(String key, Object value) {
@@ -32,7 +32,7 @@ public class NullExtensionConfiguration implements IExtensionConfiguration {
 	@Override
 	public void setOptions(Map<String, Object> options) {
 		if(!options.isEmpty()) {
-			throw new UnsupportedOperationException("This extension cannot have options");			
+			throw new UnsupportedOperationException("This extension cannot have options");
 		}
 	}
 
@@ -47,8 +47,15 @@ public class NullExtensionConfiguration implements IExtensionConfiguration {
 	}
 
 	@Override
-	public String exportAssignments() {
-		return "";
+	public JsonObject exportAssignments() {
+		return Json.object();
+	}
+
+	@Override
+	public void importAssignments(JsonObject serializedValue) {
+		if(!serializedValue.isEmpty()) {
+			throw new UnsupportedOperationException("This configuration cannot load any values");
+		}
 	}
 
 	@Override

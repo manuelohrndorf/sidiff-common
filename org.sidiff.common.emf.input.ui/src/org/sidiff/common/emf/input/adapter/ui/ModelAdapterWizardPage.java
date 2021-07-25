@@ -1,6 +1,9 @@
 package org.sidiff.common.emf.input.adapter.ui;
 
+import org.eclipse.core.resources.IFolder;
 import org.sidiff.common.emf.input.adapter.IModelAdapter;
+import org.sidiff.common.emf.input.adapter.ModelAdapterJob.Direction;
+import org.sidiff.common.emf.ui.widgets.FolderSelectionWidget;
 import org.sidiff.common.extension.ui.widgets.ConfigurableExtensionWidget;
 import org.sidiff.common.ui.pages.AbstractWizardPage;
 
@@ -11,6 +14,7 @@ public class ModelAdapterWizardPage extends AbstractWizardPage {
 
 	private ModelAdapterSelectionWidget modelAdapterWidget;
 	private ModelAdapterDirectionWidget directionWidget;
+	private FolderSelectionWidget outputFolderWidget;
 
 	public ModelAdapterWizardPage() {
 		super("ModelAdapterWizardPage", "Use a Model Adapter");
@@ -20,12 +24,18 @@ public class ModelAdapterWizardPage extends AbstractWizardPage {
 	protected void createWidgets() {
 		modelAdapterWidget = new ModelAdapterSelectionWidget();
 		modelAdapterWidget.setLowerUpperBounds(1, 1);
+		modelAdapterWidget.getSelectableValues().stream().findFirst().ifPresent(modelAdapterWidget::setSelection);
 		addWidget(container, modelAdapterWidget);
 
 		ConfigurableExtensionWidget.addAllForWidget(container, modelAdapterWidget, this::addWidget);
 
 		directionWidget = new ModelAdapterDirectionWidget();
 		addWidget(container, directionWidget);
+
+		outputFolderWidget = new FolderSelectionWidget();
+		outputFolderWidget.setTitle("Output folder (empty to use same folder as inputs)");
+		outputFolderWidget.setLowerUpperBounds(0, 1);
+		addWidget(container, outputFolderWidget);
 	}
 
 	@Override
@@ -37,7 +47,11 @@ public class ModelAdapterWizardPage extends AbstractWizardPage {
 		return modelAdapterWidget.getSingleSelection();
 	}
 
-	public ModelAdapterDirectionWidget.Direction getModelAdapterDirection() {
+	public Direction getModelAdapterDirection() {
 		return directionWidget.getSingleSelection();
+	}
+
+	public IFolder getOutputFolder() {
+		return outputFolderWidget.getSingleSelection();
 	}
 }

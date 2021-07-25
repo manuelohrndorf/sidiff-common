@@ -5,13 +5,9 @@ Bundle-SymbolicName: org.sidiff.common.emf.ui;singleton:=true
 Bundle-Version: 1.2.1.qualifier
 Automatic-Module-Name: org.sidiff.common.emf.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.jface,
- org.eclipse.emf.ecore,
- org.eclipse.ui.workbench,
- org.sidiff.common.ui;visibility:=reexport,
+Require-Bundle: org.sidiff.common.ui;visibility:=reexport,
  org.sidiff.common.emf;visibility:=reexport,
- org.eclipse.emf.ecore.editor,
- org.eclipse.core.expressions
+ org.eclipse.emf.ecore.editor
 Export-Package: org.sidiff.common.emf.ui.labelprovider,
  org.sidiff.common.emf.ui.util,
  org.sidiff.common.emf.ui.widgets

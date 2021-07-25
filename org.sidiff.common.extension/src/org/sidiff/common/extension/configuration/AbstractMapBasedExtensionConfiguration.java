@@ -1,20 +1,19 @@
 package org.sidiff.common.extension.configuration;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import org.sidiff.common.util.StringListSerializer;
+
+import com.eclipsesource.json.*;
 
 /**
  * An abstract extension configuration that uses a map to store options.
  * @author rmueller
  */
 public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExtensionConfiguration {
+
+	private static final StringListSerializer EQUAL_SIGN_SERIALIZER = new StringListSerializer("=");
 
 	private Map<String,ConfigurationOption<?>> optionsMap;
 
@@ -44,11 +43,18 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 	}
 
 	@Override
-	public String exportAssignments() {
-		return StringListSerializer.DEFAULT.serialize(
-			getConfigurationOptions().stream()
-				.map(ConfigurationOption::exportAssignment)
-				.collect(Collectors.toList()));
+	public JsonObject exportAssignments() {
+		JsonObject result = Json.object();
+		getConfigurationOptions().forEach(option -> option.exportAssignment(result));
+		return result;
+	}
+
+	@Override
+	public void importAssignments(JsonObject serializedValue) {
+		Collection<ConfigurationOption<?>> options = getConfigurationOptions();
+		serializedValue.forEach(member -> options.stream()
+			.filter(option -> option.getKey().equals(member.getName()))
+			.findFirst().ifPresent(option -> option.importAssignment(member.getValue())));
 	}
 
 	@Override
@@ -58,10 +64,10 @@ public abstract class AbstractMapBasedExtensionConfiguration extends AbstractExt
 			if(assignment.isEmpty()) {
 				continue;
 			}
-			List<String> keyValue = ConfigurationOption.EQUAL_SIGN_SERIALIZER.deserialize(assignment);
+			List<String> keyValue = EQUAL_SIGN_SERIALIZER.deserialize(assignment);
 			if(keyValue.size() > 2) {
 				throw new IllegalArgumentException(
-					"Only one equals sign in serialized configuration option entry expected. Assignment: " + assignment);
+						"Only one equals sign in serialized configuration option entry expected. Assignment: " + assignment);
 			}
 			options.stream()
 				.filter(option -> option.getKey().equals(keyValue.get(0)))

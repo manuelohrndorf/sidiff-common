@@ -3,20 +3,14 @@ package org.sidiff.common;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.sidiff.common.stringresolver.StringUtil;
-import org.sidiff.common.stringresolver.internal.ArrayStringResolver;
-import org.sidiff.common.stringresolver.internal.CollectionStringResolver;
-import org.sidiff.common.stringresolver.internal.ErrorStringResolver;
-import org.sidiff.common.stringresolver.internal.ExceptionStringResolver;
-import org.sidiff.common.stringresolver.internal.HashTableStringResolver;
-import org.sidiff.common.stringresolver.internal.MapStringResolver;
-import org.sidiff.common.stringresolver.internal.StackTraceStringResolver;
-import org.sidiff.common.stringresolver.internal.ThreadStringResolver;
+import org.sidiff.common.stringresolver.internal.*;
 
 /**
  * The Common-Plugin bundle activator, which initializes
  * and deinitializes this plugin.
- * 
- * @author Maik Schmidt, Robert M�ller
+ *
+ * @author Maik Schmidt
+ * @author rmueller
  */
 public class CommonPlugin implements BundleActivator {
 
@@ -37,8 +31,7 @@ public class CommonPlugin implements BundleActivator {
 		// register all provided StringResolvers
 		StringUtil.addStringResolver(new ArrayStringResolver());
 		StringUtil.addStringResolver(new CollectionStringResolver());
-		StringUtil.addStringResolver(new ExceptionStringResolver());
-		StringUtil.addStringResolver(new ErrorStringResolver());
+		StringUtil.addStringResolver(new ThrowableStringResolver());
 		StringUtil.addStringResolver(new HashTableStringResolver());
 		StringUtil.addStringResolver(new MapStringResolver());
 		StringUtil.addStringResolver(new ThreadStringResolver());
@@ -50,8 +43,7 @@ public class CommonPlugin implements BundleActivator {
 		// unregister all provided StringResolvers
 		StringUtil.removeStringResolver(ArrayStringResolver.class);
 		StringUtil.removeStringResolver(CollectionStringResolver.class);
-		StringUtil.removeStringResolver(ExceptionStringResolver.class);
-		StringUtil.removeStringResolver(ErrorStringResolver.class);
+		StringUtil.removeStringResolver(ThrowableStringResolver.class);
 		StringUtil.removeStringResolver(HashTableStringResolver.class);
 		StringUtil.removeStringResolver(MapStringResolver.class);
 		StringUtil.removeStringResolver(ThreadStringResolver.class);
@@ -65,8 +57,9 @@ public class CommonPlugin implements BundleActivator {
 	 * @return the bundle context of this plugin
 	 */
 	public static BundleContext getBundleContext() {
-		if(context == null)
+		if(context == null) {
 			throw new IllegalStateException("plugin is not activated");
+		}
 		return context;
 	}
 

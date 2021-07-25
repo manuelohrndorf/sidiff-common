@@ -1,13 +1,7 @@
 package org.sidiff.common.emf.modelstorage;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.emf.common.util.URI;
@@ -19,6 +13,7 @@ import org.eclipse.emf.ecore.util.ExtendedMetaData;
 import org.eclipse.emf.ecore.xmi.XMIResource;
 import org.eclipse.emf.ecore.xmi.XMLResource;
 import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl;
+import org.eclipse.emf.ecore.xmi.impl.URIHandlerImpl.PlatformSchemeAware;
 import org.eclipse.emf.ecore.xmi.impl.XMLParserPoolImpl;
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
 import org.sidiff.common.logging.LogEvent;
@@ -74,11 +69,11 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		//options.put(XMLResource.OPTION_DEFER_ATTACHMENT, Boolean.TRUE);
 
 		options.put(XMLResource.OPTION_DEFER_IDREF_RESOLUTION, Boolean.TRUE);
-		
+
 		//We do NOT use caching due to errors in case of forward references in large resources.
 		options.put(XMLResource.OPTION_USE_PARSER_POOL, new XMLParserPoolImpl(false));
-		
-		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<Object, Object>());
+
+		options.put(XMLResource.OPTION_USE_XML_NAME_TO_FEATURE_MAP, new HashMap<>());
 
 		// Unknown features must be recorded, because some valid UML models cannot be loaded
 		// otherwise because of a FeatureNotFoundException "Feature 'bodyCondition' not found.".
@@ -90,11 +85,11 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		options.put(XMLResource.OPTION_CONFIGURATION_CACHE, Boolean.TRUE);
 
 		// Lookup cache to improves performance when saving multiple documents with the same type
-		options.put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE, new ArrayList<Object>());
-		
+		options.put(XMLResource.OPTION_USE_CACHED_LOOKUP_TABLE, new ArrayList<>());
+
 		// Only save resource if changed
 		options.put(XMLResource.OPTION_SAVE_ONLY_IF_CHANGED, XMLResource.OPTION_SAVE_ONLY_IF_CHANGED_MEMORY_BUFFER);
-		
+
 		// The ExtendedMetaData must be set when using the Cached Lookup Table and/or Configuration Cache,
 		// else this cache might store Lookup tables which do not have their respective ExtendedMetaData set,
 		// resulting in a NullPointerException in XMLSaveImpl$Lookup.getDocumentRoot(XMLSaveImpl.java:2801)
@@ -143,7 +138,7 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 	}
 
 	/**
-	 * Saves the Resource that contains the given EObject. 
+	 * Saves the Resource that contains the given EObject.
 	 * @param eObject the object to save
 	 * @throws IllegalArgumentException if the object is not contained in a resource,
 	 * or it is not contained in this resource set
@@ -160,11 +155,12 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 	 * or it is not contained in this resource set
 	 */
 	public void saveEObjects(Collection<? extends EObject> eObjects) {
-		Set<Resource> savedResources = new HashSet<>(); // only save each resource at most once
+		Set<Resource> savedResources = new HashSet<>();
 		for(EObject eObject : eObjects) {
+			Assert.isLegal(eObject != null, "Cannot save null EObjects");
 			Resource resource = eObject.eResource();
 			if(resource == null) {
-				throw new IllegalArgumentException("root is not contained in a resource: " + eObject);
+				throw new IllegalArgumentException("Root is not contained in a resource: " + eObject);
 			} else if(savedResources.add(resource)) {
 				saveResource(resource);
 			}
@@ -201,7 +197,7 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 
 	/**
 	 * Saves all resources of this resource set, except empty resources with errors,
-	 * which are the result of having proxy references to deleted resources. 
+	 * which are the result of having proxy references to deleted resources.
 	 */
 	public void saveAllResources() {
 		for(Resource resource : getResources()) {
@@ -232,8 +228,9 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		// in which case the modification will fail
 		internalSaveEObjectsAs(new ArrayList<>(roots), uri);
 	}
-	
+
 	protected void internalSaveEObjectsAs(Collection<? extends EObject> roots, URI uri) {
+		Assert.isLegal(roots.stream().noneMatch(Objects::isNull), "Cannot save null EObjects");
 		Resource resource = createResource(uri);
 		resource.getContents().clear();
 		resource.getContents().addAll(roots);
@@ -340,7 +337,7 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 
 
 	/**
-	 * URI will be replaced by the last segment
+	 * URI will be replaced by the last segment (filename).
 	 */
 	public static class DeresolveLastSegment extends URIHandlerImpl {
 		@Override
@@ -351,13 +348,10 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 
 	/**
 	 * URI will be replaced by the shortest relative URI.
+	 * @deprecated Use existing {@link PlatformSchemeAware} directly.
 	 */
-	public static class DeresolveRelative extends URIHandlerImpl {
-		@Override
-		public URI deresolve(URI uri){
-			return !uri.isPlatform() || (uri.segmentCount() > 0 && baseURI.segmentCount() > 0 && uri.segment(0).equals(baseURI.segment(0)))
-					? super.deresolve(uri) : uri;
-		}
+	public static class DeresolveRelative extends PlatformSchemeAware {
+		// deprecated
 	}
 
 	/**
@@ -368,5 +362,5 @@ public class SiDiffResourceSet extends ResourceSetImpl {
 		public URI deresolve(URI uri) {
 			return super.deresolve(EMFStorage.toPlatformURI(uri));
 		}
-	}	
+	}
 }

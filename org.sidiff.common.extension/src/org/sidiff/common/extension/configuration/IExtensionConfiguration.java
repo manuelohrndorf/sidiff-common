@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.sidiff.common.extension.internal.NullExtensionConfiguration;
 
+import com.eclipsesource.json.JsonObject;
+
 /**
  * <p>An extension configuration stores multiple configuration
  * options, identified by keys, that each have a name, value and
@@ -43,7 +45,7 @@ public interface IExtensionConfiguration {
 	 * @return option key to value map
 	 */
 	Map<String,Object> getOptions();
-	
+
 	/**
 	 * Sets multiple options to the given key to value mappings.
 	 * @param options the key to value map of options to set
@@ -62,23 +64,33 @@ public interface IExtensionConfiguration {
 	Collection<ConfigurationOption<?>> getConfigurationOptions();
 
 	/**
-	 * Exports the configuration option assignments to a serializable format.
-	 * @return serialized option assignments
-	 */
-	String exportAssignments();
-
-	/**
-	 * Imports configuration options assignments, which have been previously
-	 * exported with {@link #exportAssignments()}.
-	 * @param serializedValue the serialized value to import
-	 */
-	void importAssignments(String serializedValue);
-
-	/**
 	 * Filters the selectable values for all configuration options based on the given arguments.
 	 * Only applies to configuration options that support it.
 	 * @param documentTypes the document types, empty to allow all
 	 * @param includeGeneric whether to include generic extensions as well
 	 */
 	void setDocumentTypeFilter(Collection<String> documentTypes, boolean includeGeneric);
+
+	interface Internal {
+
+		/**
+		 * Exports the configuration option assignments to a serializable format.
+		 * @return serialized option assignments
+		 */
+		JsonObject exportAssignments();
+
+		/**
+		 * Imports configuration options assignments, which have been previously
+		 * exported with {@link #exportAssignments()}.
+		 * @param serializedValue the serialized value to import
+		 */
+		void importAssignments(JsonObject serializedValue);
+
+		/**
+		 * Legacy. Imports configuration options assignments, which have been previously
+		 * exported with {@link #exportAssignments()}.
+		 * @param serializedValue the serialized value to import
+		 */
+		void importAssignments(String serializedValue);
+	}
 }

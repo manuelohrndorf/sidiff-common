@@ -93,4 +93,15 @@ public class FileOperations {
 		});
 		return folderExists[0];
 	}
+
+	/**
+	 * Trims the last file extension of a file name, e.g.
+	 * <pre>foo.tar.gz --&gt; foo.tar --&gt; foo --&gt; foo</pre>
+	 * @param fileName the file name
+	 * @return file name with the last file extension removed
+	 */
+	public static String trimLastFileExtension(String fileName) {
+		int index = fileName.lastIndexOf(".");
+		return index == -1 ? fileName : fileName.substring(0, index);
+	}
 }

@@ -30,8 +30,8 @@ public class NumberSelectionWidget extends AbstractModifiableWidget<Integer> {
 		this.max = max;
 		this.increment = increment;
 		Assert.isLegal(min >= 0 && max >= 0, "This widget only supports positive numbers");
-		Assert.isLegal(min < max, "This minimum must be less than the maximum");
-		Assert.isLegal(increment > 0, "This increment must be greater than zero");
+		Assert.isLegal(min < max, "The minimum must be less than the maximum");
+		Assert.isLegal(increment > 0, "The increment must be greater than zero");
 		Assert.isLegal((max-min)/increment < 1000, "Number of segments too large. OS specific SWT implementation may freeze.");
 	}
 
@@ -86,8 +86,7 @@ public class NumberSelectionWidget extends AbstractModifiableWidget<Integer> {
 		int value = getSingleSelection();
 		if (value < min) {
 			return new ValidationMessage(ValidationType.ERROR, "The minimum value for '" + getTitle() + "' is " + min);
-		}
-		if (value > max) {
+		} else if (value > max) {
 			return new ValidationMessage(ValidationType.ERROR, "The maximum value for '" + getTitle() + "' is " + max);
 		}
 		return super.doValidate();

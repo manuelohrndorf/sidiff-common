@@ -4,12 +4,9 @@ Bundle-Name: SiDiff Common EMF - Input UI
 Bundle-SymbolicName: org.sidiff.common.emf.input.ui;singleton:=true
 Bundle-Version: 1.2.1.qualifier
 Bundle-Activator: org.sidiff.common.emf.input.ui.internal.EmfInputUiPlugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.sidiff.common.ui,
- org.sidiff.common.emf.input;visibility:=reexport,
- org.eclipse.core.resources,
- org.sidiff.common.extension.ui
+Require-Bundle: org.sidiff.common.emf.input;visibility:=reexport,
+ org.sidiff.common.extension.ui,
+ org.sidiff.common.emf.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Automatic-Module-Name: org.sidiff.common.emf.input.ui
 Bundle-ActivationPolicy: lazy

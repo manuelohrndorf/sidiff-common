@@ -5,8 +5,7 @@ Bundle-SymbolicName: org.sidiff.common.xml;singleton:=true
 Bundle-Version: 1.2.1.qualifier
 Automatic-Module-Name: org.sidiff.common.xml
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.core.runtime,
- org.apache.xerces;visibility:=reexport,
+Require-Bundle: org.apache.xerces;visibility:=reexport,
  org.sidiff.common
 Bundle-Vendor: Software Engineering Group, University of Siegen
 Export-Package: org.sidiff.common.xml

@@ -21,7 +21,7 @@ public class NullExtensionConfiguration implements IExtensionConfiguration, IExt
 
 	@Override
 	public Object getOption(String key) {
-		return null;
+		throw new UnsupportedOperationException("This extension has no options");
 	}
 
 	@Override

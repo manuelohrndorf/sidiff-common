@@ -55,7 +55,7 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 	public final Collection<T> getExtensions(final Collection<String> documentTypes, final boolean includeGeneric) {
 		Assert.isNotNull(documentTypes);
 		return getExtensions().stream()
-				.filter(e -> extensionSupportsType(e, documentTypes, includeGeneric))
+				.filter(ext -> includeGeneric && ext.isGeneric() || ext.getDocumentTypes().containsAll(documentTypes))
 				.collect(Collectors.toList());
 	}
 
@@ -121,11 +121,5 @@ public class TypedExtensionManager<T extends ITypedExtension> extends ExtensionM
 				.map(ITypedExtension::getDocumentTypes)
 				.flatMap(Collection::stream)
 				.collect(Collectors.toSet());
-	}
-
-	private static boolean extensionSupportsType(final ITypedExtension ext,
-			final Collection<String> documentTypes, final boolean includeGeneric) {
-		return includeGeneric && ext.isGeneric()
-				|| ext.getDocumentTypes().containsAll(documentTypes);
 	}
 }

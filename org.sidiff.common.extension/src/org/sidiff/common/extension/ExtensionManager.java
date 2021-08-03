@@ -152,7 +152,7 @@ public class ExtensionManager<T extends IExtension> {
 	 */
 	public final <S extends T> S requireExtension(final Class<S> extensionClass) {
 		return getExtension(extensionClass)
-				.orElseThrow(() -> new NoSuchElementException("No extension with type '" + extensionClass + "' was found"));
+				.orElseThrow(() -> new NoSuchElementException("No extension with type '" + extensionClass.getName() + "' was found"));
 	}
 
 	/**

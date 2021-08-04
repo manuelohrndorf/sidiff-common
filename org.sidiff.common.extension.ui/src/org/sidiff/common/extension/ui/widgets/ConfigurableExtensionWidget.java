@@ -110,12 +110,8 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 		}
 		spinner.addSelectionListener(SelectionListener.widgetSelectedAdapter(
 				e -> option.setValueUnsafe(String.valueOf(spinner.getSelection()))));
-		if(option.getMinValue() != null) {
-			spinner.setMinimum(option.getMinValue().intValue());
-		}
-		if(option.getMaxValue() != null) {
-			spinner.setMaximum(option.getMaxValue().intValue());
-		}
+		option.getMinValue().ifPresent(minValue -> spinner.setMinimum(minValue.intValue()));
+		option.getMaxValue().ifPresent(maxValue -> spinner.setMaximum(maxValue.intValue()));
 		GridDataFactory.fillDefaults().grab(true, false).applyTo(spinner);
 		return group;
 	}
@@ -163,12 +159,12 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.RADIO);
-			button.setText(option.getLabelForValue(value));
+			button.setText(option.getLabel(value));
 			button.addSelectionListener(SelectionListener.widgetSelectedAdapter(e -> {
 				option.setValue(value);
 				updateVisibilities.run();
 			}));
-			if(option.getLabelForValue(value).equals(option.getLabelForValue(option.getValue()))) {
+			if(option.getLabel(value).equals(option.getLabel(option.getValue()))) {
 				button.setSelection(true);
 			}
 			GridDataFactory.fillDefaults().grab(true, false).applyTo(button);
@@ -211,10 +207,10 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 
 		for(T value : option.getSelectableValues()) {
 			Button button = new Button(group, SWT.CHECK);
-			button.setText(option.getLabelForValue(value));
+			button.setText(option.getLabel(value));
 			button.addSelectionListener(selectionListener);
 			button.setSelection(option.getValues().stream()
-					.anyMatch(v -> option.getLabelForValue(v).equals(option.getLabelForValue(value))));
+					.anyMatch(v -> option.getLabel(v).equals(option.getLabel(value))));
 			buttonToValue.put(button, value);
 
 			if(value instanceof IExtension) {
@@ -273,8 +269,9 @@ public class ConfigurableExtensionWidget extends AbstractContainerWidget {
 	}
 
 	private static <T> String getOptionToolTipText(ConfigurationOption<T> option, IConfigurableExtension extension) {
-		return "Option '" + option.getKey() + "' "
-				+ (option.getType() == Boolean.class ? "" : "(" + option.getType().getSimpleName() + ") ")
-				+ "of '" + extension.getKey() + "'";
+		return option.getDescription()
+				.orElseGet(() -> "Option '" + option.getKey() + "' "
+					+ (option.getType() == Boolean.class ? "" : "(" + option.getType().getSimpleName() + ") ")
+					+ "of '" + extension.getKey() + "'");
 	}
 }

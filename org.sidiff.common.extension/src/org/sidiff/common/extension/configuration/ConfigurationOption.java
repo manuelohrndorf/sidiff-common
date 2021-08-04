@@ -15,11 +15,15 @@ import org.sidiff.common.util.StringListSerializer;
 import com.eclipsesource.json.*;
 
 /**
- * <p>A configuration option is a single option of a {@link IExtensionConfiguration},
- * with its key, name, type, default value, and current value.</p>
- * <p>Configuration options are instantiated using {@link #builder(Class) ConfigurationOption.builder(Class)}.</p>
+ * <p>A configuration option is an element of an {@link IExtensionConfiguration}
+ * and store the value of a one option of an {@link IConfigurableExtension}.</p>
+ * <p>Options can either be single (0-1) or multi (0-N) valued. Options always have a type, key and name.</p>
+ * <p>Configuration options are instantiated using the <code>ConfigurationOption.builder(...)</code> factory methods.</p>
  * @author rmueller
  * @param <T> the type of the option
+ * @see #builder(Class)
+ * @see #builder(Class, ExtensionManager)
+ * @see #builder(Class, TypedExtensionManager, Collection, boolean)
  */
 public class ConfigurationOption<T> {
 
@@ -27,10 +31,11 @@ public class ConfigurationOption<T> {
 
 	private final String key;
 	private final String name;
+	private final Optional<String> description;
 	private final Class<T> type;
 	private final boolean multi;
-	private final T minValue;
-	private final T maxValue;
+	private final Optional<T> minValue;
+	private final Optional<T> maxValue;
 	private final List<T> defaultValues;
 	private final Set<T> selectableValues;
 	private final Function<? super T,String> valueLabelProvider;
@@ -39,20 +44,25 @@ public class ConfigurationOption<T> {
 	private final Set<String> documentTypes = new HashSet<>();
 	private boolean includeGeneric = true;
 
-	protected ConfigurationOption(String key, String name, Class<T> type, boolean multi,
+	protected ConfigurationOption(String key, String name, String description, Class<T> type, boolean multi,
 			T minValue, T maxValue, List<T> defaultValues, Collection<? extends T> selectableValues,
 			Function<? super T,String> valueLabelProvider) {
 
 		this.key = key;
 		this.name = name;
+		this.description = Optional.ofNullable(description);
 		this.type = type;
 		this.multi = multi;
-		this.minValue = minValue;
-		this.maxValue = maxValue;
+		this.minValue = Optional.ofNullable(minValue);
+		this.maxValue = Optional.ofNullable(maxValue);
 		this.defaultValues = new ArrayList<>(defaultValues);
 		this.selectableValues = selectableValues == null ? null : new HashSet<>(selectableValues);
-		this.valueLabelProvider = valueLabelProvider;
+		this.valueLabelProvider = nullSafeLabelProvider(valueLabelProvider);
 		resetToDefault();
+	}
+
+	private Function<? super T, String> nullSafeLabelProvider(Function<? super T, String> delegate) {
+		return value -> value == null ? "" : delegate.apply(value);
 	}
 
 	/**
@@ -72,6 +82,14 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
+	 * Returns a readable description for this option.
+	 * @return option's readable description, or empty if none
+	 */
+	public Optional<String> getDescription() {
+		return description;
+	}
+
+	/**
 	 * Returns the type of this option.
 	 * @return option's type
 	 */
@@ -81,7 +99,6 @@ public class ConfigurationOption<T> {
 
 	/**
 	 * Returns whether this configuration options supports multiple values.
-	 *
 	 * @return <code>true</code> if multiple values supported, <code>false</code> if single value
 	 */
 	public boolean isMulti() {
@@ -89,29 +106,35 @@ public class ConfigurationOption<T> {
 	}
 
 	/**
-	 * The minimum value of this option, <code>null</code> if none.
-	 * @return minimum value, or <code>null</code>
+	 * The minimum value of this option. If present, this is a {@link Number}.
+	 * @return minimum value, or empty if none
 	 */
-	public T getMinValue() {
+	public Optional<T> getMinValue() {
 		return minValue;
 	}
 
 	/**
-	 * The maximum value of this option, <code>null</code> if none.
-	 * @return maximum value, or <code>null</code>
+	 * The maximum value of this option. If present, this is a {@link Number}.
+	 * @return maximum value, or empty if none
 	 */
-	public T getMaxValue() {
+	public Optional<T> getMaxValue() {
 		return maxValue;
 	}
 
 	/**
-	 * Returns the default values of this option
-	 * @return the default values, may be empty
+	 * Returns the default values of this option.
+	 * @return list of default values, may be empty
 	 */
 	public List<T> getDefault() {
 		return Collections.unmodifiableList(defaultValues);
 	}
 
+	/**
+	 * Returns a set of all values which can be selected for this option.
+	 * The set is potentially filtered by {@link #setDocumentTypeFilter(Collection, boolean)}.
+	 * Returns <code>null</code> if selectable values cannot be enumerated.
+	 * @return unmodifiable set of selectable values, or <code>null</code> if unspecified
+	 */
 	public Set<T> getSelectableValues() {
 		if(selectableValues == null) {
 			return null;
@@ -127,10 +150,12 @@ public class ConfigurationOption<T> {
 		return Collections.unmodifiableSet(selectableValues);
 	}
 
-	public String getLabelForValue(T value) {
-		if(value == null) {
-			return "";
-		}
+	/**
+	 * Returns a unique and readable string value for the given option value.
+	 * @param value the option value
+	 * @return string value
+	 */
+	public String getLabel(T value) {
 		return valueLabelProvider.apply(value);
 	}
 
@@ -183,20 +208,18 @@ public class ConfigurationOption<T> {
 
 	protected void validateValue(T value) {
 		if(value instanceof Number) {
-			if(minValue instanceof Number) {
-				if(compareValues((Number)minValue, (Number)value).filter(c -> c > 0).isPresent()) {
-					throw new IllegalArgumentException("Value is smaller than minimum: " + value + " < " + minValue);
-				}
+			if(minValue.filter(Number.class::isInstance).map(Number.class::cast)
+					.flatMap(min -> compareNumbers(min, (Number)value)).filter(c -> c > 0).isPresent()) {
+				throw new IllegalArgumentException("Value is smaller than minimum: " + value + " < " + minValue.get());
 			}
-			if(maxValue instanceof Number) {
-				if(compareValues((Number)maxValue, (Number)value).filter(c -> c < 0).isPresent()) {
-					throw new IllegalArgumentException("Value is larger than maximum: " + value + " > " + maxValue);
-				}
+			if(maxValue.filter(Number.class::isInstance).map(Number.class::cast)
+					.flatMap(max -> compareNumbers(max, (Number)value)).filter(c -> c < 0).isPresent()) {
+				throw new IllegalArgumentException("Value is larger than maximum: " + value + " > " + maxValue.get());
 			}
 		}
 	}
 
-	protected static Optional<Integer> compareValues(Number lhs, Number rhs) {
+	protected static Optional<Integer> compareNumbers(Number lhs, Number rhs) {
 		try {
 			return Optional.of(new BigDecimal(lhs.toString()).compareTo(new BigDecimal(rhs.toString())));
 		} catch(NumberFormatException e) {
@@ -223,7 +246,7 @@ public class ConfigurationOption<T> {
 	 */
 	public List<T> getValues() {
 		if(!multi) {
-			throw new IllegalStateException("Use the ConfigurationOption.getValue() method for non-multi options");
+			throw new IllegalStateException("Use the ConfigurationOption.getValue() method for single options");
 		}
 		return Collections.unmodifiableList(values);
 	}
@@ -275,7 +298,8 @@ public class ConfigurationOption<T> {
 			}
 			if(selectableValues != null) {
 				T matchingSelectable = selectableValues.stream()
-						.filter(selectable -> getLabelForValue(selectable).equals(value)).findFirst().orElse(null);
+						.filter(selectable -> getLabel(selectable).equals(value))
+						.findFirst().orElse(null);
 				if(matchingSelectable != null) {
 					return matchingSelectable;
 				}
@@ -338,7 +362,7 @@ public class ConfigurationOption<T> {
 			String extensionValue = ExtensionSerialization.convertToString((IExtension)value);
 			return extensionValue.isEmpty() ? Json.NULL : Json.parse(extensionValue);
 		}
-		return Json.value(getLabelForValue(value));
+		return Json.value(getLabel(value));
 	}
 
 	void importAssignment(JsonValue jsonValue) {
@@ -358,7 +382,7 @@ public class ConfigurationOption<T> {
 		if (valueString.isEmpty() && type == String.class && !multi) {
 			// If this is a ConfigurationOption<String> and the value is empty,
 			// unpacking it with the StringListSerializer will yield an empty list,
-			// which would set the value of a non-multi option to null, meaning unset.
+			// which would set the value of a single option to null, meaning unset.
 			// There is no difference between unset and empty string in the serialized
 			// form, but assuming empty string here makes other code cleaner.
 			setValueUnsafe("");
@@ -437,6 +461,7 @@ public class ConfigurationOption<T> {
 
 	/**
 	 * The builder is used to create configuration options.
+	 * Use one of the factory methods of {@link ConfigurationOption} to create a builder.
 	 * @author rmueller
 	 * @param <T> the type of configuration option this builder creates
 	 */
@@ -448,6 +473,7 @@ public class ConfigurationOption<T> {
 		private final Class<T> type;
 		private String key;
 		private String name;
+		private String description;
 		private boolean multi = false;
 		private T minValue; // must extend Number
 		private T maxValue; // must extend Number
@@ -456,16 +482,27 @@ public class ConfigurationOption<T> {
 		private Function<? super T,String> valueLabelProvider;
 
 		protected Builder(Class<T> type) {
-			this.type = Objects.requireNonNull(type);
+			this.type = Objects.requireNonNull(type, "Type must not be null");
 		}
 
 		public Builder<T> key(String key) {
-			this.key = Objects.requireNonNull(key);
+			this.key = Objects.requireNonNull(key, "Key must not be null");
 			return this;
 		}
 
 		public Builder<T> name(String name) {
-			this.name = Objects.requireNonNull(name);
+			this.name = Objects.requireNonNull(name, "Name must not be null");
+			return this;
+		}
+
+		/**
+		 * Sets the description of the configuration option, which is used as tooltip text.
+		 * The description is optional.
+		 * @param description the description
+		 * @return this builder, for method chaining
+		 */
+		public Builder<T> description(String description) {
+			this.description = Objects.requireNonNull(description, "Description must not be null");
 			return this;
 		}
 
@@ -541,9 +578,9 @@ public class ConfigurationOption<T> {
 			if(key == null) {
 				throw new IllegalStateException("ConfigurationOption requires a key");
 			}
-			// Ensure minValue < maxValue
+			// Ensure minValue <= maxValue
 			if(minValue != null && maxValue != null) {
-				if(compareValues((Number)minValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
+				if(compareNumbers((Number)minValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
 					throw new IllegalStateException("Minimum value is greater than maximum value");
 				}
 			}
@@ -551,12 +588,12 @@ public class ConfigurationOption<T> {
 			for(T defaultValue : defaultValues) {
 				if(defaultValue instanceof Number) {
 					if(minValue != null) {
-						if(compareValues((Number)defaultValue, (Number)minValue).filter(c -> c < 0).isPresent()) {
+						if(compareNumbers((Number)defaultValue, (Number)minValue).filter(c -> c < 0).isPresent()) {
 							throw new IllegalStateException("Default value is smaller than the minimum value");
 						}
 					}
 					if(maxValue != null) {
-						if(compareValues((Number)defaultValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
+						if(compareNumbers((Number)defaultValue, (Number)maxValue).filter(c -> c > 0).isPresent()) {
 							throw new IllegalStateException("Default value is greater than the maximum value");
 						}
 					}
@@ -569,7 +606,7 @@ public class ConfigurationOption<T> {
 			if(valueLabelProvider == null) {
 				valueLabelProvider = DEFAULT_LABEL_PROVIDER;
 			}
-			return new ConfigurationOption<>(key, name, type, multi, minValue, maxValue,
+			return new ConfigurationOption<>(key, name, description, type, multi, minValue, maxValue,
 					defaultValues, selectableValues, valueLabelProvider);
 		}
 	}

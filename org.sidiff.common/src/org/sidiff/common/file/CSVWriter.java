@@ -1,8 +1,6 @@
 package org.sidiff.common.file;
 
-import java.io.CharArrayWriter;
-import java.io.IOException;
-import java.io.Writer;
+import java.io.*;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -57,7 +55,7 @@ public class CSVWriter implements AutoCloseable {
 	}
 
 	public void write(Stream<String> cols) throws IOException {
-		delegate.write(cols.map(this::escapeSpecialCharacters).collect(Collectors.joining(columnSeparator)));
+		delegate.write(cols.map(Objects::toString).map(this::escapeSpecialCharacters).collect(Collectors.joining(columnSeparator)));
 		delegate.write(lineSeparator.toString());
 	}
 

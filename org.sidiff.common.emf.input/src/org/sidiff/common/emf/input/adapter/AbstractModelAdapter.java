@@ -1,15 +1,18 @@
 package org.sidiff.common.emf.input.adapter;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.resources.*;
+import org.eclipse.core.runtime.*;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
+import org.sidiff.common.emf.input.InputModels;
+import org.sidiff.common.emf.modelstorage.EMFStorage;
 import org.sidiff.common.extension.AbstractTypedExtension;
 import org.sidiff.common.extension.configuration.IExtensionConfiguration;
 
@@ -22,9 +25,7 @@ public abstract class AbstractModelAdapter extends AbstractTypedExtension implem
 	private Set<String> modelFileExtensions;
 
 	@Override
-	public void setInitializationData(IConfigurationElement config, String propertyName, Object data)
-			throws CoreException {
-
+	public void setInitializationData(IConfigurationElement config, String propertyName, Object data) throws CoreException {
 		super.setInitializationData(config, propertyName, data);
 		proprietaryFileExtensions = doGetChildElements(config, ELEMENT_PROPRIETARY_FILE_EXTENSION);
 		modelFileExtensions = doGetChildElements(config, ELEMENT_MODEL_FILE_EXTENSION);
@@ -49,9 +50,21 @@ public abstract class AbstractModelAdapter extends AbstractTypedExtension implem
 	}
 
 	@Override
-	public IFile toProprietary(Resource inputModel, IFolder outputFolder) throws CoreException {
+	public void toProprietary(Resource inputModel, IFile outputFile) throws CoreException {
+		String code = toProprietary(inputModel);
+		try {
+			Files.write(EMFStorage.toFile(outputFile).toPath(), code.getBytes(StandardCharsets.UTF_8));
+			outputFile.refreshLocal(IResource.DEPTH_ZERO, null);
+		} catch (IOException e) {
+			throw new CoreException(new Status(IStatus.ERROR, InputModels.PLUGIN_ID,
+					"Failed to write generated code to file " + outputFile.getFullPath(), e));
+		}
+	}
+
+	@Override
+	public IFile toProprietary(Resource inputModel, IContainer outputFolder) throws CoreException {
 		String name = inputModel.getURI().trimFileExtension().appendFileExtension(getDefaultProprietaryFileExtension()).lastSegment();
-		IFile outputFile = outputFolder.getFile(name);
+		IFile outputFile = outputFolder.getFile(new Path(name));
 		toProprietary(inputModel, outputFile);
 		return outputFile;
 	}

@@ -1,4 +1,4 @@
-package org.sidiff.common.xml.internal;
+package org.sidiff.common.xml;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -3,7 +3,9 @@ package org.sidiff.common.xml;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.SAXParserFactory;
@@ -13,10 +15,8 @@ import javax.xml.transform.URIResolver;
 import javax.xml.transform.sax.SAXSource;
 
 import org.sidiff.common.exceptions.SiDiffRuntimeException;
-import org.sidiff.common.io.ResourceUtil;
 import org.sidiff.common.logging.LogEvent;
 import org.sidiff.common.logging.LogUtil;
-import org.sidiff.common.xml.internal.MapLoader;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -32,14 +32,24 @@ public class XMLResolver implements EntityResolver, URIResolver {
 
 	private static XMLResolver instance;
 	private Map<String, String> mappings;
+	
+	private List<IResourceLoader> loaders = new ArrayList<>();
 
 	private XMLResolver() {
 		mappings = new HashMap<>();
 		// bootstrap
 		mappings.put("http://pi.informatik.uni-siegen.de/SiDiff/org.sidiff.common.io.map.dtd", "org.sidiff.common.io.map.dtd");
 	}
+	
+	/**
+	 * Register a loader for resolving file names to input streams.
+	 * 
+	 * @param loader The loader.
+	 */
+	public void registerLoader(IResourceLoader loader) {
+		this.loaders.add(loader);
+	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
 		if (systemId.startsWith("file")) {
@@ -51,9 +61,12 @@ public class XMLResolver implements EntityResolver, URIResolver {
 
 			assert LogUtil.log(LogEvent.DEBUG, "Public Id :" + publicId + ", System Id :" + systemId + "\n -> Mapped to " + mapping);
 
-			InputStream result = ResourceUtil.getInputStreamByResourceName(mapping);
-			if (result != null && result.available() > 0) {
-				return new InputSource(result);
+			for (IResourceLoader loader : loaders) {
+				InputStream result = loader.loadResourceAsStream(mapping);
+				
+				if (result != null && result.available() > 0) {
+					return new InputSource(result);
+				}
 			}
 			throw new SiDiffRuntimeException("Cannot get " + mapping + " as Stream, please check your classpath");
 		}
@@ -63,7 +76,6 @@ public class XMLResolver implements EntityResolver, URIResolver {
 		return null;
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public Source resolve(String href, String base) throws TransformerException {
 		try {
@@ -78,12 +90,17 @@ public class XMLResolver implements EntityResolver, URIResolver {
 	public static XMLResolver getInstance() {
 		if (instance == null) {
 			instance = new XMLResolver();
-			// bootstrap
-			MapLoader.parseMapFromStream(DTDMAPPING_MAPTYPE, instance.mappings,
-					ResourceUtil.getInputStreamByResourceName(BOOTSTRAP_FILENAME));
-			// TODO Mapping Datei f.d. Bootstrap aufraeumen!!! 
 		}
 		return instance;
+	}
+	
+	static void initInstance(IResourceLoader loader) {
+		try {
+			MapLoader.parseMapFromStream(DTDMAPPING_MAPTYPE, XMLResolver.getInstance().mappings,
+					loader.loadResourceAsStream(BOOTSTRAP_FILENAME));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

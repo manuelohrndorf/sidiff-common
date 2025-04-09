@@ -1,11 +1,10 @@
-package org.sidiff.common.xml.internal;
+package org.sidiff.common.xml;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.sidiff.common.collections.MapWithDefault;
-import org.sidiff.common.xml.XMLParser;
 
 /**
  * The SiDiffMapLoader provides a general map support. Static methods can be used for parsing maps from an XML doc.
